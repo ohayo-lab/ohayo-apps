@@ -1,6 +1,6 @@
 {
-  "name": "OHAYO NIHONGO — Daily Flashcards",
-  "short_name": "OHAYO NIHONGO",
+  "name": "OHAYO NIHONGO 1 — Daily Flashcards",
+  "short_name": "OHAYO NIHONGO 1",
   "description": "Daily Japanese flashcards by OHAYO NIHONGO",
   "start_url": "./index.html",
   "display": "standalone",
