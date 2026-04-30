@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>OHAYO NIHONGO — Daily Flashcards</title>
+
+<!-- ✦ PWA: iOS (Safari / Add to Home Screen) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OHAYO">
+
+<!-- ✦ PWA: Android / Chrome / Desktop -->
+<meta name="theme-color" content="#1A1A1A">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+
+<!-- ✦ Fallback icon for iOS home screen -->
+<link rel="apple-touch-icon" href="OHAYO NIHONGO (500 x 500 px).png">
+
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
@@ -41,6 +55,63 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
 .cover-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 28px; }
 .btn-start { border:none; border-radius:16px; background:var(--orange); color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; padding:14px 48px; cursor:pointer; width:100%; box-shadow:0 8px 24px rgba(255,122,61,0.35); }
 .cover-sub { margin-top:14px; font-size:11px; color:rgba(255,255,255,0.25); }
+
+/* ✦ INSTALL BANNER */
+.install-banner {
+  display:none;
+  margin-bottom:16px;
+  width:100%;
+  background:rgba(74,184,232,0.1);
+  border:1.5px solid rgba(74,184,232,0.25);
+  border-radius:14px;
+  padding:12px 16px;
+  cursor:pointer;
+  align-items:center;
+  gap:12px;
+  transition:background 0.2s;
+}
+.install-banner:active { background:rgba(74,184,232,0.2); }
+.install-banner.visible { display:flex; }
+.install-icon { font-size:22px; line-height:1; flex-shrink:0; }
+.install-text { text-align:left; flex:1; }
+.install-text-main { font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+.install-text-sub { font-size:10px; color:rgba(255,255,255,0.4); }
+.install-dismiss { font-size:18px; color:rgba(255,255,255,0.25); padding:4px; line-height:1; background:none; border:none; cursor:pointer; }
+
+/* ✦ iOS INSTALL MODAL */
+.install-modal-overlay {
+  display:none;
+  position:fixed; inset:0; z-index:100;
+  background:rgba(0,0,0,0.75);
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+  backdrop-filter:blur(4px);
+}
+.install-modal-overlay.show { display:flex; }
+.install-modal {
+  background:#242424;
+  border-radius:20px;
+  padding:24px 20px;
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from { transform:translateY(40px); opacity:0; }
+  to   { transform:translateY(0); opacity:1; }
+}
+.modal-title { font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
+.modal-subtitle { font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+.modal-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+.modal-step { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 14px; }
+.step-num { width:24px; height:24px; border-radius:50%; background:var(--orange); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-text { font-size:12px; color:rgba(255,255,255,0.75); text-align:left; line-height:1.5; }
+.step-text b { color:#fff; }
+.step-icon { font-size:18px; flex-shrink:0; }
+.modal-arrow { position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:10px solid #242424; }
+.btn-modal-close { width:100%; border:none; border-radius:12px; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.6); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; padding:12px; cursor:pointer; }
 
 /* HEADER */
 .header { padding:env(safe-area-inset-top,12px) 20px 8px; display:flex; justify-content:space-between; align-items:flex-start; }
@@ -148,6 +219,17 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
     <div class="cover-vol">Vol. 1</div>
     <div class="cover-sentences">10 sentences included</div>
     <div class="cover-divider"></div>
+
+    <!-- ✦ INSTALL BANNER (shown only when installable) -->
+    <div class="install-banner" id="installBanner" onclick="handleInstall()">
+      <div class="install-icon">📲</div>
+      <div class="install-text">
+        <div class="install-text-main">Save as App</div>
+        <div class="install-text-sub">iPhone・Android・PC に保存できます</div>
+      </div>
+      <button class="install-dismiss" onclick="dismissInstall(event)" aria-label="Close">✕</button>
+    </div>
+
     <button class="btn-start" onclick="startApp()">Start Practice →</button>
     <div class="cover-sub">OHAYO NIHONGO · おはよう日本語</div>
   </div>
@@ -249,6 +331,32 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
   </div>
 </div>
 
+<!-- ✦ iOS INSTALL MODAL -->
+<div class="install-modal-overlay" id="installModal" onclick="closeModal(event)">
+  <div class="install-modal">
+    <div class="modal-title">📲 ホーム画面に追加</div>
+    <div class="modal-subtitle">Add to Home Screen</div>
+    <div class="modal-steps">
+      <div class="modal-step">
+        <div class="step-num">1</div>
+        <div class="step-icon">⬆️</div>
+        <div class="step-text">Safari の下の <b>共有ボタン</b>（四角＋矢印）をタップ<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">Tap the Share button at the bottom</span></div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">2</div>
+        <div class="step-icon">➕</div>
+        <div class="step-text"><b>「ホーム画面に追加」</b> をタップ<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">Tap "Add to Home Screen"</span></div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">3</div>
+        <div class="step-icon">✅</div>
+        <div class="step-text">右上の <b>「追加」</b> をタップして完了！<br><span style="color:rgba(255,255,255,0.4);font-size:10px;">Tap "Add" to finish</span></div>
+      </div>
+    </div>
+    <button class="btn-modal-close" onclick="closeInstallModal()">閉じる / Close</button>
+  </div>
+</div>
+
 <script>
 const cards = [
   { kanji:"今朝の気温は0度で、本当に寒い朝でした。", hira:"けさの きおんは れいど で、ほんとうに さむい あさでした。", en:"This morning, the temperature was 0°C — a truly cold morning.", audio:"Flashcard_1_01.mp3" },
@@ -265,6 +373,61 @@ const cards = [
 
 let current=0, hiraVisible=false, enVisible=false, audioObj=null;
 
+// ✦ PWA: Platform detection & install logic
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isAndroid = /android/i.test(navigator.userAgent);
+const isInStandaloneMode = window.navigator.standalone === true
+  || window.matchMedia('(display-mode: standalone)').matches;
+
+// Capture Android/Desktop install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+// Show banner for iOS (if not already installed)
+window.addEventListener('DOMContentLoaded', () => {
+  if (isIOS && !isInStandaloneMode) {
+    showInstallBanner();
+  }
+});
+
+function showInstallBanner() {
+  document.getElementById('installBanner').classList.add('visible');
+}
+
+function handleInstall() {
+  if (deferredPrompt) {
+    // Android Chrome / Desktop: use native prompt
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBanner').classList.remove('visible');
+    });
+  } else if (isIOS) {
+    // iOS: show step-by-step modal
+    document.getElementById('installModal').classList.add('show');
+  }
+}
+
+function dismissInstall(e) {
+  e.stopPropagation();
+  document.getElementById('installBanner').classList.remove('visible');
+}
+
+function closeInstallModal() {
+  document.getElementById('installModal').classList.remove('show');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('installModal')) {
+    closeInstallModal();
+  }
+}
+
+// ✦ App logic
 function startApp() { document.getElementById('coverScreen').classList.add('hide'); }
 
 function loadCard() {
