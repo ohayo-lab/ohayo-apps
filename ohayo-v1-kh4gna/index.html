@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OHAYO NIHONGO — Daily Flashcards</title>
+
+<!-- ✦ PWA: iOS (Safari / Add to Home Screen) -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OHAYO NIHONGO 1">
+
+<!-- ✦ PWA: Android / Chrome / Desktop -->
+<meta name="theme-color" content="#1A1A1A">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+
+<!-- ✦ Favicon (browser tab) -->
+<link rel="icon" type="image/png" href="OHAYO NIHONGO (500 x 500 px).png">
+<!-- ✦ iOS home screen icon -->
+<link rel="apple-touch-icon" href="OHAYO NIHONGO (500 x 500 px).png">
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --orange:#FF7A3D; --blue:#4AB8E8; --dark:#1A1A1A; --mid:#888;
+  --spotify:#1DB954; --youtube:#FF0000; --etsy:#F1641E;
+}
+html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-serif; overflow:hidden; }
+
+.app {
+  height:100dvh;
+  max-width:430px; margin:0 auto;
+  display:grid;
+  grid-template-rows:auto auto 1fr auto auto;
+  background:var(--dark);
+  position:relative; overflow:hidden;
+}
+
+/* COVER */
+.cover-screen {
+  position:absolute; inset:0; z-index:30;
+  background:var(--dark);
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:32px 28px; text-align:center;
+  transition:opacity 0.5s ease, transform 0.5s ease;
+}
+.cover-screen.hide { opacity:0; transform:scale(1.04); pointer-events:none; }
+.cover-top-bar { position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--orange),var(--blue)); }
+.cover-logo-img { width:80px; height:80px; border-radius:20px; object-fit:cover; box-shadow:0 12px 32px rgba(0,0,0,0.5); margin-bottom:20px; border:3px solid var(--orange); }
+.cover-badge { font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--blue); margin-bottom:12px; }
+.cover-main-title { font-size:26px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:6px; }
+.cover-main-title span { color:var(--orange); }
+.cover-vol { font-size:13px; font-weight:600; color:rgba(255,255,255,0.4); margin-bottom:4px; }
+.cover-sentences { font-size:11px; color:rgba(255,255,255,0.3); margin-bottom:28px; }
+.cover-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 28px; }
+.btn-start { border:none; border-radius:16px; background:var(--orange); color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; padding:14px 48px; cursor:pointer; width:100%; box-shadow:0 8px 24px rgba(255,122,61,0.35); }
+.cover-sub { margin-top:14px; font-size:11px; color:rgba(255,255,255,0.25); }
+
+/* ✦ INSTALL BANNER */
+.install-banner {
+  display:none;
+  margin-bottom:16px;
+  width:100%;
+  background:rgba(74,184,232,0.1);
+  border:1.5px solid rgba(74,184,232,0.25);
+  border-radius:14px;
+  padding:12px 16px;
+  cursor:pointer;
+  align-items:center;
+  gap:12px;
+  transition:background 0.2s;
+}
+.install-banner:active { background:rgba(74,184,232,0.2); }
+.install-banner.visible { display:flex; }
+.install-icon { font-size:22px; line-height:1; flex-shrink:0; }
+.install-text { text-align:left; flex:1; }
+.install-text-main { font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+.install-text-sub { font-size:10px; color:rgba(255,255,255,0.4); }
+.install-dismiss { font-size:18px; color:rgba(255,255,255,0.25); padding:4px; line-height:1; background:none; border:none; cursor:pointer; }
+
+/* ✦ iOS INSTALL MODAL */
+.install-modal-overlay {
+  display:none;
+  position:fixed; inset:0; z-index:100;
+  background:rgba(0,0,0,0.75);
+  align-items:flex-end;
+  justify-content:center;
+  padding:16px;
+  backdrop-filter:blur(4px);
+}
+.install-modal-overlay.show { display:flex; }
+.install-modal {
+  background:#242424;
+  border-radius:20px;
+  padding:24px 20px;
+  width:100%;
+  max-width:400px;
+  text-align:center;
+  animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes slideUp {
+  from { transform:translateY(40px); opacity:0; }
+  to   { transform:translateY(0); opacity:1; }
+}
+.modal-title { font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
+.modal-subtitle { font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+.modal-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+.modal-step { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 14px; }
+.step-num { width:24px; height:24px; border-radius:50%; background:var(--orange); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-text { font-size:12px; color:rgba(255,255,255,0.75); text-align:left; line-height:1.5; }
+.step-text b { color:#fff; }
+.step-icon { font-size:18px; flex-shrink:0; }
+.modal-arrow { position:absolute; bottom:-10px; left:50%; transform:translateX(-50%); width:0; height:0; border-left:10px solid transparent; border-right:10px solid transparent; border-top:10px solid #242424; }
+.btn-modal-close { width:100%; border:none; border-radius:12px; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.6); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; padding:12px; cursor:pointer; }
+
+/* HEADER */
+.header { padding:env(safe-area-inset-top,12px) 20px 8px; display:flex; justify-content:space-between; align-items:flex-start; }
+.header-logo { font-size:9px; font-weight:700; letter-spacing:0.2em; color:rgba(255,255,255,0.35); text-transform:uppercase; margin-bottom:2px; }
+.header-logo span { color:var(--orange); }
+.header-title { font-size:12px; font-weight:600; color:rgba(255,255,255,0.7); }
+.header-counter { font-size:12px; font-weight:700; color:rgba(255,255,255,0.4); }
+.header-counter b { color:var(--orange); font-size:20px; line-height:1; }
+
+/* PROGRESS */
+.progress-wrap { padding:0 20px 10px; }
+.progress-track { height:3px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--blue)); border-radius:2px; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); }
+
+/* CARD */
+.card-area { padding:0 16px; display:flex; align-items:center; overflow:hidden; }
+.card {
+  width:100%; background:#FAFAF8; border-radius:20px; padding:18px 20px;
+  position:relative; overflow:hidden;
+  box-shadow:0 16px 40px rgba(0,0,0,0.4);
+  animation:cardIn 0.35s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes cardIn {
+  from { opacity:0; transform:translateY(16px) scale(0.97); }
+  to   { opacity:1; transform:translateY(0) scale(1); }
+}
+.card-accent-bar { position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--orange),var(--blue)); }
+.card-tag { font-size:8px; font-weight:700; letter-spacing:0.2em; color:var(--orange); text-transform:uppercase; margin-bottom:10px; }
+.card-kanji { font-family:'Noto Serif JP',serif; font-size:18px; font-weight:600; line-height:1.65; color:#1A1A1A; margin-bottom:14px; }
+
+.reveal-section { overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease; max-height:0; opacity:0; }
+.reveal-section.visible { max-height:160px; opacity:1; }
+.reveal-label { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+.reveal-bar { width:2px; height:11px; border-radius:1px; flex-shrink:0; }
+.reveal-bar-blue { background:var(--blue); }
+.reveal-bar-mid { background:#BDBDBD; }
+.reveal-label-text { font-size:8px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--mid); }
+.hira-text { font-family:'Noto Sans JP',sans-serif; font-size:13px; line-height:1.8; color:#555; margin-bottom:12px; }
+.en-text { font-size:12px; line-height:1.6; color:var(--mid); font-style:italic; }
+
+/* ACTION BUTTONS */
+.btn-row { padding:10px 16px 6px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.btn {
+  border:none; border-radius:14px; padding:10px 8px;
+  font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700;
+  cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px;
+  transition:transform 0.15s ease; -webkit-user-select:none;
+}
+.btn:active { transform:scale(0.94); }
+.btn-icon { font-size:18px; line-height:1; }
+.btn-audio { background:var(--orange); color:#fff; }
+.btn-audio.playing { background:#e56a2e; }
+.btn-hira { background:rgba(74,184,232,0.12); color:var(--blue); border:1.5px solid rgba(74,184,232,0.25); }
+.btn-hira.active { background:var(--blue); color:#fff; border-color:var(--blue); }
+.btn-en { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.5); border:1.5px solid rgba(255,255,255,0.1); }
+.btn-en.active { background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85); border-color:rgba(255,255,255,0.25); }
+
+/* NAV */
+.nav-row { padding:6px 16px calc(env(safe-area-inset-bottom,8px) + 8px); display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.btn-nav {
+  border:none; border-radius:12px; padding:12px;
+  font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700;
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:transform 0.15s ease;
+}
+.btn-nav:active { transform:scale(0.95); }
+.btn-nav:disabled { opacity:0.25; pointer-events:none; }
+.btn-prev { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); border:1.5px solid rgba(255,255,255,0.1); }
+.btn-next { background:var(--orange); color:#fff; border:none; }
+.btn-next.finish { background:linear-gradient(135deg,var(--orange),var(--blue)); }
+
+/* COMPLETION */
+.complete-screen {
+  display:none; position:absolute; inset:0; z-index:20;
+  background:var(--dark); flex-direction:column; align-items:center; justify-content:center;
+  padding:32px 24px; text-align:center; overflow-y:auto;
+}
+.complete-screen.show { display:flex; animation:cardIn 0.4s ease; }
+.complete-logo { width:72px; height:72px; border-radius:16px; object-fit:cover; box-shadow:0 8px 24px rgba(0,0,0,0.4); margin-bottom:16px; }
+.complete-title { font-size:24px; font-weight:700; color:#fff; margin-bottom:8px; line-height:1.25; }
+.complete-title span { color:var(--orange); }
+.complete-sub { font-size:12px; color:rgba(255,255,255,0.45); line-height:1.7; margin-bottom:20px; }
+.complete-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 20px; }
+.complete-links { width:100%; display:flex; flex-direction:column; gap:8px; margin-bottom:16px; }
+.complete-link { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px 16px; text-decoration:none; }
+.link-icon-wrap { width:34px; height:34px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.link-icon-spotify { background:rgba(29,185,84,0.15); }
+.link-icon-youtube { background:rgba(255,0,0,0.15); }
+.link-icon-etsy { background:rgba(241,100,30,0.15); }
+.complete-link-info { text-align:left; }
+.complete-link-label { font-size:9px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:2px; }
+.complete-link-text { font-size:12px; font-weight:600; color:rgba(255,255,255,0.75); }
+.btn-restart { border:none; background:transparent; color:rgba(255,255,255,0.3); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer; padding:8px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- COVER -->
+  <div class="cover-screen" id="coverScreen">
+    <div class="cover-top-bar"></div>
+    <img class="cover-logo-img" src="OHAYO NIHONGO (500 x 500 px).png" alt="OHAYO NIHONGO">
+    <div class="cover-badge">Daily Japanese Flashcards</div>
+    <div class="cover-main-title">Daily<br><span>Flashcard</span></div>
+    <div class="cover-vol">Vol. 1</div>
+    <div class="cover-sentences">10 sentences included</div>
+    <div class="cover-divider"></div>
+
+    <!-- ✦ INSTALL BANNER (shown only when installable) -->
+    <div class="install-banner" id="installBanner" onclick="handleInstall()">
+      <div class="install-icon">📲</div>
+      <div class="install-text">
+        <div class="install-text-main">Save as App</div>
+        <div class="install-text-sub">Save to your iPhone, Android or desktop</div>
+      </div>
+      <button class="install-dismiss" onclick="dismissInstall(event)" aria-label="Close">✕</button>
+    </div>
+
+    <button class="btn-start" onclick="startApp()">Start Practice →</button>
+    <div class="cover-sub">OHAYO NIHONGO · おはよう日本語</div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="header-logo">OHAYO <span>NIHONGO</span></div>
+      <div class="header-title">Daily Flashcards</div>
+    </div>
+    <div class="header-counter"><b id="currentNum">1</b> / 10</div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill" style="width:10%"></div>
+    </div>
+  </div>
+
+  <!-- CARD -->
+  <div class="card-area">
+    <div class="card" id="card">
+      <div class="card-accent-bar"></div>
+      <div class="card-tag" id="cardTag">Sentence 01</div>
+      <div class="card-kanji" id="cardKanji"></div>
+      <div class="reveal-section" id="hiraSection">
+        <div class="reveal-label">
+          <div class="reveal-bar reveal-bar-blue"></div>
+          <div class="reveal-label-text">ひらがな</div>
+        </div>
+        <div class="hira-text" id="cardHira"></div>
+      </div>
+      <div class="reveal-section" id="enSection">
+        <div class="reveal-label">
+          <div class="reveal-bar reveal-bar-mid"></div>
+          <div class="reveal-label-text">English</div>
+        </div>
+        <div class="en-text" id="cardEn"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div class="btn-row">
+    <button class="btn btn-audio" id="btnAudio" onclick="playAudio()">
+      <span class="btn-icon">🔊</span>Audio
+    </button>
+    <button class="btn btn-hira" id="btnHira" onclick="toggleHira()">
+      <span class="btn-icon">あ</span>Hiragana
+    </button>
+    <button class="btn btn-en" id="btnEn" onclick="toggleEn()">
+      <span class="btn-icon">EN</span>English
+    </button>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-row">
+    <button class="btn-nav btn-prev" id="btnPrev" onclick="prevCard()">← Back</button>
+    <button class="btn-nav btn-next" id="btnNext" onclick="nextCard()">Next →</button>
+  </div>
+
+  <!-- COMPLETION -->
+  <div class="complete-screen" id="completeScreen">
+    <img class="complete-logo" src="OHAYO NIHONGO (500 x 500 px).png" alt="OHAYO NIHONGO">
+    <div class="complete-title">Well done!<br><span>おつかれさま！</span></div>
+    <div class="complete-sub">You've completed all 10 sentences.<br>Keep practicing every day!</div>
+    <div class="complete-divider"></div>
+    <div class="complete-links">
+      <a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank">
+        <div class="link-icon-wrap link-icon-spotify">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
+        </div>
+        <div class="complete-link-info">
+          <div class="complete-link-label">Listen on</div>
+          <div class="complete-link-text">Spotify — OHAYO NIHONGO</div>
+        </div>
+      </a>
+      <a class="complete-link" href="https://www.youtube.com/@ohayo.nihongo" target="_blank">
+        <div class="link-icon-wrap link-icon-youtube">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+        </div>
+        <div class="complete-link-info">
+          <div class="complete-link-label">Watch on</div>
+          <div class="complete-link-text">YouTube — @ohayo.nihongo</div>
+        </div>
+      </a>
+      <a class="complete-link" href="https://ohayonihongodaily.etsy.com" target="_blank">
+        <div class="link-icon-wrap link-icon-etsy">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="#F1641E"><path d="M9.104 4.784c0-.896.144-1.168 1.552-1.168h4.512c1.792 0 2.528.56 3.024 2.24l.24.832.944-.064.064-4.48H1.888l-.048.944 1.04.208c.896.208 1.12.624 1.12 2.64v13.216c0 2.016-.224 2.384-1.12 2.592l-1.04.208.048.944H19.6l1.312-5.04-.88-.24c-.752 1.568-1.792 3.408-4.576 3.408H12c-1.456 0-1.744-.4-1.744-1.6v-6.32c1.84 0 2.912.08 3.52.784.464.528.624 1.12.784 1.984h.944V10.32h-.944c-.16.816-.32 1.408-.784 1.936-.608.704-1.68.784-3.52.784z"/></svg>
+        </div>
+        <div class="complete-link-info">
+          <div class="complete-link-label">Audio + Script Packs</div>
+          <div class="complete-link-text">OhayoNihongoDaily on Etsy</div>
+        </div>
+      </a>
+    </div>
+    <button class="btn-restart" onclick="restart()">↩ Start over</button>
+  </div>
+</div>
+
+<!-- ✦ iOS INSTALL MODAL -->
+<div class="install-modal-overlay" id="installModal" onclick="closeModal(event)">
+  <div class="install-modal">
+    <div class="modal-title">📲 Add to Home Screen</div>
+    <div class="modal-subtitle">Save this app to your device</div>
+    <div class="modal-steps">
+      <div class="modal-step">
+        <div class="step-num">1</div>
+        <div class="step-icon">⬆️</div>
+        <div class="step-text">Tap the <b>Share button</b> at the bottom of Safari</div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">2</div>
+        <div class="step-icon">➕</div>
+        <div class="step-text">Tap <b>"Add to Home Screen"</b></div>
+      </div>
+      <div class="modal-step">
+        <div class="step-num">3</div>
+        <div class="step-icon">✅</div>
+        <div class="step-text">Tap <b>"Add"</b> in the top right — done!</div>
+      </div>
+    </div>
+    <button class="btn-modal-close" onclick="closeInstallModal()">Close</button>
+  </div>
+</div>
+
+<script>
+const cards = [
+  { kanji:"今朝の気温は0度で、本当に寒い朝でした。", hira:"けさの きおんは れいど で、ほんとうに さむい あさでした。", en:"This morning, the temperature was 0°C — a truly cold morning.", audio:"f1_01.aac" },
+  { kanji:"でも空は真っ青に晴れていました。", hira:"でも そらは まっさおに はれていました。", en:"But the sky was a brilliant blue.", audio:"f1_02.aac" },
+  { kanji:"私が好きな食べ物のひとつに、うなぎがあります。", hira:"わたしが すきな たべものの ひとつに、うなぎが あります。", en:"One of my favorite foods is eel.", audio:"f1_03.aac" },
+  { kanji:"私の冬の朝ごはんの定番は、温かいお粥です。", hira:"わたしの ふゆの あさごはんの ていばんは、あたたかい おかゆです。", en:"My go-to winter breakfast is warm rice porridge.", audio:"f1_04.aac" },
+  { kanji:"今日は仕事の後、お友達と夜ご飯を食べに行きました。", hira:"きょうは しごとの あと、おともだちと よるごはんを たべに いきました。", en:"Today, I went out for dinner with a friend after work.", audio:"f1_05.aac" },
+  { kanji:"その話を聞いて、私は本当に嬉しい気持ちになりました。", hira:"そのはなしを きいて、わたしは ほんとうに うれしい きもちに なりました。", en:"When I heard the story, I was truly happy.", audio:"f1_06.aac" },
+  { kanji:"周りの人も静かに本を読んだり勉強したりしています。", hira:"まわりの ひとも しずかに ほんを よんだり べんきょうしたり しています。", en:"The people around me were quietly reading or studying.", audio:"f1_07.aac" },
+  { kanji:"私はオフィスで静かに仕事をしていました。", hira:"わたしは オフィスで しずかに しごとを していました。", en:"I was working quietly at the office.", audio:"f1_08.aac" },
+  { kanji:"すこしだけピンク色が見えました。", hira:"すこしだけ ピンクいろが みえました。", en:"I could see just a little bit of pink.", audio:"f1_09.aac" },
+  { kanji:"だから、温かいお水をたくさん飲むようにしています。", hira:"だから、あたたかい おみずを たくさん のむように しています。", en:"So I make sure to drink plenty of warm water.", audio:"f1_10.aac" }
+];
+
+let current=0, hiraVisible=false, enVisible=false, audioObj=null;
+
+// ✦ PWA: Platform detection & install logic
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isAndroid = /android/i.test(navigator.userAgent);
+const isInStandaloneMode = window.navigator.standalone === true
+  || window.matchMedia('(display-mode: standalone)').matches;
+
+// Capture Android/Desktop install prompt
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+
+// Show banner for iOS (if not already installed)
+window.addEventListener('DOMContentLoaded', () => {
+  if (isIOS && !isInStandaloneMode) {
+    showInstallBanner();
+  }
+});
+
+function showInstallBanner() {
+  document.getElementById('installBanner').classList.add('visible');
+}
+
+function handleInstall() {
+  if (deferredPrompt) {
+    // Android Chrome / Desktop: use native prompt
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(() => {
+      deferredPrompt = null;
+      document.getElementById('installBanner').classList.remove('visible');
+    });
+  } else if (isIOS) {
+    // iOS: show step-by-step modal
+    document.getElementById('installModal').classList.add('show');
+  }
+}
+
+function dismissInstall(e) {
+  e.stopPropagation();
+  document.getElementById('installBanner').classList.remove('visible');
+}
+
+function closeInstallModal() {
+  document.getElementById('installModal').classList.remove('show');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('installModal')) {
+    closeInstallModal();
+  }
+}
+
+// ✦ App logic
+function startApp() { document.getElementById('coverScreen').classList.add('hide'); }
+
+function loadCard() {
+  const c = cards[current];
+  hiraVisible=false; enVisible=false;
+  ['hiraSection','enSection'].forEach(id=>document.getElementById(id).classList.remove('visible'));
+  ['btnHira','btnEn','btnAudio'].forEach(id=>document.getElementById(id).classList.remove('active','playing'));
+  if(audioObj){audioObj.pause();audioObj=null;}
+  const card=document.getElementById('card');
+  card.style.animation='none'; card.offsetHeight; card.style.animation='';
+  document.getElementById('cardTag').textContent=`Sentence ${String(current+1).padStart(2,'0')}`;
+  document.getElementById('cardKanji').textContent=c.kanji;
+  document.getElementById('cardHira').textContent=c.hira;
+  document.getElementById('cardEn').textContent=c.en;
+  document.getElementById('currentNum').textContent=current+1;
+  document.getElementById('progressFill').style.width=`${((current+1)/10)*100}%`;
+  document.getElementById('btnPrev').disabled=current===0;
+  const btnNext=document.getElementById('btnNext');
+  if(current===9){btnNext.textContent='Finish ✓';btnNext.classList.add('finish');}
+  else{btnNext.textContent='Next →';btnNext.classList.remove('finish');}
+}
+
+function toggleHira(){hiraVisible=!hiraVisible;document.getElementById('hiraSection').classList.toggle('visible',hiraVisible);document.getElementById('btnHira').classList.toggle('active',hiraVisible);}
+function toggleEn(){enVisible=!enVisible;document.getElementById('enSection').classList.toggle('visible',enVisible);document.getElementById('btnEn').classList.toggle('active',enVisible);}
+
+function playAudio(){
+  const btn=document.getElementById('btnAudio');
+  if(audioObj){audioObj.pause();audioObj=null;btn.classList.remove('playing');return;}
+  audioObj=new Audio(cards[current].audio);
+  btn.classList.add('playing');
+  audioObj.play().catch(()=>{btn.classList.remove('playing');audioObj=null;});
+  audioObj.onended=()=>{btn.classList.remove('playing');audioObj=null;};
+}
+
+function nextCard(){if(current<9){current++;loadCard();}else{document.getElementById('completeScreen').classList.add('show');}}
+function prevCard(){if(current>0){current--;loadCard();}}
+function restart(){current=0;document.getElementById('completeScreen').classList.remove('show');document.getElementById('coverScreen').classList.remove('hide');}
+
+loadCard();
+</script>
+</body>
+</html>
