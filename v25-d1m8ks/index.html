@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>OHAYO NIHONGO — Daily Flashcards Vol. 25</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="OHAYO NIHONGO 25">
+<meta name="theme-color" content="#1A1A1A">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" type="image/png" href="OHAYO NIHONGO (500 x 500 px).png">
+<link rel="apple-touch-icon" href="OHAYO NIHONGO (500 x 500 px).png">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root { --orange:#FB7185; --blue:#FFE4E6; --dark:#1A1A1A; --mid:#888; }
+html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-serif; overflow:hidden; }
+.app { height:100dvh; max-width:430px; margin:0 auto; display:grid; grid-template-rows:auto auto 1fr auto auto; background:var(--dark); position:relative; overflow:hidden; }
+.cover-screen { position:absolute; inset:0; z-index:30; background:var(--dark); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 28px; text-align:center; transition:opacity 0.5s ease, transform 0.5s ease; }
+.cover-screen.hide { opacity:0; transform:scale(1.04); pointer-events:none; }
+.cover-top-bar { position:absolute; top:0; left:0; right:0; height:4px; background:linear-gradient(90deg,var(--orange),var(--blue)); }
+.cover-logo-img { width:80px; height:80px; border-radius:20px; object-fit:cover; box-shadow:0 12px 32px rgba(0,0,0,0.5); margin-bottom:20px; border:3px solid var(--orange); }
+.cover-badge { font-size:9px; font-weight:700; letter-spacing:0.28em; text-transform:uppercase; color:var(--blue); margin-bottom:12px; }
+.cover-main-title { font-size:26px; font-weight:700; color:#fff; line-height:1.2; margin-bottom:6px; }
+.cover-main-title span { color:var(--orange); }
+.cover-vol { font-size:13px; font-weight:600; color:rgba(255,255,255,0.4); margin-bottom:4px; }
+.cover-sentences { font-size:11px; color:rgba(255,255,255,0.3); margin-bottom:28px; }
+.cover-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 28px; }
+.btn-start { border:none; border-radius:16px; background:var(--orange); color:#fff; font-family:'DM Sans',sans-serif; font-size:15px; font-weight:700; padding:14px 48px; cursor:pointer; width:100%; box-shadow:0 8px 24px rgba(251,113,133,0.35); }
+.cover-sub { margin-top:14px; font-size:11px; color:rgba(255,255,255,0.25); }
+.install-banner { display:none; margin-bottom:16px; width:100%; background:rgba(255,228,230,0.1); border:1.5px solid rgba(255,228,230,0.25); border-radius:14px; padding:12px 16px; cursor:pointer; align-items:center; gap:12px; transition:background 0.2s; }
+.install-banner:active { background:rgba(255,228,230,0.2); }
+.install-banner.visible { display:flex; }
+.install-icon { font-size:22px; line-height:1; flex-shrink:0; }
+.install-text { text-align:left; flex:1; }
+.install-text-main { font-size:13px; font-weight:700; color:#fff; margin-bottom:2px; }
+.install-text-sub { font-size:10px; color:rgba(255,255,255,0.4); }
+.install-dismiss { font-size:18px; color:rgba(255,255,255,0.25); padding:4px; line-height:1; background:none; border:none; cursor:pointer; }
+.install-modal-overlay { display:none; position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0.75); align-items:flex-end; justify-content:center; padding:16px; backdrop-filter:blur(4px); }
+.install-modal-overlay.show { display:flex; }
+.install-modal { background:#242424; border-radius:20px; padding:24px 20px; width:100%; max-width:400px; text-align:center; animation:slideUp 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes slideUp { from { transform:translateY(40px); opacity:0; } to { transform:translateY(0); opacity:1; } }
+.modal-title { font-size:16px; font-weight:700; color:#fff; margin-bottom:6px; }
+.modal-subtitle { font-size:11px; color:rgba(255,255,255,0.4); margin-bottom:20px; }
+.modal-steps { display:flex; flex-direction:column; gap:12px; margin-bottom:20px; }
+.modal-step { display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); border-radius:12px; padding:12px 14px; }
+.step-num { width:24px; height:24px; border-radius:50%; background:var(--orange); color:#fff; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.step-text { font-size:12px; color:rgba(255,255,255,0.75); text-align:left; line-height:1.5; }
+.step-text b { color:#fff; }
+.step-icon { font-size:18px; flex-shrink:0; }
+.btn-modal-close { width:100%; border:none; border-radius:12px; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.6); font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; padding:12px; cursor:pointer; }
+.header { padding:env(safe-area-inset-top,12px) 20px 8px; display:flex; justify-content:space-between; align-items:flex-start; }
+.header-logo { font-size:9px; font-weight:700; letter-spacing:0.2em; color:rgba(255,255,255,0.35); text-transform:uppercase; margin-bottom:2px; }
+.header-logo span { color:var(--orange); }
+.header-title { font-size:12px; font-weight:600; color:rgba(255,255,255,0.7); }
+.header-counter { font-size:12px; font-weight:700; color:rgba(255,255,255,0.4); }
+.header-counter b { color:var(--orange); font-size:20px; line-height:1; }
+.progress-wrap { padding:0 20px 10px; }
+.progress-track { height:3px; background:rgba(255,255,255,0.08); border-radius:2px; overflow:hidden; }
+.progress-fill { height:100%; background:linear-gradient(90deg,var(--orange),var(--blue)); border-radius:2px; transition:width 0.4s cubic-bezier(0.4,0,0.2,1); }
+.card-area { padding:0 16px; display:flex; align-items:center; overflow:hidden; }
+.card { width:100%; background:#FAFAF8; border-radius:20px; padding:18px 20px; position:relative; overflow:hidden; box-shadow:0 16px 40px rgba(0,0,0,0.4); animation:cardIn 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+@keyframes cardIn { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+.card-accent-bar { position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--orange),var(--blue)); }
+.card-tag { font-size:8px; font-weight:700; letter-spacing:0.2em; color:var(--orange); text-transform:uppercase; margin-bottom:10px; }
+.card-kanji { font-family:'Noto Serif JP',serif; font-size:18px; font-weight:600; line-height:1.65; color:#1A1A1A; margin-bottom:14px; }
+.reveal-section { overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease; max-height:0; opacity:0; }
+.reveal-section.visible { max-height:160px; opacity:1; }
+.reveal-label { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
+.reveal-bar { width:2px; height:11px; border-radius:1px; flex-shrink:0; }
+.reveal-bar-blue { background:var(--blue); }
+.reveal-bar-mid { background:#BDBDBD; }
+.reveal-label-text { font-size:8px; font-weight:700; letter-spacing:0.2em; text-transform:uppercase; color:var(--mid); }
+.hira-text { font-family:'Noto Sans JP',sans-serif; font-size:13px; line-height:1.8; color:#555; margin-bottom:12px; }
+.en-text { font-size:12px; line-height:1.6; color:var(--mid); font-style:italic; }
+.btn-row { padding:10px 16px 6px; display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; }
+.btn { border:none; border-radius:14px; padding:10px 8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:700; cursor:pointer; display:flex; flex-direction:column; align-items:center; gap:4px; transition:transform 0.15s ease; -webkit-user-select:none; }
+.btn:active { transform:scale(0.94); }
+.btn-icon { font-size:18px; line-height:1; }
+.btn-audio { background:var(--orange); color:#fff; }
+.btn-audio.playing { background:#e11d48; }
+.btn-hira { background:rgba(255,228,230,0.12); color:var(--blue); border:1.5px solid rgba(255,228,230,0.25); }
+.btn-hira.active { background:var(--blue); color:#1A1A1A; border-color:var(--blue); }
+.btn-en { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.5); border:1.5px solid rgba(255,255,255,0.1); }
+.btn-en.active { background:rgba(255,255,255,0.12); color:rgba(255,255,255,0.85); border-color:rgba(255,255,255,0.25); }
+.nav-row { padding:6px 16px calc(env(safe-area-inset-bottom,8px) + 8px); display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.btn-nav { border:none; border-radius:12px; padding:12px; font-family:'DM Sans',sans-serif; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:transform 0.15s ease; }
+.btn-nav:active { transform:scale(0.95); }
+.btn-nav:disabled { opacity:0.25; pointer-events:none; }
+.btn-prev { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.6); border:1.5px solid rgba(255,255,255,0.1); }
+.btn-next { background:var(--orange); color:#fff; border:none; }
+.btn-next.finish { background:linear-gradient(135deg,var(--orange),var(--blue)); }
+.complete-screen { display:none; position:absolute; inset:0; z-index:20; background:var(--dark); flex-direction:column; align-items:center; justify-content:center; padding:24px 20px; text-align:center; overflow-y:auto; }
+.complete-screen.show { display:flex; animation:cardIn 0.4s ease; }
+.complete-logo { width:60px; height:60px; border-radius:14px; object-fit:cover; box-shadow:0 8px 24px rgba(0,0,0,0.4); margin-bottom:12px; }
+.complete-title { font-size:22px; font-weight:700; color:#fff; margin-bottom:6px; line-height:1.25; }
+.complete-title span { color:var(--orange); }
+.complete-sub { font-size:11px; color:rgba(255,255,255,0.45); line-height:1.7; margin-bottom:14px; }
+.complete-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 14px; }
+.complete-links { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:12px; }
+.complete-link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:11px; padding:9px 8px; text-decoration:none; }
+.link-icon-wrap { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.link-icon-spotify { background:rgba(29,185,84,0.15); } .link-icon-youtube { background:rgba(255,0,0,0.15); } .link-icon-etsy { background:rgba(241,100,30,0.15); } .link-icon-substack { background:rgba(255,103,25,0.15); } .link-icon-threads { background:rgba(255,255,255,0.08); } .link-icon-weibo { background:rgba(250,204,21,0.15); }
+.complete-link-info { text-align:center; }
+.complete-link-label { font-size:7px; font-weight:700; letter-spacing:0.15em; text-transform:uppercase; color:rgba(255,255,255,0.3); margin-bottom:2px; }
+.complete-link-text { font-size:10px; font-weight:600; color:rgba(255,255,255,0.75); }
+.btn-restart { border:none; background:transparent; color:rgba(255,255,255,0.3); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600; cursor:pointer; padding:8px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cover-screen" id="coverScreen">
+    <div class="cover-top-bar"></div>
+    <img class="cover-logo-img" src="OHAYO NIHONGO (500 x 500 px).png" alt="OHAYO NIHONGO">
+    <div class="cover-badge">Daily Japanese Flashcards</div>
+    <div class="cover-main-title">Daily<br><span>Flashcard</span></div>
+    <div class="cover-vol">Vol. 25</div>
+    <div class="cover-sentences">10 sentences included</div>
+    <div class="cover-divider"></div>
+    <div class="install-banner" id="installBanner" onclick="handleInstall()">
+      <div class="install-icon">📲</div>
+      <div class="install-text"><div class="install-text-main">Save as App</div><div class="install-text-sub">Save to your iPhone, Android or desktop</div></div>
+      <button class="install-dismiss" onclick="dismissInstall(event)" aria-label="Close">✕</button>
+    </div>
+    <button class="btn-start" onclick="startApp()">Start Practice →</button>
+    <div class="cover-sub">OHAYO NIHONGO · おはよう日本語</div>
+  </div>
+  <div class="header">
+    <div><div class="header-logo">OHAYO <span>NIHONGO</span></div><div class="header-title">Daily Flashcards</div></div>
+    <div class="header-counter"><b id="currentNum">1</b> / 10</div>
+  </div>
+  <div class="progress-wrap"><div class="progress-track"><div class="progress-fill" id="progressFill" style="width:10%"></div></div></div>
+  <div class="card-area">
+    <div class="card" id="card">
+      <div class="card-accent-bar"></div>
+      <div class="card-tag" id="cardTag">Sentence 01</div>
+      <div class="card-kanji" id="cardKanji"></div>
+      <div class="reveal-section" id="hiraSection"><div class="reveal-label"><div class="reveal-bar reveal-bar-blue"></div><div class="reveal-label-text">ひらがな</div></div><div class="hira-text" id="cardHira"></div></div>
+      <div class="reveal-section" id="enSection"><div class="reveal-label"><div class="reveal-bar reveal-bar-mid"></div><div class="reveal-label-text">English</div></div><div class="en-text" id="cardEn"></div></div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-audio" id="btnAudio" onclick="playAudio()"><span class="btn-icon">🔊</span>Audio</button>
+    <button class="btn btn-hira" id="btnHira" onclick="toggleHira()"><span class="btn-icon">あ</span>Hiragana</button>
+    <button class="btn btn-en" id="btnEn" onclick="toggleEn()"><span class="btn-icon">EN</span>English</button>
+  </div>
+  <div class="nav-row">
+    <button class="btn-nav btn-prev" id="btnPrev" onclick="prevCard()">← Back</button>
+    <button class="btn-nav btn-next" id="btnNext" onclick="nextCard()">Next →</button>
+  </div>
+  <div class="complete-screen" id="completeScreen">
+    <img class="complete-logo" src="OHAYO NIHONGO (500 x 500 px).png" alt="OHAYO NIHONGO">
+    <div class="complete-title">Well done!<br><span>おつかれさま！</span></div>
+    <div class="complete-sub">You've completed all 10 sentences.<br>Keep practicing every day!</div>
+    <div class="complete-divider"></div>
+    <div class="complete-links">
+      <a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank"><div class="link-icon-wrap link-icon-spotify"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Listen on</div><div class="complete-link-text">Spotify</div></div></a>
+      <a class="complete-link" href="https://www.youtube.com/@ohayo.nihongo" target="_blank"><div class="link-icon-wrap link-icon-youtube"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Watch on</div><div class="complete-link-text">YouTube</div></div></a>
+      <a class="complete-link" href="https://ohayonihongo.substack.com" target="_blank"><div class="link-icon-wrap link-icon-substack"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF6719"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Newsletter</div><div class="complete-link-text">Substack</div></div></a>
+      <a class="complete-link" href="https://www.threads.com/@ohayo.nihongo" target="_blank"><div class="link-icon-wrap link-icon-threads"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="16" height="16" fill="#fff"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.229c8.249.053 14.474 2.452 18.503 7.129 2.932 3.405 4.893 8.111 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.351-22.809-.169-40.06-7.484-51.275-21.742C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.435 74.206 17.12 97.015 16.951c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 9.944 15.807 12.66 26.153l16.194-4.286c-3.304-12.288-8.586-22.993-15.814-31.702C147.933 11.048 125.955 1.555 97.104 1.351h-.149c-28.795.204-50.529 9.83-64.612 28.627C20.611 44.845 14.222 67.087 14 96v.305c.222 28.913 6.61 51.155 18.945 66.022 14.083 18.798 35.817 28.424 64.612 28.627h.149c25.851-.181 44.01-6.963 59.121-22.064 19.61-19.592 19.042-44.137 12.567-59.186-4.484-10.461-13.033-18.952-27.857-24.716z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Follow on</div><div class="complete-link-text">Threads</div></div></a>
+      <a class="complete-link" href="https://weibo.com/u/7995941600" target="_blank"><div class="link-icon-wrap link-icon-weibo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FACC15"><path d="M10.098 20.323c-3.977.391-7.414-1.406-7.672-4.02-.259-2.609 2.759-5.047 6.74-5.441 3.979-.394 7.413 1.404 7.671 4.018.259 2.6-2.759 5.049-6.739 5.443zm5.006-12.523c-.547-.151-1.127-.172-1.547-.172.301-.609.422-1.328.262-2.047-.518-2.271-2.805-3.738-5.094-3.275-2.29.46-3.754 2.617-3.236 4.887.17.742.586 1.379 1.148 1.855-4.352.887-7.637 3.926-7.637 7.575C0 20.521 4.785 24 10.699 24c5.98 0 10.699-3.479 10.699-7.379 0-2.82-2.113-5.244-5.295-6.82zm-.753-4.31c-.318-.07-.639.119-.712.434-.074.315.117.636.432.711 1.479.344 2.484 1.66 2.484 3.172 0 .322.26.58.58.58.322 0 .58-.258.58-.58 0-2.027-1.408-3.77-3.364-4.317zm1.449 2.643c-.148.219-.092.516.127.664.537.363.858.963.858 1.609 0 .322.258.58.578.58.322 0 .58-.258.58-.58 0-.996-.498-1.92-1.338-2.473-.217-.148-.515-.093-.805.2zm-6.945 6.77c-2.344.525-3.914 2.244-3.508 3.842.405 1.594 2.635 2.467 4.977 1.939 2.342-.527 3.914-2.244 3.507-3.842-.403-1.594-2.633-2.466-4.976-1.939zm2.486 4.043c-.406.51-1.271.65-1.928.316-.654-.334-.844-1.002-.438-1.514.402-.508 1.258-.65 1.914-.318.656.332.852.999.452 1.516zm-1.441-1.662c-.146.047-.35.068-.568-.047-.217-.113-.301-.295-.256-.443.045-.148.209-.22.354-.172.148.047.354.068.57.184.213.113.297.294.25.443l-.35.035z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Follow on</div><div class="complete-link-text">微博 Weibo</div></div></a>
+      <a class="complete-link" href="https://ohayonihongodaily.etsy.com" target="_blank"><div class="link-icon-wrap link-icon-etsy"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#F1641E"><path d="M9.104 4.784c0-.896.144-1.168 1.552-1.168h4.512c1.792 0 2.528.56 3.024 2.24l.24.832.944-.064.064-4.48H1.888l-.048.944 1.04.208c.896.208 1.12.624 1.12 2.64v13.216c0 2.016-.224 2.384-1.12 2.592l-1.04.208.048.944H19.6l1.312-5.04-.88-.24c-.752 1.568-1.792 3.408-4.576 3.408H12c-1.456 0-1.744-.4-1.744-1.6v-6.32c1.84 0 2.912.08 3.52.784.464.528.624 1.12.784 1.984h.944V10.32h-.944c-.16.816-.32 1.408-.784 1.936-.608.704-1.68.784-3.52.784z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Shop on</div><div class="complete-link-text">Etsy</div></div></a>
+    </div>
+    <button class="btn-restart" onclick="restart()">↩ Start over</button>
+  </div>
+</div>
+<div class="install-modal-overlay" id="installModal" onclick="closeModal(event)">
+  <div class="install-modal">
+    <div class="modal-title">📲 Add to Home Screen</div>
+    <div class="modal-subtitle">Save this app to your device</div>
+    <div class="modal-steps">
+      <div class="modal-step"><div class="step-num">1</div><div class="step-icon">⬆️</div><div class="step-text">Tap the <b>Share button</b> at the bottom of Safari</div></div>
+      <div class="modal-step"><div class="step-num">2</div><div class="step-icon">➕</div><div class="step-text">Tap <b>"Add to Home Screen"</b></div></div>
+      <div class="modal-step"><div class="step-num">3</div><div class="step-icon">✅</div><div class="step-text">Tap <b>"Add"</b> in the top right — done!</div></div>
+    </div>
+    <button class="btn-modal-close" onclick="closeInstallModal()">Close</button>
+  </div>
+</div>
+<script>
+const cards = [
+  { kanji:"普段は、住民と旅行客で人だらけの街中も、今は少しだけ隙間ができているようです。", hira:"ふだんは、じゅうみんとりょこうきゃくでひとだらけのまちなかも、いまはすこしだけすきまができているようです。", en:"In the city, usually packed with residents and tourists, now seems to have a little spaces.", audio:"f25_01.AAC" },
+  { kanji:"今日は、暑すぎず寒すぎず、外で過ごすにはとても気持ちが良い天気なので、子供からお年寄りまでみんなで楽しんでいました。", hira:"きょうは、あつすぎずさむすぎず、そとですごすにはとてもきもちがいいてんきなので、こどもからおとしよりまで、みんなでたのしんでいました。", en:"Today was not too hot, not too cold — perfect weather for being outside, and everyone from kids to the elderly was having fun.", audio:"f25_02.AAC" },
+  { kanji:"45歳を過ぎてから、老眼が始まって、スマホの画面や机の上の書類が見えないのは、それだけで不快な気分でした。", hira:"よんじゅうごさいをすぎてから、ろうがんがはじまって、すまほのがめんや、つくえのうえのしょるいがみえないのは、それだけでふかいなきぶんでした。", en:"After turning 45, I started getting presbyopia, and not being able to see my phone screen or desk papers was enough to put me in a bad mood.", audio:"f25_03.AAC" },
+  { kanji:"私が想像していたのは、もっと下町のようなイメージだったので、あまりにも都会で衝撃を受けました。", hira:"わたしがそうぞうしていたのは、もっとしたまちのようないめーじだったので、あまりにもとかいでしょうげきをうけました。", en:"I had imagined it would feel more like an old downtown area, so I was shocked by how urban it was.", audio:"f25_04.AAC" },
+  { kanji:"いつも、お昼ごはんを食べた後、会社のお手洗いにあるメイクスペースで歯磨きをしています。", hira:"いつも、おひるごはんをたべたあと、かいしゃのおてあらいにあるめいくすぺーすで、はみがきをしています。", en:"I always brush my teeth in the makeup space in the company restroom after lunch.", audio:"f25_05.AAC" },
+  { kanji:"ちょっとだけワクワクしてきました。", hira:"ちょっとだけわくわくしてきました。", en:"I started to feel just a little bit excited.", audio:"f25_06.AAC" },
+  { kanji:"今日は、一気に夏のような暑さになりました。", hira:"きょうは、いっきになつのようなあつさになりました。", en:"Today it suddenly became as hot as summer.", audio:"f25_07.AAC" },
+  { kanji:"自分で種から野菜を育てる時間は、心を楽しませてくれるので、これからも、ベランダで野菜を育てていこうと思っています。", hira:"じぶんでたねからやさいをそだてるじかんは、こころをたのしませてくれるので、これからも、べらんだでやさいをそだてていこうとおもっています。", en:"The time I spend growing vegetables from seed myself brings joy to my heart, so I plan to keep growing them on my balcony.", audio:"f25_08.AAC" },
+  { kanji:"新しいマウスピースで、今日は気分が上がっています。", hira:"あたらしいまうすぴーすで、きょうはきぶんがあがっています。", en:"With the new mouthguard, I'm in a great mood today.", audio:"f25_09.AAC" },
+  { kanji:"たまにこういう空を見上げて、静かな喜びを受け取れる時間はありがたいです。", hira:"たまにこういうそらをみあげて、しずかなよろこびをうけとれるじかんはありがたいです。", en:"I'm grateful for those moments when I can look up at the sky like this and receive a quiet joy.", audio:"f25_10.AAC" },
+];
+let current=0, hiraVisible=false, enVisible=false, audioObj=null;
+let deferredPrompt = null;
+const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+const isInStandaloneMode = window.navigator.standalone === true || window.matchMedia('(display-mode: standalone)').matches;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; showInstallBanner(); });
+window.addEventListener('DOMContentLoaded', () => { if (isIOS && !isInStandaloneMode) showInstallBanner(); });
+function showInstallBanner() { document.getElementById('installBanner').classList.add('visible'); }
+function handleInstall() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then(() => { deferredPrompt = null; document.getElementById('installBanner').classList.remove('visible'); }); } else if (isIOS) { document.getElementById('installModal').classList.add('show'); } }
+function dismissInstall(e) { e.stopPropagation(); document.getElementById('installBanner').classList.remove('visible'); }
+function closeInstallModal() { document.getElementById('installModal').classList.remove('show'); }
+function closeModal(e) { if (e.target === document.getElementById('installModal')) closeInstallModal(); }
+function startApp() { document.getElementById('coverScreen').classList.add('hide'); }
+function loadCard() {
+  const c = cards[current]; hiraVisible=false; enVisible=false;
+  ['hiraSection','enSection'].forEach(id=>document.getElementById(id).classList.remove('visible'));
+  ['btnHira','btnEn','btnAudio'].forEach(id=>document.getElementById(id).classList.remove('active','playing'));
+  if(audioObj){audioObj.pause();audioObj=null;}
+  const card=document.getElementById('card'); card.style.animation='none'; card.offsetHeight; card.style.animation='';
+  document.getElementById('cardTag').textContent=`Sentence ${String(current+1).padStart(2,'0')}`;
+  document.getElementById('cardKanji').textContent=c.kanji; document.getElementById('cardHira').textContent=c.hira; document.getElementById('cardEn').textContent=c.en;
+  document.getElementById('currentNum').textContent=current+1;
+  document.getElementById('progressFill').style.width=`${((current+1)/10)*100}%`;
+  document.getElementById('btnPrev').disabled=current===0;
+  const btnNext=document.getElementById('btnNext');
+  if(current===9){btnNext.textContent='Finish ✓';btnNext.classList.add('finish');}else{btnNext.textContent='Next →';btnNext.classList.remove('finish');}
+}
+function toggleHira(){hiraVisible=!hiraVisible;document.getElementById('hiraSection').classList.toggle('visible',hiraVisible);document.getElementById('btnHira').classList.toggle('active',hiraVisible);}
+function toggleEn(){enVisible=!enVisible;document.getElementById('enSection').classList.toggle('visible',enVisible);document.getElementById('btnEn').classList.toggle('active',enVisible);}
+function playAudio(){ const btn=document.getElementById('btnAudio'); if(audioObj){audioObj.pause();audioObj=null;btn.classList.remove('playing');return;} audioObj=new Audio(cards[current].audio); btn.classList.add('playing'); audioObj.play().catch(()=>{btn.classList.remove('playing');audioObj=null;}); audioObj.onended=()=>{btn.classList.remove('playing');audioObj=null;}; }
+function nextCard(){if(current<9){current++;loadCard();}else{document.getElementById('completeScreen').classList.add('show');}}
+function prevCard(){if(current>0){current--;loadCard();}}
+function restart(){current=0;document.getElementById('completeScreen').classList.remove('show');document.getElementById('coverScreen').classList.remove('hide');}
+loadCard();
+</script>
+</body>
+</html>
