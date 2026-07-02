@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OHAYO NIHONGO — 1 Minute of Real Japanese, Every Morning</title>
+<meta name="description" content="Short diary-style daily audio in slow, easy Japanese for N5–N3 learners. Listen 1 minute every morning. Free scripts, flashcards & shadowing practice.">
+<meta property="og:title" content="OHAYO NIHONGO — 1 Minute of Real Japanese, Every Morning">
+<meta property="og:description" content="Real daily diary audio in slow, easy Japanese. For JLPT N5–N3 learners. Listen, shadow, repeat.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.ohayonihongo.net/">
+<meta property="og:image" content="https://www.ohayonihongo.net/img/hero-banner.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F5F1E3; --paper:#FBF9F0; --white:#FFFFFF;
+    --navy:#134B70; --ocean:#1F72A8; --ocean-soft:#4FA3CE;
+    --ink:#22384A; --sub:#5D7285;
+    --sun:#F7A928; --sun-deep:#F08114;
+    --line:#DDE6EC; --blue-tint:#EAF3F9;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--paper);color:var(--ink);font-family:'Inter','Noto Sans JP',-apple-system,sans-serif;line-height:1.6}
+
+  /* ===== HERO (brand: morning sky, sun, waves) ===== */
+  .hero{
+    position:relative;overflow:hidden;color:var(--cream);text-align:center;
+    background:linear-gradient(180deg,#175D8E 0%,#1F72A8 34%,#3E93C4 58%,#7FB9D9 74%,#F4D98B 92%,#F7C55E 100%);
+    padding:72px 22px 0;
+  }
+  .hero-inner{max-width:640px;margin:0 auto;position:relative;z-index:2}
+  .kicker{font-family:'Poppins',sans-serif;font-size:12px;letter-spacing:.34em;text-transform:uppercase;color:var(--cream);opacity:.92;font-weight:600;margin-bottom:16px}
+  .kicker::after{content:"";display:block;width:44px;height:2px;background:var(--sun);margin:14px auto 0;border-radius:2px}
+  h1{font-family:'Poppins',sans-serif;font-size:clamp(34px,8vw,52px);font-weight:700;letter-spacing:.06em;color:var(--cream);text-shadow:0 2px 18px rgba(12,53,82,.35)}
+  .jp{font-family:'Noto Sans JP',sans-serif;font-weight:500;color:var(--cream);opacity:.95;font-size:16px;margin-top:10px;letter-spacing:.12em}
+  .tagline{font-family:'Poppins',sans-serif;font-weight:500;font-size:clamp(16px,4.2vw,20px);margin-top:22px;color:#FDF6DE}
+  .hero .sub{color:#EAF3F7;font-size:15px;margin-top:12px;max-width:470px;margin-left:auto;margin-right:auto}
+  .badges{display:flex;gap:8px;justify-content:center;margin-top:22px;flex-wrap:wrap}
+  .badge{font-size:12px;font-weight:600;border:1px solid rgba(245,241,227,.4);background:rgba(19,75,112,.35);backdrop-filter:blur(2px);border-radius:999px;padding:6px 14px;color:var(--cream)}
+  /* sun + waves */
+  .sunwave{position:relative;height:200px;margin-top:34px}
+  .sun{position:absolute;left:50%;bottom:88px;transform:translateX(-50%);width:120px;height:120px;border-radius:50%;
+    background:radial-gradient(circle at 50% 35%,#FFD873 0%,#F9B33B 55%,#F08114 100%);
+    box-shadow:0 0 80px 30px rgba(249,197,94,.55)}
+  .waves{position:absolute;bottom:0;left:0;right:0;line-height:0;z-index:2}
+  .waves svg{display:block;width:100%;height:130px}
+
+  .wrap{max-width:640px;margin:0 auto;padding:0 22px 80px}
+
+  /* ===== Sections ===== */
+  section{margin-top:48px}
+  .sec-title{font-family:'Poppins',sans-serif;font-size:21px;font-weight:600;color:var(--navy)}
+  .sec-jp{font-family:'Noto Sans JP',sans-serif;font-size:12px;color:var(--ocean);letter-spacing:.18em;margin-top:2px}
+  .sec-sub{color:var(--sub);font-size:14px;margin:10px 0 18px}
+
+  .card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:24px;box-shadow:0 2px 8px rgba(19,75,112,.06)}
+
+  /* diary excerpt */
+  .excerpt{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--sun);border-radius:14px;padding:20px 22px;margin-top:22px;position:relative;z-index:3;box-shadow:0 8px 24px rgba(19,75,112,.12)}
+  .excerpt .lbl{font-family:'Poppins',sans-serif;font-size:11px;letter-spacing:.22em;color:var(--sun-deep);font-weight:600;text-transform:uppercase;margin-bottom:10px}
+  .excerpt .kanji{font-family:'Noto Sans JP',sans-serif;font-weight:700;font-size:17px;color:var(--ink)}
+  .excerpt .hira{font-family:'Noto Sans JP',sans-serif;font-size:14px;color:var(--ocean);margin-top:6px}
+  .excerpt .en{font-size:13px;color:var(--sub);margin-top:8px;font-style:italic}
+
+  /* buttons */
+  .btn{display:flex;align-items:center;gap:14px;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-bottom:12px;text-decoration:none;color:var(--ink);transition:transform .12s ease, box-shadow .12s ease}
+  .btn:hover{transform:translateY(-1px);box-shadow:0 6px 16px rgba(19,75,112,.12)}
+  .btn .ico{font-size:22px;width:34px;text-align:center;flex-shrink:0}
+  .btn .t{font-weight:600;font-size:15px}
+  .btn .d{font-size:13px;color:var(--sub)}
+  .btn.primary{background:linear-gradient(135deg,#134B70,#1F72A8);border-color:#134B70;color:var(--cream)}
+  .btn.primary .d{color:#BCD8E8}
+  .pill{font-family:'Poppins',sans-serif;font-size:11px;font-weight:600;letter-spacing:.06em;border-radius:999px;padding:4px 11px;margin-left:auto;flex-shrink:0;color:#fff;background:linear-gradient(135deg,var(--sun),var(--sun-deep))}
+  .pill.etsy{background:rgba(245,241,227,.16);border:1px solid rgba(245,241,227,.5)}
+
+  /* episode thumbnail */
+  .ep-thumb{display:block;border-radius:14px;overflow:hidden;border:1px solid var(--line);box-shadow:0 6px 18px rgba(19,75,112,.14);margin-bottom:16px}
+  .ep-thumb img{display:block;width:100%;height:auto}
+  .ep-cap{font-size:12px;color:var(--sub);text-align:center;margin:-6px 0 16px}
+
+  /* substack embed */
+  iframe.substack{width:100%;height:180px;border:1px solid var(--line);border-radius:12px;background:var(--white)}
+  .embed-note{font-size:13px;color:var(--sub);margin-top:10px;text-align:center}
+
+  /* steps */
+  .steps{display:grid;gap:14px}
+  .step{display:flex;gap:14px;align-items:flex-start}
+  .num{font-family:'Poppins',sans-serif;font-size:17px;color:#fff;font-weight:600;width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--sun),var(--sun-deep));display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+  .step b{font-size:15px;color:var(--navy)}
+  .step p{font-size:14px;color:var(--sub)}
+
+  /* chinese */
+  .zh{background:var(--blue-tint);border:1px solid var(--line);border-radius:16px;padding:26px 24px;margin-top:56px}
+  .zh h2{font-family:'Noto Sans JP',sans-serif;font-size:18px;color:var(--navy);margin-bottom:10px}
+  .zh p{font-size:14px;color:var(--sub);margin-bottom:8px}
+  .zh .hl{color:var(--navy);font-weight:700}
+
+  footer{text-align:center;margin-top:64px;color:var(--sub);font-size:13px}
+  .socials{display:flex;gap:18px;justify-content:center;margin-bottom:14px;flex-wrap:wrap}
+  .socials a{color:var(--ocean);text-decoration:none;font-size:13px;border-bottom:1px solid var(--line)}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="kicker">Easy Morning Japanese</div>
+    <h1>OHAYO NIHONGO</h1>
+    <div class="jp">おはよう にほんご — まいにち いっぷん の にっき</div>
+    <p class="tagline">1 minute of real Japanese, every morning.</p>
+    <p class="sub">A real daily diary — not a textbook. Slow, natural Japanese you can listen to like the radio. Made for JLPT N5–N3 learners.</p>
+    <div class="badges">
+      <span class="badge">🎧 1–1.5 min / day</span>
+      <span class="badge">📖 Hiragana scripts</span>
+      <span class="badge">🗣 Shadowing-ready</span>
+    </div>
+  </div>
+  <div class="sunwave">
+    <div class="sun"></div>
+    <div class="waves">
+      <svg viewBox="0 0 1440 110" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M0,40 C240,10 480,70 720,45 C960,20 1200,60 1440,35 L1440,110 L0,110 Z" fill="#A8CFE3" opacity=".9"/>
+        <path d="M0,60 C260,30 520,85 780,60 C1040,35 1260,75 1440,55 L1440,110 L0,110 Z" fill="#4F97C4"/>
+        <path d="M0,80 C300,55 560,100 860,78 C1120,60 1300,92 1440,75 L1440,110 L0,110 Z" fill="#1F6494"/>
+        <path d="M0,95 C320,78 640,108 960,92 C1200,82 1340,100 1440,90 L1440,110 L0,110 Z" fill="#134B70"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- diary excerpt (today's flavor) -->
+  <div class="excerpt">
+    <!-- LP_EXCERPT_START -->
+    <div class="lbl">From the Diary #176 — きょうの いちぶん</div>
+    <div class="kanji">最近、週に1回くらいセブンイレブンでコーヒーを買っています。</div>
+    <div class="hira">さいきん、しゅうにいっかいくらいせぶんいれぶんでこーひーをかっています。</div>
+    <div class="en">A convenience store worker impressed me by handling three registers at once, and when I spilled my coffee, she kindly asked if I got burned.</div>
+    <!-- LP_EXCERPT_END -->
+  </div>
+
+  <!-- PRIMARY CTA -->
+  <section>
+    <div class="card">
+      <div class="sec-title">Get the Free Starter Pack</div>
+      <div class="sec-jp">むりょう スターターパック</div>
+      <p class="sec-sub">Join the newsletter and start with free diary audio, hiragana &amp; kanji scripts, and sample flashcards — delivered to your inbox.</p>
+      <iframe class="substack" src="https://ohayonihongo.substack.com/embed" frameborder="0" scrolling="no" title="Subscribe to OHAYO NIHONGO"></iframe>
+      <p class="embed-note">No spam. Just a little Japanese, every morning. ☀️</p>
+    </div>
+  </section>
+
+  <!-- LISTEN FREE -->
+  <section>
+    <div class="sec-title">Listen Free — Every Day</div>
+    <div class="sec-jp">まいにち むりょうで きけます</div>
+    <p class="sec-sub">New 1-minute episode daily. Listen once, shadow once, repeat tomorrow.</p>
+    <!-- LP_EPTHUMB_START -->
+    <a class="ep-thumb" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">
+      <img src="img/ep-sample.jpg" alt="OHAYO NIHONGO Episode 176 — The Girl Who Works Three Registers at Once" loading="lazy">
+    </a>
+    <p class="ep-cap">Episode 176 — a new diary every morning ☀️</p>
+    <!-- LP_EPTHUMB_END -->
+    <a class="btn" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener">
+      <span class="ico">🎧</span>
+      <span><span class="t">Spotify</span><br><span class="d">Daily podcast with hiragana captions</span></span>
+      <span class="pill">FREE</span>
+    </a>
+    <a class="btn" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">
+      <span class="ico">▶️</span>
+      <span><span class="t">YouTube</span><br><span class="d">Watch with on-screen hiragana subtitles</span></span>
+      <span class="pill">FREE</span>
+    </a>
+    <a class="btn" href="https://www.ohayonihongo.net/free-qf9lbx/" target="_blank" rel="noopener">
+      <span class="ico">🃏</span>
+      <span><span class="t">Free Flashcard App</span><br><span class="d">Try 5 sample cards on your phone — no install</span></span>
+      <span class="pill">FREE</span>
+    </a>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section>
+    <div class="sec-title">How Learners Use It</div>
+    <div class="sec-jp">つかいかた は かんたん</div>
+    <p class="sec-sub"></p>
+    <div class="card">
+      <div class="steps">
+        <div class="step"><span class="num">1</span><span><b>Listen — きく</b><p>1 minute with your morning coffee. No screen needed — just like the radio.</p></span></div>
+        <div class="step"><span class="num">2</span><span><b>Shadow — はなす</b><p>Repeat aloud with the slow, clear audio. Natural rhythm, real vocabulary.</p></span></div>
+        <div class="step"><span class="num">3</span><span><b>Review — ふくしゅう</b><p>Read the hiragana &amp; kanji script, then quiz yourself with flashcards.</p></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STUDY MATERIALS -->
+  <section>
+    <div class="sec-title">Study Materials</div>
+    <div class="sec-jp">きょうざい で もっと ふかく</div>
+    <p class="sec-sub">Go deeper with the full scripts, audio packs and flashcard apps.</p>
+    <a class="btn primary" href="https://www.etsy.com/shop/OhayoNihongoDaily?section_id=58431119" target="_blank" rel="noopener">
+      <span class="ico">📚</span>
+      <span><span class="t">PDF + Audio Study Packs</span><br><span class="d">Full diary scripts (kanji + hiragana + English) with audio</span></span>
+      <span class="pill etsy">ETSY</span>
+    </a>
+    <a class="btn primary" href="https://www.etsy.com/shop/OhayoNihongoDaily?section_id=58431109" target="_blank" rel="noopener">
+      <span class="ico">🃏</span>
+      <span><span class="t">Flashcard Apps (Vol. 1–25)</span><br><span class="d">Phone-ready flashcards from every diary entry</span></span>
+      <span class="pill etsy">ETSY</span>
+    </a>
+  </section>
+
+  <!-- CHINESE SECTION -->
+  <section class="zh" id="zh" lang="zh-Hans">
+    <h2>🇨🇳 中文学习者请看这里</h2>
+    <p>OHAYO NIHONGO 每天更新 <span class="hl">1分钟慢速日语日记</span>，是日本人的真实日常，不是教材，也不是AI生成。适合 N5–N3 的日语学习者做听力和跟读练习。</p>
+    <p>📕 小红书 / bilibili 搜索：<span class="hl">OHAYO NIHONGO</span>（带平假名字幕视频每日更新）</p>
+    <p>💬 想要免费学习资料？在小红书私信我们：<span class="hl">「にっき」</span></p>
+  </section>
+
+  <footer>
+    <div class="socials">
+      <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
+      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Substack</a>
+      <a href="https://www.etsy.com/shop/OhayoNihongoDaily" target="_blank" rel="noopener">Etsy</a>
+    </div>
+    <p>© 2026 OHAYO NIHONGO · A real diary, read slowly, every morning.</p>
+  </footer>
+
+</div>
+</body>
+</html>
