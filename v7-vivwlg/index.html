@@ -443,5 +443,228 @@ function restart(){current=0;document.getElementById('completeScreen').classList
 
 loadCard();
 </script>
+
+<!-- GAMIFY_V1: streak / self-check score / level badges (injected) -->
+<style>
+.gm-stats{display:inline-flex;gap:5px;align-items:center;margin-right:8px;vertical-align:middle}
+.gm-chip{font-size:10px;font-weight:700;background:#FFF4E3;border:1px solid #F5C88A;color:#B45309;border-radius:999px;padding:3px 8px;white-space:nowrap}
+.gm-chip.gm-score{background:#EAF3F9;border-color:#9CC4DE;color:#134B70}
+.gm-check{display:none;margin-top:14px;padding-top:12px;border-top:1px dashed #E5E0D5}
+.gm-check.gm-visible{display:block}
+.gm-check-label{font-size:10px;font-weight:700;letter-spacing:.15em;color:#8A8578;text-transform:uppercase;margin-bottom:8px}
+.gm-btn{border:1.5px solid #DDD6C8;background:#fff;border-radius:10px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer;margin-right:8px;color:#4A4537}
+.gm-btn.gm-chosen{background:linear-gradient(135deg,#F7A928,#F08114);border-color:#F08114;color:#fff}
+.gm-btn:disabled{opacity:.45;cursor:default}
+.gm-btn.gm-chosen:disabled{opacity:1}
+.gm-cstats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0 4px}
+.gm-cstat{background:#FFFDF7;border:1px solid #EDE7D8;border-radius:12px;padding:10px 14px;min-width:84px}
+.gm-cstat .gm-v{font-size:19px;font-weight:800;color:#134B70}
+.gm-cstat .gm-l{font-size:9px;font-weight:700;letter-spacing:.12em;color:#8A8578;text-transform:uppercase;margin-top:2px}
+.gm-badge{font-size:13px;font-weight:700;color:#B45309;background:#FFF4E3;border:1px solid #F5C88A;border-radius:999px;padding:6px 16px;display:inline-block;margin-top:6px}
+.gm-next{font-size:10.5px;color:#8A8578;margin-top:6px;margin-bottom:8px}
+</style>
+<script>
+(function(){
+  if(typeof cards==='undefined'||!document.getElementById('card'))return;
+  var LEVELS=[
+    {min:0,name:"Sunrise Beginner",emoji:"\ud83c\udf05"},
+    {min:100,name:"Morning Listener",emoji:"\ud83c\udfa7"},
+    {min:300,name:"Wave Rider",emoji:"\ud83c\udf0a"},
+    {min:600,name:"Daily Diarist",emoji:"\ud83d\udcd6"},
+    {min:1000,name:"OHAYO Master",emoji:"\u2600\ufe0f"}];
+  var N=cards.length,sessionScore=0,answered=new Array(N).fill(null);
+  function S(k,d){var v=localStorage.getItem(k);return v===null?d:v}
+  function today(o){var d=new Date();d.setDate(d.getDate()+(o||0));return d.toISOString().slice(0,10)}
+  function lvl(xp){var L=LEVELS[0];LEVELS.forEach(function(l){if(xp>=l.min)L=l});return L}
+  function nxt(xp){for(var i=0;i<LEVELS.length;i++){if(xp<LEVELS[i].min)return LEVELS[i]}return null}
+
+  // --- UI注入 ---
+  var cnum=document.getElementById('currentNum');
+  var stats=document.createElement('span');stats.className='gm-stats';
+  stats.innerHTML='<span class="gm-chip" id="gmStreak">\ud83d\udd25 0</span><span class="gm-chip gm-score" id="gmScore">\u2b50 0</span>';
+  cnum.parentNode.parentNode.insertBefore(stats,cnum.parentNode);
+
+  var chk=document.createElement('div');chk.className='gm-check';chk.id='gmCheck';
+  chk.innerHTML='<div class="gm-check-label">Did you get it? \u2014 \u3067\u304d\u305f\uff1f</div>'+
+    '<button class="gm-btn" id="gmKnow">\u25ce Knew it! +20</button>'+
+    '<button class="gm-btn" id="gmAlmost">\u25b2 Almost +10</button>';
+  document.getElementById('card').appendChild(chk);
+  document.getElementById('gmKnow').onclick=function(){mark(true)};
+  document.getElementById('gmAlmost').onclick=function(){mark(false)};
+
+  var comp=document.getElementById('completeScreen');
+  var cbox=document.createElement('div');
+  cbox.innerHTML='<div class="gm-cstats">'+
+    '<div class="gm-cstat"><div class="gm-v" id="gmCStreak">\ud83d\udd25 0</div><div class="gm-l">Day streak</div></div>'+
+    '<div class="gm-cstat"><div class="gm-v" id="gmCScore">\u2b50 0</div><div class="gm-l">Score</div></div>'+
+    '<div class="gm-cstat"><div class="gm-v" id="gmCXp">0</div><div class="gm-l">Total XP</div></div></div>'+
+    '<div><span class="gm-badge" id="gmBadge"></span></div><div class="gm-next" id="gmNext"></div>';
+  var sub=comp.querySelector('.complete-sub');
+  if(sub&&sub.nextSibling)comp.insertBefore(cbox,sub.nextSibling);else comp.appendChild(cbox);
+
+  // --- ロジック ---
+  function renderStats(){
+    document.getElementById('gmStreak').textContent='\ud83d\udd25 '+S('ohayo_streak',0);
+    document.getElementById('gmScore').textContent='\u2b50 '+sessionScore;
+  }
+  function renderCheck(){
+    var a=answered[current];
+    chk.classList.toggle('gm-visible',(typeof enVisible!=='undefined'&&enVisible)||!!a);
+    var k=document.getElementById('gmKnow'),m=document.getElementById('gmAlmost');
+    k.disabled=!!a;m.disabled=!!a;
+    k.classList.toggle('gm-chosen',a==='k');m.classList.toggle('gm-chosen',a==='a');
+  }
+  function mark(knew){
+    if(answered[current])return;
+    answered[current]=knew?'k':'a';sessionScore+=knew?20:10;
+    renderCheck();renderStats();
+  }
+  function finish(){
+    var t=today();
+    if(S('ohayo_last','')!==t){
+      localStorage.setItem('ohayo_streak',(S('ohayo_last','')===today(-1))?(+S('ohayo_streak',0)+1):1);
+      localStorage.setItem('ohayo_last',t);
+    }
+    localStorage.setItem('ohayo_xp',+S('ohayo_xp',0)+sessionScore);
+    var xp=+S('ohayo_xp',0),L=lvl(xp),Nx=nxt(xp);
+    document.getElementById('gmCStreak').textContent='\ud83d\udd25 '+S('ohayo_streak',0);
+    document.getElementById('gmCScore').textContent='\u2b50 '+sessionScore;
+    document.getElementById('gmCXp').textContent=xp;
+    document.getElementById('gmBadge').textContent=L.emoji+' '+L.name;
+    document.getElementById('gmNext').textContent=Nx?('Next level: '+Nx.emoji+' '+Nx.name+' at '+Nx.min+' XP ('+(Nx.min-xp)+' to go)'):'Max level! \u3059\u3054\u3044\uff01';
+    renderStats();
+  }
+  // --- 既存関数をラップ ---
+  var _t=toggleEn;toggleEn=function(){_t();renderCheck()};
+  var _l=loadCard;loadCard=function(){_l();renderCheck()};
+  var _n=nextCard;nextCard=function(){
+    var was=comp.classList.contains('show');
+    _n();
+    if(!was&&comp.classList.contains('show'))finish();
+  };
+  var _r=restart;restart=function(){sessionScore=0;answered=new Array(N).fill(null);_r();renderStats();renderCheck()};
+  renderStats();renderCheck();
+})();
+</script>
+
+<!-- GAMIFY_V2_DESIGN: bright & joyful morning theme -->
+<style>
+/* ===== カバー: 朝焼けの空 ===== */
+.cover-screen{
+  background:linear-gradient(180deg,#8ED4F5 0%,#BFE6F9 24%,#FFE9A8 52%,#FFC97A 76%,#FF9E6D 100%) !important;
+}
+.cover-screen::before{
+  content:"";position:absolute;left:50%;bottom:-90px;transform:translateX(-50%);
+  width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,#FFE082,#FFB74D 60%,#FB8C00);
+  box-shadow:0 0 80px 36px rgba(255,193,94,.5);z-index:0;
+}
+.cover-screen>*{position:relative;z-index:1}
+.cover-top-bar{background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7) !important;height:6px !important}
+.cover-logo-img{border:3px solid #fff !important;box-shadow:0 10px 26px rgba(19,75,112,.25) !important}
+.cover-badge{color:#136A9E !important}
+.cover-main-title{color:#134B70 !important;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.cover-main-title span{color:#F08114 !important}
+.cover-vol{color:rgba(19,75,112,.72) !important}
+.cover-sentences{color:rgba(19,75,112,.55) !important}
+.cover-sub{color:rgba(19,75,112,.5) !important}
+.cover-divider{background:linear-gradient(90deg,#FF8A3D,#4FC3F7) !important}
+@keyframes gmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.btn-start{
+  background:linear-gradient(135deg,#FF8A3D,#FFB63D) !important;border-radius:999px !important;
+  box-shadow:0 10px 28px rgba(240,129,20,.45) !important;animation:gmPulse 1.8s ease-in-out infinite;
+  font-size:16px !important;letter-spacing:.02em;
+}
+.gm-greet{font-size:14px;font-weight:700;color:#B45309;background:rgba(255,255,255,.8);
+  border:1.5px solid #F5C88A;border-radius:999px;padding:9px 18px;margin-bottom:16px;
+  box-shadow:0 4px 14px rgba(240,129,20,.18)}
+@keyframes gmFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(9deg)}}
+.gm-spark{position:absolute;font-size:21px;animation:gmFloat 3s ease-in-out infinite;z-index:1;opacity:.9;pointer-events:none}
+
+/* ===== アプリ内: カバーと同じ明るい朝トーンで統一 ===== */
+.app{background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 30%,#FFF0CE 68%,#FFDFA8 100%) !important}
+.app::after{content:"";position:absolute;left:50%;bottom:-110px;transform:translateX(-50%);
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,rgba(255,224,130,.8),rgba(255,183,77,.55) 60%,rgba(251,140,0,.35));
+  box-shadow:0 0 70px 30px rgba(255,193,94,.35);pointer-events:none;z-index:0}
+.app>*:not(.cover-screen):not(.complete-screen){position:relative;z-index:1}
+.cover-screen{position:absolute !important}
+.complete-screen{position:absolute !important}
+/* ヘッダー・プログレスをライトテーマに */
+.header-logo{color:#136A9E !important}
+.header-title{color:#134B70 !important}
+.header-counter{color:#5D7285 !important}
+.header-counter b{color:#F08114 !important}
+.progress-track{background:rgba(19,75,112,.14) !important}
+/* カードはそのまま白、浮き上がりを強調 */
+.card{box-shadow:0 12px 30px rgba(19,75,112,.16) !important;border:1px solid #E7EFF5}
+/* 下部ボタンをライトテーマに */
+.btn-hira{background:#E3F4FF !important;color:#136A9E !important;border:1.5px solid #9CD0F0 !important}
+.btn-en{background:#FFF6E3 !important;color:#B45309 !important;border:1.5px solid #F5D9A0 !important}
+.btn-hira.active{background:#4FA3CE !important;color:#fff !important}
+.btn-en.active{background:#F7A928 !important;color:#fff !important}
+.btn-prev{background:rgba(19,75,112,.08) !important;color:#5D7285 !important}
+/* 完了画面も明るい朝 */
+.complete-screen{background:linear-gradient(180deg,#BFE6F9 0%,#FFE9A8 55%,#FFC97A 100%) !important}
+.complete-title{color:#134B70 !important;text-shadow:none !important}
+.complete-title span{color:#F08114 !important}
+.complete-sub{color:#5D7285 !important}
+.complete-link{background:#fff !important;border:1px solid #DDE6EC !important}
+.complete-link-label{color:#8A94A0 !important}
+.complete-link-text{color:#134B70 !important}
+.btn-restart{color:#134B70 !important;background:rgba(255,255,255,.7) !important;border:1.5px solid #C9DCE9 !important;border-radius:999px}
+.cstat,.gm-cstat{background:#FFFDF7}
+
+@keyframes gmSlide{to{background-position:300% 0}}
+.card-accent-bar{background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7,#66D9B8,#FF8A3D) !important;
+  background-size:300% 100% !important;animation:gmSlide 7s linear infinite;height:5px !important}
+.gm-chip{background:linear-gradient(135deg,#FFF3D6,#FFE3AE);border-color:#F5B94F;font-size:11px}
+.gm-chip.gm-score{background:linear-gradient(135deg,#E3F4FF,#CBE9FF);border-color:#8FCBEF}
+.btn:active,.gm-btn:active,.btn-start:active{transform:scale(.94)}
+.btn,.gm-btn{transition:transform .12s ease}
+.gm-btn.gm-chosen{box-shadow:0 6px 16px rgba(240,129,20,.35)}
+
+/* ===== 完了画面: 紙吹雪 ===== */
+@keyframes gmDrop{to{transform:translateY(112vh) rotate(720deg);opacity:.9}}
+.gm-conf{position:fixed;top:-18px;width:10px;height:16px;border-radius:3px;z-index:99;
+  animation:gmDrop linear forwards;pointer-events:none}
+</style>
+<script>
+(function(){
+  var cover=document.getElementById('coverScreen');if(!cover)return;
+  // ストリーク挨拶
+  var st=+(localStorage.getItem('ohayo_streak')||0);
+  var g=document.createElement('div');g.className='gm-greet';
+  g.textContent=st>0?('おはよう！ 🔥 '+st+'にち つづいてるよ！'):'おはよう！ きょうから はじめよう ☀️';
+  var btn=cover.querySelector('.btn-start');
+  if(btn)cover.insertBefore(g,btn);
+  // 浮遊する装飾
+  var em=['✨','🌸','⭐','🎈','🌈','🌟'];
+  for(var i=0;i<8;i++){
+    var s=document.createElement('span');s.className='gm-spark';s.textContent=em[i%em.length];
+    s.style.left=(6+Math.random()*86)+'%';s.style.top=(5+Math.random()*72)+'%';
+    s.style.animationDuration=(2.4+Math.random()*2.4)+'s';s.style.animationDelay=(Math.random()*2)+'s';
+    cover.appendChild(s);
+  }
+  // 完了時の紙吹雪
+  var comp=document.getElementById('completeScreen');if(!comp)return;
+  var fired=false;
+  var cols=['#FF8A3D','#FFD34D','#4FC3F7','#66D9B8','#FF6B9D','#A855F7'];
+  function burst(){
+    for(var i=0;i<36;i++){
+      var c=document.createElement('div');c.className='gm-conf';
+      c.style.left=(Math.random()*100)+'%';c.style.background=cols[i%cols.length];
+      c.style.animationDuration=(1.4+Math.random()*1.6)+'s';c.style.animationDelay=(Math.random()*0.5)+'s';
+      document.body.appendChild(c);
+      (function(el){setTimeout(function(){el.remove()},3800)})(c);
+    }
+  }
+  new MutationObserver(function(){
+    var on=comp.classList.contains('show');
+    if(on&&!fired){fired=true;burst();}
+    if(!on)fired=false;
+  }).observe(comp,{attributes:true,attributeFilter:['class']});
+})();
+</script>
 </body>
 </html>
