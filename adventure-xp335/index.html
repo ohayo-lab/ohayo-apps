@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Spring Morning Adventure｜OHAYO NIHONGO Diary Text Adventure</title>
+<meta name="description" content="A branching Japanese-learning text adventure built from real diary episodes. Choose how to spend an early-spring March morning in Tokyo. JLPT N5–N3, hiragana + English toggles.">
+<meta name="theme-color" content="#BFE6F9">
+<style>
+/* ===== OHAYO Adventure — bright & joyful morning theme (GAMIFY_V2_DESIGN) ===== */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#134B70; --navy2:#136A9E; --sun:#F7A928; --sun2:#F08114;
+  --skytop:#BFE6F9; --skybottom:#FFDFA8; --mid:#5D7285;
+  --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium","Yu Gothic",sans-serif;
+  --serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+}
+html,body{min-height:100%;background:#EAF4F3;font-family:var(--sans)}
+body{display:flex;justify-content:center}
+
+.app{
+  width:100%;max-width:430px;min-height:100dvh;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 30%,#FFF0CE 68%,#FFDFA8 100%);
+  display:flex;flex-direction:column;
+}
+.app::after{content:"";position:absolute;left:50%;bottom:-110px;transform:translateX(-50%);
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,rgba(255,224,130,.8),rgba(255,183,77,.55) 60%,rgba(251,140,0,.35));
+  box-shadow:0 0 70px 30px rgba(255,193,94,.35);pointer-events:none;z-index:0}
+.app>*{position:relative;z-index:1}
+
+/* ===== COVER: 朝焼けの空 ===== */
+.cover{
+  position:fixed;inset:0;z-index:30;margin:0 auto;max-width:430px;
+  background:linear-gradient(180deg,#8ED4F5 0%,#BFE6F9 24%,#FFE9A8 52%,#FFC97A 76%,#FF9E6D 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 28px;text-align:center;overflow:hidden;
+  transition:opacity .5s ease,transform .5s ease;
+}
+.cover.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+.cover::before{content:"";position:absolute;left:50%;bottom:-90px;transform:translateX(-50%);
+  width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,#FFE082,#FFB74D 60%,#FB8C00);
+  box-shadow:0 0 80px 36px rgba(255,193,94,.5);z-index:0}
+.cover>*{position:relative;z-index:1}
+.cover-top-bar{position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7)}
+.cover-sun{width:80px;height:80px;border-radius:24px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:44px;
+  box-shadow:0 10px 26px rgba(19,75,112,.25);margin-bottom:18px;border:3px solid #fff}
+.cover-badge{font-size:9px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--navy2);margin-bottom:12px}
+.cover-title{font-size:27px;font-weight:800;color:var(--navy);line-height:1.25;margin-bottom:8px;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.cover-title span{color:var(--sun2)}
+.cover-sub1{font-size:13px;font-weight:600;color:rgba(19,75,112,.72);margin-bottom:4px}
+.cover-sub2{font-size:11px;color:rgba(19,75,112,.55);margin-bottom:22px;line-height:1.7}
+.cover-divider{width:40px;height:2px;background:linear-gradient(90deg,#FF8A3D,#4FC3F7);margin:0 auto 22px}
+.gm-greet{font-size:13.5px;font-weight:700;color:#B45309;background:rgba(255,255,255,.8);
+  border:1.5px solid #F5C88A;border-radius:999px;padding:9px 18px;margin-bottom:18px;
+  box-shadow:0 4px 14px rgba(240,129,20,.18)}
+@keyframes gmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.btn-start{border:none;border-radius:999px;width:100%;max-width:320px;
+  background:linear-gradient(135deg,#FF8A3D,#FFB63D);color:#fff;font-family:var(--sans);
+  font-size:16px;font-weight:800;letter-spacing:.02em;padding:15px 48px;cursor:pointer;
+  box-shadow:0 10px 28px rgba(240,129,20,.45);animation:gmPulse 1.8s ease-in-out infinite}
+.cover-foot{margin-top:14px;font-size:11px;color:rgba(19,75,112,.5)}
+@keyframes gmFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(9deg)}}
+.gm-spark{position:absolute;font-size:21px;animation:gmFloat 3s ease-in-out infinite;z-index:1;opacity:.9;pointer-events:none}
+
+/* ===== HEADER ===== */
+.header{padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.header-logo{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--navy2);text-transform:uppercase;margin-bottom:2px}
+.header-logo span{color:var(--sun2)}
+.header-title{font-size:12px;font-weight:600;color:var(--navy)}
+.header-stats{display:flex;gap:6px;align-items:center}
+.stat-chip{font-size:10px;font-weight:700;background:#FFF4E3;border:1px solid #F5C88A;color:#B45309;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.stat-chip.score{background:#EAF3F9;border-color:#9CC4DE;color:var(--navy)}
+.header-counter{font-size:11px;font-weight:700;color:var(--mid)}
+.header-counter b{color:var(--sun2);font-size:18px;line-height:1}
+
+/* ===== PROGRESS ===== */
+.progress-wrap{padding:0 20px 10px}
+.progress-track{height:4px;background:rgba(19,75,112,.14);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--sun),#4FC3F7);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* ===== SCENE CARD ===== */
+.card-area{padding:0 16px 8px;flex:1;display:flex;flex-direction:column}
+.card{width:100%;background:#FAFAF8;border-radius:20px;padding:18px 20px 16px;
+  position:relative;overflow:hidden;border:1px solid #E7EFF5;
+  box-shadow:0 12px 30px rgba(19,75,112,.16);
+  animation:cardIn .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes gmSlide{to{background-position:300% 0}}
+.card-accent-bar{position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7,#66D9B8,#FF8A3D);
+  background-size:300% 100%;animation:gmSlide 7s linear infinite}
+.card-tag{font-size:8.5px;font-weight:700;letter-spacing:.2em;color:var(--sun2);text-transform:uppercase;margin-bottom:8px}
+.card-emoji{font-size:34px;line-height:1;margin-bottom:10px}
+.card-kanji{font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.85;color:#1A1A1A}
+.reveal-section{overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease;max-height:0;opacity:0}
+.reveal-section.visible{max-height:420px;opacity:1}
+.reveal-inner{padding-top:12px}
+.reveal-label{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.reveal-bar{width:2px;height:11px;border-radius:1px;flex-shrink:0}
+.reveal-bar-blue{background:#4FA3CE}
+.reveal-bar-mid{background:#BDBDBD}
+.reveal-label-text{font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A8578}
+.hira-text{font-size:13px;line-height:1.9;color:#555}
+.en-text{font-size:12px;line-height:1.7;color:#7A7568;font-style:italic}
+.vocab-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:1px dashed #E5E0D5}
+.vocab-pill{font-size:10.5px;font-weight:700;color:#B45309;background:#FFF4E3;border:1px solid #F5C88A;border-radius:999px;padding:4px 10px}
+.vocab-pill small{font-weight:500;color:#C98A3E}
+
+/* ===== TOGGLES ===== */
+.btn-row{padding:8px 16px 4px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{border:none;border-radius:14px;padding:10px 8px;font-family:var(--sans);font-size:11px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .12s ease}
+.btn:active{transform:scale(.94)}
+.btn-icon{font-size:16px;line-height:1}
+.btn-hira{background:#E3F4FF;color:var(--navy2);border:1.5px solid #9CD0F0}
+.btn-hira.active{background:#4FA3CE;color:#fff;border-color:#4FA3CE}
+.btn-en{background:#FFF6E3;color:#B45309;border:1.5px solid #F5D9A0}
+.btn-en.active{background:var(--sun);color:#fff;border-color:var(--sun)}
+
+/* ===== CHOICES ===== */
+.choice-wrap{padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.choice-label{font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--navy2);text-transform:uppercase;margin:4px 2px 8px;text-align:center}
+.choice-btn{width:100%;border:1.5px solid #E0D8C8;border-radius:16px;background:#fff;
+  padding:12px 16px;margin-bottom:8px;cursor:pointer;text-align:left;font-family:var(--sans);
+  display:flex;align-items:center;gap:12px;transition:transform .12s ease,box-shadow .12s ease;
+  box-shadow:0 4px 12px rgba(19,75,112,.08);animation:cardIn .35s cubic-bezier(.34,1.56,.64,1)}
+.choice-btn:active{transform:scale(.97)}
+.choice-emoji{font-size:22px;flex-shrink:0}
+.choice-main{font-size:14px;font-weight:700;color:var(--navy);line-height:1.5}
+.choice-sub{font-size:10.5px;color:#8A94A0;margin-top:2px;line-height:1.4}
+.choice-btn.go{background:linear-gradient(135deg,#FF8A3D,#FFB63D);border-color:#F08114;justify-content:center}
+.choice-btn.go .choice-main{color:#fff}
+.choice-btn.go .choice-sub{color:rgba(255,255,255,.85)}
+
+/* ===== ENDING ===== */
+.ending{
+  position:fixed;inset:0;z-index:20;margin:0 auto;max-width:430px;display:none;
+  background:linear-gradient(180deg,#BFE6F9 0%,#FFE9A8 55%,#FFC97A 100%);
+  flex-direction:column;align-items:center;padding:34px 22px 30px;text-align:center;overflow-y:auto;
+}
+.ending.show{display:flex;animation:cardIn .4s ease}
+.ending-sun{width:64px;height:64px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:36px;box-shadow:0 8px 24px rgba(19,75,112,.2);margin-bottom:12px;flex-shrink:0}
+.ending-title{font-size:23px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.3}
+.ending-title span{color:var(--sun2)}
+.ending-sub{font-size:11.5px;color:var(--mid);line-height:1.7;margin-bottom:14px}
+.complete-stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.cstat{background:#FFFDF7;border:1px solid #EDE7D8;border-radius:12px;padding:10px 14px;min-width:84px}
+.cstat .v{font-size:19px;font-weight:800;color:var(--navy)}
+.cstat .l{font-size:9px;font-weight:700;letter-spacing:.12em;color:#8A8578;text-transform:uppercase;margin-top:2px}
+.badge-line{font-size:13px;font-weight:700;color:#B45309;background:#FFF4E3;border:1px solid #F5C88A;border-radius:999px;padding:6px 16px;display:inline-block;margin-top:2px}
+.xp-note{font-size:10.5px;color:#8A8578;margin:6px 0 14px}
+.vocab-box{width:100%;background:#fff;border:1px solid #DDE6EC;border-radius:16px;padding:14px 16px;margin-bottom:16px;text-align:left}
+.vocab-box-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--navy2);text-transform:uppercase;margin-bottom:10px;text-align:center}
+.vocab-item{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:1px dashed #EDE7D8;flex-wrap:wrap}
+.vocab-item:last-child{border-bottom:none}
+.vocab-word{font-family:var(--serif);font-size:15px;font-weight:700;color:#1A1A1A}
+.vocab-read{font-size:11px;color:var(--navy2);font-weight:600}
+.vocab-en{font-size:11px;color:#8A94A0;font-style:italic;margin-left:auto}
+.cta-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  border-radius:16px;padding:14px 16px;margin-bottom:9px;text-decoration:none;
+  font-size:14px;font-weight:800;font-family:var(--sans);transition:transform .12s ease}
+.cta-btn:active{transform:scale(.97)}
+.cta-primary{background:linear-gradient(135deg,#FF8A3D,#FFB63D);color:#fff;box-shadow:0 10px 24px rgba(240,129,20,.4)}
+.cta-secondary{background:#fff;color:var(--navy);border:1.5px solid #C9DCE9;box-shadow:0 4px 12px rgba(19,75,112,.1)}
+.cta-note{font-size:10px;color:rgba(19,75,112,.55);margin:4px 0 12px;line-height:1.6}
+.btn-restart{border:1.5px solid #C9DCE9;background:rgba(255,255,255,.7);color:var(--navy);
+  font-family:var(--sans);font-size:12.5px;font-weight:700;cursor:pointer;padding:11px 26px;border-radius:999px}
+.ending-foot{margin-top:14px;font-size:10px;color:rgba(19,75,112,.45)}
+.ending-foot a{color:var(--navy2)}
+
+/* ===== 紙吹雪 ===== */
+@keyframes gmDrop{to{transform:translateY(112vh) rotate(720deg);opacity:.9}}
+.gm-conf{position:fixed;top:-18px;width:10px;height:16px;border-radius:3px;z-index:99;
+  animation:gmDrop linear forwards;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- COVER -->
+  <div class="cover" id="cover">
+    <div class="cover-top-bar"></div>
+    <div class="cover-sun">☀️</div>
+    <div class="cover-badge">Diary Text Adventure</div>
+    <div class="cover-title">Spring Morning<br><span>Adventure</span></div>
+    <div class="cover-sub1">はるの あさ、どう すごす？</div>
+    <div class="cover-sub2">A branching story made from real diary episodes.<br>Your choices shape the day. — JLPT N5–N3</div>
+    <div class="cover-divider"></div>
+    <div class="gm-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう ☀️</div>
+    <button class="btn-start" onclick="startGame()">Start the Morning →</button>
+    <div class="cover-foot">OHAYO NIHONGO · おはよう日本語 · Free</div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="header-logo">OHAYO <span>NIHONGO</span></div>
+      <div class="header-title">Spring Morning Adventure</div>
+    </div>
+    <div class="header-stats">
+      <span class="stat-chip" id="streakChip">🔥 0</span>
+      <span class="stat-chip score" id="xpChip">⭐ 0</span>
+      <span class="header-counter"><b id="stepNum">1</b>/5</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+  </div>
+
+  <!-- SCENE -->
+  <div class="card-area">
+    <div class="card" id="card">
+      <div class="card-accent-bar"></div>
+      <div class="card-tag" id="cardTag"></div>
+      <div class="card-emoji" id="cardEmoji"></div>
+      <div class="card-kanji" id="cardKanji"></div>
+      <div class="reveal-section" id="hiraSection"><div class="reveal-inner">
+        <div class="reveal-label"><div class="reveal-bar reveal-bar-blue"></div><div class="reveal-label-text">ひらがな</div></div>
+        <div class="hira-text" id="cardHira"></div>
+      </div></div>
+      <div class="reveal-section" id="enSection"><div class="reveal-inner">
+        <div class="reveal-label"><div class="reveal-bar reveal-bar-mid"></div><div class="reveal-label-text">English</div></div>
+        <div class="en-text" id="cardEn"></div>
+      </div></div>
+      <div class="vocab-pill-row" id="vocabRow"></div>
+    </div>
+  </div>
+
+  <!-- TOGGLES -->
+  <div class="btn-row">
+    <button class="btn btn-hira" id="btnHira" onclick="toggleHira()"><span class="btn-icon">あ</span>Hiragana</button>
+    <button class="btn btn-en" id="btnEn" onclick="toggleEn()"><span class="btn-icon">EN</span>English</button>
+  </div>
+
+  <!-- CHOICES -->
+  <div class="choice-wrap">
+    <div class="choice-label" id="choiceLabel">どうする？ — What will you do?</div>
+    <div id="choices"></div>
+  </div>
+
+  <!-- ENDING -->
+  <div class="ending" id="ending">
+    <div class="ending-sun">🌅</div>
+    <div class="ending-title">今日はここまで。<br><span>また明日！</span></div>
+    <div class="ending-sub" id="endingSub">That's it for today — see you tomorrow!<br>You lived one full morning in Japanese. +20 XP!</div>
+    <div class="complete-stats">
+      <div class="cstat"><div class="v" id="cStreak">🔥 0</div><div class="l">Day streak</div></div>
+      <div class="cstat"><div class="v">+20</div><div class="l">Story XP</div></div>
+      <div class="cstat"><div class="v" id="cXp">0</div><div class="l">Total XP</div></div>
+    </div>
+    <div><span class="badge-line" id="cBadge">🌅 Sunrise Beginner</span></div>
+    <div class="xp-note" id="cNext"></div>
+    <div class="vocab-box">
+      <div class="vocab-box-title">📖 Words you met today — 今日出会った言葉</div>
+      <div id="vocabList"></div>
+    </div>
+    <a class="cta-btn cta-primary" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">🎁 Get the Free Starter Pack</a>
+    <a class="cta-btn cta-secondary" href="https://www.ohayonihongo.net/free-qf9lbx/" target="_blank" rel="noopener">🃏 Practice with Free Flashcards</a>
+    <div class="cta-note">Real 1-minute Japanese diary audio, scripts &amp; flashcards<br>— new episode every morning.</div>
+    <button class="btn-restart" onclick="restart()">↩ 違う朝を生きてみる — Try another path</button>
+    <div class="ending-foot">Every path is a real diary episode from March in Tokyo.<br>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></div>
+  </div>
+</div>
+
+<script>
+/* ===== Story data — built from OHAYO NIHONGO January diary episodes (D-001〜025) ===== */
+const SCENES = {
+  wake: {
+    step:1, tag:"Scene 1 · Sankan-Shion · From Diary #66", emoji:"🧥",
+    kanji:"最近は寒かったり暖かかったりで、毎朝何を着ればいいか悩んでいます。日本には「三寒四温」という言葉があって、寒い日が3日続いた後に暖かい日が4日来ることを繰り返して、少しずつ春になっていきます。まだ冬のコートを片付けられず、クローゼットの前で毎日困ってしまいます。さあ、今日はどこへ行く？",
+    hira:"さいきんは さむかったり あたたかかったりで、まいあさ なにを きればいいか なやんでいます。にほんには「さんかんしおん」という ことばが あって、さむいひが みっか つづいた あとに あたたかいひが よっか くることを くりかえして、すこしずつ はるに なっていきます。まだ ふゆの こーとを かたづけられず、くろーぜっとの まえで まいにち こまってしまいます。さあ、きょうは どこへ いく？",
+    en:"Lately it's been cold one day and warm the next, and every morning I struggle over what to wear. In Japan there's a phrase, 'sankan-shion' — three cold days followed by four warm days, repeating over and over as spring slowly arrives. I still can't put away my winter coat, and I stand puzzled in front of my closet every day. So — where to go today?",
+    vocab:[{w:"三寒四温",r:"さんかんしおん",e:"three cold days, four warm days"},{w:"悩む",r:"なやむ",e:"to be unsure, to worry"},{w:"片付ける",r:"かたづける",e:"to put away"}],
+    choices:[
+      {emoji:"🌷", main:"桜パトロールに出かける", sub:"さくらぱとろーるに でかける — Go on sakura patrol", to:"sakura"},
+      {emoji:"🌼", main:"白い木蓮を見に行く", sub:"しろい もくれんを みに いく — Go see the white magnolias", to:"mokuren"}
+    ]
+  },
+  sakura: {
+    step:2, tag:"Scene 2 · Tulip Surprise · From Diary #77", emoji:"🌷",
+    kanji:"先週、東京でソメイヨシノの開花宣言がありました。日当たりがいい場所なら咲いているかもと思って、今朝はいつもと違う方向に桜パトロールに行きました。ソメイヨシノはあともう一息。でもその代わり、チューリップが一面に咲いていました。黄色、赤、白、紫、ピンク、色とりどりです。朝のウォーキングが心に栄養を与えてくれます。……お腹がすきました。何を食べる？",
+    hira:"せんしゅう、とうきょうで そめいよしのの かいかせんげんが ありました。ひあたりが いい ばしょなら さいているかもと おもって、けさは いつもと ちがう ほうこうに さくらぱとろーるに いきました。そめいよしのは あと もうひといき。でも そのかわり、ちゅーりっぷが いちめんに さいていました。きいろ、あか、しろ、むらさき、ぴんく、いろとりどりです。あさの うぉーきんぐが こころに えいようを あたえてくれます。……おなかが すきました。なにを たべる？",
+    en:"Last week, the official cherry-blossom opening was announced in Tokyo. Thinking they might be blooming in sunny spots, this morning I went on sakura patrol in a different direction than usual. The Somei-Yoshino cherries needed just a little more time. But instead, tulips were blooming everywhere — yellow, red, white, purple, pink, all kinds of colors. My morning walks give my heart its nutrition... Now I'm hungry. What to eat?",
+    vocab:[{w:"開花宣言",r:"かいかせんげん",e:"blossom-opening announcement"},{w:"色とりどり",r:"いろとりどり",e:"colorful, of all colors"},{w:"栄養",r:"えいよう",e:"nutrition"}],
+    choices:[
+      {emoji:"🎃", main:"かぼちゃのサンドイッチを作る", sub:"かぼちゃの さんどいっちを つくる — Make a pumpkin sandwich", to:"kabocha"},
+      {emoji:"🥬", main:"豆苗の料理にする", sub:"とうみょうの りょうりに する — Cook some pea shoots", to:"toumyou"},
+      {emoji:"🥑", main:"友達とメキシコ料理ランチ", sub:"ともだちと めきしこりょうり らんち — Mexican lunch with a friend", to:"mexican"}
+    ]
+  },
+  mokuren: {
+    step:2, tag:"Scene 2 · White Magnolia · From Diary #56", emoji:"🌼",
+    kanji:"いま、私の楽しみは、通勤途中に咲き始めた大好きな白い木蓮の花です。つぼみの頃から毎日待ちわびていましたが、ようやく満開まであと一歩になりました。朝の青空の下で咲く木蓮も、夜道で光る木蓮も、それぞれ違う表情があって本当に綺麗です。幸せって、こういう小さな変化を楽しめることですよね。……お腹がすきました。何を食べる？",
+    hira:"いま、わたしの たのしみは、つうきんとちゅうに さきはじめた だいすきな しろい もくれんの はなです。つぼみの ころから まいにち まちわびていましたが、ようやく まんかいまで あといっぽに なりました。あさの あおぞらの したで さく もくれんも、よみちで ひかる もくれんも、それぞれ ちがう ひょうじょうが あって ほんとうに きれいです。しあわせって、こういう ちいさな へんかを たのしめる ことですよね。……おなかが すきました。なにを たべる？",
+    en:"Right now, my joy is the white magnolia flowers I love, which have started blooming along my commute. I've been waiting eagerly every day since they were buds, and at last they're just one step from full bloom. The magnolias blooming under the blue morning sky and the ones glowing on the night streets each have their own expression, and they're truly beautiful. Happiness is being able to enjoy small changes like these... Now I'm hungry. What to eat?",
+    vocab:[{w:"木蓮",r:"もくれん",e:"magnolia"},{w:"満開",r:"まんかい",e:"full bloom"},{w:"表情",r:"ひょうじょう",e:"expression"}],
+    choices:[
+      {emoji:"🎃", main:"かぼちゃのサンドイッチを作る", sub:"かぼちゃの さんどいっちを つくる — Make a pumpkin sandwich", to:"kabocha"},
+      {emoji:"🥬", main:"豆苗の料理にする", sub:"とうみょうの りょうりに する — Cook some pea shoots", to:"toumyou"},
+      {emoji:"🥑", main:"友達とメキシコ料理ランチ", sub:"ともだちと めきしこりょうり らんち — Mexican lunch with a friend", to:"mexican"}
+    ]
+  },
+  kabocha: {
+    step:3, tag:"Scene 3 · Pumpkin Sandwich · From Diary #80", emoji:"🎃",
+    kanji:"冷蔵庫にかぼちゃがあったので、かぼちゃのサンドイッチを作ってみました。かぼちゃの甘みを引き立てるため、塩と胡椒を少し加えて、マヨネーズを混ぜてパンに挟みます。これが想像以上に美味しくてびっくり！あまりの美味しさに、これからは定番になりそうです。さて、この後はどう過ごす？",
+    hira:"れいぞうこに かぼちゃが あったので、かぼちゃの さんどいっちを つくってみました。かぼちゃの あまみを ひきたてるため、しおと こしょうを すこし くわえて、まよねーずを まぜて ぱんに はさみます。これが そうぞういじょうに おいしくて びっくり！あまりの おいしさに、これからは ていばんに なりそうです。さて、このあとは どう すごす？",
+    en:"There was a kabocha pumpkin in the fridge, so I tried making a pumpkin sandwich. To bring out the pumpkin's sweetness, I added a little salt and pepper, mixed in mayonnaise, and put it between bread. It was so much more delicious than I imagined — I was amazed! It's so good it's about to become one of my go-to sandwiches. Now — what's next?",
+    vocab:[{w:"かぼちゃ",r:"かぼちゃ",e:"pumpkin"},{w:"甘み",r:"あまみ",e:"sweetness"},{w:"定番",r:"ていばん",e:"go-to, regular"}],
+    choices:[
+      {emoji:"🎸", main:"ウクレレへの挑戦を考える", sub:"うくれれへの ちょうせんを かんがえる — Think about taking up the ukulele", to:"ukulele"},
+      {emoji:"🌃", main:"友達と夜桜散歩へ", sub:"ともだちと よざくら さんぽへ — Evening cherry-blossom walk with a friend", to:"yozakura"}
+    ]
+  },
+  toumyou: {
+    step:3, tag:"Scene 3 · Pea Shoots · From Diary #73", emoji:"🥬",
+    kanji:"今日は、シャキシャキ感がたまらない豆苗を食べました。豆苗は、一度食べた後も、根っこを水につけて日当たりのいい場所に置いておくと、また育ちます。一度で二度楽しめるので、お財布にも優しい嬉しい野菜です。毎日育っていく様子を眺めるのも、とても楽しい時間です。さて、この後はどう過ごす？",
+    hira:"きょうは、しゃきしゃきかんが たまらない とうみょうを たべました。とうみょうは、いちど たべた あとも、ねっこを みずに つけて ひあたりの いい ばしょに おいておくと、また そだちます。いちどで にど たのしめるので、おさいふにも やさしい うれしい やさいです。まいにち そだっていく ようすを ながめるのも、とても たのしい じかんです。さて、このあとは どう すごす？",
+    en:"Today I ate pea shoots, whose crunchiness I just can't resist. Even after you eat them once, if you put the roots in water in a sunny spot, they grow again. You can enjoy them twice from one purchase, so they're a happy vegetable that's kind to my wallet, too. Watching them grow a little every day is also a really fun time. Now — what's next?",
+    vocab:[{w:"豆苗",r:"とうみょう",e:"pea shoots"},{w:"根っこ",r:"ねっこ",e:"roots"},{w:"育つ",r:"そだつ",e:"to grow"}],
+    choices:[
+      {emoji:"🎸", main:"ウクレレへの挑戦を考える", sub:"うくれれへの ちょうせんを かんがえる — Think about taking up the ukulele", to:"ukulele"},
+      {emoji:"🌃", main:"友達と夜桜散歩へ", sub:"ともだちと よざくら さんぽへ — Evening cherry-blossom walk with a friend", to:"yozakura"}
+    ]
+  },
+  mexican: {
+    step:3, tag:"Scene 3 · Mexican Lunch · From Diary #81", emoji:"🥑",
+    kanji:"友達とメキシコ料理のランチに行きました。お互い2月生まれなので、毎年一緒にお祝いをしている友達です。このお店は、目の前でアボカドを料理してくれたり、スタッフが料理の説明をしてくれたり、コミュニケーションがたくさんあります。こういうきめ細やかなサービスは、日本ならではだなぁと思いました。さて、この後はどう過ごす？",
+    hira:"ともだちと めきしこりょうりの らんちに いきました。おたがい にがつうまれなので、まいとし いっしょに おいわいを している ともだちです。このおみせは、めのまえで あぼかどを りょうりしてくれたり、すたっふが りょうりの せつめいを してくれたり、こみゅにけーしょんが たくさん あります。こういう きめこまやかな さーびすは、にほん ならではだなぁと おもいました。さて、このあとは どう すごす？",
+    en:"I went out for a Mexican lunch with a friend. We were both born in February, so we celebrate together every year. At this restaurant, they prepare the avocado right in front of you, and the staff explain each dish — there's lots of communication. I thought this kind of attentive service is something you find only in Japan. Now — what's next?",
+    vocab:[{w:"お祝い",r:"おいわい",e:"celebration"},{w:"説明",r:"せつめい",e:"explanation"},{w:"きめ細やか",r:"きめこまやか",e:"attentive, meticulous"}],
+    choices:[
+      {emoji:"🎸", main:"ウクレレへの挑戦を考える", sub:"うくれれへの ちょうせんを かんがえる — Think about taking up the ukulele", to:"ukulele"},
+      {emoji:"🌃", main:"友達と夜桜散歩へ", sub:"ともだちと よざくら さんぽへ — Evening cherry-blossom walk with a friend", to:"yozakura"}
+    ]
+  },
+  ukulele: {
+    step:4, tag:"Scene 4 · Ukulele Dream · From Diary #79", emoji:"🎸",
+    kanji:"芸能人が9ヶ月間楽器を練習して、大きな舞台で演奏するテレビ番組を見ました。忙しい人たちでも、9ヶ月であんなに演奏できるようになるんだ、と感動しました。実は私も、ずっとウクレレを弾きたいと思っているんです。教室に習いに行ってみようかな。未来の自分に期待してみましょう。",
+    hira:"げいのうじんが きゅうかげつかん がっきを れんしゅうして、おおきな ぶたいで えんそうする てれびばんぐみを みました。いそがしい ひとたちでも、きゅうかげつで あんなに えんそうできるように なるんだ、と かんどうしました。じつは わたしも、ずっと うくれれを ひきたいと おもっているんです。きょうしつに ならいに いってみようかな。みらいの じぶんに きたいしてみましょう。",
+    en:"I watched a TV show where celebrities practiced instruments for nine months and then performed on a big stage. I was moved that even such busy people could learn to play that well in nine months. Actually, I've always wanted to play the ukulele myself. Maybe I'll try taking lessons at a school. Let's put some hope in my future self.",
+    vocab:[{w:"楽器",r:"がっき",e:"musical instrument"},{w:"演奏",r:"えんそう",e:"performance"},{w:"期待",r:"きたい",e:"expectation, hope"}],
+    choices:[
+      {emoji:"🌍", main:"挑戦といえば——英語を始めた頃の話", sub:"ちょうせんと いえば——えいごを はじめた ころの はなし — Speaking of challenges: when I started English", to:"english"},
+      {emoji:"🧭", main:"自分を知る——MBTIの話", sub:"じぶんを しる——MBTIの はなし — Knowing myself: my MBTI story", to:"mbti"}
+    ]
+  },
+  yozakura: {
+    step:4, tag:"Scene 4 · Night Sakura · From Diary #84", emoji:"🌸",
+    kanji:"会社の帰りに、友達と夜のお花見散歩に行きました。場所は、東京の増上寺と東京タワーの近くにある芝公園です。ソメイヨシノは気分屋さんなので、お天気次第でいつ散ってしまうか分かりません。1年にたった1回の短いソメイヨシノの姿を見逃さないように、桜を見上げて夜道を散歩しました。",
+    hira:"かいしゃの かえりに、ともだちと よるの おはなみさんぽに いきました。ばしょは、とうきょうの ぞうじょうじと とうきょうたわーの ちかくに ある しばこうえんです。そめいよしのは きぶんやさんなので、おてんきしだいで いつ ちってしまうか わかりません。いちねんに たった いっかいの みじかい そめいよしのの すがたを みのがさないように、さくらを みあげて よみちを さんぽしました。",
+    en:"On the way home from work, I went on an evening cherry-blossom walk with a friend. The place was Shiba Park, near Zojoji Temple and Tokyo Tower. Somei-Yoshino cherries are moody — depending on the weather, you never know when the petals will fall. So as not to miss the short, once-a-year appearance of the Somei-Yoshino, we strolled the night streets looking up at the blossoms.",
+    vocab:[{w:"お花見",r:"おはなみ",e:"blossom viewing"},{w:"散る",r:"ちる",e:"to scatter, to fall"},{w:"見逃す",r:"みのがす",e:"to miss seeing"}],
+    choices:[
+      {emoji:"🌅", main:"朝の時間の素晴らしさを思う", sub:"あさの じかんの すばらしさを おもう — Reflect on how wonderful mornings are", to:"asa"},
+      {emoji:"🌳", main:"実家の梅の木を思い出す", sub:"じっかの うめの きを おもいだす — Remember the plum tree back home", to:"ume"}
+    ]
+  },
+  english: {
+    step:5, tag:"Final Scene · English at 40 · From Diary #58", emoji:"🌍",
+    kanji:"私が英語の勉強を始めたのは、40歳になる少し前でした。勉強を始めてから、私の世界は大きく変わりました。たくさんの外国人の友達ができて、一人でも海外旅行を楽しめるようになりました。でも何よりも変わったのは、自分の考え方や価値観です。これが、英語を学んで得られた一番の収穫だと思っています。",
+    hira:"わたしが えいごの べんきょうを はじめたのは、よんじゅっさいに なる すこしまえでした。べんきょうを はじめてから、わたしの せかいは おおきく かわりました。たくさんの がいこくじんの ともだちが できて、ひとりでも かいがいりょこうを たのしめるように なりました。でも なによりも かわったのは、じぶんの かんがえかたや かちかんです。これが、えいごを まなんで えられた いちばんの しゅうかくだと おもっています。",
+    en:"I started studying English a little before I turned 40. Since I began, my world has changed enormously. I made many friends from other countries, and I became able to enjoy traveling abroad on my own. But what changed most of all was my way of thinking and my values. I believe that is the greatest harvest I gained from learning English.",
+    vocab:[{w:"価値観",r:"かちかん",e:"values"},{w:"収穫",r:"しゅうかく",e:"harvest, gain"},{w:"海外旅行",r:"かいがいりょこう",e:"overseas travel"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  },
+  mbti: {
+    step:5, tag:"Final Scene · INTJ · From Diary #61", emoji:"🧭",
+    kanji:"私のMBTIは「INTJ・建築家」です。子どもの頃から、いつの間にかグループから外れてしまうことがよくありました。でも、自分がINTJだと分かってからは、グループ行動が苦手だった理由がはっきり分かり、120％納得できました。「あ、これが私なんだ！」と分かったことで、今は無理をせず、自分らしく過ごせるようになりました。",
+    hira:"わたしの MBTIは「INTJ・けんちくか」です。こどもの ころから、いつのまにか ぐるーぷから はずれてしまうことが よく ありました。でも、じぶんが INTJだと わかってからは、ぐるーぷこうどうが にがてだった りゆうが はっきり わかり、ひゃくにじゅっぱーせんと なっとくできました。「あ、これが わたしなんだ！」と わかった ことで、いまは むりを せず、じぶんらしく すごせるように なりました。",
+    en:"My MBTI type is 'INTJ — the Architect.' Ever since I was a child, I often found myself drifting out of groups before I knew it. But once I learned I was an INTJ, I clearly understood why group activities were hard for me, and it made 120% sense. Realizing 'Ah, so this is who I am!' means I can now live in my own way, without forcing myself.",
+    vocab:[{w:"納得",r:"なっとく",e:"being convinced"},{w:"苦手",r:"にがて",e:"not good at"},{w:"自分らしく",r:"じぶんらしく",e:"true to oneself"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  },
+  asa: {
+    step:5, tag:"Final Scene · Morning Power · From Diary #57", emoji:"🌅",
+    kanji:"昨日は朝から雨だったので、夜にウォーキングに行きました。でも、久しぶりに夜に歩いてみると、全然楽しくなくて、自分でもびっくりしました。朝の光を浴びて心のスイッチが入ると、前向きなことしか頭に浮かばないんです。朝の時間は、誰もが受け取れる幸せのひとかけらだと思います。",
+    hira:"きのうは あさから あめだったので、よるに うぉーきんぐに いきました。でも、ひさしぶりに よるに あるいてみると、ぜんぜん たのしくなくて、じぶんでも びっくりしました。あさの ひかりを あびて こころの すいっちが はいると、まえむきな ことしか あたまに うかばないんです。あさの じかんは、だれもが うけとれる しあわせの ひとかけらだと おもいます。",
+    en:"Yesterday it rained from the morning, so I went walking at night instead. But walking at night for the first time in ages, I was surprised to find it no fun at all. When I bathe in the morning light and my heart's switch turns on, only positive thoughts come to mind. I believe the morning hours are a little piece of happiness that anyone can receive.",
+    vocab:[{w:"前向き",r:"まえむき",e:"positive, forward-looking"},{w:"浴びる",r:"あびる",e:"to bathe in"},{w:"ひとかけら",r:"ひとかけら",e:"a small piece"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  },
+  ume: {
+    step:5, tag:"Final Scene · Plum Year · From Diary #68", emoji:"🌳",
+    kanji:"私の実家の庭には、大きな梅の木があります。梅の木には、たくさん実がなる「表の年」と、あまりならない「裏の年」があるそうです。今年は、父がたくさん咲いた梅の花の写真を送ってくれました。「今年は実がなるかな？」というメッセージもあって、6月の収穫が今からとても楽しみで、ワクワクしています。",
+    hira:"わたしの じっかの にわには、おおきな うめの きが あります。うめの きには、たくさん みが なる「おもての とし」と、あまり ならない「うらの とし」が あるそうです。ことしは、ちちが たくさん さいた うめの はなの しゃしんを おくってくれました。「ことしは みが なるかな？」という めっせーじも あって、ろくがつの しゅうかくが いまから とても たのしみで、わくわくしています。",
+    en:"In the garden of my family home, there's a big plum tree. Plum trees apparently have 'front years,' when they bear lots of fruit, and 'back years,' when they bear little. This year, my father sent me photos of the plum tree covered in blossoms. His message said, 'I wonder if we'll get fruit this year?' — and I'm already looking forward to the June harvest with excitement.",
+    vocab:[{w:"実家",r:"じっか",e:"family home"},{w:"実がなる",r:"みがなる",e:"to bear fruit"},{w:"収穫",r:"しゅうかく",e:"harvest"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  }
+};
+const TOTAL_STEPS = 5;
+
+/* ===== Gamification — shared localStorage keys with OHAYO flashcards ===== */
+const LEVELS=[
+  {min:0,   name:"Sunrise Beginner", emoji:"🌅"},
+  {min:100, name:"Morning Listener", emoji:"🎧"},
+  {min:300, name:"Wave Rider",       emoji:"🌊"},
+  {min:600, name:"Daily Diarist",    emoji:"📖"},
+  {min:1000,name:"OHAYO Master",     emoji:"☀️"}
+];
+const store={
+  get xp(){return +(localStorage.getItem('ohayo_xp')||0)},
+  set xp(v){localStorage.setItem('ohayo_xp',v)},
+  get streak(){return +(localStorage.getItem('ohayo_streak')||0)},
+  set streak(v){localStorage.setItem('ohayo_streak',v)},
+  get last(){return localStorage.getItem('ohayo_last')||''},
+  set last(v){localStorage.setItem('ohayo_last',v)}
+};
+function todayStr(offset=0){const d=new Date();d.setDate(d.getDate()+offset);return d.toISOString().slice(0,10);}
+function levelFor(xp){let L=LEVELS[0];for(const l of LEVELS){if(xp>=l.min)L=l;}return L;}
+function nextLevelFor(xp){for(const l of LEVELS){if(xp<l.min)return l;}return null;}
+
+/* ===== Game state ===== */
+let currentId='wake', hiraVisible=false, enVisible=false, collected=[];
+
+function renderStats(){
+  document.getElementById('streakChip').textContent=`🔥 ${store.streak}`;
+  document.getElementById('xpChip').textContent=`⭐ ${store.xp}`;
+}
+function startGame(){document.getElementById('cover').classList.add('hide');}
+
+function loadScene(id){
+  currentId=id;
+  const s=SCENES[id];
+  hiraVisible=false; enVisible=false;
+  ['hiraSection','enSection'].forEach(x=>document.getElementById(x).classList.remove('visible'));
+  ['btnHira','btnEn'].forEach(x=>document.getElementById(x).classList.remove('active'));
+  const card=document.getElementById('card');
+  card.style.animation='none'; card.offsetHeight; card.style.animation='';
+  document.getElementById('cardTag').textContent=s.tag;
+  document.getElementById('cardEmoji').textContent=s.emoji;
+  document.getElementById('cardKanji').textContent=s.kanji;
+  document.getElementById('cardHira').textContent=s.hira;
+  document.getElementById('cardEn').textContent=s.en;
+  document.getElementById('stepNum').textContent=s.step;
+  document.getElementById('progressFill').style.width=`${(s.step/TOTAL_STEPS)*100}%`;
+  // vocab pills on the card
+  document.getElementById('vocabRow').innerHTML=s.vocab.map(v=>
+    `<span class="vocab-pill">${v.w}<small>（${v.r}）</small></span>`).join('');
+  // collect vocab (dedupe by word)
+  for(const v of s.vocab){ if(!collected.some(c=>c.w===v.w)) collected.push(v); }
+  // choices
+  document.getElementById('choiceLabel').style.display=s.choices.some(c=>!c.go)?'block':'none';
+  document.getElementById('choices').innerHTML=s.choices.map((c,i)=>
+    `<button class="choice-btn${c.go?' go':''}" onclick="choose('${c.to}')">
+       <span class="choice-emoji">${c.emoji}</span>
+       <span><span class="choice-main">${c.main}</span><br><span class="choice-sub">${c.sub}</span></span>
+     </button>`).join('');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function choose(to){
+  if(to==='END'){finish();return;}
+  loadScene(to);
+}
+function toggleHira(){hiraVisible=!hiraVisible;document.getElementById('hiraSection').classList.toggle('visible',hiraVisible);document.getElementById('btnHira').classList.toggle('active',hiraVisible);}
+function toggleEn(){enVisible=!enVisible;document.getElementById('enSection').classList.toggle('visible',enVisible);document.getElementById('btnEn').classList.toggle('active',enVisible);}
+
+/* ===== Ending: +20 XP, streak, vocab summary ===== */
+function finish(){
+  const today=todayStr();
+  if(store.last!==today){
+    store.streak=(store.last===todayStr(-1))?store.streak+1:1;
+    store.last=today;
+  }
+  store.xp=store.xp+20;
+  const xp=store.xp,L=levelFor(xp),N=nextLevelFor(xp);
+  document.getElementById('cStreak').textContent=`🔥 ${store.streak}`;
+  document.getElementById('cXp').textContent=xp;
+  document.getElementById('cBadge').textContent=`${L.emoji} ${L.name}`;
+  document.getElementById('cNext').textContent=N?`Next level: ${N.emoji} ${N.name} at ${N.min} XP (${N.min-xp} to go)`:'Max level reached! すごい！';
+  document.getElementById('vocabList').innerHTML=collected.map(v=>
+    `<div class="vocab-item"><span class="vocab-word">${v.w}</span><span class="vocab-read">${v.r}</span><span class="vocab-en">${v.e}</span></div>`).join('');
+  renderStats();
+  document.getElementById('ending').classList.add('show');
+  confetti();
+}
+function restart(){
+  collected=[];
+  document.getElementById('ending').classList.remove('show');
+  loadScene('wake');
+  renderStats();
+}
+
+/* ===== 紙吹雪 ===== */
+function confetti(){
+  const cols=['#FF8A3D','#FFD34D','#4FC3F7','#66D9B8','#FF6B9D','#A855F7'];
+  for(let i=0;i<36;i++){
+    const c=document.createElement('div');c.className='gm-conf';
+    c.style.left=(Math.random()*100)+'%';c.style.background=cols[i%cols.length];
+    c.style.animationDuration=(1.4+Math.random()*1.6)+'s';c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3800);
+  }
+}
+
+/* ===== Cover: streak greeting + floating sparks (GAMIFY_V2) ===== */
+(function(){
+  const st=store.streak;
+  document.getElementById('greet').textContent=st>0?`おはよう！ 🔥 ${st}にち つづいてるよ！`:'おはよう！ きょうの ぼうけんを はじめよう ☀️';
+  const cover=document.getElementById('cover');
+  const em=['✨','🌸','⭐','🎈','🌈','🌟'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('span');s.className='gm-spark';s.textContent=em[i%em.length];
+    s.style.left=(6+Math.random()*86)+'%';s.style.top=(5+Math.random()*72)+'%';
+    s.style.animationDuration=(2.4+Math.random()*2.4)+'s';s.style.animationDelay=(Math.random()*2)+'s';
+    cover.appendChild(s);
+  }
+})();
+
+loadScene('wake');
+renderStats();
+</script>
+</body>
+</html>
