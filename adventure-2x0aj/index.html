@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Seoul Trip Adventure｜OHAYO NIHONGO Diary Text Adventure</title>
+<meta name="description" content="A branching Japanese-learning text adventure built from real diary episodes. Choose how to spend a winter trip to Seoul. JLPT N5–N3, hiragana + English toggles.">
+<meta name="theme-color" content="#BFE6F9">
+<style>
+/* ===== OHAYO Adventure — bright & joyful morning theme (GAMIFY_V2_DESIGN) ===== */
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#134B70; --navy2:#136A9E; --sun:#F7A928; --sun2:#F08114;
+  --skytop:#BFE6F9; --skybottom:#FFDFA8; --mid:#5D7285;
+  --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium","Yu Gothic",sans-serif;
+  --serif:"Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+}
+html,body{min-height:100%;background:#EAF4F3;font-family:var(--sans)}
+body{display:flex;justify-content:center}
+
+.app{
+  width:100%;max-width:430px;min-height:100dvh;position:relative;overflow:hidden;
+  background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 30%,#FFF0CE 68%,#FFDFA8 100%);
+  display:flex;flex-direction:column;
+}
+.app::after{content:"";position:absolute;left:50%;bottom:-110px;transform:translateX(-50%);
+  width:260px;height:260px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,rgba(255,224,130,.8),rgba(255,183,77,.55) 60%,rgba(251,140,0,.35));
+  box-shadow:0 0 70px 30px rgba(255,193,94,.35);pointer-events:none;z-index:0}
+.app>*{position:relative;z-index:1}
+
+/* ===== COVER: 朝焼けの空 ===== */
+.cover{
+  position:fixed;inset:0;z-index:30;margin:0 auto;max-width:430px;
+  background:linear-gradient(180deg,#8ED4F5 0%,#BFE6F9 24%,#FFE9A8 52%,#FFC97A 76%,#FF9E6D 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:32px 28px;text-align:center;overflow:hidden;
+  transition:opacity .5s ease,transform .5s ease;
+}
+.cover.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+.cover::before{content:"";position:absolute;left:50%;bottom:-90px;transform:translateX(-50%);
+  width:230px;height:230px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,#FFE082,#FFB74D 60%,#FB8C00);
+  box-shadow:0 0 80px 36px rgba(255,193,94,.5);z-index:0}
+.cover>*{position:relative;z-index:1}
+.cover-top-bar{position:absolute;top:0;left:0;right:0;height:6px;
+  background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7)}
+.cover-sun{width:80px;height:80px;border-radius:24px;background:#fff;
+  display:flex;align-items:center;justify-content:center;font-size:44px;
+  box-shadow:0 10px 26px rgba(19,75,112,.25);margin-bottom:18px;border:3px solid #fff}
+.cover-badge{font-size:9px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:var(--navy2);margin-bottom:12px}
+.cover-title{font-size:27px;font-weight:800;color:var(--navy);line-height:1.25;margin-bottom:8px;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.cover-title span{color:var(--sun2)}
+.cover-sub1{font-size:13px;font-weight:600;color:rgba(19,75,112,.72);margin-bottom:4px}
+.cover-sub2{font-size:11px;color:rgba(19,75,112,.55);margin-bottom:22px;line-height:1.7}
+.cover-divider{width:40px;height:2px;background:linear-gradient(90deg,#FF8A3D,#4FC3F7);margin:0 auto 22px}
+.gm-greet{font-size:13.5px;font-weight:700;color:#B45309;background:rgba(255,255,255,.8);
+  border:1.5px solid #F5C88A;border-radius:999px;padding:9px 18px;margin-bottom:18px;
+  box-shadow:0 4px 14px rgba(240,129,20,.18)}
+@keyframes gmPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.045)}}
+.btn-start{border:none;border-radius:999px;width:100%;max-width:320px;
+  background:linear-gradient(135deg,#FF8A3D,#FFB63D);color:#fff;font-family:var(--sans);
+  font-size:16px;font-weight:800;letter-spacing:.02em;padding:15px 48px;cursor:pointer;
+  box-shadow:0 10px 28px rgba(240,129,20,.45);animation:gmPulse 1.8s ease-in-out infinite}
+.cover-foot{margin-top:14px;font-size:11px;color:rgba(19,75,112,.5)}
+@keyframes gmFloat{0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-16px) rotate(9deg)}}
+.gm-spark{position:absolute;font-size:21px;animation:gmFloat 3s ease-in-out infinite;z-index:1;opacity:.9;pointer-events:none}
+
+/* ===== HEADER ===== */
+.header{padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 8px;display:flex;justify-content:space-between;align-items:flex-start}
+.header-logo{font-size:9px;font-weight:700;letter-spacing:.2em;color:var(--navy2);text-transform:uppercase;margin-bottom:2px}
+.header-logo span{color:var(--sun2)}
+.header-title{font-size:12px;font-weight:600;color:var(--navy)}
+.header-stats{display:flex;gap:6px;align-items:center}
+.stat-chip{font-size:10px;font-weight:700;background:#FFF4E3;border:1px solid #F5C88A;color:#B45309;border-radius:999px;padding:3px 9px;white-space:nowrap}
+.stat-chip.score{background:#EAF3F9;border-color:#9CC4DE;color:var(--navy)}
+.header-counter{font-size:11px;font-weight:700;color:var(--mid)}
+.header-counter b{color:var(--sun2);font-size:18px;line-height:1}
+
+/* ===== PROGRESS ===== */
+.progress-wrap{padding:0 20px 10px}
+.progress-track{height:4px;background:rgba(19,75,112,.14);border-radius:2px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--sun),#4FC3F7);border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
+
+/* ===== SCENE CARD ===== */
+.card-area{padding:0 16px 8px;flex:1;display:flex;flex-direction:column}
+.card{width:100%;background:#FAFAF8;border-radius:20px;padding:18px 20px 16px;
+  position:relative;overflow:hidden;border:1px solid #E7EFF5;
+  box-shadow:0 12px 30px rgba(19,75,112,.16);
+  animation:cardIn .35s cubic-bezier(.34,1.56,.64,1)}
+@keyframes cardIn{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes gmSlide{to{background-position:300% 0}}
+.card-accent-bar{position:absolute;top:0;left:0;right:0;height:5px;
+  background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7,#66D9B8,#FF8A3D);
+  background-size:300% 100%;animation:gmSlide 7s linear infinite}
+.card-tag{font-size:8.5px;font-weight:700;letter-spacing:.2em;color:var(--sun2);text-transform:uppercase;margin-bottom:8px}
+.card-emoji{font-size:34px;line-height:1;margin-bottom:10px}
+.card-kanji{font-family:var(--serif);font-size:17px;font-weight:600;line-height:1.85;color:#1A1A1A}
+.reveal-section{overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1),opacity .3s ease;max-height:0;opacity:0}
+.reveal-section.visible{max-height:420px;opacity:1}
+.reveal-inner{padding-top:12px}
+.reveal-label{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.reveal-bar{width:2px;height:11px;border-radius:1px;flex-shrink:0}
+.reveal-bar-blue{background:#4FA3CE}
+.reveal-bar-mid{background:#BDBDBD}
+.reveal-label-text{font-size:8px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#8A8578}
+.hira-text{font-size:13px;line-height:1.9;color:#555}
+.en-text{font-size:12px;line-height:1.7;color:#7A7568;font-style:italic}
+.vocab-pill-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;padding-top:12px;border-top:1px dashed #E5E0D5}
+.vocab-pill{font-size:10.5px;font-weight:700;color:#B45309;background:#FFF4E3;border:1px solid #F5C88A;border-radius:999px;padding:4px 10px}
+.vocab-pill small{font-weight:500;color:#C98A3E}
+
+/* ===== TOGGLES ===== */
+.btn-row{padding:8px 16px 4px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn{border:none;border-radius:14px;padding:10px 8px;font-family:var(--sans);font-size:11px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;transition:transform .12s ease}
+.btn:active{transform:scale(.94)}
+.btn-icon{font-size:16px;line-height:1}
+.btn-hira{background:#E3F4FF;color:var(--navy2);border:1.5px solid #9CD0F0}
+.btn-hira.active{background:#4FA3CE;color:#fff;border-color:#4FA3CE}
+.btn-en{background:#FFF6E3;color:#B45309;border:1.5px solid #F5D9A0}
+.btn-en.active{background:var(--sun);color:#fff;border-color:var(--sun)}
+
+/* ===== CHOICES ===== */
+.choice-wrap{padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.choice-label{font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--navy2);text-transform:uppercase;margin:4px 2px 8px;text-align:center}
+.choice-btn{width:100%;border:1.5px solid #E0D8C8;border-radius:16px;background:#fff;
+  padding:12px 16px;margin-bottom:8px;cursor:pointer;text-align:left;font-family:var(--sans);
+  display:flex;align-items:center;gap:12px;transition:transform .12s ease,box-shadow .12s ease;
+  box-shadow:0 4px 12px rgba(19,75,112,.08);animation:cardIn .35s cubic-bezier(.34,1.56,.64,1)}
+.choice-btn:active{transform:scale(.97)}
+.choice-emoji{font-size:22px;flex-shrink:0}
+.choice-main{font-size:14px;font-weight:700;color:var(--navy);line-height:1.5}
+.choice-sub{font-size:10.5px;color:#8A94A0;margin-top:2px;line-height:1.4}
+.choice-btn.go{background:linear-gradient(135deg,#FF8A3D,#FFB63D);border-color:#F08114;justify-content:center}
+.choice-btn.go .choice-main{color:#fff}
+.choice-btn.go .choice-sub{color:rgba(255,255,255,.85)}
+
+/* ===== ENDING ===== */
+.ending{
+  position:fixed;inset:0;z-index:20;margin:0 auto;max-width:430px;display:none;
+  background:linear-gradient(180deg,#BFE6F9 0%,#FFE9A8 55%,#FFC97A 100%);
+  flex-direction:column;align-items:center;padding:34px 22px 30px;text-align:center;overflow-y:auto;
+}
+.ending.show{display:flex;animation:cardIn .4s ease}
+.ending-sun{width:64px;height:64px;border-radius:20px;background:#fff;display:flex;align-items:center;justify-content:center;
+  font-size:36px;box-shadow:0 8px 24px rgba(19,75,112,.2);margin-bottom:12px;flex-shrink:0}
+.ending-title{font-size:23px;font-weight:800;color:var(--navy);margin-bottom:6px;line-height:1.3}
+.ending-title span{color:var(--sun2)}
+.ending-sub{font-size:11.5px;color:var(--mid);line-height:1.7;margin-bottom:14px}
+.complete-stats{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
+.cstat{background:#FFFDF7;border:1px solid #EDE7D8;border-radius:12px;padding:10px 14px;min-width:84px}
+.cstat .v{font-size:19px;font-weight:800;color:var(--navy)}
+.cstat .l{font-size:9px;font-weight:700;letter-spacing:.12em;color:#8A8578;text-transform:uppercase;margin-top:2px}
+.badge-line{font-size:13px;font-weight:700;color:#B45309;background:#FFF4E3;border:1px solid #F5C88A;border-radius:999px;padding:6px 16px;display:inline-block;margin-top:2px}
+.xp-note{font-size:10.5px;color:#8A8578;margin:6px 0 14px}
+.vocab-box{width:100%;background:#fff;border:1px solid #DDE6EC;border-radius:16px;padding:14px 16px;margin-bottom:16px;text-align:left}
+.vocab-box-title{font-size:10px;font-weight:700;letter-spacing:.18em;color:var(--navy2);text-transform:uppercase;margin-bottom:10px;text-align:center}
+.vocab-item{display:flex;align-items:baseline;gap:8px;padding:7px 0;border-bottom:1px dashed #EDE7D8;flex-wrap:wrap}
+.vocab-item:last-child{border-bottom:none}
+.vocab-word{font-family:var(--serif);font-size:15px;font-weight:700;color:#1A1A1A}
+.vocab-read{font-size:11px;color:var(--navy2);font-weight:600}
+.vocab-en{font-size:11px;color:#8A94A0;font-style:italic;margin-left:auto}
+.cta-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;
+  border-radius:16px;padding:14px 16px;margin-bottom:9px;text-decoration:none;
+  font-size:14px;font-weight:800;font-family:var(--sans);transition:transform .12s ease}
+.cta-btn:active{transform:scale(.97)}
+.cta-primary{background:linear-gradient(135deg,#FF8A3D,#FFB63D);color:#fff;box-shadow:0 10px 24px rgba(240,129,20,.4)}
+.cta-secondary{background:#fff;color:var(--navy);border:1.5px solid #C9DCE9;box-shadow:0 4px 12px rgba(19,75,112,.1)}
+.cta-note{font-size:10px;color:rgba(19,75,112,.55);margin:4px 0 12px;line-height:1.6}
+.btn-restart{border:1.5px solid #C9DCE9;background:rgba(255,255,255,.7);color:var(--navy);
+  font-family:var(--sans);font-size:12.5px;font-weight:700;cursor:pointer;padding:11px 26px;border-radius:999px}
+.ending-foot{margin-top:14px;font-size:10px;color:rgba(19,75,112,.45)}
+.ending-foot a{color:var(--navy2)}
+
+/* ===== 紙吹雪 ===== */
+@keyframes gmDrop{to{transform:translateY(112vh) rotate(720deg);opacity:.9}}
+.gm-conf{position:fixed;top:-18px;width:10px;height:16px;border-radius:3px;z-index:99;
+  animation:gmDrop linear forwards;pointer-events:none}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- COVER -->
+  <div class="cover" id="cover">
+    <div class="cover-top-bar"></div>
+    <div class="cover-sun">☀️</div>
+    <div class="cover-badge">Diary Text Adventure</div>
+    <div class="cover-title">Seoul Trip<br><span>Adventure</span></div>
+    <div class="cover-sub1">そうるの たび、どう すごす？</div>
+    <div class="cover-sub2">A branching story made from real diary episodes.<br>Your choices shape the day. — JLPT N5–N3</div>
+    <div class="cover-divider"></div>
+    <div class="gm-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう ☀️</div>
+    <button class="btn-start" onclick="startGame()">Start the Morning →</button>
+    <div class="cover-foot">OHAYO NIHONGO · おはよう日本語 · Free</div>
+  </div>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="header-logo">OHAYO <span>NIHONGO</span></div>
+      <div class="header-title">Seoul Trip Adventure</div>
+    </div>
+    <div class="header-stats">
+      <span class="stat-chip" id="streakChip">🔥 0</span>
+      <span class="stat-chip score" id="xpChip">⭐ 0</span>
+      <span class="header-counter"><b id="stepNum">1</b>/5</span>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:20%"></div></div>
+  </div>
+
+  <!-- SCENE -->
+  <div class="card-area">
+    <div class="card" id="card">
+      <div class="card-accent-bar"></div>
+      <div class="card-tag" id="cardTag"></div>
+      <div class="card-emoji" id="cardEmoji"></div>
+      <div class="card-kanji" id="cardKanji"></div>
+      <div class="reveal-section" id="hiraSection"><div class="reveal-inner">
+        <div class="reveal-label"><div class="reveal-bar reveal-bar-blue"></div><div class="reveal-label-text">ひらがな</div></div>
+        <div class="hira-text" id="cardHira"></div>
+      </div></div>
+      <div class="reveal-section" id="enSection"><div class="reveal-inner">
+        <div class="reveal-label"><div class="reveal-bar reveal-bar-mid"></div><div class="reveal-label-text">English</div></div>
+        <div class="en-text" id="cardEn"></div>
+      </div></div>
+      <div class="vocab-pill-row" id="vocabRow"></div>
+    </div>
+  </div>
+
+  <!-- TOGGLES -->
+  <div class="btn-row">
+    <button class="btn btn-hira" id="btnHira" onclick="toggleHira()"><span class="btn-icon">あ</span>Hiragana</button>
+    <button class="btn btn-en" id="btnEn" onclick="toggleEn()"><span class="btn-icon">EN</span>English</button>
+  </div>
+
+  <!-- CHOICES -->
+  <div class="choice-wrap">
+    <div class="choice-label" id="choiceLabel">どうする？ — What will you do?</div>
+    <div id="choices"></div>
+  </div>
+
+  <!-- ENDING -->
+  <div class="ending" id="ending">
+    <div class="ending-sun">🌅</div>
+    <div class="ending-title">今日はここまで。<br><span>また明日！</span></div>
+    <div class="ending-sub" id="endingSub">That's it for today — see you tomorrow!<br>You lived one full morning in Japanese. +20 XP!</div>
+    <div class="complete-stats">
+      <div class="cstat"><div class="v" id="cStreak">🔥 0</div><div class="l">Day streak</div></div>
+      <div class="cstat"><div class="v">+20</div><div class="l">Story XP</div></div>
+      <div class="cstat"><div class="v" id="cXp">0</div><div class="l">Total XP</div></div>
+    </div>
+    <div><span class="badge-line" id="cBadge">🌅 Sunrise Beginner</span></div>
+    <div class="xp-note" id="cNext"></div>
+    <div class="vocab-box">
+      <div class="vocab-box-title">📖 Words you met today — 今日出会った言葉</div>
+      <div id="vocabList"></div>
+    </div>
+    <a class="cta-btn cta-primary" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">🎁 Get the Free Starter Pack</a>
+    <a class="cta-btn cta-secondary" href="https://www.ohayonihongo.net/free-qf9lbx/" target="_blank" rel="noopener">🃏 Practice with Free Flashcards</a>
+    <div class="cta-note">Real 1-minute Japanese diary audio, scripts &amp; flashcards<br>— new episode every morning.</div>
+    <button class="btn-restart" onclick="restart()">↩ 違う朝を生きてみる — Try another path</button>
+    <div class="ending-foot">Every path is a real diary episode from my Seoul trip and Korea days in Tokyo.<br>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></div>
+  </div>
+</div>
+
+<script>
+/* ===== Story data — built from OHAYO NIHONGO January diary episodes (D-001〜025) ===== */
+const SCENES = {
+  wake: {
+    step:1, tag:"Scene 1 · Arrival Night · From Diary #7", emoji:"🇰🇷",
+    kanji:"今日は韓国・ソウルからおはようございます。昨日の夜、羽田からソウルにやってきました。ソウルはとっても寒くて、今日の最低気温はマイナス10度。それでも韓国にはオンドルがあるので、ホテルの中はとても温かくて、半袖でも過ごせるくらいです。そして私、ソウルに来ると必ずチェックインの前に、次の日の朝ごはんのために、コンビニでキンパを買うのが定番なんです。さあ、明日の朝はどう過ごす？",
+    hira:"きょうは かんこく・そうるから おはようございます。きのうの よる、はねだから そうるに やってきました。そうるは とっても さむくて、きょうの さいてい きおんは まいなす じゅうど。それでも かんこくには おんどるが あるので、ほてるの なかは とても あたたかくて、はんそででも すごせる くらいです。そして わたし、そうるに くると かならず ちぇっくいんの まえに、つぎの ひの あさごはんの ために、こんびにで きんぱを かうのが ていばんなんです。さあ、あしたの あさは どう すごす？",
+    en:"Good morning from Seoul, Korea! Last night I arrived from Haneda. Seoul is so cold — today's low is minus 10°C. Even so, Korea has ondol floor heating, so the inside of the hotel is warm enough to spend the day in short sleeves. And whenever I come to Seoul, before checking in I always buy kimbap at a convenience store for the next day's breakfast — that's my little routine. So — how shall I spend tomorrow morning?",
+    vocab:[{w:"最低気温",r:"さいていきおん",e:"lowest temperature"},{w:"定番",r:"ていばん",e:"go-to, routine"},{w:"半袖",r:"はんそで",e:"short sleeves"}],
+    choices:[
+      {emoji:"☕", main:"ホテルの近くのカフェで朝の時間", sub:"ほてるの ちかくの かふぇで あさの じかん — Morning time at a café near the hotel", to:"cafe"},
+      {emoji:"🚌", main:"バスに乗って、朝からお出かけ", sub:"ばすに のって、あさから おでかけ — Hop on a bus and head out", to:"bus"}
+    ]
+  },
+  cafe: {
+    step:2, tag:"Scene 2 · Café Morning · From Diary #9", emoji:"☕",
+    kanji:"実は、10年以上続けてきた朝のルーティーンを、今回はちょっと変えてみました。いつもなら6時前に起きてジムでウォーキングやランニングをするんですが、今回は足をねんざしているので、代わりにホテルの近くのカフェで朝の時間を過ごしました。朝7時の開店直後はほとんど人がいませんでしたが、8時頃には通勤途中の方や犬のお散歩途中の人たちが来て、柔らかい空気が流れていました。新しい世界のドアを開けたような朝です。……さて、お昼は韓国ごはん！何を食べる？",
+    hira:"じつは、じゅうねんいじょう つづけてきた あさの るーてぃーんを、こんかいは ちょっと かえてみました。いつもなら ろくじまえに おきて じむで うぉーきんぐや らんにんぐを するんですが、こんかいは あしを ねんざ しているので、かわりに ほてるの ちかくの かふぇで あさの じかんを すごしました。あさ しちじの かいてん ちょくごは ほとんど ひとが いませんでしたが、はちじごろには つうきんとちゅうの かたや いぬの おさんぽとちゅうの ひとたちが きて、やわらかい くうきが ながれていました。あたらしい せかいの どあを あけたような あさです。……さて、おひるは かんこくごはん！なにを たべる？",
+    en:"Actually, this time I changed the morning routine I've kept for over ten years. Normally I get up before six and walk or run at the gym, but this time I've sprained my ankle, so instead I spent the morning at a café near the hotel. Right after it opened at 7 a.m. there was almost no one there, but around eight, people on their way to work and people out walking their dogs came in, and a soft, gentle air flowed through the café. It was a morning like opening the door to a new world... Now, lunch will be Korean food! What shall I eat?",
+    vocab:[{w:"代わりに",r:"かわりに",e:"instead"},{w:"開店",r:"かいてん",e:"opening (of a shop)"},{w:"柔らかい",r:"やわらかい",e:"soft, gentle"}],
+    choices:[
+      {emoji:"🥩", main:"韓国牛の生ユッケのお店へ", sub:"かんこくぎゅうの なまゆっけの おみせへ — Go for Korean beef yukhoe", to:"yukke"},
+      {emoji:"🌶", main:"市場で粉唐辛子を買う", sub:"いちばで こなとうがらしを かう — Buy red pepper powder at the market", to:"pepper"},
+      {emoji:"🧴", main:"お土産のハンドクリームを探す", sub:"おみやげの はんどくりーむを さがす — Look for hand cream souvenirs", to:"hand"}
+    ]
+  },
+  bus: {
+    step:2, tag:"Scene 2 · Bus Strike! · From Diary #8", emoji:"🚌",
+    kanji:"次の日の朝は、カフェでコーヒーとケーキ。ゆったりした時間……のはずが、まさかのバスがストライキ！ 心臓がドキドキ、大慌てです。でも、余裕をもって計画していたおかげで、すぐに電車に切り替えて無事に到着。旅は、こういうことがあるからこそ、楽しいんですよね。……さて、お昼は韓国ごはん！何を食べる？",
+    hira:"つぎの ひの あさは、かふぇで こーひーと けーき。ゆったりした じかん……の はずが、まさかの ばすが すとらいき！ しんぞうが どきどき、おおあわてです。でも、よゆうを もって けいかく していた おかげで、すぐに でんしゃに きりかえて ぶじに とうちゃく。たびは、こういう ことが あるからこそ、たのしいんですよね。……さて、おひるは かんこくごはん！なにを たべる？",
+    en:"The next morning, I was enjoying coffee and cake at a café, a nice relaxed time... when — no way — the buses went on strike! My heart pounded and I panicked. But thanks to planning my schedule with room to spare, I switched to the train right away and arrived safely. Trips are fun precisely because things like this happen... Now, lunch will be Korean food! What shall I eat?",
+    vocab:[{w:"心臓",r:"しんぞう",e:"heart"},{w:"大慌て",r:"おおあわて",e:"big panic"},{w:"無事に",r:"ぶじに",e:"safely"}],
+    choices:[
+      {emoji:"🥩", main:"韓国牛の生ユッケのお店へ", sub:"かんこくぎゅうの なまゆっけの おみせへ — Go for Korean beef yukhoe", to:"yukke"},
+      {emoji:"🌶", main:"市場で粉唐辛子を買う", sub:"いちばで こなとうがらしを かう — Buy red pepper powder at the market", to:"pepper"},
+      {emoji:"🧴", main:"お土産のハンドクリームを探す", sub:"おみやげの はんどくりーむを さがす — Look for hand cream souvenirs", to:"hand"}
+    ]
+  },
+  yukke: {
+    step:3, tag:"Scene 3 · Korean Feast · From Diary #10", emoji:"🥩",
+    kanji:"韓国牛の生ユッケ、チゲスープ、やわらか〜いポッサム、海鮮チヂミ……。まだまだ食べたいものがたくさんあるのに、私のお腹は1つしかないので、全部を楽しめなくて残念です。日本に帰る飛行機で、もう「また韓国料理を食べたい！」と思うんです。……あっという間に旅は終わり、東京に帰ってきました。でも、韓国への愛はまだまだ続きます。この後はどうする？",
+    hira:"かんこくぎゅうの なまゆっけ、ちげすーぷ、やわらか〜い ぽっさむ、かいせん ちぢみ……。まだまだ たべたい ものが たくさん あるのに、わたしの おなかは ひとつしか ないので、ぜんぶを たのしめなくて ざんねんです。にほんに かえる ひこうきで、もう「また かんこくりょうりを たべたい！」と おもうんです。……あっというまに たびは おわり、とうきょうに かえってきました。でも、かんこくへの あいは まだまだ つづきます。このあとは どうする？",
+    en:"Raw yukhoe made from Korean beef, jjigae soup, melt-in-your-mouth steamed pork bossam, seafood pancake... There are still so many things I want to eat, but I only have one stomach — such a shame I can't enjoy them all. The moment I board the plane back to Japan, I'm already thinking, \"I want to eat Korean food again soon!\"... The trip flew by, and now I'm back in Tokyo. But my love for Korea goes on. What's next?",
+    vocab:[{w:"残念",r:"ざんねん",e:"disappointing, a shame"},{w:"飛行機",r:"ひこうき",e:"airplane"},{w:"料理",r:"りょうり",e:"cuisine, cooking"}],
+    choices:[
+      {emoji:"🏘", main:"コリアンタウン・新大久保へ行く", sub:"こりあんたうん・しんおおくぼへ いく — Go to Shin-Okubo, Tokyo's Korea Town", to:"okubo"},
+      {emoji:"✨", main:"AIと一緒に韓国スキンケアを見直す", sub:"AIと いっしょに かんこく すきんけあを みなおす — Rethink Korean skincare with AI", to:"skincare"}
+    ]
+  },
+  pepper: {
+    step:3, tag:"Scene 3 · Red Pepper Love · From Diary #50", emoji:"🌶",
+    kanji:"最近、韓国の粉唐辛子にすっかりハマっています。辛いというよりは少し甘みがあって、旨みが強い、やみつきになる味なんです。私は豆乳との組み合わせがお気に入りで、よくおかゆやパスタを作って食べています。この粉唐辛子なしでは、もう生きていけません。……あっという間に旅は終わり、東京に帰ってきました。でも、韓国への愛はまだまだ続きます。この後はどうする？",
+    hira:"さいきん、かんこくの こなとうがらしに すっかり はまっています。からいと いうよりは すこし あまみが あって、うまみが つよい、やみつきに なる あじなんです。わたしは とうにゅうとの くみあわせが おきにいりで、よく おかゆや ぱすたを つくって たべています。この こなとうがらし なしでは、もう いきていけません。……あっというまに たびは おわり、とうきょうに かえってきました。でも、かんこくへの あいは まだまだ つづきます。このあとは どうする？",
+    en:"Lately I'm completely hooked on Korean red pepper powder. Rather than spicy, it has a slight sweetness and strong umami — a taste you get addicted to. My favorite is combining it with soy milk, and I often make rice porridge or pasta with it. I can no longer live without this red pepper powder... The trip flew by, and now I'm back in Tokyo. But my love for Korea goes on. What's next?",
+    vocab:[{w:"粉唐辛子",r:"こなとうがらし",e:"red pepper powder"},{w:"旨み",r:"うまみ",e:"umami"},{w:"やみつき",r:"やみつき",e:"addicted (to a taste)"}],
+    choices:[
+      {emoji:"🏘", main:"コリアンタウン・新大久保へ行く", sub:"こりあんたうん・しんおおくぼへ いく — Go to Shin-Okubo, Tokyo's Korea Town", to:"okubo"},
+      {emoji:"✨", main:"AIと一緒に韓国スキンケアを見直す", sub:"AIと いっしょに かんこく すきんけあを みなおす — Rethink Korean skincare with AI", to:"skincare"}
+    ]
+  },
+  hand: {
+    step:3, tag:"Scene 3 · Silky Hands · From Diary #32", emoji:"🧴",
+    kanji:"最近、手の乾燥やシワが気になり始めたので、韓国のハンドクリームを使い始めました。香りがとても良くて、幸せな気分になるので、韓国に行くたびに買ってきています。毎日こまめに塗って保湿を続けたら、手がだんだんすべすべになってきました。すべすべの手を見るたびに、ニヤニヤしてしまいます。……あっという間に旅は終わり、東京に帰ってきました。でも、韓国への愛はまだまだ続きます。この後はどうする？",
+    hira:"さいきん、ての かんそうや しわが きになりはじめたので、かんこくの はんどくりーむを つかいはじめました。かおりが とても よくて、しあわせな きぶんに なるので、かんこくに いくたびに かってきています。まいにち こまめに ぬって ほしつを つづけたら、てが だんだん すべすべに なってきました。すべすべの てを みるたびに、にやにや してしまいます。……あっというまに たびは おわり、とうきょうに かえってきました。でも、かんこくへの あいは まだまだ つづきます。このあとは どうする？",
+    en:"Lately, the dryness and wrinkles on my hands started to bother me, so I began using a Korean hand cream. It smells wonderful and makes me feel happy, so I buy some every time I go to Korea. I kept applying it diligently every day, and my hands have gradually become silky smooth. Every time I see my smooth hands, I can't help grinning... The trip flew by, and now I'm back in Tokyo. But my love for Korea goes on. What's next?",
+    vocab:[{w:"乾燥",r:"かんそう",e:"dryness"},{w:"保湿",r:"ほしつ",e:"moisturizing"},{w:"香り",r:"かおり",e:"scent"}],
+    choices:[
+      {emoji:"🏘", main:"コリアンタウン・新大久保へ行く", sub:"こりあんたうん・しんおおくぼへ いく — Go to Shin-Okubo, Tokyo's Korea Town", to:"okubo"},
+      {emoji:"✨", main:"AIと一緒に韓国スキンケアを見直す", sub:"AIと いっしょに かんこく すきんけあを みなおす — Rethink Korean skincare with AI", to:"skincare"}
+    ]
+  },
+  okubo: {
+    step:4, tag:"Scene 4 · Korea Town · From Diary #120", emoji:"🏘",
+    kanji:"昨日は、友達と韓国料理を食べに行きました。東京の新大久保はコリアンタウンと呼ばれている場所で、韓国料理のお店や韓国コスメのお店、韓国食材のスーパーまで並んでいて、本当に韓国に旅行に来たような気分になります。私はいつも、韓国料理を食べた後、帰りに大好きなキンパを買って帰るのが定番です。今回は韓国スーパーでお菓子やお茶を買って、コスメのお店でスキンケアを少し買い足しました。さて、この後は？",
+    hira:"きのうは、ともだちと かんこくりょうりを たべに いきました。とうきょうの しんおおくぼは こりあんたうんと よばれている ばしょで、かんこくりょうりの おみせや かんこくこすめの おみせ、かんこくしょくざいの すーぱーまで ならんでいて、ほんとうに かんこくに りょこうに きたような きぶんに なります。わたしは いつも、かんこくりょうりを たべた あと、かえりに だいすきな きんぱを かって かえるのが ていばんです。こんかいは かんこくすーぱーで おかしや おちゃを かって、こすめの おみせで すきんけあを すこし かいたしました。さて、このあとは？",
+    en:"Yesterday I went out for Korean food with a friend. Shin-Okubo in Tokyo is known as Korea Town — Korean restaurants, Korean cosmetics shops, even Korean grocery stores line the streets, and it really feels like traveling to Korea. After eating Korean food, I always buy my beloved kimbap on the way home — that's my routine. This time I also stopped by the Korean supermarket for sweets and tea, and bought a little more skincare at the cosmetics shop. Now — what's next?",
+    vocab:[{w:"食材",r:"しょくざい",e:"food ingredients"},{w:"買い足す",r:"かいたす",e:"to buy more"},{w:"気分",r:"きぶん",e:"mood, feeling"}],
+    choices:[
+      {emoji:"💄", main:"コスメ屋さんでメイクのお話", sub:"こすめやさんで めいくの おはなし — A makeup story at the cosmetics shop", to:"cosme"},
+      {emoji:"🎬", main:"韓国映画を観る", sub:"かんこくえいがを みる — Watch a Korean movie", to:"movie"}
+    ]
+  },
+  skincare: {
+    step:4, tag:"Scene 4 · AI Skincare · From Diary #59", emoji:"✨",
+    kanji:"最近、肌の調子が良くなくて、鏡を見るたびに少し悲しい気持ちになっていました。そこで、AIを使って自分に合うスキンケアを見直してみることにしたんです。私は韓国のスキンケア製品が大好きなので、年齢や肌の悩み、今使っているものを詳しく伝えて、韓国のスキンケアに限定して相談しました。すると、私の年齢に合わせた美容液や、効果的な使い方のポイントまで丁寧に教えてくれました。ちょうど韓国コスメのオンラインサイトが大セールをしていたので、おすすめされた商品をまとめて注文しました。さて、この後は？",
+    hira:"さいきん、はだの ちょうしが よくなくて、かがみを みるたびに すこし かなしい きもちに なっていました。そこで、AIを つかって じぶんに あう すきんけあを みなおしてみることに したんです。わたしは かんこくの すきんけあ せいひんが だいすきなので、ねんれいや はだの なやみ、いま つかっている ものを くわしく つたえて、かんこくの すきんけあに げんていして そうだんしました。すると、わたしの ねんれいに あわせた びようえきや、こうかてきな つかいかたの ぽいんとまで ていねいに おしえてくれました。ちょうど かんこくこすめの おんらいんさいとが だいせーるを していたので、おすすめされた しょうひんを まとめて ちゅうもんしました。さて、このあとは？",
+    en:"Lately my skin hasn't been in good shape, and every time I looked in the mirror I felt a little sad. So I decided to use AI to rethink the skincare that suits me. I love Korean skincare products, so I described my age, my skin concerns, and what I'm currently using in detail, and asked for advice limited to Korean skincare. It carefully taught me everything — from serums matched to my age down to tips for using them effectively. And since a Korean cosmetics online site happened to be having a big sale, I ordered the recommended products all at once. Now — what's next?",
+    vocab:[{w:"肌",r:"はだ",e:"skin"},{w:"美容液",r:"びようえき",e:"serum"},{w:"相談",r:"そうだん",e:"consultation"}],
+    choices:[
+      {emoji:"🥄", main:"お土産の朝鮮人参をヨーグルトに", sub:"おみやげの ちょうせんにんじんを よーぐるとに — Try the ginseng souvenir in yogurt", to:"ginseng"},
+      {emoji:"✈️", main:"来年の韓国旅行に思いを馳せる", sub:"らいねんの かんこくりょこうに おもいを はせる — Dream of next year's Korea trip", to:"nextyear"}
+    ]
+  },
+  cosme: {
+    step:5, tag:"Final Scene · Makeup Update · From Diary #130", emoji:"💄",
+    kanji:"先日、新大久保の韓国コスメのお店で、衝撃の一言を言われました。「お肌は綺麗だけど、メイクが古いね」と言われたんです。私は優しい雰囲気にしたくて、あえて太い眉のメイクにしていました。でも店員さんが言うには、眉毛は薄い色にして、ふんわり明るい雰囲気に仕上げたほうが良くて、ちょっとメイクを変えるだけで7〜8歳は若く見えるそうです。スキンケアは大好きなのに、メイクは10年前で止まっていたようです。お手頃価格の化粧品を買ってきたので、時代遅れのメイクから脱出しようと思います。",
+    hira:"せんじつ、しんおおくぼの かんこくこすめの おみせで、しょうげきの ひとことを いわれました。「おはだは きれいだけど、めいくが ふるいね」と いわれたんです。わたしは やさしい ふんいきに したくて、あえて ふとい まゆの めいくに していました。でも てんいんさんが いうには、まゆげは うすい いろに して、ふんわり あかるい ふんいきに しあげた ほうが よくて、ちょっと めいくを かえるだけで しち、はっさいは わかく みえる そうです。すきんけあは だいすきなのに、めいくは じゅうねんまえで とまっていた ようです。おてごろ かかくの けしょうひんを かってきたので、じだいおくれの めいくから だっしゅつ しようと おもいます。",
+    en:"The other day, at a Korean cosmetics shop in Shin-Okubo, I was told something shocking: 'Your skin is beautiful, but your makeup is old-fashioned.' Wanting a gentle look, I had deliberately been doing my eyebrows thick. But according to the shop clerk, I should use a lighter color on my brows and finish with a soft, bright look — just changing my makeup a little would make me look seven or eight years younger. I love skincare, yet my makeup had apparently stopped ten years ago. I bought some reasonably priced cosmetics, so I'm going to escape from my outdated makeup.",
+    vocab:[{w:"衝撃",r:"しょうげき",e:"shock"},{w:"雰囲気",r:"ふんいき",e:"atmosphere, look"},{w:"時代遅れ",r:"じだいおくれ",e:"outdated"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  },
+  movie: {
+    step:5, tag:"Final Scene · Korean Movie · From Diary #62", emoji:"🎬",
+    kanji:"この前観た韓国映画の結末が、私の予想とは全く逆だったので、少しショックでした。「きっとこうなる」と期待していただけに、どこか納得できないような、すっきりしない気持ちが続いています。でも、よく考えてみると、こうした結末もひとつの現実なのかもしれません。私たちの人生も、いつも期待したとおりになるわけではありません。だからこそ、どんな結末になったとしても、その時の自分の気持ちに正直に生きることが大事だと思いました。",
+    hira:"このまえ みた かんこくえいがの けつまつが、わたしの よそうとは まったく ぎゃくだったので、すこし しょっくでした。「きっと こうなる」と きたいしていた だけに、どこか なっとくできない ような、すっきりしない きもちが つづいています。でも、よく かんがえてみると、こうした けつまつも ひとつの げんじつなのかも しれません。わたしたちの じんせいも、いつも きたいした とおりに なるわけでは ありません。だからこそ、どんな けつまつに なったとしても、そのときの じぶんの きもちに しょうじきに いきることが だいじだと おもいました。",
+    en:"The ending of a Korean movie I watched recently was the complete opposite of what I expected, and it left me a little shocked. Precisely because I had been so sure 'it will surely end this way,' an unsettled, unconvinced feeling has stayed with me. But thinking it over, maybe an ending like that is one kind of reality, too. Our lives don't always turn out the way we expect, either. That's exactly why I felt it's important to live honestly with my own feelings, whatever the ending turns out to be.",
+    vocab:[{w:"結末",r:"けつまつ",e:"ending"},{w:"予想",r:"よそう",e:"expectation, prediction"},{w:"正直",r:"しょうじき",e:"honest"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  },
+  ginseng: {
+    step:5, tag:"Final Scene · Ginseng Yogurt · From Diary #67", emoji:"🥄",
+    kanji:"今年の花粉症はあまりにもひどいので、新しい対策を始めました。腸内環境を整えることが大切で、発酵食品が良いそうです。意外だったのが、「朝鮮人参」が花粉症に効果があるという話です。実は、1月に韓国に行った時、お友達からお土産にもらった朝鮮人参が手元にありました。砂糖漬けですが少し苦味があるので、なかなか手が伸びませんでした。でも健康のために刻んで、ドライフルーツと一緒にヨーグルトに入れて食べ始めました。体に良い習慣なので、これからも続けていきたいです。",
+    hira:"ことしの かふんしょうは あまりにも ひどいので、あたらしい たいさくを はじめました。ちょうないかんきょうを ととのえることが たいせつで、はっこうしょくひんが よい そうです。いがいだったのが、「ちょうせんにんじん」が かふんしょうに こうかが あるという はなしです。じつは、いちがつに かんこくに いったとき、おともだちから おみやげに もらった ちょうせんにんじんが てもとに ありました。さとうづけですが すこし にがみが あるので、なかなか てが のびませんでした。でも けんこうの ために きざんで、どらいふるーつと いっしょに よーぐるとに いれて たべはじめました。からだに いい しゅうかんなので、これからも つづけて いきたいです。",
+    en:"This year's hay fever is so terrible that I've started a new countermeasure. Getting your gut environment in order is important, and fermented foods are said to be good. What surprised me was hearing that Korean ginseng is effective against hay fever. As it happens, I had some ginseng on hand — a souvenir from a friend when I went to Korea in January. It's candied in sugar, but it has a slight bitterness, so I could never quite reach for it. But for my health, I chopped it up and started eating it in yogurt together with dried fruit. It's a habit that's good for my body, so I want to keep it up.",
+    vocab:[{w:"花粉症",r:"かふんしょう",e:"hay fever"},{w:"効果",r:"こうか",e:"effect"},{w:"苦味",r:"にがみ",e:"bitterness"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  },
+  nextyear: {
+    step:5, tag:"Final Scene · Next Year, Korea · From Diary #161", emoji:"✈️",
+    kanji:"毎年この時期に大好きな韓国に行くんですが、今年は行けなくてとても悲しいです。病院の予約や仕事の出張などが重なっていて、なぜか大忙しなんです。無理矢理予定を入れると、また体調を壊してしまいそうな気がします。なので、今回の韓国旅行は泣く泣く諦めることにしました。韓国に行けないとなると、韓国のごはんが無性に食べたくなりました。近いうちに、また新大久保に韓国料理を食べに行こうと思います。韓国、また来年ね。",
+    hira:"まいとし この じきに だいすきな かんこくに いくんですが、ことしは いけなくて とても かなしいです。びょういんの よやくや しごとの しゅっちょうなどが かさなっていて、なぜか おおいそがしなんです。むりやり よていを いれると、また たいちょうを こわして しまいそうな きが します。なので、こんかいの かんこくりょこうは なくなく あきらめることに しました。かんこくに いけないと なると、かんこくの ごはんが むしょうに たべたく なりました。ちかいうちに、また しんおおくぼに かんこくりょうりを たべに いこうと おもいます。かんこく、また らいねんね。",
+    en:"Every year around this time I go to Korea, which I love, but this year I can't go and it makes me very sad. Hospital appointments and business trips have all piled up, and somehow I'm swamped. If I force a trip into my schedule, I feel like I'd wreck my health again. So this time, with tears in my eyes, I decided to give up my Korea trip. And once I knew I couldn't go, I started craving Korean food like crazy. Sometime soon, I'm going to Shin-Okubo again for Korean food. Korea — see you next year.",
+    vocab:[{w:"出張",r:"しゅっちょう",e:"business trip"},{w:"泣く泣く",r:"なくなく",e:"reluctantly, tearfully"},{w:"無性に",r:"むしょうに",e:"intensely (craving)"}],
+    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+  }
+};
+const TOTAL_STEPS = 5;
+
+/* ===== Gamification — shared localStorage keys with OHAYO flashcards ===== */
+const LEVELS=[
+  {min:0,   name:"Sunrise Beginner", emoji:"🌅"},
+  {min:100, name:"Morning Listener", emoji:"🎧"},
+  {min:300, name:"Wave Rider",       emoji:"🌊"},
+  {min:600, name:"Daily Diarist",    emoji:"📖"},
+  {min:1000,name:"OHAYO Master",     emoji:"☀️"}
+];
+const store={
+  get xp(){return +(localStorage.getItem('ohayo_xp')||0)},
+  set xp(v){localStorage.setItem('ohayo_xp',v)},
+  get streak(){return +(localStorage.getItem('ohayo_streak')||0)},
+  set streak(v){localStorage.setItem('ohayo_streak',v)},
+  get last(){return localStorage.getItem('ohayo_last')||''},
+  set last(v){localStorage.setItem('ohayo_last',v)}
+};
+function todayStr(offset=0){const d=new Date();d.setDate(d.getDate()+offset);return d.toISOString().slice(0,10);}
+function levelFor(xp){let L=LEVELS[0];for(const l of LEVELS){if(xp>=l.min)L=l;}return L;}
+function nextLevelFor(xp){for(const l of LEVELS){if(xp<l.min)return l;}return null;}
+
+/* ===== Game state ===== */
+let currentId='wake', hiraVisible=false, enVisible=false, collected=[];
+
+function renderStats(){
+  document.getElementById('streakChip').textContent=`🔥 ${store.streak}`;
+  document.getElementById('xpChip').textContent=`⭐ ${store.xp}`;
+}
+function startGame(){document.getElementById('cover').classList.add('hide');}
+
+function loadScene(id){
+  currentId=id;
+  const s=SCENES[id];
+  hiraVisible=false; enVisible=false;
+  ['hiraSection','enSection'].forEach(x=>document.getElementById(x).classList.remove('visible'));
+  ['btnHira','btnEn'].forEach(x=>document.getElementById(x).classList.remove('active'));
+  const card=document.getElementById('card');
+  card.style.animation='none'; card.offsetHeight; card.style.animation='';
+  document.getElementById('cardTag').textContent=s.tag;
+  document.getElementById('cardEmoji').textContent=s.emoji;
+  document.getElementById('cardKanji').textContent=s.kanji;
+  document.getElementById('cardHira').textContent=s.hira;
+  document.getElementById('cardEn').textContent=s.en;
+  document.getElementById('stepNum').textContent=s.step;
+  document.getElementById('progressFill').style.width=`${(s.step/TOTAL_STEPS)*100}%`;
+  // vocab pills on the card
+  document.getElementById('vocabRow').innerHTML=s.vocab.map(v=>
+    `<span class="vocab-pill">${v.w}<small>（${v.r}）</small></span>`).join('');
+  // collect vocab (dedupe by word)
+  for(const v of s.vocab){ if(!collected.some(c=>c.w===v.w)) collected.push(v); }
+  // choices
+  document.getElementById('choiceLabel').style.display=s.choices.some(c=>!c.go)?'block':'none';
+  document.getElementById('choices').innerHTML=s.choices.map((c,i)=>
+    `<button class="choice-btn${c.go?' go':''}" onclick="choose('${c.to}')">
+       <span class="choice-emoji">${c.emoji}</span>
+       <span><span class="choice-main">${c.main}</span><br><span class="choice-sub">${c.sub}</span></span>
+     </button>`).join('');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function choose(to){
+  if(to==='END'){finish();return;}
+  loadScene(to);
+}
+function toggleHira(){hiraVisible=!hiraVisible;document.getElementById('hiraSection').classList.toggle('visible',hiraVisible);document.getElementById('btnHira').classList.toggle('active',hiraVisible);}
+function toggleEn(){enVisible=!enVisible;document.getElementById('enSection').classList.toggle('visible',enVisible);document.getElementById('btnEn').classList.toggle('active',enVisible);}
+
+/* ===== Ending: +20 XP, streak, vocab summary ===== */
+function finish(){
+  const today=todayStr();
+  if(store.last!==today){
+    store.streak=(store.last===todayStr(-1))?store.streak+1:1;
+    store.last=today;
+  }
+  store.xp=store.xp+20;
+  const xp=store.xp,L=levelFor(xp),N=nextLevelFor(xp);
+  document.getElementById('cStreak').textContent=`🔥 ${store.streak}`;
+  document.getElementById('cXp').textContent=xp;
+  document.getElementById('cBadge').textContent=`${L.emoji} ${L.name}`;
+  document.getElementById('cNext').textContent=N?`Next level: ${N.emoji} ${N.name} at ${N.min} XP (${N.min-xp} to go)`:'Max level reached! すごい！';
+  document.getElementById('vocabList').innerHTML=collected.map(v=>
+    `<div class="vocab-item"><span class="vocab-word">${v.w}</span><span class="vocab-read">${v.r}</span><span class="vocab-en">${v.e}</span></div>`).join('');
+  renderStats();
+  document.getElementById('ending').classList.add('show');
+  confetti();
+}
+function restart(){
+  collected=[];
+  document.getElementById('ending').classList.remove('show');
+  loadScene('wake');
+  renderStats();
+}
+
+/* ===== 紙吹雪 ===== */
+function confetti(){
+  const cols=['#FF8A3D','#FFD34D','#4FC3F7','#66D9B8','#FF6B9D','#A855F7'];
+  for(let i=0;i<36;i++){
+    const c=document.createElement('div');c.className='gm-conf';
+    c.style.left=(Math.random()*100)+'%';c.style.background=cols[i%cols.length];
+    c.style.animationDuration=(1.4+Math.random()*1.6)+'s';c.style.animationDelay=(Math.random()*0.5)+'s';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3800);
+  }
+}
+
+/* ===== Cover: streak greeting + floating sparks (GAMIFY_V2) ===== */
+(function(){
+  const st=store.streak;
+  document.getElementById('greet').textContent=st>0?`おはよう！ 🔥 ${st}にち つづいてるよ！`:'おはよう！ きょうの ぼうけんを はじめよう ☀️';
+  const cover=document.getElementById('cover');
+  const em=['✨','🌸','⭐','🎈','🌈','🌟'];
+  for(let i=0;i<8;i++){
+    const s=document.createElement('span');s.className='gm-spark';s.textContent=em[i%em.length];
+    s.style.left=(6+Math.random()*86)+'%';s.style.top=(5+Math.random()*72)+'%';
+    s.style.animationDuration=(2.4+Math.random()*2.4)+'s';s.style.animationDelay=(Math.random()*2)+'s';
+    cover.appendChild(s);
+  }
+})();
+
+loadScene('wake');
+renderStats();
+</script>
+</body>
+</html>
