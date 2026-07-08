@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="ja">
+<!--
+═══════════════════════════════════════════════════════════════════
+ OHAYO NIHONGO — Diary Adventure STORY MAP（/adventure/）
+ 生成: Adventure_Tools/build_adventures.py（テンプレ=adventure_map_template.html）
+ Chapter 1=無料 ／ Season 1・Specials=Lemon Squeezyライセンスで解放
+═══════════════════════════════════════════════════════════════════
+-->
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diary Adventure — Story Map｜OHAYO NIHONGO</title>
+<meta name="description" content="Branching Japanese-learning stories made from real Tokyo diary episodes. Play Chapter 1 free — unlock Season 1 and the Specials in-game.">
+<meta name="theme-color" content="#134B70">
+<script src="./adventure_config.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --navy:#134B70; --ocean:#1F72A8; --sky:#BFE6F9; --sun:#F7A928; --sun2:#F08114;
+  --ink:#22384A; --cream:#FFFDF7;
+  --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium",sans-serif;
+}
+html{background:#0D2E47}
+body{font-family:var(--sans);min-height:100vh;
+  background:linear-gradient(180deg,#0F3555 0%,#1F72A8 42%,#7FB9D9 68%,#F4D98B 88%,#F7A928 100%) fixed;
+  display:flex;justify-content:center}
+.wrap{width:100%;max-width:520px;padding:26px 18px calc(env(safe-area-inset-bottom,0px) + 40px)}
+
+@keyframes tagBlink{0%,100%{opacity:1}50%{opacity:.55}}
+@keyframes pulseBtn{0%,100%{transform:scale(1);box-shadow:0 10px 28px rgba(240,129,20,.5)}50%{transform:scale(1.03);box-shadow:0 14px 36px rgba(240,129,20,.7)}}
+@keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
+
+/* header */
+.head{text-align:center;margin-bottom:20px}
+.h-logo{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.3em;color:#FFEFC9;text-transform:uppercase;
+  background:rgba(13,46,71,.5);border:1px solid rgba(255,239,201,.35);border-radius:999px;
+  padding:7px 16px;margin-bottom:12px;backdrop-filter:blur(6px)}
+.h-logo a{color:inherit;text-decoration:none}
+.h-kicker{font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:#FFD97A;
+  margin-bottom:6px;animation:tagBlink 2.6s ease-in-out infinite}
+h1{font-size:34px;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 3px 16px rgba(9,30,48,.5)}
+h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.h-sub{font-size:12px;color:rgba(220,239,251,.85);margin-top:6px}
+.h-chips{display:flex;gap:6px;justify-content:center;margin-top:12px}
+.chip{font-size:11px;font-weight:800;color:#fff;background:rgba(13,46,71,.55);
+  border:1px solid rgba(191,230,249,.3);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px)}
+.chip.xp{border-color:rgba(255,217,122,.55);color:#FFE9B8}
+
+/* section label */
+.sec{display:flex;align-items:center;gap:10px;margin:24px 2px 10px}
+.sec b{font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#FFEFC9;white-space:nowrap}
+.sec i{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,239,201,.5),transparent)}
+.sec .st{font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 10px}
+.sec .st.lock{color:#FFEFC9;background:rgba(13,46,71,.55);border:1px solid rgba(255,239,201,.3)}
+.sec .st.open{color:#0D2E47;background:linear-gradient(135deg,#FFD97A,#FFB63D)}
+
+/* featured chapter1 */
+.feat{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;cursor:pointer;
+  background:rgba(255,253,247,.95);border-radius:20px;padding:16px;font-family:var(--sans);
+  box-shadow:0 10px 32px rgba(7,24,39,.4);text-decoration:none}
+.feat .tile{flex-shrink:0;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;
+  font-size:30px;background:linear-gradient(135deg,#134B70,#3E93C4);box-shadow:0 6px 16px rgba(19,75,112,.4)}
+.feat .fl{font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#1E8449;
+  background:#E8F8EE;border:1px solid #A8E0BE;border-radius:999px;padding:3px 9px;display:inline-block;margin-bottom:4px}
+.feat b{display:block;font-size:17px;font-weight:900;color:var(--navy);line-height:1.2}
+.feat span.tg{display:block;font-size:10.5px;color:#5D7285;margin-top:3px;line-height:1.5}
+.feat .go{margin-left:auto;flex-shrink:0;width:52px;height:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;
+  font-size:19px;color:#fff;background:linear-gradient(135deg,#FF8A3D,#FFB63D);animation:pulseBtn 1.9s ease-in-out infinite}
+
+/* story cards */
+.card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;cursor:pointer;
+  background:rgba(255,253,247,.92);border-radius:16px;padding:12px 14px;margin-bottom:9px;font-family:var(--sans);
+  box-shadow:0 6px 20px rgba(7,24,39,.3);text-decoration:none;position:relative;transition:transform .12s ease}
+.card:active{transform:scale(.98)}
+.card .tile{flex-shrink:0;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;background:linear-gradient(135deg,#134B70,#3E93C4)}
+.card b{display:block;font-size:14px;font-weight:900;color:var(--navy);line-height:1.25}
+.card span.tg{display:block;font-size:9.5px;color:#5D7285;margin-top:2px;line-height:1.45}
+.card .lk{margin-left:auto;flex-shrink:0;width:38px;height:38px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:15px}
+.card.locked .lk{background:#EEF3F7;border:1.5px solid #D8E4EC}
+.card.locked .tile{filter:saturate(.35) brightness(.92)}
+.card.open .lk{background:linear-gradient(135deg,#FF8A3D,#FFB63D);color:#fff}
+
+/* season2 teaser */
+.tease{border:2px dashed rgba(255,239,201,.5);border-radius:16px;padding:16px;text-align:center;color:#FFEFC9;background:rgba(13,46,71,.35);backdrop-filter:blur(4px)}
+.tease b{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.tease span{display:block;font-size:10.5px;color:rgba(255,239,201,.85);margin-top:5px;line-height:1.6}
+
+.foot{text-align:center;margin-top:26px;font-size:10px;color:rgba(13,46,71,.75)}
+.foot a{color:#134B70;font-weight:800}
+
+/* modal */
+.ovl{position:fixed;inset:0;z-index:50;background:rgba(7,24,39,.7);backdrop-filter:blur(4px);
+  display:none;align-items:flex-end;justify-content:center;padding:16px}
+.ovl.show{display:flex}
+.sheet{width:100%;max-width:430px;background:var(--cream);border-radius:24px;padding:20px 18px 18px;
+  max-height:88dvh;overflow-y:auto;animation:sheetUp .35s cubic-bezier(.34,1.3,.64,1);position:relative;
+  box-shadow:0 -10px 50px rgba(7,24,39,.5)}
+.sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7,#66D9B8);border-radius:24px 24px 0 0}
+.x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:999px;border:none;cursor:pointer;
+  background:#EEF3F7;color:#5D7285;font-size:14px;font-weight:900}
+.m-kick{font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#B45309;text-align:center;margin-bottom:4px}
+.m-title{font-size:19px;font-weight:900;color:var(--navy);text-align:center;margin-bottom:2px}
+.m-sub{font-size:10.5px;color:#5D7285;text-align:center;line-height:1.6;margin-bottom:14px}
+.sku{display:flex;align-items:center;gap:11px;width:100%;border-radius:16px;padding:12px 14px;margin-bottom:8px;
+  text-decoration:none;font-family:var(--sans);border:1.5px solid #DCE8F0;background:#fff;position:relative;
+  box-shadow:0 3px 0 #D8E4EC,0 8px 18px rgba(19,75,112,.12);transition:transform .12s ease}
+.sku:active{transform:translateY(2px)}
+.sku.hot{border-color:#F5C88A;background:linear-gradient(180deg,#FFF9EC,#FFF4E3)}
+.sku .pr{flex-shrink:0;min-width:64px;text-align:center;font-size:16px;font-weight:900;color:var(--sun2)}
+.sku b{display:block;font-size:13px;font-weight:900;color:var(--navy)}
+.sku span.d{display:block;font-size:9.5px;color:#8A94A0;margin-top:2px;line-height:1.45}
+.sku .best{position:absolute;top:-8px;right:12px;font-size:8px;font-weight:900;letter-spacing:.08em;
+  color:#7A4A12;background:#FFD97A;border-radius:999px;padding:3px 8px;text-transform:uppercase}
+.sku[aria-disabled="true"]{opacity:.55;pointer-events:none}
+.m-div{display:flex;align-items:center;gap:8px;margin:13px 0 9px;font-size:9px;font-weight:800;
+  letter-spacing:.14em;text-transform:uppercase;color:#8A8578}
+.m-div::before,.m-div::after{content:"";flex:1;height:1px;background:#E5DCC9}
+.key-row{display:flex;gap:7px}
+.key-in{flex:1;min-width:0;border:1.5px solid #C7DEEC;border-radius:12px;background:#fff;color:var(--ink);
+  font-family:var(--sans);font-size:12px;font-weight:700;padding:11px 12px;outline:none}
+.key-in:focus{border-color:var(--ocean)}
+.key-go{border:none;border-radius:12px;background:var(--ocean);color:#fff;font-family:var(--sans);
+  font-size:11.5px;font-weight:900;padding:11px 16px;cursor:pointer;white-space:nowrap}
+.key-go[disabled]{opacity:.6}
+.m-msg{font-size:10.5px;line-height:1.6;font-weight:700;margin-top:9px;min-height:14px;color:#8A8578}
+.m-msg.err{color:#C0392B}
+.m-msg.ok{color:#1E8449}
+.m-foot{margin-top:8px;font-size:9px;color:#8A8578;text-align:center}
+.m-test{margin-top:10px;font-size:9px;font-weight:800;letter-spacing:.1em;color:#B45309;text-align:center;
+  background:#FFF4E3;border:1px dashed #F5C88A;border-radius:999px;padding:5px 12px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="h-logo"><a href="https://www.ohayonihongo.net/">OHAYO <span style="color:#FFD97A">NIHONGO</span></a></div>
+    <div class="h-kicker">— Diary Text Adventure —</div>
+    <h1>Story <em>Map</em></h1>
+    <div class="h-sub">Branching mornings made from real Tokyo diary episodes.<br>きょうは どの あさを 生きる？</div>
+    <div class="h-chips">
+      <span class="chip" id="streakChip">🔥 0</span>
+      <span class="chip xp" id="xpChip">⭐ 0 XP</span>
+    </div>
+  </div>
+
+  <div class="sec"><b>Chapter 1 · Free</b><i></i></div>
+    <a class="feat" href="../adventure-wyog1/">
+    <span class="tile">☀️</span>
+    <span><span class="fl">Free · Start here</span><b>Winter Morning</b><span class="tg">Chapter 1 · How will you spend a 1°C morning?</span></span>
+    <span class="go">▶</span>
+  </a>
+
+  <div class="sec"><b>Season 1 · Feb–Jun</b><i></i><span class="st lock" id="stS1">🔒 Locked</span></div>
+  <div id="shelfS1">
+    <a class="card locked" data-group="season1" data-href="../adventure-wsour/">
+      <span class="tile">⛄</span>
+      <span><b>Snowy Morning</b><span class="tg">Snow piles up in Tokyo — and a snowman finds friends.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+    <a class="card locked" data-group="season1" data-href="../adventure-xp335/">
+      <span class="tile">🌸</span>
+      <span><b>Spring Morning</b><span class="tg">Sakura patrol, tulips, and a white magnolia.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+    <a class="card locked" data-group="season1" data-href="../adventure-ubwf4/">
+      <span class="tile">🧺</span>
+      <span><b>Sunny Spring</b><span class="tg">Laundry in the sun and a happy closet.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+    <a class="card locked" data-group="season1" data-href="../adventure-a0ug1/">
+      <span class="tile">🗼</span>
+      <span><b>Fresh Green</b><span class="tg">Golden Week mornings, Skytree and new towns.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+    <a class="card locked" data-group="season1" data-href="../adventure-3aki2/">
+      <span class="tile">☔</span>
+      <span><b>Rainy Season</b><span class="tg">Rainy-season walks and hydrangea streets.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+  </div>
+
+  <div class="sec"><b>Specials · Themed</b><i></i><span class="st lock" id="stSp">🔒 Locked</span></div>
+  <div id="shelfSp">
+    <a class="card locked" data-group="specials" data-href="../adventure-2x0aj/">
+      <span class="tile">✈️</span>
+      <span><b>Seoul Trip</b><span class="tg">A −10°C Seoul trip — ondol, feasts & K-beauty.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+    <a class="card locked" data-group="specials" data-href="../adventure-p7osw/">
+      <span class="tile">🍚</span>
+      <span><b>Oishii Days</b><span class="tg">Porridge, laksa, unagi — a delicious day.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+    <a class="card locked" data-group="specials" data-href="../adventure-zjcmg/">
+      <span class="tile">🚉</span>
+      <span><b>Travel Mornings</b><span class="tg">Mt. Fuji, new stations and morning journeys.</span></span>
+      <span class="lk">🔒</span>
+    </a>
+  </div>
+
+  <div class="sec"><b>Season 2</b><i></i></div>
+  <div class="tease">
+    <b>Coming Soon</b>
+    <span>Jul–Dec stories are in the making.<br>New stories arrive on <b style="display:inline;font-size:10.5px">Daily+</b> first — every month.</span>
+  </div>
+
+  <div class="foot">
+    Every path is a real diary episode. New episode every morning.<br>
+    © 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/">ohayonihongo.net</a>
+  </div>
+</div>
+
+<!-- PRICE MODAL -->
+<div class="ovl" id="ovl" onclick="if(event.target===this)closeModal()">
+  <div class="sheet">
+    <button class="x" onclick="closeModal()">✕</button>
+    <div class="m-kick">Unlock the full adventure</div>
+    <div class="m-title">Choose your pass</div>
+    <div class="m-sub">One-time purchase · up to 3 devices · secure checkout by Lemon Squeezy</div>
+    <a class="sku" id="skuS1" target="_blank" rel="noopener">
+      <span class="pr" id="prS1"></span>
+      <span><b>Season 1 Pass</b><span class="d">5 monthly stories — Snowy Morning → Rainy Season</span></span>
+    </a>
+    <a class="sku" id="skuSp" target="_blank" rel="noopener">
+      <span class="pr" id="prSp"></span>
+      <span><b>Specials Pack</b><span class="d">3 themed stories — Seoul Trip · Oishii Days · Travel Mornings</span></span>
+    </a>
+    <a class="sku hot" id="skuAll" target="_blank" rel="noopener">
+      <span class="best">Best value</span>
+      <span class="pr" id="prAll"></span>
+      <span><b>All-Access</b><span class="d">Every story — Season 1 + all Specials (8 stories)</span></span>
+    </a>
+    <div class="m-div">Already have a key?</div>
+    <div class="key-row">
+      <input class="key-in" id="mKey" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="XXXX-XXXX-XXXX-XXXX">
+      <button class="key-go" id="mAct" onclick="mapActivate()">ACTIVATE</button>
+    </div>
+    <div class="m-msg" id="mMsg"></div>
+    <div class="m-foot">Your key arrives by email right after checkout.</div>
+    <div class="m-test" id="mTest">TEST MODE — key “TEST-OHAYO” unlocks</div>
+  </div>
+</div>
+
+<script>
+/* ═══════════ config & license（ゲーム本編と同一キー） ═══════════ */
+const CFG = window.OHAYO_ADV_CONFIG || {test_mode:true, products:{}};
+const LIC_LS_KEY = 'ohayo_adv_lic';
+function readLic(){ try{ return JSON.parse(localStorage.getItem(LIC_LS_KEY)||'null'); }catch(e){ return null; } }
+function saveLic(l){ localStorage.setItem(LIC_LS_KEY, JSON.stringify(l)); }
+function covers(tier, group){ return tier==='all' || tier===group; }
+function tierOf(productId){
+  const p=CFG.products||{}, pid=String(productId);
+  if(p.allaccess && String(p.allaccess.product_id)===pid) return 'all';
+  if(p.season1 && String(p.season1.product_id)===pid) return 'season1';
+  if(p.specials && String(p.specials.product_id)===pid) return 'specials';
+  return null;
+}
+async function lsApi(path, params){
+  const res=await fetch('https://api.lemonsqueezy.com/v1/licenses/'+path,{
+    method:'POST',headers:{'Accept':'application/json'},body:new URLSearchParams(params)});
+  return res.json();
+}
+
+/* ═══════════ render lock states ═══════════ */
+function renderLocks(){
+  const lic=readLic();
+  const s1=lic&&covers(lic.tier,'season1'), sp=lic&&covers(lic.tier,'specials');
+  document.querySelectorAll('.card[data-group="season1"]').forEach(c=>setCard(c,s1));
+  document.querySelectorAll('.card[data-group="specials"]').forEach(c=>setCard(c,sp));
+  setShelf('stS1',s1); setShelf('stSp',sp);
+}
+function setCard(c,open){
+  c.classList.toggle('open',!!open); c.classList.toggle('locked',!open);
+  c.querySelector('.lk').textContent=open?'▶':'🔒';
+  if(open){ c.setAttribute('href',c.dataset.href); c.onclick=null; }
+  else { c.removeAttribute('href'); c.onclick=(e)=>{e.preventDefault();openModal();}; }
+}
+function setShelf(id,open){
+  const el=document.getElementById(id);
+  el.textContent=open?'✓ Unlocked':'🔒 Locked';
+  el.className='st '+(open?'open':'lock');
+}
+
+/* ═══════════ modal ═══════════ */
+function fillSku(id,prId,prod){
+  const a=document.getElementById(id);
+  document.getElementById(prId).textContent=prod&&prod.price||'';
+  if(prod&&prod.checkout_url){ a.href=prod.checkout_url; a.removeAttribute('aria-disabled'); }
+  else { a.removeAttribute('href'); a.setAttribute('aria-disabled','true'); }
+}
+function openModal(){
+  const p=CFG.products||{};
+  fillSku('skuS1','prS1',p.season1); fillSku('skuSp','prSp',p.specials); fillSku('skuAll','prAll',p.allaccess);
+  if(CFG.test_mode) document.getElementById('mTest').style.display='block';
+  msg(''); document.getElementById('ovl').classList.add('show');
+}
+function closeModal(){ document.getElementById('ovl').classList.remove('show'); }
+function msg(t,cls){ const el=document.getElementById('mMsg'); el.textContent=t||''; el.className='m-msg'+(cls?' '+cls:''); }
+async function mapActivate(){
+  const key=(document.getElementById('mKey').value||'').trim(), btn=document.getElementById('mAct');
+  if(!key){ msg('Please enter your license key.','err'); return; }
+  if(CFG.test_mode && key.toUpperCase()==='TEST-OHAYO'){
+    saveLic({test:true,tier:'all',validated_at:Date.now()});
+    msg('TEST key accepted — everything unlocked ☀️','ok');
+    renderLocks(); setTimeout(closeModal,900); return;
+  }
+  btn.disabled=true; msg('Activating…');
+  try{
+    const r=await lsApi('activate',{license_key:key,instance_name:'ohayo-web-'+Math.random().toString(36).slice(2,8)});
+    if(r.activated){
+      const tier=tierOf(r.meta&&r.meta.product_id);
+      if(!tier){ msg('This key belongs to a different product.','err'); }
+      else{
+        saveLic({key,instance_id:r.instance&&r.instance.id,product_id:r.meta.product_id,tier,activated_at:Date.now(),validated_at:Date.now()});
+        msg('Unlocked! Enjoy the stories ☀️','ok');
+        renderLocks(); setTimeout(closeModal,900);
+      }
+    } else msg(r.error||'Could not activate this key.','err');
+  }catch(e){ msg('Network error — please try again.','err'); }
+  btn.disabled=false;
+}
+
+/* ═══════════ boot ═══════════ */
+(function(){
+  document.getElementById('streakChip').textContent='🔥 '+(localStorage.getItem('ohayo_streak')||0);
+  document.getElementById('xpChip').textContent='⭐ '+(localStorage.getItem('ohayo_xp')||0)+' XP';
+  renderLocks();
+  document.getElementById('mKey').addEventListener('keydown',e=>{if(e.key==='Enter')mapActivate();});
+  if(new URLSearchParams(location.search).get('unlock')==='1') openModal();
+})();
+</script>
+</body>
+</html>
