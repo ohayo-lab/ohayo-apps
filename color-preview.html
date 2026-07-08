@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Color Preview</title>
+<style>
+  body { background:#1A1A1A; font-family:sans-serif; display:flex; flex-direction:column; align-items:center; padding:40px 20px; gap:12px; }
+  .section-label { color:#555; font-size:11px; letter-spacing:2px; text-transform:uppercase; margin-top:16px; }
+  .card { width:300px; border-radius:14px; padding:20px 24px; display:flex; align-items:center; gap:18px; }
+  .swatch { width:44px; height:44px; border-radius:50%; flex-shrink:0; }
+  .info { color:#fff; }
+  .vol { font-size:11px; opacity:0.5; margin-bottom:3px; }
+  .name { font-size:16px; font-weight:700; margin-bottom:3px; }
+  .code { font-size:12px; opacity:0.6; font-family:monospace; }
+  .confirmed::after { content:"✓ 確定"; font-size:10px; color:#4ade80; margin-left:8px; vertical-align:middle; }
+</style>
+</head>
+<body>
+
+<div class="section-label">Jan — Vol.1〜5（参考）</div>
+
+<div class="card" style="background:#2A2A1A; opacity:0.5;">
+  <div class="swatch" style="background:#F59E0B;"></div>
+  <div class="info"><div class="vol">Free</div><div class="name" style="color:#F59E0B;">ゴールド</div><div class="code">#F59E0B</div></div>
+</div>
+<div class="card" style="background:#2A1A10; opacity:0.5;">
+  <div class="swatch" style="background:#FF7A3D;"></div>
+  <div class="info"><div class="vol">Vol.1</div><div class="name" style="color:#FF7A3D;">オレンジ</div><div class="code">#FF7A3D</div></div>
+</div>
+<div class="card" style="background:#0E2A25; opacity:0.5;">
+  <div class="swatch" style="background:#3DCFB8;"></div>
+  <div class="info"><div class="vol">Vol.2</div><div class="name" style="color:#3DCFB8;">ミント</div><div class="code">#3DCFB8</div></div>
+</div>
+<div class="card" style="background:#2A2400; opacity:0.5;">
+  <div class="swatch" style="background:#F5C842;"></div>
+  <div class="info"><div class="vol">Vol.3</div><div class="name" style="color:#F5C842;">イエロー</div><div class="code">#F5C842</div></div>
+</div>
+<div class="card" style="background:#1E0E2A; opacity:0.5;">
+  <div class="swatch" style="background:#A855F7;"></div>
+  <div class="info"><div class="vol">Vol.4</div><div class="name" style="color:#A855F7;">パープル</div><div class="code">#A855F7</div></div>
+</div>
+<div class="card" style="background:#2A0E1A; opacity:0.5;">
+  <div class="swatch" style="background:#FF6B9D;"></div>
+  <div class="info"><div class="vol">Vol.5</div><div class="name" style="color:#FF6B9D;">ピンク</div><div class="code">#FF6B9D</div></div>
+</div>
+
+<div class="section-label">Feb — Vol.6〜10（確定）</div>
+
+<div class="card" style="background:#0E2A3A;">
+  <div class="swatch" style="background:#38BDF8;"></div>
+  <div class="info"><div class="vol confirmed">Vol.6</div><div class="name" style="color:#38BDF8;">スカイブルー</div><div class="code">#38BDF8</div></div>
+</div>
+<div class="card" style="background:#3A1010;">
+  <div class="swatch" style="background:#F87171;"></div>
+  <div class="info"><div class="vol confirmed">Vol.7</div><div class="name" style="color:#F87171;">コーラルレッド</div><div class="code">#F87171</div></div>
+</div>
+<div class="card" style="background:#1A2A00;">
+  <div class="swatch" style="background:#84CC16;"></div>
+  <div class="info"><div class="vol confirmed">Vol.8</div><div class="name" style="color:#84CC16;">ライムグリーン</div><div class="code">#84CC16</div></div>
+</div>
+<div class="card" style="background:#2A2000;">
+  <div class="swatch" style="background:#FCD34D;"></div>
+  <div class="info"><div class="vol confirmed">Vol.9</div><div class="name" style="color:#FCD34D;">サンフラワー</div><div class="code">#FCD34D</div></div>
+</div>
+<div class="card" style="background:#00282A;">
+  <div class="swatch" style="background:#22D3EE;"></div>
+  <div class="info"><div class="vol confirmed">Vol.10</div><div class="name" style="color:#22D3EE;">アクア</div><div class="code">#22D3EE</div></div>
+</div>
+
+<div class="section-label">Mar — Vol.11〜15（提案）</div>
+
+<div class="card" style="background:#1A0010;">
+  <div class="swatch" style="background:#E11D48;"></div>
+  <div class="info"><div class="vol">Vol.11</div><div class="name" style="color:#E11D48;">ルビーレッド</div><div class="code">#E11D48</div></div>
+</div>
+<div class="card" style="background:#150020;">
+  <div class="swatch" style="background:#D946EF;"></div>
+  <div class="info"><div class="vol">Vol.12</div><div class="name" style="color:#D946EF;">マゼンタ</div><div class="code">#D946EF</div></div>
+</div>
+<div class="card" style="background:#172554;">
+  <div class="swatch" style="background:#3B82F6;"></div>
+  <div class="info"><div class="vol">Vol.13</div><div class="name" style="color:#3B82F6;">ロイヤルブルー</div><div class="code">#3B82F6</div></div>
+</div>
+<div class="card" style="background:#00200E;">
+  <div class="swatch" style="background:#16A34A;"></div>
+  <div class="info"><div class="vol">Vol.14</div><div class="name" style="color:#16A34A;">フォレストグリーン</div><div class="code">#16A34A</div></div>
+</div>
+<div class="card" style="background:#00201A;">
+  <div class="swatch" style="background:#14B8A6;"></div>
+  <div class="info"><div class="vol">Vol.15</div><div class="name" style="color:#14B8A6;">ティール</div><div class="code">#14B8A6</div></div>
+</div>
+
+</body>
+</html>
