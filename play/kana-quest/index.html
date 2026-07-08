@@ -1,0 +1,756 @@
+<!doctype html>
+<!--
+  KANA QUEST — a light side-scrolling kana runner (beta prototype)
+  ============================================================================
+  MECHANIC (jump-collect):
+    The OHAYO sun mascot auto-runs to the right across a Tokyo-morning parallax
+    scene. A target ROMAJI prompt is shown up top (e.g. "KA"). Floating kana
+    tiles drift toward the player at two heights (high = jump to reach,
+    low = grab while grounded). JUMP with tap / click / Space.
+      - Collect the CORRECT kana (matches the prompt reading)  => +score, chime,
+        new prompt.
+      - Collect a WRONG kana                                    => lose a heart.
+    Start with 3 hearts. 0 hearts = game over. Speed & spawn-rate ramp with
+    distance. Best score saved in localStorage.
+
+  This is a BETA PROTOTYPE: art is intentionally minimal canvas shapes, no
+  external assets/fonts/audio files. All sound is synthesized via WebAudio.
+  Fully self-contained, offline & strict-CSP safe.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kana Quest · OHAYO NIHONGO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎴</text></svg>">
+<style>
+  :root{
+    --cream:#FAF7F1; --paper:#FFF; --ink:#1C1C1C; --sub:#4A4A4A; --line:#DFD7C9;
+    --gold:#B98F2F; --yellow:#FFC93C; --navy:#134B70; --sun:#F7A928; --sun-deep:#F08114;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%; overflow:hidden; background:var(--navy);}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink); touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  #wrap{position:fixed; inset:0; display:flex; flex-direction:column;}
+  header{
+    flex:0 0 auto; background:var(--cream); border-bottom:1px solid var(--line);
+    padding:6px 14px; display:flex; align-items:baseline; gap:10px; z-index:5;
+  }
+  header a.brand{
+    font-family:Georgia,"Times New Roman",serif; font-weight:700; font-size:15px;
+    color:var(--ink); text-decoration:none; letter-spacing:.2px;
+  }
+  header .sub{font-size:11px; color:var(--sub);}
+  header .spacer{flex:1;}
+  #muteBtn{
+    background:var(--paper); border:1px solid var(--line); border-radius:8px;
+    font-size:14px; padding:3px 9px; cursor:pointer; color:var(--ink);
+  }
+  #stage{position:relative; flex:1 1 auto; min-height:0;}
+  canvas{display:block; width:100%; height:100%; touch-action:none;}
+
+  /* ---- overlays ---- */
+  .overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:24px; z-index:10;
+  }
+  .card{
+    background:var(--paper); border:1px solid var(--line); border-radius:16px;
+    padding:26px 24px; max-width:340px; width:100%;
+    box-shadow:0 10px 34px rgba(19,75,112,.18);
+  }
+  .card h1{
+    font-family:Georgia,serif; font-size:30px; margin:0 0 4px; color:var(--ink);
+    letter-spacing:.5px;
+  }
+  .card .kicker{font-size:12px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:6px;}
+  .card p.how{font-size:13.5px; line-height:1.5; color:var(--sub); margin:12px 0 18px;}
+  .modeRow{display:flex; gap:10px; justify-content:center; margin-bottom:18px;}
+  .modeBtn{
+    flex:1; background:var(--cream); border:1.5px solid var(--line); border-radius:10px;
+    padding:10px 6px; cursor:pointer; font-size:13px; color:var(--sub); font-weight:600;
+    transition:border-color .15s, background .15s;
+  }
+  .modeBtn .jp{display:block; font-size:19px; color:var(--ink); margin-bottom:2px;
+    font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;}
+  .modeBtn.active{border-color:var(--sun); background:#FFF7EA; color:var(--ink);}
+  .cta{
+    display:block; width:100%; background:var(--yellow); color:var(--ink);
+    border:none; border-radius:12px; padding:14px; font-size:16px; font-weight:800;
+    cursor:pointer; letter-spacing:.4px; box-shadow:0 4px 0 #E0A72E;
+    transition:transform .06s, box-shadow .06s;
+  }
+  .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #E0A72E;}
+  .statline{font-size:13px; color:var(--sub); margin:14px 0 0;}
+  .statline b{color:var(--ink); font-size:22px; font-family:Georgia,serif;}
+  .best{font-size:12px; color:var(--gold); margin-top:2px;}
+  .share{
+    margin-top:14px; font-size:12px; color:var(--sub); background:var(--cream);
+    border:1px dashed var(--line); border-radius:8px; padding:9px 10px; line-height:1.4;
+    cursor:pointer; word-break:break-word;
+  }
+  .share b{color:var(--ink);}
+  .hidden{display:none !important;}
+
+  /* ---- in-game HUD ---- */
+  #hud{
+    position:absolute; top:0; left:0; right:0; z-index:6; pointer-events:none;
+    display:flex; align-items:flex-start; justify-content:space-between;
+    padding:10px 12px; gap:10px;
+  }
+  #promptBox{
+    pointer-events:none; background:rgba(255,255,255,.92); border:1px solid var(--line);
+    border-radius:12px; padding:6px 16px 8px; text-align:center; min-width:112px;
+    box-shadow:0 4px 14px rgba(19,75,112,.14);
+  }
+  #promptBox .lbl{font-size:10px; letter-spacing:2px; color:var(--gold); text-transform:uppercase;}
+  #promptBox .romaji{font-size:30px; font-weight:800; color:var(--navy); line-height:1; font-family:Georgia,serif;}
+  #hudRight{display:flex; flex-direction:column; align-items:flex-end; gap:4px; pointer-events:none;}
+  .hudPill{
+    background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:20px;
+    padding:3px 11px; font-size:13px; font-weight:700; color:var(--ink);
+    box-shadow:0 2px 8px rgba(19,75,112,.12);
+  }
+  #hearts{font-size:15px; letter-spacing:1px;}
+  #jumpHint{
+    position:absolute; bottom:14px; right:14px; z-index:6; pointer-events:auto;
+    background:var(--yellow); color:var(--ink); border:none; border-radius:50%;
+    width:74px; height:74px; font-size:14px; font-weight:800; cursor:pointer;
+    box-shadow:0 5px 0 #E0A72E, 0 8px 18px rgba(0,0,0,.15);
+  }
+  #jumpHint:active{transform:translateY(3px); box-shadow:0 2px 0 #E0A72E;}
+  #toast{
+    position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
+    z-index:7; pointer-events:none; font-family:Georgia,serif; font-weight:800;
+    font-size:40px; opacity:0; transition:opacity .18s;
+    text-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  footer{
+    flex:0 0 auto; background:var(--cream); border-top:1px solid var(--line);
+    text-align:center; padding:5px; font-size:11px; z-index:5;
+  }
+  footer a{color:var(--sub); text-decoration:none;}
+  footer a:hover{color:var(--gold);}
+  @media (max-width:400px){
+    .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <header>
+    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">☀️ OHAYO NIHONGO</a>
+    <span class="sub">Kana Quest · Free game (beta)</span>
+    <span class="spacer"></span>
+    <button id="muteBtn" aria-label="Toggle sound">🔊</button>
+  </header>
+
+  <div id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- HUD (hidden until playing) -->
+    <div id="hud" class="hidden">
+      <div id="promptBox">
+        <div class="lbl">Collect</div>
+        <div class="romaji" id="promptRomaji">KA</div>
+      </div>
+      <div id="hudRight">
+        <div class="hudPill" id="scorePill">0</div>
+        <div class="hudPill" id="hearts">❤️❤️❤️</div>
+        <div class="hudPill" id="distPill">Lv 1 · 0m</div>
+      </div>
+    </div>
+    <div id="toast"></div>
+    <button id="jumpHint" class="hidden">JUMP</button>
+
+    <!-- START overlay -->
+    <div id="startOverlay" class="overlay">
+      <div class="card">
+        <div class="kicker">OHAYO Nihongo</div>
+        <h1>Kana Quest</h1>
+        <p class="how">Run with the morning sun. <b>Jump</b> to grab the kana that matches the prompt — dodge the wrong ones. Tap / Space to jump.</p>
+        <div class="modeRow">
+          <button class="modeBtn active" data-mode="hira"><span class="jp">あ</span>Hiragana</button>
+          <button class="modeBtn" data-mode="kata"><span class="jp">ア</span>Katakana</button>
+        </div>
+        <button class="cta" id="startBtn">START ☀️</button>
+        <div class="best" id="startBest"></div>
+      </div>
+    </div>
+
+    <!-- GAME OVER overlay -->
+    <div id="overOverlay" class="overlay hidden">
+      <div class="card">
+        <div class="kicker">Game Over</div>
+        <h1>おつかれ！</h1>
+        <p class="statline">Score<br><b id="finalScore">0</b></p>
+        <div class="best" id="finalBest">Best: 0</div>
+        <button class="cta" id="replayBtn" style="margin-top:18px;">PLAY AGAIN</button>
+        <div class="share" id="shareLine">Tap to copy your score line</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">Practice real Japanese every morning → ohayonihongo.net</a>
+  </footer>
+</div>
+
+<script>
+"use strict";
+(function(){
+  // ======================= KANA READING TABLES =======================
+  // Gojūon (basic 46). Each entry: [kana, romaji].
+  const HIRA = [
+    ["あ","A"],["い","I"],["う","U"],["え","E"],["お","O"],
+    ["か","KA"],["き","KI"],["く","KU"],["け","KE"],["こ","KO"],
+    ["さ","SA"],["し","SHI"],["す","SU"],["せ","SE"],["そ","SO"],
+    ["た","TA"],["ち","CHI"],["つ","TSU"],["て","TE"],["と","TO"],
+    ["な","NA"],["に","NI"],["ぬ","NU"],["ね","NE"],["の","NO"],
+    ["は","HA"],["ひ","HI"],["ふ","FU"],["へ","HE"],["ほ","HO"],
+    ["ま","MA"],["み","MI"],["む","MU"],["め","ME"],["も","MO"],
+    ["や","YA"],["ゆ","YU"],["よ","YO"],
+    ["ら","RA"],["り","RI"],["る","RU"],["れ","RE"],["ろ","RO"],
+    ["わ","WA"],["を","WO"],["ん","N"]
+  ];
+  const KATA = [
+    ["ア","A"],["イ","I"],["ウ","U"],["エ","E"],["オ","O"],
+    ["カ","KA"],["キ","KI"],["ク","KU"],["ケ","KE"],["コ","KO"],
+    ["サ","SA"],["シ","SHI"],["ス","SU"],["セ","SE"],["ソ","SO"],
+    ["タ","TA"],["チ","CHI"],["ツ","TSU"],["テ","TE"],["ト","TO"],
+    ["ナ","NA"],["ニ","NI"],["ヌ","NU"],["ネ","NE"],["ノ","NO"],
+    ["ハ","HA"],["ヒ","HI"],["フ","FU"],["ヘ","HE"],["ホ","HO"],
+    ["マ","MA"],["ミ","MI"],["ム","MU"],["メ","ME"],["モ","MO"],
+    ["ヤ","YA"],["ユ","YU"],["ヨ","YO"],
+    ["ラ","RA"],["リ","RI"],["ル","RU"],["レ","RE"],["ロ","RO"],
+    ["ワ","WA"],["ヲ","WO"],["ン","N"]
+  ];
+
+  // ======================= WEBAUDIO SFX =======================
+  const Sfx = (function(){
+    let ctx=null, muted=false;
+    function ensure(){
+      if(!ctx){
+        try{ ctx = new (window.AudioContext||window.webkitAudioContext)(); }
+        catch(e){ ctx=null; }
+      }
+      if(ctx && ctx.state==="suspended") ctx.resume();
+      return ctx;
+    }
+    function tone(freq, dur, type, gain, whenOffset){
+      if(muted) return;
+      const c=ensure(); if(!c) return;
+      const t0 = c.currentTime + (whenOffset||0);
+      const o=c.createOscillator(), g=c.createGain();
+      o.type=type||"sine"; o.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain||0.2, t0+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t0); o.stop(t0+dur+0.02);
+    }
+    return {
+      init(){ ensure(); },
+      setMuted(m){ muted=m; },
+      isMuted(){ return muted; },
+      jump(){ tone(520,0.16,"square",0.16); tone(760,0.12,"square",0.10,0.05); },
+      coin(){ tone(880,0.09,"square",0.18); tone(1320,0.14,"square",0.16,0.07); },
+      hit(){ tone(180,0.28,"sawtooth",0.22); tone(120,0.30,"sawtooth",0.18,0.02); },
+      over(){ tone(440,0.18,"triangle",0.2); tone(330,0.20,"triangle",0.2,0.16);
+              tone(220,0.34,"triangle",0.2,0.34); }
+    };
+  })();
+
+  // ======================= CANVAS SETUP =======================
+  const canvas = document.getElementById("game");
+  const g = canvas.getContext("2d");
+  let VW=0, VH=0, DPR=1;
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 2.5);
+    const r = canvas.getBoundingClientRect();
+    VW = Math.max(1, r.width); VH = Math.max(1, r.height);
+    canvas.width  = Math.round(VW*DPR);
+    canvas.height = Math.round(VH*DPR);
+    g.setTransform(DPR,0,0,DPR,0,0);
+    computeLayout();
+  }
+  window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", ()=>setTimeout(resize,120));
+
+  // ground / world layout derived from viewport
+  let groundY=0, runnerX=0;
+  function computeLayout(){
+    groundY = VH - Math.max(64, VH*0.16);   // ground line
+    runnerX = Math.max(70, VW*0.20);         // fixed horizontal runner position
+  }
+
+  // ======================= GAME STATE =======================
+  const State = { START:0, PLAY:1, OVER:2 };
+  let state = State.START;
+  let mode = "hira";
+  let deck = HIRA;
+
+  let score=0, best=0, hearts=3, distance=0, level=1;
+  let worldSpeed=0;         // px/sec the world scrolls left
+  let spawnTimer=0, spawnGap=1.15;
+  let prompt=null;          // {kana,romaji}
+  let entities=[];          // active kana tiles
+  const pool=[];            // recycled tiles
+  let bgScroll=0, hillScroll=0, groundScroll=0;
+  let toastTimer=0;
+  let flashRed=0;
+
+  // runner physics
+  const runner = { y:0, vy:0, onGround:true, bob:0, runCycle:0 };
+  const GRAV = 2100;         // px/s^2
+  const JUMP_V = -820;       // initial jump velocity
+  const RUNNER_R = 26;       // collision radius
+
+  best = parseInt(localStorage.getItem("kanaquest_best")||"0",10) || 0;
+
+  // ======================= HELPERS =======================
+  function pick(arr){ return arr[(Math.random()*arr.length)|0]; }
+
+  // prompt stored as [kana,romaji] tuple: prompt[0]=kana, prompt[1]=romaji
+  function newPrompt(){
+    const e = deck[(Math.random()*deck.length)|0];
+    prompt = [ e[0], e[1] ];
+    document.getElementById("promptRomaji").textContent = prompt[1];
+  }
+
+  function getTile(){ return pool.pop() || {}; }
+  function recycle(t){ if(pool.length<40) pool.push(t); }
+
+  function spawnTile(){
+    // Decide correct-vs-wrong; bias ~45% correct so the right answer appears often.
+    const wantCorrect = Math.random() < 0.5;
+    let kana, romaji;
+    if(wantCorrect){
+      kana = prompt[0]; romaji = prompt[1];
+    } else {
+      let e; do { e = deck[(Math.random()*deck.length)|0]; } while(e[1]===prompt[1]);
+      kana = e[0]; romaji = e[1];
+    }
+    const t = getTile();
+    // two heights: high (needs jump) or low (grab on ground)
+    const high = Math.random() < 0.5;
+    t.kana = kana; t.romaji = romaji;
+    t.correct = (romaji === prompt[1]);
+    t.x = VW + 40;
+    t.y = high ? (groundY - 118 - Math.random()*36) : (groundY - 34);
+    t.r = 30;
+    t.dead = false;
+    t.pop = 0;          // collect animation
+    t.spin = Math.random()*Math.PI*2;
+    entities.push(t);
+  }
+
+  function resetGame(){
+    score=0; hearts=3; distance=0; level=1;
+    worldSpeed = 210;
+    spawnGap = 1.15; spawnTimer = 0.5;
+    entities.length=0;
+    runner.y=0; runner.vy=0; runner.onGround=true; runner.bob=0; runner.runCycle=0;
+    flashRed=0; toastTimer=0;
+    newPrompt();
+    updateHUD();
+  }
+
+  function updateHUD(){
+    document.getElementById("scorePill").textContent = score;
+    document.getElementById("hearts").textContent = "❤️".repeat(hearts) + "🖤".repeat(3-hearts);
+    document.getElementById("distPill").textContent = "Lv "+level+" · "+Math.floor(distance)+"m";
+  }
+
+  function showToast(txt, color){
+    const el=document.getElementById("toast");
+    el.textContent=txt; el.style.color=color; el.style.opacity="1";
+    toastTimer=0.6;
+  }
+
+  // ======================= INPUT =======================
+  function jump(){
+    if(state!==State.PLAY) return;
+    if(runner.onGround){
+      runner.vy = JUMP_V;
+      runner.onGround=false;
+      Sfx.jump();
+    }
+  }
+  // keyboard
+  window.addEventListener("keydown",(e)=>{
+    if(e.code==="Space" || e.code==="ArrowUp"){
+      e.preventDefault();
+      if(state===State.PLAY) jump();
+      else if(state===State.START) startGame();
+      else if(state===State.OVER) startGame();
+    }
+  });
+  // pointer on canvas / stage = jump
+  const stage=document.getElementById("stage");
+  stage.addEventListener("pointerdown",(e)=>{
+    if(state===State.PLAY){ jump(); }
+  });
+  document.getElementById("jumpHint").addEventListener("pointerdown",(e)=>{
+    e.stopPropagation(); jump();
+  });
+
+  // ======================= COLLISION =======================
+  function handleCollisions(){
+    const rx = runnerX;
+    const ry = groundY - RUNNER_R + runner.y;   // runner center y
+    for(const t of entities){
+      if(t.dead) continue;
+      const dx = t.x - rx, dy = t.y - ry;
+      const rr = t.r + RUNNER_R - 6;
+      if(dx*dx + dy*dy < rr*rr){
+        // collected — judge against the LIVE prompt (prompts can change mid-flight)
+        const isCorrect = (t.romaji === prompt[1]);
+        if(isCorrect){
+          score += 10 + Math.floor(level*1.5);
+          Sfx.coin();
+          showToast("+"+(10+Math.floor(level*1.5)), "#B98F2F");
+          newPrompt();
+          // clear other correct-looking tiles? no—just proceed
+        } else {
+          hearts--;
+          flashRed=0.35;
+          Sfx.hit();
+          showToast("−♥", "#C0392B");
+          if(hearts<=0){ gameOver(); }
+        }
+        t.dead=true; t.pop=0.001;   // trigger pop anim then recycle
+        updateHUD();
+      }
+    }
+  }
+
+  // ======================= UPDATE =======================
+  function update(dt){
+    if(state!==State.PLAY) return;
+
+    // ramp difficulty by distance
+    distance += worldSpeed*dt/42;   // ~ meters
+    const newLevel = 1 + Math.floor(distance/60);
+    if(newLevel!==level){ level=newLevel; updateHUD(); }
+    worldSpeed = 210 + Math.min(260, distance*1.1);
+    spawnGap = Math.max(0.62, 1.15 - distance*0.0016);
+
+    // parallax scroll
+    bgScroll   = (bgScroll   + worldSpeed*0.12*dt) % VW;
+    hillScroll = (hillScroll + worldSpeed*0.35*dt) % (VW+400);
+    groundScroll = (groundScroll + worldSpeed*dt) % 48;
+
+    // runner physics
+    runner.vy += GRAV*dt;
+    runner.y  += runner.vy*dt;
+    if(runner.y >= 0){ runner.y=0; runner.vy=0; runner.onGround=true; }
+    runner.runCycle += dt*10;
+    runner.bob = runner.onGround ? Math.sin(runner.runCycle)*2 : 0;
+
+    // spawn
+    spawnTimer -= dt;
+    if(spawnTimer<=0){ spawnTile(); spawnTimer = spawnGap*(0.8+Math.random()*0.5); }
+
+    // move + cull entities
+    for(let i=entities.length-1;i>=0;i--){
+      const t=entities[i];
+      if(t.dead){
+        t.pop += dt;
+        if(t.pop>0.22){ entities.splice(i,1); recycle(t); }
+        continue;
+      }
+      t.x -= worldSpeed*dt;
+      t.spin += dt*1.4;
+      if(t.x < -60){ entities.splice(i,1); recycle(t); }
+    }
+
+    handleCollisions();
+
+    if(flashRed>0) flashRed=Math.max(0,flashRed-dt);
+    if(toastTimer>0){ toastTimer-=dt; if(toastTimer<=0) document.getElementById("toast").style.opacity="0"; }
+
+    // distance HUD refresh (cheap, every frame-ish)
+    document.getElementById("distPill").textContent = "Lv "+level+" · "+Math.floor(distance)+"m";
+  }
+
+  // ======================= RENDER =======================
+  function drawSky(){
+    const grad = g.createLinearGradient(0,0,0,VH);
+    grad.addColorStop(0,   "#BFE0F2");   // pale morning blue
+    grad.addColorStop(0.42,"#F3E9D6");   // cream haze
+    grad.addColorStop(1,   "#FBE2C4");   // warm horizon
+    g.fillStyle=grad; g.fillRect(0,0,VW,VH);
+
+    // soft sun glow up-left
+    const sx=VW*0.16, sy=VH*0.22, sr=Math.max(50,VW*0.12);
+    const sg=g.createRadialGradient(sx,sy,4,sx,sy,sr*2.4);
+    sg.addColorStop(0,"rgba(247,169,40,0.55)");
+    sg.addColorStop(1,"rgba(247,169,40,0)");
+    g.fillStyle=sg; g.beginPath(); g.arc(sx,sy,sr*2.4,0,7); g.fill();
+    g.fillStyle="#F7A928"; g.beginPath(); g.arc(sx,sy,sr*0.5,0,7); g.fill();
+  }
+
+  function drawHills(){
+    // distant navy-tinted hills, two layers, scrolling
+    g.save();
+    for(let layer=0; layer<2; layer++){
+      const baseY = groundY - (layer===0? 40 : 78);
+      const amp = layer===0? 34 : 54;
+      const col = layer===0? "rgba(19,75,112,0.16)" : "rgba(19,75,112,0.10)";
+      const off = -(layer===0? hillScroll*0.6 : hillScroll) % (VW+400);
+      g.fillStyle=col;
+      g.beginPath();
+      g.moveTo(-100, VH);
+      for(let x=-100; x<=VW+200; x+=40){
+        const yy = baseY - Math.sin((x+off)/120 + layer)*amp - amp;
+        g.lineTo(x, yy);
+      }
+      g.lineTo(VW+200, VH); g.closePath(); g.fill();
+    }
+    g.restore();
+  }
+
+  function drawGround(){
+    // ground band
+    g.fillStyle="#134B70";
+    g.fillRect(0, groundY, VW, VH-groundY);
+    // top highlight (wave-like)
+    g.fillStyle="#1B5C86";
+    g.beginPath();
+    g.moveTo(0,groundY);
+    for(let x=0;x<=VW;x+=32){
+      g.lineTo(x, groundY + Math.sin((x+groundScroll*3)/48)*3);
+    }
+    g.lineTo(VW,groundY+14); g.lineTo(0,groundY+14); g.closePath(); g.fill();
+    // dashes to convey motion
+    g.strokeStyle="rgba(255,255,255,0.18)"; g.lineWidth=3;
+    for(let x=-groundScroll; x<VW; x+=48){
+      g.beginPath(); g.moveTo(x, groundY+28); g.lineTo(x+18, groundY+28); g.stroke();
+    }
+  }
+
+  // OHAYO sun mascot — rising-sun semicircle over navy waves, little face
+  function drawMascot(cx, cy){
+    const r=RUNNER_R;
+    g.save();
+    g.translate(cx, cy);
+    // subtle run-lean
+    g.rotate(runner.onGround ? 0 : -0.12);
+
+    // shadow on ground
+    g.restore();
+    g.save();
+    const shY = groundY + 6;
+    const shScale = 1 - Math.min(0.6, (-runner.y)/220);
+    g.fillStyle="rgba(19,75,112,0.22)";
+    g.beginPath();
+    g.ellipse(cx, shY, r*0.9*shScale, r*0.32*shScale, 0,0,7);
+    g.fill();
+    g.restore();
+
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(runner.onGround ? Math.sin(runner.runCycle)*0.04 : -0.1);
+
+    // navy waves (lower body)
+    g.fillStyle="#134B70";
+    g.beginPath();
+    g.moveTo(-r, 4);
+    g.quadraticCurveTo(-r*0.5, 4-6, 0, 4);
+    g.quadraticCurveTo(r*0.5, 4+6, r, 4);
+    g.lineTo(r, r*0.9); g.lineTo(-r, r*0.9); g.closePath();
+    g.fill();
+
+    // rising sun semicircle (upper body)
+    const sunGrad=g.createLinearGradient(0,-r,0,4);
+    sunGrad.addColorStop(0,"#F7A928");
+    sunGrad.addColorStop(1,"#F08114");
+    g.fillStyle=sunGrad;
+    g.beginPath();
+    g.arc(0,4,r, Math.PI, 0, false);
+    g.closePath();
+    g.fill();
+
+    // sun rays
+    g.strokeStyle="#F7A928"; g.lineWidth=3; g.lineCap="round";
+    for(let i=0;i<5;i++){
+      const a = Math.PI + (i+0.5)*(Math.PI/5);
+      g.beginPath();
+      g.moveTo(Math.cos(a)*(r+3), 4+Math.sin(a)*(r+3));
+      g.lineTo(Math.cos(a)*(r+9), 4+Math.sin(a)*(r+9));
+      g.stroke();
+    }
+
+    // face
+    g.fillStyle="#1C1C1C";
+    g.beginPath(); g.arc(-8,-4,2.6,0,7); g.fill();
+    g.beginPath(); g.arc( 8,-4,2.6,0,7); g.fill();
+    // smile
+    g.strokeStyle="#1C1C1C"; g.lineWidth=2;
+    g.beginPath(); g.arc(0,-2,7,0.15*Math.PI,0.85*Math.PI); g.stroke();
+    // cheeks
+    g.fillStyle="rgba(240,129,20,0.5)";
+    g.beginPath(); g.arc(-13,0,3,0,7); g.fill();
+    g.beginPath(); g.arc( 13,0,3,0,7); g.fill();
+
+    // running legs (little dashes below)
+    if(runner.onGround){
+      g.strokeStyle="#134B70"; g.lineWidth=3.5; g.lineCap="round";
+      const swing=Math.sin(runner.runCycle)*6;
+      g.beginPath(); g.moveTo(-6, r*0.9); g.lineTo(-6+swing, r*0.9+9); g.stroke();
+      g.beginPath(); g.moveTo( 6, r*0.9); g.lineTo( 6-swing, r*0.9+9); g.stroke();
+    }
+    g.restore();
+  }
+
+  function drawTile(t){
+    g.save();
+    g.translate(t.x, t.y);
+    let sc=1;
+    if(t.dead){ sc = 1 + t.pop*4; g.globalAlpha = Math.max(0, 1 - t.pop*4.5); }
+    else { sc = 1 + Math.sin(t.spin)*0.03; }
+    g.scale(sc,sc);
+
+    // tile card
+    const r=t.r;
+    g.fillStyle = t.correct ? "#FFFFFF" : "#FFFFFF";
+    // colored ring hint: correct = gold ring, wrong = navy ring (subtle, still a challenge)
+    g.strokeStyle = "#DFD7C9";
+    g.lineWidth = 3;
+    roundRect(-r, -r, r*2, r*2, 12);
+    g.fill(); g.stroke();
+
+    // a faint top accent bar
+    g.fillStyle = "rgba(247,169,40,0.16)";
+    roundRect(-r, -r, r*2, 10, 8); g.fill();
+
+    // kana glyph
+    g.fillStyle = "#1C1C1C";
+    g.font = "700 "+Math.round(r*1.25)+"px 'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif";
+    g.textAlign="center"; g.textBaseline="middle";
+    g.fillText(t.kana, 0, 2);
+    g.restore();
+  }
+
+  function roundRect(x,y,w,h,rad){
+    g.beginPath();
+    g.moveTo(x+rad,y);
+    g.arcTo(x+w,y,x+w,y+h,rad);
+    g.arcTo(x+w,y+h,x,y+h,rad);
+    g.arcTo(x,y+h,x,y,rad);
+    g.arcTo(x,y,x+w,y,rad);
+    g.closePath();
+  }
+
+  function render(){
+    g.clearRect(0,0,VW,VH);
+    drawSky();
+    drawHills();
+    drawGround();
+
+    // entities behind/around runner
+    for(const t of entities) drawTile(t);
+
+    // mascot
+    const cy = groundY - RUNNER_R + runner.y + runner.bob;
+    drawMascot(runnerX, cy);
+
+    // damage flash
+    if(flashRed>0){
+      g.fillStyle="rgba(192,57,43,"+(flashRed*0.5)+")";
+      g.fillRect(0,0,VW,VH);
+    }
+  }
+
+  // ======================= MAIN LOOP (delta-time) =======================
+  let lastT=0, acc=0;
+  const FIXED=1/60, MAXSTEP=0.05;
+  function frame(now){
+    if(!lastT) lastT=now;
+    let dt=(now-lastT)/1000; lastT=now;
+    if(dt>0.25) dt=0.25;               // tab-switch guard
+    acc += dt;
+    while(acc >= FIXED){ update(FIXED); acc -= FIXED; }
+    render();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ======================= FLOW / UI =======================
+  function startGame(){
+    Sfx.init();
+    document.getElementById("startOverlay").classList.add("hidden");
+    document.getElementById("overOverlay").classList.add("hidden");
+    document.getElementById("hud").classList.remove("hidden");
+    document.getElementById("jumpHint").classList.remove("hidden");
+    deck = (mode==="kata") ? KATA : HIRA;
+    resetGame();
+    state = State.PLAY;
+  }
+
+  function gameOver(){
+    state = State.OVER;
+    Sfx.over();
+    if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
+    document.getElementById("finalScore").textContent = score;
+    document.getElementById("finalBest").textContent = "Best: "+best;
+    const line = "I scored "+score+" in Kana Quest 🎴☀️ — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
+    const shareEl=document.getElementById("shareLine");
+    shareEl.innerHTML = "<b>Share:</b> "+line;
+    document.getElementById("hud").classList.add("hidden");
+    document.getElementById("jumpHint").classList.add("hidden");
+    document.getElementById("toast").style.opacity="0";
+    document.getElementById("overOverlay").classList.remove("hidden");
+  }
+
+  // mode buttons
+  document.querySelectorAll(".modeBtn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".modeBtn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      mode = btn.dataset.mode;
+    });
+  });
+
+  document.getElementById("startBtn").addEventListener("click", startGame);
+  document.getElementById("replayBtn").addEventListener("click", startGame);
+
+  // share copy
+  document.getElementById("shareLine").addEventListener("click",()=>{
+    const line = "I scored "+score+" in Kana Quest 🎴☀️ — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
+    if(navigator.clipboard){ navigator.clipboard.writeText(line).then(()=>{
+      const el=document.getElementById("shareLine");
+      const old=el.innerHTML; el.innerHTML="<b>Copied! ✔</b>";
+      setTimeout(()=>{ el.innerHTML=old; }, 1400);
+    }).catch(()=>{}); }
+  });
+
+  // mute
+  const muteBtn=document.getElementById("muteBtn");
+  muteBtn.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    const m=!Sfx.isMuted(); Sfx.setMuted(m);
+    muteBtn.textContent = m ? "🔇" : "🔊";
+  });
+
+  // show best on start
+  document.getElementById("startBest").textContent = best>0 ? ("Best: "+best) : "";
+
+  // block scroll/zoom gestures
+  document.addEventListener("gesturestart", e=>e.preventDefault());
+  document.addEventListener("touchmove", e=>{ if(state===State.PLAY) e.preventDefault(); }, {passive:false});
+  document.addEventListener("dblclick", e=>e.preventDefault());
+
+  // init
+  resize();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Sentence Builder · OHAYO NIHONGO</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%93%96%3C/text%3E%3C/svg%3E">
+<!--
+  ============================================================================
+  SENTENCE BUILDER (文づくりパズル) — OHAYO NIHONGO free browser game
+  ----------------------------------------------------------------------------
+  MECHANIC:
+    A real Japanese diary sentence is broken into its natural bunsetsu word
+    chunks (hiragana). The chunks are shuffled and shown as tap-tiles. The
+    player taps tiles into the answer row to rebuild the sentence in the
+    correct order. Tapping a placed tile sends it back to the deck. When every
+    tile is placed the answer is auto-checked (a Check button is also given).
+    Correct -> chime + confetti, reveal the KANJI + English, streak++, Next.
+    Wrong -> gentle shake, retry. Hint reveals the next correct tile's slot.
+  DATA SOURCE:
+    Sentences were extracted & curated from the OHAYO NIHONGO flashcard apps
+    (ohayo-apps/v1..v20/index.html), whose `cards[]` store hira ALREADY
+    space-separated into bunsetsu chunks. Data is INLINED below so the game is
+    fully self-contained and works offline. No external scripts / fonts / audio
+    (audio SFX are WebAudio-synthesized). Punctuation (、。「」) stays attached
+    to the preceding chunk.
+  ============================================================================
+-->
+<style>
+:root{
+  --cream:#FAF7F1; --paper:#FFFFFF; --ink:#1C1C1C; --sub:#4A4A4A;
+  --line:#DFD7C9; --gold:#B98F2F; --yellow:#FFC93C; --navy:#134B70;
+  --sun:#F7A928; --sun-deep:#F08114;
+  --jp:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  --ui:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --serif:Georgia,'Times New Roman',serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:var(--cream);color:var(--ink);font-family:var(--ui);
+  min-height:100dvh;overflow-x:hidden;
+  -webkit-text-size-adjust:100%;
+  display:flex;flex-direction:column;align-items:center;
+  padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0);
+}
+.wrap{width:100%;max-width:520px;min-height:100dvh;display:flex;flex-direction:column;padding:14px 15px 18px;}
+
+/* HEADER */
+header{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;margin-bottom:10px;}
+.brand{display:flex;flex-direction:column;gap:2px;text-decoration:none;}
+.brand-name{font-size:13px;font-weight:800;letter-spacing:.02em;color:var(--ink);}
+.brand-name span{color:var(--sun-deep);}
+.brand-sub{font-size:10px;color:var(--sub);letter-spacing:.03em;}
+.mute-btn{
+  border:1px solid var(--line);background:var(--paper);border-radius:999px;
+  width:38px;height:38px;font-size:16px;cursor:pointer;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:var(--sub);
+}
+.mute-btn:active{transform:scale(.92);}
+.gold-rule{height:2px;background:linear-gradient(90deg,var(--gold),transparent);border-radius:2px;margin-bottom:12px;opacity:.55;}
+
+/* STATS BAR */
+.stats{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+.chip{
+  font-size:11px;font-weight:700;background:var(--paper);border:1px solid var(--line);
+  color:var(--sub);border-radius:999px;padding:5px 11px;white-space:nowrap;
+}
+.chip b{color:var(--ink);}
+.chip.streak b{color:var(--sun-deep);}
+.chip.best b{color:var(--navy);}
+.chip.diff{cursor:pointer;user-select:none;}
+.chip.diff:active{transform:scale(.95);}
+.chip.spacer{margin-left:auto;background:transparent;border:none;padding:0;}
+.shuffle-btn{
+  font-size:11px;font-weight:700;background:transparent;border:1px solid var(--line);
+  color:var(--sub);border-radius:999px;padding:5px 11px;cursor:pointer;
+}
+.shuffle-btn:active{transform:scale(.95);}
+
+/* PROGRESS */
+.ptrack{height:3px;background:#EFE9DD;border-radius:2px;overflow:hidden;margin-bottom:14px;}
+.pfill{height:100%;background:linear-gradient(90deg,var(--sun),var(--gold));border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1);width:0;}
+
+/* CARD */
+.card{
+  background:var(--paper);border:1px solid var(--line);border-radius:14px;
+  box-shadow:0 8px 24px rgba(28,28,28,.06);padding:18px 17px;flex:1;
+  display:flex;flex-direction:column;position:relative;overflow:hidden;
+  animation:cardIn .35s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
+.tagline{font-size:9px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:9px;}
+.prompt-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin-bottom:5px;}
+.prompt{font-family:var(--serif);font-size:17px;line-height:1.45;color:var(--ink);margin-bottom:4px;}
+.prompt-hint{font-size:11px;color:var(--sub);font-style:italic;margin-bottom:12px;}
+
+/* ANSWER ROW */
+.answer{
+  min-height:58px;background:#FCFAF5;border:1.5px dashed var(--line);border-radius:12px;
+  padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;
+  margin-bottom:6px;transition:border-color .2s,background .2s;
+}
+.answer.empty::before{
+  content:"Tap the tiles below to build the sentence →";
+  font-size:12px;color:#B9AF9C;font-style:italic;align-self:center;
+  font-family:var(--ui);
+}
+.answer.shake{animation:shake .5s;}
+.answer.wrong{border-color:#E08B8B;background:#FDF3F1;}
+.answer.correct{border-color:#9FB98A;background:#F3F8ED;border-style:solid;}
+@keyframes shake{
+  0%,100%{transform:translateX(0);}
+  15%,45%,75%{transform:translateX(-7px);}
+  30%,60%,90%{transform:translateX(7px);}
+}
+
+/* DECK */
+.deck-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin:12px 0 7px;}
+.deck{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;min-height:46px;align-content:flex-start;}
+
+/* TILES */
+.tile{
+  font-family:var(--jp);font-size:17px;font-weight:600;line-height:1.2;
+  background:var(--paper);border:1.5px solid var(--line);color:var(--ink);
+  border-radius:11px;padding:11px 14px;cursor:pointer;user-select:none;
+  transition:transform .12s ease,background .15s,border-color .15s,box-shadow .15s;
+  box-shadow:0 2px 5px rgba(28,28,28,.04);min-height:44px;
+  display:inline-flex;align-items:center;
+}
+.tile:active{transform:scale(.93);}
+.tile.placed{
+  background:linear-gradient(135deg,#FFF6E4,#FDEECB);
+  border-color:#EAD199;box-shadow:0 3px 8px rgba(185,143,47,.18);
+}
+.tile.hintslot{
+  border-color:var(--sun-deep);box-shadow:0 0 0 3px rgba(240,129,20,.18);
+  animation:pop .4s ease;
+}
+@keyframes pop{0%{transform:scale(1);}50%{transform:scale(1.12);}100%{transform:scale(1);}}
+.tile.spent{opacity:.28;pointer-events:none;}
+
+/* CONTROLS */
+.controls{display:flex;gap:8px;margin-top:14px;}
+.btn{
+  flex:1;border:1px solid var(--line);background:var(--paper);color:var(--sub);
+  border-radius:12px;padding:12px 8px;font-family:var(--ui);font-size:13px;font-weight:700;
+  cursor:pointer;transition:transform .12s ease,opacity .15s;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.btn:active{transform:scale(.96);}
+.btn:disabled{opacity:.35;pointer-events:none;}
+.btn-check{background:var(--navy);color:#fff;border-color:var(--navy);}
+
+/* REVEAL (success) */
+.reveal{
+  margin-top:14px;padding-top:14px;border-top:1px solid var(--line);
+  display:none;animation:cardIn .35s ease;
+}
+.reveal.show{display:block;}
+.reveal-badge{
+  display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;
+  color:#5C7A3E;background:#EDF4E4;border:1px solid #CBDDB4;border-radius:999px;
+  padding:4px 12px;margin-bottom:10px;
+}
+.reveal-kanji{font-family:var(--jp);font-size:19px;font-weight:600;line-height:1.6;color:var(--ink);margin-bottom:7px;}
+.reveal-en{font-family:var(--serif);font-style:italic;font-size:13.5px;line-height:1.5;color:var(--sub);}
+.next-wrap{margin-top:14px;}
+.btn-next{
+  width:100%;border:none;background:var(--yellow);color:#111;border-radius:12px;
+  padding:14px;font-family:var(--ui);font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 5px 16px rgba(255,201,60,.45);transition:transform .12s ease;
+}
+.btn-next:active{transform:scale(.97);}
+
+/* FOOTER */
+footer{margin-top:14px;text-align:center;}
+footer a{font-size:11px;color:var(--sub);text-decoration:none;line-height:1.5;}
+footer a b{color:var(--gold);font-weight:700;border-bottom:1px solid var(--gold);}
+
+/* START OVERLAY */
+.overlay{
+  position:fixed;inset:0;z-index:50;background:var(--cream);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:32px 26px;transition:opacity .4s ease,transform .4s ease;
+}
+.overlay.hide{opacity:0;transform:scale(1.03);pointer-events:none;}
+.ov-sun{font-size:46px;margin-bottom:14px;}
+.ov-badge{font-size:10px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--sub);margin-bottom:10px;}
+.ov-title{font-family:var(--serif);font-size:32px;font-weight:700;line-height:1.15;color:var(--ink);margin-bottom:6px;}
+.ov-jp{font-family:var(--jp);font-size:15px;color:var(--sub);margin-bottom:6px;}
+.ov-desc{font-size:13px;color:var(--sub);line-height:1.6;max-width:320px;margin-bottom:8px;}
+.ov-rule{width:44px;height:2px;background:linear-gradient(90deg,var(--gold),var(--sun));margin:14px auto 22px;border-radius:2px;}
+.btn-start{
+  border:none;background:var(--yellow);color:#111;border-radius:14px;
+  padding:15px 54px;font-family:var(--ui);font-size:16px;font-weight:800;cursor:pointer;
+  box-shadow:0 6px 18px rgba(255,201,60,.5);transition:transform .12s ease;
+}
+.btn-start:active{transform:scale(.97);}
+.ov-foot{margin-top:16px;font-size:11px;color:var(--sub);}
+
+/* CONFETTI */
+.confetti{position:fixed;top:-16px;width:9px;height:15px;border-radius:2px;z-index:60;pointer-events:none;animation:drop linear forwards;}
+@keyframes drop{to{transform:translateY(112vh) rotate(680deg);opacity:.85;}}
+
+/* FINISH */
+.finish{display:none;flex-direction:column;align-items:center;text-align:center;flex:1;justify-content:center;padding:20px 6px;animation:cardIn .4s ease;}
+.finish.show{display:flex;}
+.finish-sun{font-size:44px;margin-bottom:10px;}
+.finish-title{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.finish-jp{font-family:var(--jp);font-size:15px;color:var(--sub);margin-bottom:12px;}
+.finish-stats{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
+.fstat{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:12px 18px;min-width:88px;}
+.fstat .v{font-size:22px;font-weight:800;color:var(--navy);}
+.fstat .l{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-top:2px;}
+.btn-again{
+  border:none;background:var(--yellow);color:#111;border-radius:12px;
+  padding:14px 44px;font-size:15px;font-weight:800;cursor:pointer;
+  box-shadow:0 5px 16px rgba(255,201,60,.45);
+}
+.btn-again:active{transform:scale(.97);}
+</style>
+</head>
+<body>
+
+<!-- START -->
+<div class="overlay" id="overlay">
+  <div class="ov-sun">☀️</div>
+  <div class="ov-badge">OHAYO NIHONGO · Free Game</div>
+  <div class="ov-title">Sentence<br>Builder</div>
+  <div class="ov-jp">文づくりパズル</div>
+  <div class="ov-desc">Tap the shuffled Japanese word-tiles into order to rebuild a real Tokyo-diary sentence. Read the English, then reconstruct the Japanese.</div>
+  <div class="ov-rule"></div>
+  <button class="btn-start" id="startBtn">Start →</button>
+  <div class="ov-foot">Tap to place · tap again to remove</div>
+</div>
+
+<div class="wrap">
+  <header>
+    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">
+      <span class="brand-name">☀️ OHAYO <span>NIHONGO</span></span>
+      <span class="brand-sub">Sentence Builder · Free game</span>
+    </a>
+    <button class="mute-btn" id="muteBtn" aria-label="Toggle sound" title="Sound on/off">🔊</button>
+  </header>
+  <div class="gold-rule"></div>
+
+  <div class="stats">
+    <span class="chip">Round <b id="progNum">1</b> / <b id="progTot">30</b></span>
+    <span class="chip streak">🔥 <b id="streakN">0</b></span>
+    <span class="chip best">Best <b id="bestN">0</b></span>
+    <span class="chip diff" id="diffChip" title="Toggle difficulty">Auto ↕</span>
+    <span class="chip spacer"></span>
+    <button class="shuffle-btn" id="shuffleBtn">⇄ Shuffle deck</button>
+  </div>
+
+  <div class="ptrack"><div class="pfill" id="pfill"></div></div>
+
+  <!-- GAME CARD -->
+  <div class="card" id="gameCard">
+    <div class="tagline">Rebuild the sentence</div>
+    <div class="prompt-label">English meaning</div>
+    <div class="prompt" id="prompt"></div>
+    <div class="prompt-hint" id="promptHint">Arrange the tiles below in the right order.</div>
+
+    <div class="answer empty" id="answer"></div>
+
+    <div class="deck-label">Word tiles</div>
+    <div class="deck" id="deck"></div>
+
+    <div class="controls">
+      <button class="btn" id="hintBtn">💡 Hint</button>
+      <button class="btn" id="resetBtn">↺ Clear</button>
+      <button class="btn btn-check" id="checkBtn" disabled>Check ✓</button>
+    </div>
+
+    <div class="reveal" id="reveal">
+      <div class="reveal-badge">✓ Correct! せいかい！</div>
+      <div class="reveal-kanji" id="revKanji"></div>
+      <div class="reveal-en" id="revEn"></div>
+      <div class="next-wrap"><button class="btn-next" id="nextBtn">Next →</button></div>
+    </div>
+  </div>
+
+  <!-- FINISH -->
+  <div class="finish" id="finish">
+    <div class="finish-sun">🎉</div>
+    <div class="finish-title">You finished all!</div>
+    <div class="finish-jp">おつかれさま！ ぜんぶ できました。</div>
+    <div class="finish-stats">
+      <div class="fstat"><div class="v" id="fSolved">0</div><div class="l">Solved</div></div>
+      <div class="fstat"><div class="v" id="fBest">0</div><div class="l">Best streak</div></div>
+    </div>
+    <button class="btn-again" id="againBtn">Play again ↻</button>
+  </div>
+
+  <footer>
+    <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">
+      These sentences come from a real Tokyo diary → <b>ohayonihongo.net</b>
+    </a>
+  </footer>
+</div>
+
+<script>
+"use strict";
+
+/* ========================= SENTENCE DATA (inlined) =========================
+   Each: { en, kanji, chunks:[hira bunsetsu...] } — chunks keep punctuation
+   attached to the preceding chunk. Curated to 3–8 chunks. ========================= */
+var SENTENCES = [
+  {en:"But the sky was a brilliant blue.", kanji:"でも空は真っ青に晴れていました。", chunks:["でも","そらは","まっさおに","はれていました。"]},
+  {en:"One of my favorite foods is eel.", kanji:"私が好きな食べ物のひとつに、うなぎがあります。", chunks:["わたしが","すきな","たべものの","ひとつに、","うなぎが","あります。"]},
+  {en:"My go-to winter breakfast is warm rice porridge.", kanji:"私の冬の朝ごはんの定番は、温かいお粥です。", chunks:["わたしの","ふゆの","あさごはんの","ていばんは、","あたたかい","おかゆです。"]},
+  {en:"Today, I went out for dinner with a friend after work.", kanji:"今日は仕事の後、お友達と夜ご飯を食べに行きました。", chunks:["きょうは","しごとの","あと、","おともだちと","よるごはんを","たべに","いきました。"]},
+  {en:"When I heard the story, I was truly happy.", kanji:"その話を聞いて、私は本当に嬉しい気持ちになりました。", chunks:["そのはなしを","きいて、","わたしは","ほんとうに","うれしい","きもちに","なりました。"]},
+  {en:"The people around me were quietly reading or studying.", kanji:"周りの人も静かに本を読んだり勉強したりしています。", chunks:["まわりの","ひとも","しずかに","ほんを","よんだり","べんきょうしたり","しています。"]},
+  {en:"I was working quietly at the office.", kanji:"私はオフィスで静かに仕事をしていました。", chunks:["わたしは","オフィスで","しずかに","しごとを","していました。"]},
+  {en:"I could see just a little bit of pink.", kanji:"すこしだけピンク色が見えました。", chunks:["すこしだけ","ピンクいろが","みえました。"]},
+  {en:"So I make sure to drink plenty of warm water.", kanji:"だから、温かいお水をたくさん飲むようにしています。", chunks:["だから、","あたたかい","おみずを","たくさん","のむように","しています。"]},
+  {en:"This morning was a bright, clear Sunday morning.", kanji:"今朝はよく晴れた日曜日の朝でした。", chunks:["けさは","よく","はれた","にちようびの","あさでした。"]},
+  {en:"Today, even though it's still January, it felt as warm as March.", kanji:"今日は、まだ1月ですが、3月のように暖かい一日でした。", chunks:["きょうは、","まだ","いちがつ","ですが、","さんがつの","ように","あたたかい","いちにち","でした。"]},
+  {en:"On the way home, I chatted with my friend and we took a leisurely stroll.", kanji:"帰り道は、お友達とたくさんおしゃべりをしながら、ゆっくりお散歩をしました。", chunks:["かえりみちは、","おともだちと","たくさん","おしゃべりを","しながら、","ゆっくり","おさんぽを","しました。"]},
+  {en:"I love the crisp winter air — it refreshes my mind.", kanji:"冬の澄んだ空気は、気持ちを引き締めてくれるので大好きです。", chunks:["ふゆの","すんだ","くうきは、","きもちを","ひきしめて","くれるので","だいすきです。"]},
+  {en:"After all, warm oden on a cold day is the best, isn't it?", kanji:"やっぱり寒い季節に食べる温かいおでんは最高ですね。", chunks:["やっぱり","さむい","きせつに","たべる","あたたかい","おでんは","さいこうですね。"]},
+  {en:"Right at the start of the new year, I stumbled on my way home.", kanji:"新年早々、帰り道にちょっと転んでしまいました。", chunks:["しんねん","そうそう、","かえりみちに","ちょっと","ころんで","しまいました。"]},
+  {en:"I find little joys like this to enjoy on winter mornings.", kanji:"私はこんな風に、冬の朝の小さな楽しみを見つけてます。", chunks:["わたしは","こんな","ふうに、","ふゆの","あさの","ちいさな","たのしみを","みつけてます。"]},
+  {en:"Eating truly is one of life's greatest pleasures, isn't it?", kanji:"食べることって、本当にしあわせなことですね。", chunks:["たべることって、","ほんとうに","しあわせなことですね。"]},
+  {en:"In the middle of all that cold, I spotted a sign of spring on my walk.", kanji:"そんな寒さの中、歩いている途中で春を見つけました。", chunks:["そんな","さむさの","なか、","あるいている","とちゅうで","はるを","みつけました。"]},
+  {en:"On clear winter days, you can often see Mount Fuji beautifully.", kanji:"特に冬の晴れた日は、富士山がきれいに見えることが多いですよ。", chunks:["とくに","ふゆの","はれた","ひは、","ふじさんが","きれいに","みえることが","おおいですよ。"]},
+  {en:"I love spending weekend mornings like this in this spot.", kanji:"私はこの場所でこんな風に過ごす週末の朝が大好きです。", chunks:["わたしは","このばしょで","こんな","ふうに","すごす","しゅうまつの","あさが","だいすきです。"]},
+  {en:"I keep it as a simple, calming space.", kanji:"シンプルで落ち着く空間にしています。", chunks:["しんぷるで","おちつく","くうかんに","しています。"]},
+  {en:"I naturally feel my motivation rising.", kanji:"自然とモチベーションが上がるのを感じます。", chunks:["しぜんと","もちべーしょんが","あがるのを","かんじます。"]},
+  {en:"I have one-on-one lessons with my teacher twice a month.", kanji:"月に2回、先生と一対一でレッスンをしてもらっています。", chunks:["つきに","にかい、","せんせいと","いったいいちで","れっすんを","してもらっています。"]},
+  {en:"Spending my morning in a different way from usual felt really refreshing.", kanji:"いつもとは違う朝の過ごし方がとても新鮮でした。", chunks:["いつもとは","ちがう","あさの","すごしかたが","とても","しんせんでした。"]},
+  {en:"This morning, there was a fire alarm inspection.", kanji:"今朝は火災報知器の点検がありました。", chunks:["けさは","かさいほうちきの","てんけんが","ありました。"]},
+  {en:"Recently, I met up with a friend I hadn't seen in a while and we talked a lot.", kanji:"最近、久しぶりの友達と会って、たくさんお喋りをしてきました。", chunks:["さいきん、","ひさしぶりの","ともだちと","あって、","たくさん","おしゃべりを","してきました。"]},
+  {en:"It is said that eating beans equal to your age brings good health.", kanji:"自分の年齢の数だけ豆を食べると、健康になると言われています。", chunks:["じぶんの","ねんれいの","かずだけ","まめを","たべると、","けんこうに","なると","いわれています。"]},
+  {en:"Even I can't help feeling a little heavy-hearted on Sunday evenings.", kanji:"私も日曜日の夜は、どうしても心が少し重くなってしまいます。", chunks:["わたしも","にちようびの","よるは、","どうしても","こころが","すこし","おもくなって","しまいます。"]},
+  {en:"So I decided to create one little treat for myself on Sunday nights.", kanji:"そこで私は、日曜日の夜に自分へのご褒美を一つ作ることにしました。", chunks:["そこで","わたしは、","にちようびの","よるに","じぶんへの","ごほうびを","ひとつ","つくることに","しました。"]},
+  {en:"Finding a little bit of spring inside my room made today a very happy day.", kanji:"部屋の中の小さな春を見つけて、今日はとても幸せな気分になりました。", chunks:["へやの","なか、","ちいさな","はるを","みつけて、","きょうは","とても","しあわせな","きぶんに","なりました。"]},
+  {en:"Since I started studying, my world has changed greatly.", kanji:"勉強を始めてから、私の世界は大きく変わりました。", chunks:["べんきょうを","はじめてから、","わたしの","せかいは","おおきく","かわりました。"]},
+  {en:"Yesterday, I went to lunch with a friend.", kanji:"昨日は、お友達とランチに行きました。", chunks:["きのうは、","おともだちと","らんちに","いきました。"]},
+  {en:"I'll try to remember to do it properly next time.", kanji:"次回は忘れないようにやってみようと思います。", chunks:["じかいは","わすれないように","やってみようと","おもいます。"]},
+  {en:"Arranging things just the way I like it really puts my mind at ease.", kanji:"自分好みに整えているので、本当にほっとしますね。", chunks:["じぶんごのみに","ととのえているので、","ほんとうに","ほっとしますね。"]},
+  {en:"Korea has ondol floor heating, so the hotel rooms are really warm.", kanji:"韓国にはオンドルがあるので、ホテルの中がとても暖かいんですよね。", chunks:["かんこくには","おんどるが","あるので、","ほてるの","なかが","とても","あたたかいんですよね。"]},
+  {en:"In the morning, I enjoyed coffee and cake at a café and had a leisurely time.", kanji:"朝はカフェでコーヒーとケーキを楽しんで、ゆったりした時間を過ごしていたんです。", chunks:["あさは","かふぇで","こーひーと","けーきを","たのしんで、","ゆったりした","じかんを","すごしていたんです。"]},
+  {en:"It's such a shame I can't enjoy everything I want to eat.", kanji:"食べたいもの全部を楽しめなくて残念です。", chunks:["たべたいもの","ぜんぶを","たのしめなくて","ざんねんです。"]},
+  {en:"I'm so relieved it didn't turn into a serious injury.", kanji:"大怪我にならなくて、ほっとひと安心です。", chunks:["おおけがに","ならなくて、","ほっと","ひとあんしんです。"]},
+  {en:"In my English lessons, we talk about world news and our everyday lives.", kanji:"英会話のレッスンでは、世界のニュースや、私たちの日常のことを話しています。", chunks:["えいかいわの","れっすんでは、","せかいの","にゅーすや、","わたしたちの","にちじょうの","ことを","はなしています。"]},
+  {en:"I want to keep cherishing these traditions that connect us with the seasons.", kanji:"こうして季節を感じる風習は、これからもずっと大切にしていきたいです。", chunks:["こうして","きせつを","かんじる","ふうしゅうは、","これからも","ずっと","たいせつに","していきたいです。"]}
+];
+
+/* ------------------------------------------------------------------ */
+/* STATE */
+var deckOrder = [];        // indices into SENTENCES, in play order
+var pos = 0;               // position in deckOrder
+var cur = null;            // current sentence object
+var tiles = [];            // [{id, text, correctIndex, placed(bool)}]
+var placedIds = [];        // ids of tiles in answer row, in placement order
+var solved = 0;
+var streak = 0;
+var best = parseInt(localStorage.getItem('sb_best') || '0', 10) || 0;
+var solvedThisSentence = false;
+var difficulty = localStorage.getItem('sb_diff') || 'auto'; // auto | easy | hard
+var muted = localStorage.getItem('sb_muted') === '1';
+
+var TOTAL = SENTENCES.length;
+
+/* ELEMENTS */
+var $ = function(id){ return document.getElementById(id); };
+var elAnswer = $('answer'), elDeck = $('deck'), elPrompt = $('prompt'),
+    elRevKanji = $('revKanji'), elRevEn = $('revEn'), elReveal = $('reveal'),
+    elCheck = $('checkBtn'), elHint = $('hintBtn'), elReset = $('resetBtn'),
+    elCard = $('gameCard'), elFinish = $('finish');
+
+/* ------------------------------------------------------------------ */
+/* AUDIO (WebAudio synth only) */
+var actx = null;
+function audioInit(){
+  if(actx) return;
+  try{ actx = new (window.AudioContext || window.webkitAudioContext)(); }catch(e){ actx = null; }
+}
+function beep(freq, dur, type, vol, when){
+  if(muted || !actx) return;
+  var t = actx.currentTime + (when || 0);
+  var o = actx.createOscillator(), g = actx.createGain();
+  o.type = type || 'sine'; o.frequency.value = freq;
+  g.gain.setValueAtTime(0.0001, t);
+  g.gain.exponentialRampToValueAtTime(vol || 0.14, t + 0.012);
+  g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+  o.connect(g); g.connect(actx.destination);
+  o.start(t); o.stop(t + dur + 0.02);
+}
+function sfxTap(){ beep(520, 0.07, 'sine', 0.09); }
+function sfxPlace(){ beep(660, 0.08, 'triangle', 0.10); }
+function sfxRemove(){ beep(340, 0.07, 'sine', 0.08); }
+function sfxWrong(){ beep(180, 0.16, 'sawtooth', 0.09); beep(150, 0.20, 'sawtooth', 0.07, 0.05); }
+function sfxWin(){
+  var notes = [523.25, 659.25, 783.99, 1046.5];
+  for(var i=0;i<notes.length;i++){ beep(notes[i], 0.28, 'triangle', 0.13, i*0.09); }
+  beep(1318.5, 0.4, 'sine', 0.08, 0.36);
+}
+
+/* ------------------------------------------------------------------ */
+/* HELPERS */
+function shuffle(arr){
+  var a = arr.slice();
+  for(var i=a.length-1;i>0;i--){
+    var j = Math.floor(Math.random()*(i+1));
+    var t=a[i]; a[i]=a[j]; a[j]=t;
+  }
+  return a;
+}
+// Ensure the shuffled tile order is NOT already the correct order (>1 tile)
+function shuffledDistinct(n){
+  if(n<=1) return [0];
+  var idx = [], i;
+  for(i=0;i<n;i++) idx.push(i);
+  var order, tries=0;
+  do{
+    order = shuffle(idx);
+    tries++;
+    // is it identical to sorted order?
+    var same = true;
+    for(i=0;i<n;i++){ if(order[i]!==i){ same=false; break; } }
+    if(!same) return order;
+  } while(tries<50);
+  // fallback: guaranteed non-identity swap of first two
+  order = idx.slice(); var t=order[0]; order[0]=order[1]; order[1]=t;
+  return order;
+}
+
+function buildDeckOrder(){
+  var idxs = [];
+  for(var i=0;i<SENTENCES.length;i++) idxs.push(i);
+  idxs = shuffle(idxs);
+  if(difficulty === 'auto'){
+    // short (fewer chunks) first
+    idxs.sort(function(a,b){ return SENTENCES[a].chunks.length - SENTENCES[b].chunks.length; });
+  } else if(difficulty === 'easy'){
+    idxs.sort(function(a,b){ return SENTENCES[a].chunks.length - SENTENCES[b].chunks.length; });
+  } else if(difficulty === 'hard'){
+    idxs.sort(function(a,b){ return SENTENCES[b].chunks.length - SENTENCES[a].chunks.length; });
+  }
+  deckOrder = idxs;
+}
+
+/* ------------------------------------------------------------------ */
+/* RENDER */
+function renderStats(){
+  $('progNum').textContent = Math.min(pos+1, TOTAL);
+  $('progTot').textContent = TOTAL;
+  $('streakN').textContent = streak;
+  $('bestN').textContent = best;
+  $('pfill').style.width = ((pos)/(TOTAL))*100 + '%';
+  var dc = $('diffChip');
+  dc.textContent = (difficulty==='auto'?'Auto ↕':difficulty==='easy'?'Short →':'Long →');
+}
+
+function loadSentence(){
+  cur = SENTENCES[ deckOrder[pos] ];
+  solvedThisSentence = false;
+  placedIds = [];
+  elReveal.classList.remove('show');
+  elAnswer.className = 'answer empty';
+  elCard.style.animation='none'; void elCard.offsetHeight; elCard.style.animation='';
+
+  elPrompt.textContent = cur.en;
+  $('promptHint').textContent = 'Arrange the ' + cur.chunks.length + ' tiles into the correct order.';
+
+  // build tiles with correctIndex, then present in a distinct shuffled order
+  var n = cur.chunks.length;
+  var order = shuffledDistinct(n); // display positions -> correctIndex
+  tiles = [];
+  for(var d=0; d<n; d++){
+    var ci = order[d];
+    tiles.push({ id:'t'+d, text: cur.chunks[ci], correctIndex: ci, placed:false });
+  }
+  renderDeck();
+  renderAnswer();
+  updateControls();
+  renderStats();
+}
+
+function renderDeck(){
+  elDeck.innerHTML = '';
+  for(var i=0;i<tiles.length;i++){
+    (function(tile){
+      var b = document.createElement('button');
+      b.className = 'tile' + (tile.placed ? ' spent' : '');
+      b.textContent = tile.text;
+      b.type = 'button';
+      b.disabled = tile.placed;
+      b.addEventListener('click', function(){ placeTile(tile.id); });
+      elDeck.appendChild(b);
+    })(tiles[i]);
+  }
+}
+
+function renderAnswer(){
+  elAnswer.innerHTML = '';
+  if(placedIds.length === 0){
+    elAnswer.classList.add('empty');
+  } else {
+    elAnswer.classList.remove('empty');
+  }
+  for(var i=0;i<placedIds.length;i++){
+    (function(tile){
+      var b = document.createElement('button');
+      b.className = 'tile placed';
+      b.textContent = tile.text;
+      b.type = 'button';
+      b.addEventListener('click', function(){ removeTile(tile.id); });
+      elAnswer.appendChild(b);
+    })( getTile(placedIds[i]) );
+  }
+}
+
+function getTile(id){
+  for(var i=0;i<tiles.length;i++){ if(tiles[i].id===id) return tiles[i]; }
+  return null;
+}
+
+function updateControls(){
+  var full = placedIds.length === tiles.length && tiles.length>0;
+  elCheck.disabled = !full || solvedThisSentence;
+  elHint.disabled = solvedThisSentence;
+  elReset.disabled = placedIds.length===0 || solvedThisSentence;
+}
+
+/* ------------------------------------------------------------------ */
+/* INTERACTION */
+function placeTile(id){
+  if(solvedThisSentence) return;
+  var t = getTile(id);
+  if(!t || t.placed) return;
+  audioInit();
+  t.placed = true;
+  placedIds.push(id);
+  sfxPlace();
+  elAnswer.classList.remove('wrong');
+  renderDeck();
+  renderAnswer();
+  updateControls();
+  // auto-check when full
+  if(placedIds.length === tiles.length){
+    setTimeout(checkAnswer, 220);
+  }
+}
+
+function removeTile(id){
+  if(solvedThisSentence) return;
+  var t = getTile(id);
+  if(!t || !t.placed) return;
+  audioInit();
+  t.placed = false;
+  var k = placedIds.indexOf(id);
+  if(k>-1) placedIds.splice(k,1);
+  sfxRemove();
+  elAnswer.classList.remove('wrong');
+  renderDeck();
+  renderAnswer();
+  updateControls();
+}
+
+function clearAnswer(){
+  if(solvedThisSentence) return;
+  for(var i=0;i<tiles.length;i++) tiles[i].placed = false;
+  placedIds = [];
+  sfxRemove();
+  elAnswer.classList.remove('wrong','shake');
+  renderDeck();
+  renderAnswer();
+  updateControls();
+}
+
+function checkAnswer(){
+  if(solvedThisSentence) return;
+  if(placedIds.length !== tiles.length) return;
+  // compare placed order's correctIndex sequence to 0..n-1
+  var ok = true;
+  for(var i=0;i<placedIds.length;i++){
+    var t = getTile(placedIds[i]);
+    if(!t || t.correctIndex !== i){ ok = false; break; }
+  }
+  if(ok){ onCorrect(); } else { onWrong(); }
+}
+
+function onWrong(){
+  audioInit();
+  sfxWrong();
+  elAnswer.classList.remove('shake');
+  void elAnswer.offsetWidth;
+  elAnswer.classList.add('shake','wrong');
+  setTimeout(function(){ elAnswer.classList.remove('shake'); }, 520);
+}
+
+function onCorrect(){
+  solvedThisSentence = true;
+  solved++;
+  streak++;
+  if(streak > best){ best = streak; localStorage.setItem('sb_best', String(best)); }
+  audioInit();
+  sfxWin();
+  elAnswer.classList.remove('wrong','shake');
+  elAnswer.classList.add('correct');
+  elRevKanji.textContent = cur.kanji;
+  elRevEn.textContent = cur.en;
+  elReveal.classList.add('show');
+  updateControls();
+  renderStats();
+  confettiBurst();
+}
+
+/* HINT: reveal/place the next correct tile in sequence */
+function useHint(){
+  if(solvedThisSentence) return;
+  audioInit();
+  // find the first answer slot that is wrong or empty
+  var targetIndex = placedIds.length; // default: next empty slot index
+  for(var i=0;i<placedIds.length;i++){
+    var t = getTile(placedIds[i]);
+    if(!t || t.correctIndex !== i){ targetIndex = i; break; }
+  }
+  // If there's a misplacement before the end, clear from that point
+  if(targetIndex < placedIds.length){
+    // remove tiles from targetIndex onward
+    for(var j=placedIds.length-1;j>=targetIndex;j--){
+      var rid = placedIds[j];
+      var rt = getTile(rid);
+      if(rt) rt.placed = false;
+      placedIds.pop();
+    }
+  }
+  // place the correct tile for slot = targetIndex
+  var want = targetIndex; // correctIndex we need
+  var found = null;
+  for(var k=0;k<tiles.length;k++){
+    if(!tiles[k].placed && tiles[k].correctIndex === want){ found = tiles[k]; break; }
+  }
+  if(found){
+    found.placed = true;
+    placedIds.push(found.id);
+    sfxPlace();
+  }
+  renderDeck();
+  renderAnswer();
+  updateControls();
+  // flash the just-placed tile
+  var placedButtons = elAnswer.querySelectorAll('.tile');
+  if(placedButtons.length){
+    var last = placedButtons[placedButtons.length-1];
+    last.classList.add('hintslot');
+    setTimeout(function(){ last.classList.remove('hintslot'); }, 600);
+  }
+  if(placedIds.length === tiles.length){
+    setTimeout(checkAnswer, 260);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* FLOW */
+function nextSentence(){
+  pos++;
+  if(pos >= TOTAL){
+    showFinish();
+    return;
+  }
+  loadSentence();
+}
+
+function showFinish(){
+  elCard.style.display = 'none';
+  $('fSolved').textContent = solved;
+  $('fBest').textContent = best;
+  elFinish.classList.add('show');
+  renderStats();
+  $('pfill').style.width = '100%';
+}
+
+function restartGame(){
+  solved = 0; streak = 0; pos = 0;
+  buildDeckOrder();
+  elFinish.classList.remove('show');
+  elCard.style.display = '';
+  loadSentence();
+}
+
+function reshuffleDeck(){
+  // reshuffle remaining order (and current); keep progress count
+  buildDeckOrder();
+  pos = 0; solved = 0; streak = 0;
+  loadSentence();
+}
+
+/* CONFETTI */
+function confettiBurst(){
+  var cols = ['#FFC93C','#F7A928','#F08114','#B98F2F','#134B70','#9FB98A'];
+  for(var i=0;i<34;i++){
+    var c = document.createElement('div');
+    c.className = 'confetti';
+    c.style.left = (Math.random()*100)+'%';
+    c.style.background = cols[i % cols.length];
+    c.style.animationDuration = (1.3 + Math.random()*1.5)+'s';
+    c.style.animationDelay = (Math.random()*0.35)+'s';
+    document.body.appendChild(c);
+    (function(el){ setTimeout(function(){ el.remove(); }, 3200); })(c);
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* DIFFICULTY + MUTE */
+function cycleDiff(){
+  difficulty = difficulty==='auto' ? 'easy' : difficulty==='easy' ? 'hard' : 'auto';
+  localStorage.setItem('sb_diff', difficulty);
+  reshuffleDeck();
+}
+function toggleMute(){
+  muted = !muted;
+  localStorage.setItem('sb_muted', muted ? '1' : '0');
+  $('muteBtn').textContent = muted ? '🔇' : '🔊';
+  if(!muted){ audioInit(); sfxTap(); }
+}
+
+/* ------------------------------------------------------------------ */
+/* WIRING */
+$('startBtn').addEventListener('click', function(){
+  audioInit();
+  $('overlay').classList.add('hide');
+  sfxTap();
+});
+$('checkBtn').addEventListener('click', checkAnswer);
+$('hintBtn').addEventListener('click', useHint);
+$('resetBtn').addEventListener('click', clearAnswer);
+$('nextBtn').addEventListener('click', nextSentence);
+$('againBtn').addEventListener('click', restartGame);
+$('shuffleBtn').addEventListener('click', reshuffleDeck);
+$('diffChip').addEventListener('click', cycleDiff);
+$('muteBtn').addEventListener('click', toggleMute);
+
+// prevent double-tap zoom / accidental scroll on the play area
+document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
+
+/* INIT */
+$('muteBtn').textContent = muted ? '🔇' : '🔊';
+buildDeckOrder();
+loadSentence();
+</script>
+</body>
+</html>

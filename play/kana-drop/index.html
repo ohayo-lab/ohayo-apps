@@ -1,0 +1,593 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<title>Kana Drop · OHAYO NIHONGO</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%98%80%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<!--
+  ==========================================================================
+  KANA DROP — 五十音を段（母音）で仕分ける落ちものゲーム
+  --------------------------------------------------------------------------
+  MECHANIC:
+  - A single kana tile (e.g. か, し, つ) falls from the top center.
+  - Five columns at the bottom are labeled by the 5 vowels: あいうえお (a/i/u/e/o).
+  - The player routes the falling tile into the column whose VOWEL matches the
+    tile's sound. か→a, き→i, す→u, せ→e, の→o. This trains the gojūon grid
+    (consonant row × vowel column).
+  - Correct column: tile locks with pop + particle + rising blip + score.
+    Complete horizontal line (all 5 columns filled at same height) clears
+    Tetris-style for a bonus chime.
+  - Wrong column: tile stacks there in muted red (a mistake you can see).
+  - Any column stacking to the top = GAME OVER.
+  - Level ramps speed; PROGRESSIVE UNLOCK adds consonant rows as you level up
+    so beginners are never overwhelmed.
+
+  MODES:
+  - Hiragana : hiragana tiles, hiragana column labels.
+  - Katakana : katakana tiles, katakana column labels.
+  - Mixed    : a HIRAGANA tile falls, but the 5 columns show KATAKANA.
+               Match the hiragana tile's vowel to the katakana vowel column
+               (ひらがな→カタカナ correspondence training).
+
+  ん HANDLING: ん (moraic n) has no vowel, so it is EXCLUDED from the tile pool
+  entirely. Only kana that map cleanly to a/i/u/e/o are ever spawned.
+  ==========================================================================
+-->
+<style>
+:root{
+  --cream:#FAF7F1; --paper:#FFFFFF; --ink:#1C1C1C; --sub:#4A4A4A;
+  --line:#DFD7C9; --gold:#B98F2F; --yellow:#FFC93C; --navy:#134B70;
+  --sun:#F7A928; --sun-deep:#F08114;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{margin:0;padding:0;height:100%;}
+body{
+  background:var(--cream); color:var(--ink);
+  font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  overflow:hidden; overscroll-behavior:none;
+  display:flex; flex-direction:column; align-items:center;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+}
+a{color:var(--navy);text-decoration:none;}
+.serif{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;}
+.kana{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;font-weight:700;}
+
+.wrap{width:100%;max-width:460px;height:100%;display:flex;flex-direction:column;padding:8px 12px;}
+
+/* header */
+header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 2px 8px;}
+.brand{display:flex;flex-direction:column;line-height:1.1;}
+.brand a{font-weight:800;font-size:15px;letter-spacing:.2px;color:var(--ink);}
+.brand small{color:var(--sub);font-size:11px;margin-top:1px;}
+.brand .accent{display:block;height:2px;width:34px;background:var(--gold);border-radius:2px;margin-top:3px;}
+#muteBtn{border:1px solid var(--line);background:var(--paper);border-radius:10px;
+  width:40px;height:40px;font-size:18px;cursor:pointer;display:grid;place-items:center;}
+
+/* card / stage */
+.stage{flex:1;position:relative;background:var(--paper);border:1px solid var(--line);
+  border-radius:14px;box-shadow:0 6px 18px rgba(28,28,28,.06);overflow:hidden;
+  display:flex;flex-direction:column;min-height:0;}
+
+/* HUD */
+.hud{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;
+  border-bottom:1px solid var(--line);font-size:12px;color:var(--sub);gap:6px;flex-wrap:wrap;}
+.hud b{color:var(--ink);font-size:16px;font-variant-numeric:tabular-nums;}
+.hud .cell{display:flex;flex-direction:column;align-items:center;line-height:1.15;}
+.hud .streak b{color:var(--sun-deep);}
+
+canvas{display:block;flex:1;width:100%;touch-action:none;min-height:0;}
+
+/* overlays */
+.overlay{position:absolute;inset:0;background:rgba(250,247,241,.94);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:22px;z-index:5;}
+.overlay.hidden{display:none;}
+.overlay h1{font-size:40px;margin:0 0 2px;color:var(--ink);letter-spacing:.5px;}
+.overlay .tag{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:12px;text-transform:uppercase;margin-bottom:14px;}
+.overlay p.how{color:var(--sub);font-size:13px;max-width:300px;margin:0 0 20px;line-height:1.5;}
+.modes{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;}
+.btn{font-family:inherit;font-size:16px;font-weight:700;border-radius:12px;padding:14px 18px;
+  cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);
+  transition:transform .05s ease;}
+.btn:active{transform:translateY(1px);}
+.btn.primary{background:var(--yellow);border-color:#E7B531;color:#3a2e08;box-shadow:0 4px 0 #E7B531;}
+.btn.primary:active{box-shadow:0 1px 0 #E7B531;transform:translateY(3px);}
+.btn.sub{font-size:14px;font-weight:600;color:var(--navy);background:var(--paper);}
+.modehint{font-size:11px;color:var(--sub);margin-top:2px;}
+.gover h1{color:var(--sun-deep);}
+.scoreline{font-size:15px;color:var(--sub);margin:2px 0 4px;}
+.scoreline b{color:var(--ink);font-size:30px;font-family:Georgia,serif;}
+.best{font-size:13px;color:var(--gold);margin-bottom:18px;}
+.copied{font-size:12px;color:var(--navy);height:16px;margin-top:8px;}
+
+footer{padding:8px 4px 4px;text-align:center;font-size:11px;color:var(--sub);}
+footer a{color:var(--sub);border-bottom:1px solid var(--line);}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">☀️ OHAYO NIHONGO</a>
+      <small>Kana Drop · Free game</small>
+      <span class="accent"></span>
+    </div>
+    <button id="muteBtn" aria-label="Toggle sound">🔊</button>
+  </header>
+
+  <div class="stage">
+    <div class="hud">
+      <div class="cell"><span>LEVEL</span><b id="hLevel">1</b></div>
+      <div class="cell"><span>SCORE</span><b id="hScore">0</b></div>
+      <div class="cell streak"><span>STREAK</span><b id="hStreak">0</b></div>
+    </div>
+    <canvas id="cv"></canvas>
+
+    <!-- START -->
+    <div class="overlay" id="startScreen">
+      <div class="tag">五十音 · Gojūon</div>
+      <h1 class="serif">Kana Drop</h1>
+      <p class="how">Route each falling kana into the column of its <b>vowel</b> sound — tap a column, or use ← → and A/I/U/E/O.</p>
+      <div class="modes">
+        <button class="btn primary" data-mode="hira">ひらがな Hiragana</button>
+        <button class="btn sub" data-mode="kata">カタカナ Katakana</button>
+        <button class="btn sub" data-mode="mixed">Mixed かな→カナ</button>
+        <div class="modehint">Mixed: hiragana tile falls, columns show katakana.</div>
+      </div>
+    </div>
+
+    <!-- GAME OVER -->
+    <div class="overlay gover hidden" id="overScreen">
+      <div class="tag">Game Over</div>
+      <h1 class="serif">おつかれ！</h1>
+      <div class="scoreline">Score <b id="finalScore">0</b></div>
+      <div class="best" id="bestLine">Best 0</div>
+      <div class="modes">
+        <button class="btn primary" id="againBtn">Play again</button>
+        <button class="btn sub" id="shareBtn">Share your score</button>
+        <button class="btn sub" id="menuBtn">Change mode</button>
+      </div>
+      <div class="copied" id="copiedMsg"></div>
+    </div>
+  </div>
+
+  <footer>Learn real Japanese every morning → <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></footer>
+</div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- KANA → VOWEL TABLE (gojūon, verified) ---------- */
+/* Each entry: hiragana, katakana, vowel. ん excluded (no vowel). */
+const KANA = [
+  // a-row consonants
+  {h:'あ',k:'ア',v:'a'},{h:'か',k:'カ',v:'a'},{h:'さ',k:'サ',v:'a'},{h:'た',k:'タ',v:'a'},
+  {h:'な',k:'ナ',v:'a'},{h:'は',k:'ハ',v:'a'},{h:'ま',k:'マ',v:'a'},{h:'や',k:'ヤ',v:'a'},
+  {h:'ら',k:'ラ',v:'a'},{h:'わ',k:'ワ',v:'a'},
+  {h:'が',k:'ガ',v:'a'},{h:'ざ',k:'ザ',v:'a'},{h:'だ',k:'ダ',v:'a'},{h:'ば',k:'バ',v:'a'},{h:'ぱ',k:'パ',v:'a'},
+  // i-row
+  {h:'い',k:'イ',v:'i'},{h:'き',k:'キ',v:'i'},{h:'し',k:'シ',v:'i'},{h:'ち',k:'チ',v:'i'},
+  {h:'に',k:'ニ',v:'i'},{h:'ひ',k:'ヒ',v:'i'},{h:'み',k:'ミ',v:'i'},{h:'り',k:'リ',v:'i'},
+  {h:'ぎ',k:'ギ',v:'i'},{h:'じ',k:'ジ',v:'i'},{h:'び',k:'ビ',v:'i'},{h:'ぴ',k:'ピ',v:'i'},
+  // u-row
+  {h:'う',k:'ウ',v:'u'},{h:'く',k:'ク',v:'u'},{h:'す',k:'ス',v:'u'},{h:'つ',k:'ツ',v:'u'},
+  {h:'ぬ',k:'ヌ',v:'u'},{h:'ふ',k:'フ',v:'u'},{h:'む',k:'ム',v:'u'},{h:'ゆ',k:'ユ',v:'u'},
+  {h:'る',k:'ル',v:'u'},
+  {h:'ぐ',k:'グ',v:'u'},{h:'ず',k:'ズ',v:'u'},{h:'づ',k:'ヅ',v:'u'},{h:'ぶ',k:'ブ',v:'u'},{h:'ぷ',k:'プ',v:'u'},
+  // e-row
+  {h:'え',k:'エ',v:'e'},{h:'け',k:'ケ',v:'e'},{h:'せ',k:'セ',v:'e'},{h:'て',k:'テ',v:'e'},
+  {h:'ね',k:'ネ',v:'e'},{h:'へ',k:'ヘ',v:'e'},{h:'め',k:'メ',v:'e'},{h:'れ',k:'レ',v:'e'},
+  {h:'げ',k:'ゲ',v:'e'},{h:'ぜ',k:'ゼ',v:'e'},{h:'べ',k:'ベ',v:'e'},{h:'ぺ',k:'ペ',v:'e'},
+  // o-row
+  {h:'お',k:'オ',v:'o'},{h:'こ',k:'コ',v:'o'},{h:'そ',k:'ソ',v:'o'},{h:'と',k:'ト',v:'o'},
+  {h:'の',k:'ノ',v:'o'},{h:'ほ',k:'ホ',v:'o'},{h:'も',k:'モ',v:'o'},{h:'よ',k:'ヨ',v:'o'},
+  {h:'ろ',k:'ロ',v:'o'},{h:'を',k:'ヲ',v:'o'},
+  {h:'ご',k:'ゴ',v:'o'},{h:'ぞ',k:'ゾ',v:'o'},{h:'ど',k:'ド',v:'o'},{h:'ぼ',k:'ボ',v:'o'},{h:'ぽ',k:'ポ',v:'o'}
+];
+
+/* Progressive unlock: consonant "rows" by base kana, introduced with level. */
+const ROWS = [
+  ['あ','い','う','え','お'],            // vowels
+  ['か','き','く','け','こ'],            // k
+  ['さ','し','す','せ','そ'],            // s
+  ['た','ち','つ','て','と'],            // t
+  ['な','に','ぬ','ね','の'],            // n
+  ['は','ひ','ふ','へ','ほ'],            // h
+  ['ま','み','む','め','も'],            // m
+  ['や','ゆ','よ'],                      // y
+  ['ら','り','る','れ','ろ'],            // r
+  ['わ','を'],                           // w
+  ['が','ぎ','ぐ','げ','ご','ざ','じ','ず','ぜ','ぞ',
+   'だ','づ','で','ど','ぢ','ば','び','ぶ','べ','ぼ','ぱ','ぴ','ぷ','ぺ','ぽ'] // dakuten/handakuten
+];
+function rowsUnlocked(level){ return Math.min(ROWS.length, 2 + Math.floor((level-1))); }
+function allowedHira(level){
+  const n=rowsUnlocked(level); const set=new Set();
+  for(let i=0;i<n;i++) ROWS[i].forEach(c=>set.add(c));
+  return set;
+}
+
+const VOWELS=['a','i','u','e','o'];
+const VLABEL={ hira:{a:'あ',i:'い',u:'う',e:'え',o:'お'},
+               kata:{a:'ア',i:'イ',u:'ウ',e:'エ',o:'オ'} };
+
+/* ---------- Canvas / layout ---------- */
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+let W=0,H=0,DPR=1;
+const COLS=5;
+let colW=0, cellH=0, rowsMax=0, labelH=0;
+
+function resize(){
+  const r=cv.getBoundingClientRect();
+  DPR=Math.min(window.devicePixelRatio||1,2);
+  W=Math.max(200,r.width); H=Math.max(200,r.height);
+  cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+  colW=W/COLS;
+  labelH=Math.max(46,Math.min(64,H*0.11));
+  cellH=Math.min(colW*0.9, (H-labelH)/6.2);
+  rowsMax=Math.floor((H-labelH)/cellH);
+}
+window.addEventListener('resize',resize);
+
+/* ---------- Audio ---------- */
+let AC=null, muted=false;
+function audio(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
+function blip(freq,dur,type,vol){
+  if(muted) return; const ac=audio(); if(!ac) return;
+  const o=ac.createOscillator(), g=ac.createGain();
+  o.type=type||'sine'; o.frequency.value=freq;
+  g.gain.setValueAtTime(0.0001,ac.currentTime);
+  g.gain.exponentialRampToValueAtTime(vol||0.18,ac.currentTime+0.01);
+  g.gain.exponentialRampToValueAtTime(0.0001,ac.currentTime+(dur||0.15));
+  o.connect(g).connect(ac.destination); o.start(); o.stop(ac.currentTime+(dur||0.15)+0.02);
+}
+function sndCorrect(){ blip(523,0.09,'sine',0.16); setTimeout(()=>blip(784,0.12,'sine',0.16),70); }
+function sndWrong(){ blip(150,0.18,'sawtooth',0.14); }
+function sndClear(){ [523,659,784,1046].forEach((f,i)=>setTimeout(()=>blip(f,0.16,'triangle',0.16),i*80)); }
+function sndOver(){ [392,330,262].forEach((f,i)=>setTimeout(()=>blip(f,0.3,'sine',0.16),i*140)); }
+
+/* ---------- Game state ---------- */
+let mode='hira';
+let grid;              // grid[col] = array of {char,ok,pop} bottom-up
+let cur=null;          // falling tile
+let curCol=2;
+let fallY=0, fallSpeed=0;
+let score=0, level=1, streak=0, best=0;
+let running=false, animId=null, lastT=0;
+let particles=[];
+let popAnims=[];       // {col,row,t}
+let flash={t:0,col:-1,good:true};
+
+function loadBest(){
+  try{ best=parseInt(localStorage.getItem('kanadrop_best_'+mode)||'0',10)||0; }catch(e){ best=0; }
+}
+function saveBest(){
+  try{ if(score>best){ best=score; localStorage.setItem('kanadrop_best_'+mode,String(best)); } }catch(e){}
+}
+
+function pickTile(){
+  const allow=allowedHira(level);
+  const pool=KANA.filter(x=>allow.has(x.h));
+  const t=pool[(Math.random()*pool.length)|0];
+  // Displayed char: hira/mixed -> hiragana glyph, kata -> katakana glyph
+  const disp = (mode==='kata') ? t.k : t.h;
+  return {char:disp, v:t.v};
+}
+function speedForLevel(l){ return (H*0.28) * (1 + (l-1)*0.18); } // px per second
+
+function spawn(){
+  cur=pickTile();
+  curCol=2;
+  fallY=labelH*0.2;
+  fallSpeed=speedForLevel(level);
+}
+
+function stackHeight(c){ return grid[c].length; }
+function topYofCol(c){ return H - stackHeight(c)*cellH; }
+
+function tileCenterX(c){ return c*colW+colW/2; }
+
+function lockTile(){
+  const c=curCol;
+  const v=cur.v;
+  const ok = (VOWELS[c]===v);
+  grid[c].push({char:cur.char, ok:ok, pop:1});
+  const row=grid[c].length-1;
+  popAnims.push({col:c,row:row,t:0});
+  spawnParticles(tileCenterX(c), H-(row+0.5)*cellH, ok);
+  flash={t:0.35,col:c,good:ok};
+
+  if(ok){
+    streak++;
+    let gain=10+Math.floor(streak/3)*2;
+    score+=gain;
+    sndCorrect();
+  }else{
+    streak=0;
+    sndWrong();
+  }
+  updateHUD();
+
+  // line clear check
+  checkLineClear();
+
+  // level up every 120 pts
+  const nl=1+Math.floor(score/120);
+  if(nl>level){ level=nl; }
+
+  // game over: any column reached top
+  for(let i=0;i<COLS;i++){
+    if(grid[i].length>=rowsMax){ return gameOver(); }
+  }
+  spawn();
+}
+
+function checkLineClear(){
+  // find rows (0=bottom) where all 5 columns have a tile
+  let minH=Infinity;
+  for(let c=0;c<COLS;c++) minH=Math.min(minH,grid[c].length);
+  if(minH<=0) return;
+  let cleared=0;
+  for(let r=0;r<minH;r++){
+    // every column has index r filled by definition (minH). Clear the bottom-most full band greedily:
+  }
+  // A "line" = a horizontal band present in all columns. Bottom minH rows are all full.
+  if(minH>=1){
+    cleared=minH;
+    for(let c=0;c<COLS;c++){ grid[c].splice(0,minH); }
+    score += cleared*40;
+    sndClear();
+    flash={t:0.5,col:-1,good:true};
+    updateHUD();
+  }
+}
+
+function spawnParticles(x,y,good){
+  const col = good ? '#F7A928' : '#c65a4a';
+  for(let i=0;i<14;i++){
+    const a=Math.random()*Math.PI*2, sp=40+Math.random()*120;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-40,life:1,col:col});
+  }
+}
+
+/* ---------- Loop ---------- */
+function step(t){
+  if(!running) return;
+  if(!lastT) lastT=t;
+  let dt=(t-lastT)/1000; lastT=t;
+  if(dt>0.05) dt=0.05;
+
+  if(cur){
+    fallY += fallSpeed*dt;
+    const limit = topYofCol(curCol) - cellH; // top of the landing cell
+    if(fallY >= limit){
+      fallY=limit;
+      lockTile();
+    }
+  }
+  // particles
+  for(const p of particles){ p.vy+=260*dt; p.x+=p.vx*dt; p.y+=p.vy*dt; p.life-=dt*1.6; }
+  particles=particles.filter(p=>p.life>0);
+  for(const pa of popAnims){ pa.t+=dt*3.2; }
+  popAnims=popAnims.filter(p=>p.t<1);
+  if(flash.t>0) flash.t-=dt;
+
+  render();
+  animId=requestAnimationFrame(step);
+}
+
+function render(){
+  ctx.clearRect(0,0,W,H);
+  // background column guides
+  for(let c=0;c<COLS;c++){
+    ctx.fillStyle = (c%2===0)?'rgba(223,215,201,.14)':'rgba(223,215,201,.05)';
+    ctx.fillRect(c*colW,0,colW,H-labelH);
+    ctx.strokeStyle='rgba(223,215,201,.6)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(c*colW+.5,0); ctx.lineTo(c*colW+.5,H-labelH); ctx.stroke();
+  }
+  // flash highlight
+  if(flash.t>0 && flash.col>=0){
+    ctx.fillStyle = flash.good?'rgba(247,169,40,'+(flash.t*0.5)+')':'rgba(198,90,74,'+(flash.t*0.5)+')';
+    ctx.fillRect(flash.col*colW,0,colW,H-labelH);
+  } else if(flash.t>0 && flash.col<0){
+    ctx.fillStyle='rgba(255,201,60,'+(flash.t*0.35)+')';
+    ctx.fillRect(0,0,W,H-labelH);
+  }
+
+  // stacked tiles
+  for(let c=0;c<COLS;c++){
+    for(let r=0;r<grid[c].length;r++){
+      const cellY=H-(r+1)*cellH;
+      const cell=grid[c][r];
+      let sc=1;
+      for(const pa of popAnims){ if(pa.col===c&&pa.row===r){ sc=1+Math.sin(Math.min(pa.t,1)*Math.PI)*0.16; } }
+      drawTile(tileCenterX(c),cellY+cellH/2,cellH*0.86,cell.char,cell.ok?'good':'bad',sc);
+    }
+  }
+
+  // falling tile
+  if(cur){
+    const x=tileCenterX(curCol);
+    // ghost drop indicator
+    const gy=topYofCol(curCol)-cellH/2;
+    ctx.globalAlpha=0.18;
+    drawTile(x,gy,cellH*0.86,cur.char,'ghost',1);
+    ctx.globalAlpha=1;
+    drawTile(x,fallY+cellH/2,cellH*0.86,cur.char,'fall',1);
+  }
+
+  // particles
+  for(const p of particles){
+    ctx.globalAlpha=Math.max(0,p.life);
+    ctx.fillStyle=p.col;
+    ctx.beginPath(); ctx.arc(p.x,p.y,3.2,0,Math.PI*2); ctx.fill();
+  }
+  ctx.globalAlpha=1;
+
+  drawLabels();
+}
+
+function drawTile(cx,cy,size,char,kind,scale){
+  const s=size*(scale||1);
+  const x=cx-s/2, y=cy-s/2, rad=Math.min(14,s*0.2);
+  let fill='#FFFFFF', stroke='#DFD7C9', txt='#1C1C1C';
+  if(kind==='good'){ fill='#FFFFFF'; stroke='#E3D9C2'; txt='#1C1C1C'; }
+  if(kind==='bad'){ fill='#F7E6E2'; stroke='#E1B4AC'; txt='#B4503F'; }
+  if(kind==='fall'){ fill='#134B70'; stroke='#0d3a58'; txt='#FFFFFF'; }
+  if(kind==='ghost'){ fill='#134B70'; stroke='#134B70'; txt='#134B70'; }
+  ctx.beginPath();
+  rr(x,y,s,s,rad); ctx.fillStyle=fill; ctx.fill();
+  ctx.lineWidth=1.4; ctx.strokeStyle=stroke; ctx.stroke();
+  if(kind==='fall'){ // gold underline accent
+    ctx.strokeStyle='#B98F2F'; ctx.lineWidth=2;
+    ctx.beginPath(); ctx.moveTo(x+s*0.28,y+s*0.86); ctx.lineTo(x+s*0.72,y+s*0.86); ctx.stroke();
+  }
+  ctx.fillStyle=txt;
+  ctx.font='700 '+Math.round(s*0.58)+"px 'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif";
+  ctx.textAlign='center'; ctx.textBaseline='middle';
+  ctx.fillText(char,cx,cy+s*0.02);
+}
+function rr(x,y,w,h,r){
+  ctx.moveTo(x+r,y); ctx.arcTo(x+w,y,x+w,y+h,r); ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r); ctx.arcTo(x,y,x+w,y,r); ctx.closePath();
+}
+
+function drawLabels(){
+  const y0=H-labelH;
+  ctx.fillStyle='#FAF7F1'; ctx.fillRect(0,y0,W,labelH);
+  ctx.strokeStyle='#DFD7C9'; ctx.lineWidth=1;
+  ctx.beginPath(); ctx.moveTo(0,y0+.5); ctx.lineTo(W,y0+.5); ctx.stroke();
+  const labels = (mode==='kata'||mode==='mixed') ? VLABEL.kata : VLABEL.hira;
+  for(let c=0;c<COLS;c++){
+    const cx=tileCenterX(c);
+    const active = cur && curCol===c;
+    if(active){
+      ctx.fillStyle='#FFC93C';
+      ctx.beginPath(); rr(c*colW+6,y0+6,colW-12,labelH-12,10); ctx.fill();
+    }
+    ctx.fillStyle=active?'#3a2e08':'#134B70';
+    ctx.font='700 '+Math.round(labelH*0.42)+"px 'Hiragino Sans','Noto Sans JP',sans-serif";
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(labels[VOWELS[c]],cx,y0+labelH*0.42);
+    ctx.fillStyle=active?'#6b5410':'#4A4A4A';
+    ctx.font='700 '+Math.round(labelH*0.2)+"px system-ui,sans-serif";
+    ctx.fillText(VOWELS[c],cx,y0+labelH*0.8);
+  }
+}
+
+/* ---------- HUD ---------- */
+function updateHUD(){
+  document.getElementById('hLevel').textContent=level;
+  document.getElementById('hScore').textContent=score;
+  document.getElementById('hStreak').textContent=streak;
+}
+
+/* ---------- Controls ---------- */
+function moveTo(c){ if(!running||!cur) return; curCol=Math.max(0,Math.min(COLS-1,c)); }
+function hardDrop(){
+  if(!running||!cur) return;
+  fallY=topYofCol(curCol)-cellH; // snap; loop will lock next frame
+}
+
+// pointer: tap a column = route there; also allow swipe
+let touchX0=null, touchMoved=false, touchColStart=2;
+function colFromX(px){
+  const r=cv.getBoundingClientRect();
+  const x=px-r.left;
+  return Math.max(0,Math.min(COLS-1,Math.floor(x/colW)));
+}
+cv.addEventListener('pointerdown',e=>{
+  if(!running) return;
+  audio(); // resume on gesture
+  touchX0=e.clientX; touchMoved=false; touchColStart=curCol;
+  moveTo(colFromX(e.clientX));
+  e.preventDefault();
+},{passive:false});
+cv.addEventListener('pointermove',e=>{
+  if(!running||touchX0===null) return;
+  const dx=e.clientX-touchX0;
+  if(Math.abs(dx)>18){ touchMoved=true; moveTo(colFromX(e.clientX)); }
+  e.preventDefault();
+},{passive:false});
+cv.addEventListener('pointerup',e=>{
+  if(!running){ touchX0=null; return; }
+  // tap (no significant move) = drop into the tapped column
+  if(!touchMoved){ moveTo(colFromX(e.clientX)); hardDrop(); }
+  touchX0=null;
+  e.preventDefault();
+},{passive:false});
+
+window.addEventListener('keydown',e=>{
+  if(!running) return;
+  const k=e.key.toLowerCase();
+  if(e.key==='ArrowLeft'){ moveTo(curCol-1); e.preventDefault(); }
+  else if(e.key==='ArrowRight'){ moveTo(curCol+1); e.preventDefault(); }
+  else if(e.key==='ArrowDown'||e.key===' '){ hardDrop(); e.preventDefault(); }
+  else if(k==='a'){ moveTo(0); hardDrop(); }
+  else if(k==='i'){ moveTo(1); hardDrop(); }
+  else if(k==='u'){ moveTo(2); hardDrop(); }
+  else if(k==='e'){ moveTo(3); hardDrop(); }
+  else if(k==='o'){ moveTo(4); hardDrop(); }
+});
+
+// prevent page scroll/zoom on the stage
+document.querySelector('.stage').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+document.addEventListener('gesturestart',e=>e.preventDefault());
+
+/* ---------- Flow ---------- */
+function startGame(m){
+  mode=m;
+  loadBest();
+  grid=[[],[],[],[],[]];
+  particles=[]; popAnims=[]; flash={t:0,col:-1,good:true};
+  score=0; level=1; streak=0;
+  resize();
+  updateHUD();
+  document.getElementById('startScreen').classList.add('hidden');
+  document.getElementById('overScreen').classList.add('hidden');
+  spawn();
+  running=true; lastT=0;
+  cancelAnimationFrame(animId);
+  animId=requestAnimationFrame(step);
+}
+function gameOver(){
+  running=false; cur=null;
+  cancelAnimationFrame(animId);
+  saveBest();
+  sndOver();
+  document.getElementById('finalScore').textContent=score;
+  document.getElementById('bestLine').textContent='Best '+best+' · '+modeName(mode);
+  document.getElementById('copiedMsg').textContent='';
+  document.getElementById('overScreen').classList.remove('hidden');
+}
+function modeName(m){ return m==='hira'?'Hiragana':m==='kata'?'Katakana':'Mixed'; }
+
+// start buttons
+document.querySelectorAll('.modes .btn[data-mode]').forEach(b=>{
+  b.addEventListener('click',()=>{ audio(); startGame(b.getAttribute('data-mode')); });
+});
+document.getElementById('againBtn').addEventListener('click',()=>{ audio(); startGame(mode); });
+document.getElementById('menuBtn').addEventListener('click',()=>{
+  document.getElementById('overScreen').classList.add('hidden');
+  document.getElementById('startScreen').classList.remove('hidden');
+});
+document.getElementById('shareBtn').addEventListener('click',async()=>{
+  const txt='I scored '+score+' on Kana Drop ('+modeName(mode)+') 🎴 Learn Japanese kana at play.ohayonihongo.net → https://www.ohayonihongo.net/';
+  const msg=document.getElementById('copiedMsg');
+  try{ await navigator.clipboard.writeText(txt); msg.textContent='Copied! Paste it anywhere ✓'; }
+  catch(e){
+    if(navigator.share){ try{ await navigator.share({text:txt}); msg.textContent='Shared ✓'; return; }catch(_){} }
+    msg.textContent='Copy: '+txt;
+  }
+});
+
+// mute
+const muteBtn=document.getElementById('muteBtn');
+muteBtn.addEventListener('click',()=>{
+  muted=!muted; muteBtn.textContent=muted?'🔇':'🔊';
+  if(!muted){ audio(); blip(660,0.08,'sine',0.14); }
+});
+
+// init
+resize();
+})();
+</script>
