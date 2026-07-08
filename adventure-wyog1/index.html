@@ -1185,7 +1185,7 @@ async function gate(){
 /* ═══════════════ SOUND — BGM + Web Audio arpeggio ═══════════════ */
 let muted = localStorage.getItem('ohayo_adv_mute')==='1';
 let bgmStarted=false;
-const BGM_VOL=0.32, BGM_DUCK=0.07, VOICE_VOL=0.7; // 音量バランス（2026-07-08ユーザー調整: BGM 0.1→0.18→0.32）
+const BGM_VOL=0.32, BGM_DUCK=BGM_VOL, VOICE_VOL=0.7; // 音量バランス（2026-07-08ユーザー調整: BGM 0.32・ダッキングなし）
 const bgm = new Audio('../adventure/bgm.mp3');
 bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
 window.__bgm = bgm; // 検証用（Playwright）
