@@ -18,6 +18,7 @@
 <meta name="description" content="A branching Japanese-learning story from real diary episodes — a winter morning in Tokyo. JLPT N5–N3, hiragana &amp; English toggles.">
 <meta name="theme-color" content="#134B70">
 <script src="../adventure/adventure_config.js"></script>
+<script src="audio/clips.js"></script><!-- シーン→日記音声クリップのマップ（build_scene_audio.py生成・無ければ▶非表示） -->
 <style>
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
@@ -146,6 +147,27 @@ body{display:flex;justify-content:center}
 .p-hira{font-size:12.5px;line-height:1.9;color:#4A5560}
 .p-en{font-size:11.5px;line-height:1.7;color:#6B6455;font-style:italic}
 .tgl-row{display:flex;gap:7px;margin-top:12px}
+/* 日記音声（シーン単位クリップ） */
+.listen-row{margin:2px 0 10px}
+.listen-btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;
+  font-family:var(--sans);font-size:11.5px;font-weight:800;letter-spacing:.02em;
+  color:#fff;background:linear-gradient(135deg,var(--navy),var(--ocean));
+  border-radius:999px;padding:9px 16px;box-shadow:0 4px 12px rgba(19,75,112,.3);
+  transition:transform .12s ease}
+.listen-btn:active{transform:scale(.95)}
+.listen-btn .li-icon{font-size:12px;line-height:1}
+.listen-btn.playing{background:linear-gradient(135deg,#FF8A3D,#FFB63D);
+  box-shadow:0 4px 14px rgba(240,129,20,.4)}
+@keyframes eqBar{0%,100%{transform:scaleY(.4)}50%{transform:scaleY(1)}}
+.listen-btn.playing .li-eq{display:inline-flex;gap:2px;align-items:flex-end;height:11px}
+.listen-btn.playing .li-eq i{width:2.5px;height:11px;background:#fff;border-radius:1px;
+  transform-origin:bottom;animation:eqBar .8s ease-in-out infinite}
+.listen-btn.playing .li-eq i:nth-child(2){animation-delay:.25s}
+.listen-btn.playing .li-eq i:nth-child(3){animation-delay:.5s}
+/* 再生中に出す「いま流れている日記の原文」ボックス */
+.transcript{margin:0 0 10px;background:#FFF9EC;border:1px solid #F5D9A0;border-radius:14px;padding:10px 12px}
+.tr-label{font-size:8.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#B45309;margin-bottom:6px}
+.tr-text{font-family:var(--serif);font-size:12.5px;line-height:1.85;color:#4A4231;white-space:pre-line;max-height:170px;overflow-y:auto}
 .tgl{flex:1;border:1.5px solid #C7DEEC;border-radius:12px;background:#F2F9FE;color:var(--ocean);
   font-family:var(--sans);font-size:10.5px;font-weight:800;padding:8px 6px;cursor:pointer;transition:all .15s ease}
 .tgl:active{transform:scale(.95)}
@@ -337,6 +359,17 @@ body{display:flex;justify-content:center}
   <div class="panel-wrap" id="panelWrap">
     <div class="panel" id="panel">
       <span class="p-tag" id="pTag"></span>
+      <div class="listen-row" id="listenRow" style="display:none">
+        <button class="listen-btn" id="listenBtn" onclick="toggleVoice()">
+          <span class="li-icon" id="listenIcon">▶</span>
+          <span id="listenLabel">この日記をきく — Listen</span>
+          <span class="li-eq" style="display:none"><i></i><i></i><i></i></span>
+        </button>
+      </div>
+      <div class="transcript" id="transcript" style="display:none">
+        <div class="tr-label">🎧 いま流れている日記の原文 — Original diary text</div>
+        <div class="tr-text" id="trText"></div>
+      </div>
       <div class="p-kanji" id="pKanji"></div>
       <div class="reveal" id="revHira"><div class="reveal-in">
         <div class="r-label">ひらがな</div><div class="p-hira" id="pHira"></div>
@@ -1152,8 +1185,9 @@ async function gate(){
 /* ═══════════════ SOUND — BGM + Web Audio arpeggio ═══════════════ */
 let muted = localStorage.getItem('ohayo_adv_mute')==='1';
 let bgmStarted=false;
+const BGM_VOL=0.18, BGM_DUCK=0.05, VOICE_VOL=0.7; // 音量バランス（2026-07-08ユーザー調整）
 const bgm = new Audio('../adventure/bgm.mp3');
-bgm.loop=true; bgm.volume=0.1; bgm.preload='none';
+bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
 window.__bgm = bgm; // 検証用（Playwright）
 function startBgm(){
   bgmStarted=true; bgm.muted=muted;
@@ -1167,23 +1201,74 @@ function toggleMute(){
   if(!muted && bgmStarted && bgm.paused) bgm.play().catch(()=>{});
   document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';
 }
+/* AudioContextは1つを使い回す。自動再生ポリシー対策で、クリック等の
+   ユーザー操作中に生成+resumeしておかないと発音されない（suspendedのまま）。 */
+let actx=null;
+function audioCtx(){
+  const AC=window.AudioContext||window.webkitAudioContext;
+  if(!AC) return null;
+  try{
+    if(!actx) actx=new AC();
+    if(actx.state==='suspended') actx.resume().catch(()=>{});
+    return actx;
+  }catch(e){ return null; }
+}
 function arpeggio(){
   if(muted) return;
+  const ctx=audioCtx();
+  if(!ctx) return;
   try{
-    const ctx=new (window.AudioContext||window.webkitAudioContext)();
     const notes=[523.25,659.25,783.99,1046.5]; // C5 E5 G5 C6 — 上昇アルペジオ
     notes.forEach((f,i)=>{
       const o=ctx.createOscillator(), g=ctx.createGain();
       o.type='sine'; o.frequency.value=f;
       const t=ctx.currentTime + i*0.13;
       g.gain.setValueAtTime(0,t);
-      g.gain.linearRampToValueAtTime(0.22,t+0.03);
-      g.gain.exponentialRampToValueAtTime(0.001,t+0.9);
+      g.gain.linearRampToValueAtTime(0.45,t+0.03);
+      g.gain.exponentialRampToValueAtTime(0.001,t+1.0);
       o.connect(g); g.connect(ctx.destination);
       o.start(t); o.stop(t+1);
     });
-    setTimeout(()=>ctx.close(),2400);
   }catch(e){}
+}
+
+/* 日記音声（シーン単位クリップ）— audio/clips.js のマップから再生。再生中はBGMをダッキング。
+   ミュートトグルはBGM/効果音用。▶は明示操作なのでミュート中でも日記音声は再生する。 */
+const CLIPS = window.OHAYO_ADV_CLIPS || {};
+let voice = null;
+window.__voice = () => voice; // 検証用（Playwright）
+function setListenUI(playing){
+  const btn=document.getElementById('listenBtn');
+  if(!btn) return;
+  btn.classList.toggle('playing', playing);
+  document.getElementById('listenIcon').textContent = playing ? '⏸' : '▶';
+  document.getElementById('listenLabel').textContent = playing ? 'さいせいちゅう — Playing' : 'この日記をきく — Listen';
+  btn.querySelector('.li-eq').style.display = playing ? '' : 'none';
+}
+function stopVoice(){
+  if(voice){ voice.onended=null; voice.onerror=null; voice.pause(); voice=null; }
+  bgm.volume = BGM_VOL;
+  const tr=document.getElementById('transcript');
+  if(tr) tr.style.display='none';
+  setListenUI(false);
+}
+function toggleVoice(){
+  if(voice && !voice.paused){ stopVoice(); return; }
+  stopVoice();
+  const c = CLIPS[currentId];
+  if(!c || !c.f) return;
+  voice = new Audio('audio/' + c.f);
+  voice.volume = VOICE_VOL;
+  voice.onended = stopVoice;
+  voice.onerror = stopVoice;
+  bgm.volume = BGM_DUCK; // 日記の声を主役に
+  // 再生中は「いま流れている日記の原文」を表示（ゲーム本文は要約編集版のため）
+  if(c.t){
+    document.getElementById('trText').textContent = c.t;
+    document.getElementById('transcript').style.display='';
+  }
+  voice.play().catch(()=>stopVoice());
+  setListenUI(true);
 }
 
 /* ═══════════════ localStorage — 本番共通キー ═══════════════ */
@@ -1214,6 +1299,7 @@ function renderStats(bump){
   if(bump){xc.classList.remove('bump');xc.offsetHeight;xc.classList.add('bump');}
 }
 function startGame(){
+  audioCtx(); // ユーザー操作中に生成+resume（バッジ音の自動再生ポリシー対策）
   startBgm();
   document.getElementById('titleScreen').classList.add('hide');
   document.getElementById('hud').classList.add('on');
@@ -1223,6 +1309,8 @@ function startGame(){
 function loadScene(id){
   currentId=id;
   const s=SCENES[id];
+  stopVoice();
+  document.getElementById('listenRow').style.display = (CLIPS[id]&&CLIPS[id].f) ? '' : 'none';
   if(ROUTE_MAP[id]) route=ROUTE_MAP[id];
   setBg(ART_MAP[id]||TITLE_ART);
   ['revHira','revEn'].forEach(x=>document.getElementById(x).classList.remove('open'));
@@ -1253,6 +1341,7 @@ function loadScene(id){
 }
 function choose(to,ev){
   if(busy)return; busy=true;
+  audioCtx(); // クリック中にresume（finishは560ms後=ジェスチャー外のため）
   const y=(ev&&ev.clientY)?ev.clientY:window.innerHeight*0.6;
   const bub=document.createElement('div');
   bub.className='xp-bubble'; bub.style.top=(y-30)+'px'; bub.textContent=`+${XP_PER_CHOICE} XP ✦`;
@@ -1267,6 +1356,7 @@ function tgl(which){
   rev.classList.toggle('open',on); btn.classList.toggle('on',on);
 }
 function finish(){
+  stopVoice();
   const today=todayStr();
   if(store.last!==today){
     store.streak=(store.last===todayStr(-1))?store.streak+1:1;
