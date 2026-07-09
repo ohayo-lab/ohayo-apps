@@ -86,7 +86,8 @@
   .play{display:grid;grid-template-columns:1fr;gap:14px}
   .pcard{position:relative;display:block;border-radius:18px;overflow:hidden;text-decoration:none;background:#fff;border:1px solid var(--line);box-shadow:0 5px 18px rgba(31,114,168,.12);transition:transform .15s,box-shadow .15s}
   .pcard:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,114,168,.18)}
-  .pcard .body{padding:15px 17px 17px;position:relative}
+  .pcard .hd{padding:16px 17px 10px;position:relative}
+  .pcard .body{padding:12px 17px 17px}
   .pcard .pl{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
   .pcard.app .pl{color:#2C6E9E}
   .pcard.game .pl{color:#C0761F}
@@ -253,32 +254,36 @@
   <div class="play">
 
     <a class="pcard app" href="/my-flashcards/">
+      <div class="hd">
+        <span class="oscr">Tap to preview</span>
+        <div class="pl">📱 Web App · add to home screen</div>
+        <b>My Flashcards</b>
+      </div>
       <div class="pv pv-fc" aria-hidden="true">
         <div class="pvtop"><span>🔥 3-day streak · 120 XP</span><span class="lvl">Sunrise Beginner</span></div>
         <div class="fc-card">
           <div class="fc-jp">今朝は 本当に 寒い 朝でした。</div>
-          <div class="fc-tg"><i class="on">🔊 Audio</i><i>あ かな</i><i>EN</i></div>
+          <div class="fc-tg"><i class="on">🔊 Audio</i><i>ひらがな</i><i>EN</i></div>
         </div>
       </div>
       <div class="body">
-        <span class="oscr">Tap to preview</span>
-        <div class="pl">📱 Web App · add to home screen</div>
-        <b>My Flashcards</b>
         <span class="ds">A real flashcard <b style="display:inline;font:inherit;color:inherit">app</b> in your browser — flip audio · hiragana · English, and it keeps your streak &amp; XP. Start free, add decks you own.</span>
         <span class="cta">Open the app →</span>
       </div>
     </a>
 
     <a class="pcard game" href="/adventure/">
+      <div class="hd">
+        <span class="oscr">Tap to play</span>
+        <div class="pl">🎮 Story Game · Chapter 1 free</div>
+        <b>Diary Adventure</b>
+      </div>
       <div class="pv pv-adv" aria-hidden="true">
         <div class="pvttl"><b>Story <i>Map</i></b><span class="xp">🔥 0 · ★ 0 XP</span></div>
         <div class="adv-row free"><span class="ic">☀️</span><span class="tt">Winter Morning<em>Free · Chapter 1</em></span><span class="go">▶</span></div>
         <div class="adv-row lock"><span class="ic">⛄</span><span class="tt">Snowy Morning<em>Season 1 · Locked</em></span><span class="lk">🔒</span></div>
       </div>
       <div class="body">
-        <span class="oscr">Tap to play</span>
-        <div class="pl">🎮 Story Game · Chapter 1 free</div>
-        <b>Diary Adventure</b>
         <span class="ds">A choose-your-morning <b style="display:inline;font:inherit;color:inherit">game</b> built from real diary days — pick a path, unlock chapters, earn XP. Play “Winter Morning” free.</span>
         <span class="cta">Play free →</span>
       </div>
