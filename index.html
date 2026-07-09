@@ -82,14 +82,44 @@
   .dcard b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:17.5px;line-height:1.28;margin:3px 0;color:var(--heading)}
   .dcard span{font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:12px;color:#2B2B2B}
   .allbtn{display:block;text-align:center;margin-top:12px;border:1.5px solid #2A2A2A;border-radius:999px;padding:12px;color:var(--heading);font-weight:700;font-size:13.5px;letter-spacing:.05em;text-decoration:none;background:var(--white)}
-  /* Learn & Play */
-  .play{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px}
-  .pcard{position:relative;border-radius:14px;padding:18px 18px 18px 20px;text-decoration:none;background:#fff;border:1px solid var(--line);border-left:4px solid #2C6E9E;box-shadow:0 3px 12px rgba(31,114,168,.08)}
-  .pcard.adv{border-left:4px solid #C77A2E}
-  .pcard .pl{font-size:10px;font-weight:700;letter-spacing:.2em;color:#2C6E9E;text-transform:uppercase}
-  .pcard.adv .pl{color:#B06E24}
-  .pcard b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:21px;color:var(--heading);margin:6px 0 4px}
-  .pcard span{font-size:12px;font-weight:500;color:var(--sub);line-height:1.5;display:block}
+  /* Learn & Play — cards with a mini UI preview */
+  .play{display:grid;grid-template-columns:1fr;gap:14px}
+  .pcard{position:relative;display:block;border-radius:18px;overflow:hidden;text-decoration:none;background:#fff;border:1px solid var(--line);box-shadow:0 5px 18px rgba(31,114,168,.12);transition:transform .15s,box-shadow .15s}
+  .pcard:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,114,168,.18)}
+  .pcard .body{padding:15px 17px 17px;position:relative}
+  .pcard .pl{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
+  .pcard.app .pl{color:#2C6E9E}
+  .pcard.game .pl{color:#C0761F}
+  .pcard b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:23px;color:var(--heading);margin:5px 0 3px}
+  .pcard .ds{font-size:12.5px;font-weight:500;color:var(--sub);line-height:1.55;display:block}
+  .pcard .cta{display:inline-block;margin-top:11px;font-size:13px;font-weight:700;letter-spacing:.02em}
+  .pcard.app .cta{color:#2C6E9E}
+  .pcard.game .cta{color:#C0761F}
+  .pcard .oscr{position:absolute;top:12px;right:14px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#93A6B4}
+  /* preview frame */
+  .pv{padding:15px 15px 16px}
+  .pv-fc{background:linear-gradient(160deg,#DCEDFB 0%,#EAF2F6 55%,#F7E9CE 100%)}
+  .pv-fc .pvtop{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:700;color:#5B6B78;margin-bottom:10px}
+  .pv-fc .pvtop .lvl{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:11px;color:#B06E24}
+  .fc-card{background:#fff;border-radius:13px;box-shadow:0 5px 14px rgba(19,75,112,.16);padding:15px 14px 13px;text-align:center}
+  .fc-jp{font-family:'Noto Serif JP',serif;font-size:15.5px;font-weight:700;color:#1A1A1A;line-height:1.5}
+  .fc-tg{display:flex;justify-content:center;gap:6px;margin-top:12px}
+  .fc-tg i{font-style:normal;font-size:10px;font-weight:700;padding:6px 11px;border-radius:999px;background:#F1F6FB;color:#2C6E9E;border:1px solid #D8EAF5}
+  .fc-tg i.on{background:#F7A928;color:#fff;border-color:#F7A928}
+  .pv-adv{background:linear-gradient(160deg,#0E3A63 0%,#1A5D8C 100%)}
+  .pv-adv .pvttl{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+  .pv-adv .pvttl b{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:.02em}
+  .pv-adv .pvttl b i{color:#F7C55E;font-style:normal}
+  .pv-adv .pvttl .xp{font-size:9.5px;font-weight:700;color:#BFD8EA;letter-spacing:.06em}
+  .adv-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.97);border-radius:12px;padding:9px 11px;margin-bottom:8px}
+  .adv-row:last-child{margin-bottom:0;opacity:.72}
+  .adv-row .ic{width:30px;height:30px;border-radius:9px;background:linear-gradient(160deg,#2E77AE,#123f61);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+  .adv-row .tt{flex:1;min-width:0;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;color:#14324a;line-height:1.15}
+  .adv-row .tt em{display:block;font-style:normal;font-weight:700;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
+  .adv-row.free .tt em{color:#2E8B57}
+  .adv-row.lock .tt em{color:#8AA0B2}
+  .adv-row .go{width:30px;height:30px;border-radius:50%;background:#F08114;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;box-shadow:0 2px 8px rgba(240,129,20,.5)}
+  .adv-row .lk{font-size:14px;flex-shrink:0}
   /* GO DEEPER */
   .deeper{background:linear-gradient(160deg,#123E63,#1C6AA0);border-radius:20px;padding:26px 20px 22px;box-shadow:0 10px 30px rgba(18,62,99,.3)}
   .deeper .dl{font-size:11px;font-weight:700;letter-spacing:.28em;color:#F7C55E;text-transform:uppercase;text-align:center}
@@ -141,8 +171,9 @@
     .dcard .n{font-size:13.5px}
     .dcard span{font-size:11px}
     .allbtn{font-size:12.5px;padding:11px}
-    .pcard b{font-size:17.5px}
-    .pcard span{font-size:11px}
+    .pcard b{font-size:20px}
+    .pcard .ds{font-size:11.5px}
+    .fc-jp{font-size:14px}
     .deeper .dt{font-size:21px}
     .deeper .ds{font-size:12px}
     .pk b{font-size:16.5px}
@@ -218,10 +249,41 @@
   <a class="allbtn" href="/diary/">Browse all 178 excerpts →</a>
 
   <h2 class="sec">Learn &amp; Play</h2>
-  <div class="sect">Practice, gently gamified</div>
+  <div class="sect">A flashcard app &amp; a story game — both free to try</div>
   <div class="play">
-    <a class="pcard" href="/my-flashcards/"><div class="pl">Web App · Your Bookshelf</div><b>My Flashcards</b><span>Start with a free deck — add decks you own, keep streaks &amp; XP in one place</span></a>
-    <a class="pcard adv" href="/adventure/"><div class="pl">Story Game · Chapter 1 Free</div><b>Diary Adventure</b><span>Play “Winter Morning” free — unlock Season 1 &amp; Specials in-game</span></a>
+
+    <a class="pcard app" href="/my-flashcards/">
+      <div class="pv pv-fc" aria-hidden="true">
+        <div class="pvtop"><span>🔥 3-day streak · 120 XP</span><span class="lvl">Sunrise Beginner</span></div>
+        <div class="fc-card">
+          <div class="fc-jp">今朝は 本当に 寒い 朝でした。</div>
+          <div class="fc-tg"><i class="on">🔊 Audio</i><i>あ かな</i><i>EN</i></div>
+        </div>
+      </div>
+      <div class="body">
+        <span class="oscr">Tap to preview</span>
+        <div class="pl">📱 Web App · add to home screen</div>
+        <b>My Flashcards</b>
+        <span class="ds">A real flashcard <b style="display:inline;font:inherit;color:inherit">app</b> in your browser — flip audio · hiragana · English, and it keeps your streak &amp; XP. Start free, add decks you own.</span>
+        <span class="cta">Open the app →</span>
+      </div>
+    </a>
+
+    <a class="pcard game" href="/adventure/">
+      <div class="pv pv-adv" aria-hidden="true">
+        <div class="pvttl"><b>Story <i>Map</i></b><span class="xp">🔥 0 · ★ 0 XP</span></div>
+        <div class="adv-row free"><span class="ic">☀️</span><span class="tt">Winter Morning<em>Free · Chapter 1</em></span><span class="go">▶</span></div>
+        <div class="adv-row lock"><span class="ic">⛄</span><span class="tt">Snowy Morning<em>Season 1 · Locked</em></span><span class="lk">🔒</span></div>
+      </div>
+      <div class="body">
+        <span class="oscr">Tap to play</span>
+        <div class="pl">🎮 Story Game · Chapter 1 free</div>
+        <b>Diary Adventure</b>
+        <span class="ds">A choose-your-morning <b style="display:inline;font:inherit;color:inherit">game</b> built from real diary days — pick a path, unlock chapters, earn XP. Play “Winter Morning” free.</span>
+        <span class="cta">Play free →</span>
+      </div>
+    </a>
+
   </div>
 
   <div class="deeper" id="shop" style="margin-top:44px">
