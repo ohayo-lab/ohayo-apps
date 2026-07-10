@@ -101,16 +101,23 @@
   /* ---- in-game HUD ---- */
   #hud{
     position:absolute; top:0; left:0; right:0; z-index:6; pointer-events:none;
-    display:flex; align-items:flex-start; justify-content:space-between;
+    display:flex; align-items:flex-start; justify-content:flex-end;
     padding:10px 66px 10px 12px; gap:10px; /* right padding clears the fixed ☰ menu */
   }
   #promptBox{
-    pointer-events:none; background:rgba(255,255,255,.92); border:1px solid var(--line);
-    border-radius:12px; padding:6px 16px 8px; text-align:center; min-width:112px;
-    box-shadow:0 4px 14px rgba(19,75,112,.14);
+    pointer-events:none; background:rgba(255,255,255,.95); border:2px solid var(--sun);
+    border-radius:14px; padding:7px 20px 9px; text-align:center; min-width:118px;
+    box-shadow:0 6px 18px rgba(19,75,112,.18);
+    position:absolute; left:50%; top:10px; transform:translateX(-50%);
+  }
+  #promptBox.pop{animation:promptPop .35s ease;}
+  @keyframes promptPop{
+    0%{transform:translateX(-50%) scale(1);}
+    50%{transform:translateX(-50%) scale(1.16);}
+    100%{transform:translateX(-50%) scale(1);}
   }
   #promptBox .lbl{font-size:10px; letter-spacing:2px; color:var(--gold); text-transform:uppercase;}
-  #promptBox .romaji{font-size:30px; font-weight:800; color:var(--navy); line-height:1; font-family:Georgia,serif;}
+  #promptBox .romaji{font-size:34px; font-weight:800; color:var(--navy); line-height:1; font-family:Georgia,serif;}
   #hudRight{display:flex; flex-direction:column; align-items:flex-end; gap:4px; pointer-events:none;}
   .hudPill{
     background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:20px;
@@ -139,6 +146,8 @@
   footer a:hover{color:var(--gold);}
   @media (max-width:480px){
     header .sub{display:none;}
+    /* keep score/hearts pills clear of the centered prompt box */
+    #hudRight{margin-top:72px;}
   }
   @media (max-width:400px){
     .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
@@ -324,11 +333,22 @@
   // ======================= HELPERS =======================
   function pick(arr){ return arr[(Math.random()*arr.length)|0]; }
 
+  // Progressive unlock: gojūon rows open up as the level rises.
+  // HIRA/KATA are ordered by row; these are the cumulative end indices.
+  const ROW_ENDS  = [5,10,15,20,25,30,35,38,43,46]; // あ か さ た な は ま や ら わをん
+  const ROW_HIRA  = ["あ","か","さ","た","な","は","ま","や","ら","わ"];
+  const ROW_KATA  = ["ア","カ","サ","タ","ナ","ハ","マ","ヤ","ラ","ワ"];
+  function rowsUnlocked(lv){ return Math.min(ROW_ENDS.length, lv+1); } // Lv1 = あ+か行
+  function activeDeck(){ return deck.slice(0, ROW_ENDS[rowsUnlocked(level)-1]); }
+
   // prompt stored as [kana,romaji] tuple: prompt[0]=kana, prompt[1]=romaji
   function newPrompt(){
-    const e = deck[(Math.random()*deck.length)|0];
+    const d = activeDeck();
+    const e = d[(Math.random()*d.length)|0];
     prompt = [ e[0], e[1] ];
     document.getElementById("promptRomaji").textContent = prompt[1];
+    const box = document.getElementById("promptBox");
+    box.classList.remove("pop"); void box.offsetWidth; box.classList.add("pop");
   }
 
   function getTile(){ return pool.pop() || {}; }
@@ -341,7 +361,8 @@
     if(wantCorrect){
       kana = prompt[0]; romaji = prompt[1];
     } else {
-      let e; do { e = deck[(Math.random()*deck.length)|0]; } while(e[1]===prompt[1]);
+      const d = activeDeck();
+      let e; do { e = d[(Math.random()*d.length)|0]; } while(e[1]===prompt[1]);
       kana = e[0]; romaji = e[1];
     }
     const t = getTile();
@@ -445,7 +466,16 @@
     // ramp difficulty by distance
     distance += worldSpeed*dt/42;   // ~ meters
     const newLevel = 1 + Math.floor(distance/60);
-    if(newLevel!==level){ level=newLevel; updateHUD(); }
+    if(newLevel!==level){
+      const prevRows = rowsUnlocked(level);
+      level = newLevel;
+      const nowRows = rowsUnlocked(level);
+      if(nowRows > prevRows){
+        const names = (mode==="kata") ? ROW_KATA : ROW_HIRA;
+        showToast("＋"+names[nowRows-1]+"行!", "#134B70");
+      }
+      updateHUD();
+    }
     worldSpeed = (210 + Math.min(260, distance*1.1)) * speedK;
     spawnGap = Math.max(0.62, 1.15 - distance*0.0016);
 
