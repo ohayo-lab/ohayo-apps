@@ -86,7 +86,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 .card{
   background:var(--paper);border:1px solid var(--line);border-radius:14px;
   box-shadow:0 8px 24px rgba(28,28,28,.06);padding:18px 17px;flex:1;
-  display:flex;flex-direction:column;position:relative;overflow:hidden;
+  display:flex;flex-direction:column;position:relative;
   animation:cardIn .35s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes cardIn{from{opacity:0;transform:translateY(12px);}to{opacity:1;transform:translateY(0);}}
@@ -219,6 +219,30 @@ footer a b{color:var(--gold);font-weight:700;border-bottom:1px solid var(--gold)
   box-shadow:0 5px 16px rgba(255,201,60,.45);
 }
 .btn-again:active{transform:scale(.97);}
+
+/* MOBILE */
+@media (max-width:600px){
+  /* keep the mute button clear of the fixed ☰ menu (menu.js, top:14 right:14) */
+  .mute-btn{margin-right:54px;}
+}
+@media (max-width:380px){
+  .wrap{padding:10px 10px 14px;}
+  .card{padding:14px 12px;}
+  .prompt{font-size:15px;}
+  .tile{font-size:15px;padding:9px 11px;border-radius:10px;}
+  .answer{gap:6px;}
+  .deck{gap:7px;}
+}
+@media (max-height:700px){
+  .gold-rule{margin-bottom:8px;}
+  .stats{margin-bottom:8px;}
+  .ptrack{margin-bottom:10px;}
+  .prompt-hint{margin-bottom:8px;}
+  .deck-label{margin:8px 0 5px;}
+  .controls{margin-top:10px;}
+  .reveal{margin-top:10px;padding-top:10px;}
+  footer{margin-top:10px;}
+}
 </style>
 </head>
 <body>
@@ -480,6 +504,7 @@ function loadSentence(){
   renderAnswer();
   updateControls();
   renderStats();
+  try{ window.scrollTo({top:0, behavior:'smooth'}); }catch(e){ window.scrollTo(0,0); }
 }
 
 function renderDeck(){
@@ -610,6 +635,9 @@ function onCorrect(){
   updateControls();
   renderStats();
   confettiBurst();
+  setTimeout(function(){
+    try{ elReveal.scrollIntoView({behavior:'smooth', block:'nearest'}); }catch(e){}
+  }, 120);
 }
 
 /* HINT: reveal/place the next correct tile in sequence */
