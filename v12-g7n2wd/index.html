@@ -617,15 +617,13 @@ loadCard();
 .complete-screen>div:not([class]){order:4;width:100%}
 .complete-divider{display:none !important}
 .btn-restart{order:5 !important;margin-top:10px !important;margin-bottom:0 !important}
-.clinks-primary{order:6;display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px 10px;width:100%;margin:40px 0 0 !important}
-.clinks-secondary{order:7;display:flex !important;justify-content:center;gap:26px;width:100%;margin:auto 0 4px !important}
-/* 主要4: 小型カード・ラベル省略 */
-.clinks-primary .complete-link{padding:8px 3px !important;gap:4px;background:transparent !important;border:none !important;box-shadow:none !important}
+.clinks-primary{order:6;display:grid !important;grid-template-columns:repeat(2,134px) !important;justify-content:center;gap:10px 12px;width:100%;margin:40px 0 0 !important}
+.clinks-primary .complete-link{padding:10px 6px !important;gap:5px}
 .clinks-primary .complete-link-label{display:none}
-.clinks-primary .complete-link-text{font-size:9px !important}
-.clinks-primary .link-icon-wrap{width:22px !important;height:22px !important}
-.clinks-primary .link-icon-wrap svg{fill:#1C1C1C !important}
+.clinks-primary .complete-link-text{font-size:10px !important}
+.clinks-primary .link-icon-wrap{width:24px !important;height:24px !important}
 /* 副次3: 枠なしアイコン */
+.clinks-secondary{order:7;display:flex !important;justify-content:center;gap:26px;width:100%;margin:auto 0 4px !important}
 .clinks-secondary .complete-link{background:transparent !important;border:none !important;box-shadow:none !important;padding:2px !important;gap:4px}
 .clinks-secondary .complete-link-label{display:none}
 .clinks-secondary .complete-link-text{font-size:9.5px !important;color:#5D7285 !important}
