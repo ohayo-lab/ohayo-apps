@@ -322,14 +322,35 @@
       bgmTimer = setInterval(bgmTick, 100);
     }
     function haltBgm(){ if(bgmTimer){ clearInterval(bgmTimer); bgmTimer=null; } }
-    // iOS unlock: play a silent buffer inside the user gesture
+    // iOS unlock. Two parts, both must run inside a user gesture:
+    //  1) play a silent WebAudio buffer to resume the context
+    //  2) loop a silent <audio> element — this flips the iOS audio session to
+    //     "playback" so the ringer/silent switch no longer mutes WebAudio
+    let mediaUnlock=null;
+    const SILENT_WAV="data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
     function unlock(){
       const c=ensure(); if(!c) return;
+      if(c.state==="suspended") c.resume();
       try{
         const b=c.createBuffer(1,1,22050), s=c.createBufferSource();
         s.buffer=b; s.connect(c.destination); s.start(0);
       }catch(e){}
+      try{
+        if(!mediaUnlock){
+          mediaUnlock=new Audio(SILENT_WAV);
+          mediaUnlock.loop=true;
+          mediaUnlock.setAttribute("playsinline","");
+        }
+        mediaUnlock.play().catch(()=>{});
+      }catch(e){}
     }
+    // first tap/click anywhere also unlocks (belt & suspenders for iOS)
+    ["touchend","click"].forEach(ev=>
+      window.addEventListener(ev, unlock, {once:true, capture:true}));
+    // iOS suspends the context when the tab loses focus — resume on return
+    document.addEventListener("visibilitychange", ()=>{
+      if(!document.hidden && ctx && ctx.state==="suspended") ctx.resume();
+    });
     return {
       init(){ ensure(); unlock(); },
       setMuted(m){ muted=m; if(m) haltBgm(); else runBgm(); },
