@@ -748,21 +748,38 @@ loadCard();
 
 <script id="bgmV1">
 (function(){
-  /* BGM_V2: 常にON。Start Practiceで自動開始・ループ再生。
-     文の音声再生中は自動で音量を下げる（ダッキング） */
-  var BGM_VOL=0.015, DUCK=0.005;
+  /* BGM_V3: 既定ON・音量控えめ。左上のトグルでON/OFF切替（localStorage記憶）。
+     文の音声再生中は自動ダッキング。 */
+  var BGM_VOL=0.008, DUCK=0.003;
+  var on = localStorage.getItem('ohayo_bgm')!=='off';
   var bgm=document.createElement('audio');
   bgm.src='../adventure/bgm.mp3'; bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
   window.__bgm=bgm;
   var started=false;
+  var btn=document.createElement('button');
+  btn.id='bgmToggle'; btn.type='button';
+  btn.setAttribute('aria-label','BGM on/off');
+  btn.style.cssText='position:fixed;top:calc(env(safe-area-inset-top,0px) + 66px);right:14px;'
+    +'z-index:99999;width:44px;height:44px;border:none;border-radius:50%;'
+    +'background:rgba(255,255,255,.92);box-shadow:0 2px 10px rgba(16,44,72,.18);cursor:pointer;'
+    +'font-size:20px;line-height:44px;padding:0;text-align:center;-webkit-tap-highlight-color:transparent';
+  function paint(){ btn.textContent = on ? '🔊' : '🔇';
+    btn.style.opacity = on ? '1' : '.55'; btn.title = on ? 'BGM ON' : 'BGM OFF'; }
+  paint();
+  function ensure(){ if(on && started && bgm.paused) bgm.play().catch(function(){}); }
+  btn.addEventListener('click',function(ev){ ev.stopPropagation();
+    on=!on; localStorage.setItem('ohayo_bgm', on?'on':'off'); paint();
+    if(on){ started=true; bgm.play().catch(function(){}); }
+    else { bgm.pause(); } });
+  (document.body||document.documentElement).appendChild(btn);
   document.addEventListener('click',function(e){
     if(started)return;
     var t=e.target&&e.target.closest?e.target.closest('.btn-start'):null;
-    if(t){ started=true; bgm.play().catch(function(){}); } },true);
+    if(t){ started=true; if(on) bgm.play().catch(function(){}); } },true);
   var OA=window.Audio, act=0;
   window.Audio=function(src){ var a=(src===undefined)?new OA():new OA(src);
-    a.addEventListener('play',function(){ if(!a.__dk){a.__dk=true;act++;} bgm.volume=DUCK; });
-    var up=function(){ if(a.__dk){a.__dk=false; act=Math.max(0,act-1);} if(act===0)bgm.volume=BGM_VOL; };
+    a.addEventListener('play',function(){ if(!a.__dk){a.__dk=true;act++;} if(on)bgm.volume=DUCK; });
+    var up=function(){ if(a.__dk){a.__dk=false; act=Math.max(0,act-1);} if(act===0)bgm.volume=BGM_VOL; ensure(); };
     a.addEventListener('pause',up); a.addEventListener('ended',up);
     return a; };
 })();
