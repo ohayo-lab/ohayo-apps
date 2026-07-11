@@ -398,7 +398,7 @@
   const bgImg = new Image();
   let bgReady = false;
   bgImg.onload = ()=>{ bgReady = true; };
-  bgImg.src = "img/bg_beach_88.png";
+  bgImg.src = "img/bg_sunrise_5.png";
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio||1, 2.5);
@@ -639,13 +639,12 @@
   // ======================= RENDER =======================
   function drawSky(){
     if(bgReady){
-      // cover-fit, anchored left so the illustrated sun (upper-left) stays
+      // cover-fit, center-anchored so the rising sun (image center) stays
       // visible on narrow portrait crops; bottom aligned to the ground line
       const targetH = groundY + 24;
       const s = Math.max(VW/bgImg.width, targetH/bgImg.height);
       const w = bgImg.width*s, h = bgImg.height*s;
-      g.drawImage(bgImg, 0, targetH-h, w, h);
-      if(w < VW){ g.fillStyle="#F5EEDF"; g.fillRect(w,0,VW-w,VH); }
+      g.drawImage(bgImg, (VW-w)/2, targetH-h, w, h);
       return;
     }
     const grad = g.createLinearGradient(0,0,0,VH);
