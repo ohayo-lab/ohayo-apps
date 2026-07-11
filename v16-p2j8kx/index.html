@@ -551,10 +551,10 @@ loadCard();
 (function(){
   /* BGM_V3: 既定ON・音量控えめ。左上のトグルでON/OFF切替（localStorage記憶）。
      文の音声再生中は自動ダッキング。 */
-  var BGM_VOL=0.004, DUCK=0.0015;
+  var BGM_VOL=1.0, DUCK=0.5;
   var on = localStorage.getItem('ohayo_bgm')!=='off';
   var bgm=document.createElement('audio');
-  bgm.src='../adventure/bgm.mp3'; bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
+  bgm.src='../adventure/bgm_soft.mp3'; bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
   window.__bgm=bgm;
   var started=false;
   var btn=document.createElement('button');
