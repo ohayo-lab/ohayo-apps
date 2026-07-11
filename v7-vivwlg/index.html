@@ -751,11 +751,19 @@ loadCard();
 .complete-screen{padding-top:max(env(safe-area-inset-top), 14px);padding-bottom:max(env(safe-area-inset-bottom), 14px)}
 </style>
 
+<style id="btnCompact">
+/* BTN_COMPACT_V1: 下部ボタンを小型化（2026-07-11 要望） */
+.btn-row{padding:6px 16px 4px;gap:6px}
+.btn{padding:6px 6px !important;font-size:9.5px !important;gap:2px}
+.btn-icon{font-size:14px !important}
+.nav-row{padding-top:2px}
+.btn-nav{padding:8px !important;font-size:10.5px !important}
+</style>
 <script id="bgmV1">
 (function(){
   /* BGM_V3: 既定ON・音量控えめ。左上のトグルでON/OFF切替（localStorage記憶）。
      文の音声再生中は自動ダッキング。 */
-  var BGM_VOL=0.008, DUCK=0.003;
+  var BGM_VOL=0.004, DUCK=0.0015;
   var on = localStorage.getItem('ohayo_bgm')!=='off';
   var bgm=document.createElement('audio');
   bgm.src='../adventure/bgm.mp3'; bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
