@@ -144,8 +144,24 @@
   }
   footer a{color:var(--sub); text-decoration:none;}
   footer a:hover{color:var(--gold);}
+  /* landscape phones: too short to play — ask to rotate (game pauses via JS) */
+  #rotateOverlay{
+    position:absolute; inset:0; z-index:20; display:none;
+    align-items:center; justify-content:center; text-align:center;
+    background:rgba(19,75,112,.94); color:#FFF;
+    font-size:19px; font-weight:800; line-height:1.7;
+  }
+  #rotateOverlay .sub{display:block; font-size:13px; font-weight:600; opacity:.85;}
+  @media (orientation:landscape) and (pointer:coarse) and (max-height:600px){
+    #rotateOverlay{display:flex;}
+  }
   @media (max-width:480px){
     header .sub{display:none;}
+    /* score/hearts/level in ONE row at top-right; prompt box sits BELOW it */
+    #hudRight{flex-direction:row; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:5px;}
+    .hudPill{font-size:12px; padding:2px 9px;}
+    #hearts{font-size:13px;}
+    #promptBox{top:54px;}
   }
   @media (max-width:400px){
     .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
@@ -179,6 +195,13 @@
     </div>
     <div id="toast"></div>
     <button id="jumpHint" class="hidden">JUMP</button>
+
+    <!-- rotate-to-portrait notice (landscape phones) -->
+    <div id="rotateOverlay">
+      <div>📱 Please rotate your phone<br>
+        <span class="sub">縦向きでプレイしてね — the game is paused</span>
+      </div>
+    </div>
 
     <!-- START overlay -->
     <div id="startOverlay" class="overlay">
@@ -457,9 +480,13 @@
     }
   }
 
+  // pause while the rotate-to-portrait notice is showing (landscape phones)
+  const rotateMq = window.matchMedia("(orientation:landscape) and (pointer:coarse) and (max-height:600px)");
+
   // ======================= UPDATE =======================
   function update(dt){
     if(state!==State.PLAY) return;
+    if(rotateMq.matches) return;
 
     // ramp difficulty by distance
     distance += worldSpeed*dt/42;   // ~ meters
