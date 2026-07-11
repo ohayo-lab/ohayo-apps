@@ -398,7 +398,7 @@
   const bgImg = new Image();
   let bgReady = false;
   bgImg.onload = ()=>{ bgReady = true; };
-  bgImg.src = "img/bg_mario_a.png";
+  bgImg.src = "img/bg_beach_88.png";
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio||1, 2.5);
@@ -664,14 +664,15 @@
   }
 
   function drawHills(){
-    // distant navy-tinted hills, two layers, scrolling
+    if(bgReady) return;   // the illustrated bg is shown as-is, no overlay
+    // distant navy-tinted hills, two layers, scrolling (fallback sky only)
     g.save();
     for(let layer=0; layer<2; layer++){
       const baseY = groundY - (layer===0? 40 : 78);
       const amp = layer===0? 34 : 54;
-      // over the bright green art use green haze; navy over the fallback sky
+      // over the beach art use turquoise wave haze; navy over the fallback sky
       const col = bgReady
-        ? (layer===0? "rgba(46,140,60,0.18)" : "rgba(46,140,60,0.10)")
+        ? (layer===0? "rgba(0,150,180,0.14)" : "rgba(0,150,180,0.08)")
         : (layer===0? "rgba(19,75,112,0.16)" : "rgba(19,75,112,0.10)");
       const off = -(layer===0? hillScroll*0.6 : hillScroll) % (VW+400);
       g.fillStyle=col;
@@ -687,11 +688,11 @@
   }
 
   function drawGround(){
-    // Mario-style ground: brown soil with a bright grass lip
-    g.fillStyle="#8A5A33";
+    // beach ground: warm sand with a pale foam lip
+    g.fillStyle="#E3BC6B";
     g.fillRect(0, groundY, VW, VH-groundY);
-    // grass lip (wave-like)
-    g.fillStyle="#5BBE4A";
+    // foam / dry-sand lip (wave-like)
+    g.fillStyle="#F7E9BC";
     g.beginPath();
     g.moveTo(0,groundY);
     for(let x=0;x<=VW;x+=32){
@@ -699,7 +700,7 @@
     }
     g.lineTo(VW,groundY+14); g.lineTo(0,groundY+14); g.closePath(); g.fill();
     // dashes to convey motion
-    g.strokeStyle="rgba(255,240,200,0.30)"; g.lineWidth=3;
+    g.strokeStyle="rgba(150,108,42,0.32)"; g.lineWidth=3;
     for(let x=-groundScroll; x<VW; x+=48){
       g.beginPath(); g.moveTo(x, groundY+28); g.lineTo(x+18, groundY+28); g.stroke();
     }
