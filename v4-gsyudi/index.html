@@ -382,7 +382,7 @@ const cards = [
   { kanji:"シンプルで落ち着く空間作りをしています。", hira:"しんぷるで おちつく くうかんづくりを しています。", en:"I try to create a simple, calming space.", audio:"f4_02.AAC" },
   { kanji:"そういう環境で働くと、自分も自然とモチベーションが上がっていくのを感じます。", hira:"そういうかんきょうではたらくと、じぶんも しぜんともちべーしょんが あがっていくのをかんじます。", en:"Working in that kind of environment, I feel my own motivation naturally rising too.", audio:"f4_03.AAC" },
   { kanji:"今年も無事にお札やお守りをいただいて、おうちの神棚に飾り、新しい一年の準備が整いました。", hira:"ことしもぶじに おふだやおまもりをいただいて、おうちのかみだなにかざり、あたらしい いちねんの じゅんびがととのいました。", en:"This year again, I received ofuda and omamori charms, placed them on my home altar, and now I'm ready for the new year.", audio:"f4_04.AAC" },
-  { kanji:"今は月に2回、先生と一対一でレッスンをしてもらっていて、これが私にとってとてもとても大切な時間です。", hira:"いまは、つきににかい、せんせいといったいいちでれっすんをしてもらっていて、これが、わたしにとって、とてもとてもたいせつなじかんです。", en:"These days I take one-on-one lessons with my teacher twice a month, and it's a very, very precious time for me.", audio:"f4_05.AAC" },
+  { kanji:"今は月に2回、先生と一対一でレッスンをしてもらっていて、これが私にとってとてもとても大事な時間です。", hira:"いまは、つきににかい、せんせいといったいいちでれっすんをしてもらっていて、これが、わたしにとって、とてもとてもたいせつなじかんです。", en:"These days I take one-on-one lessons with my teacher twice a month, and it's a very, very precious time for me.", audio:"f4_05.AAC" },
   { kanji:"それでも、韓国にはオンドルがあるので、ホテルの中はとても温かくて、半袖でも過ごせるくらいなんですよね。", hira:"それでも、かんこくにはおんどるがあるので、ほてるのなかは とてもあたたかくて、はんそででもすごせるくらい なんですよね。", en:"Even so, thanks to ondol heating in Korea, the hotel stays so warm you could get by in short sleeves.", audio:"f4_06.AAC" },
   { kanji:"朝はカフェでコーヒーとケーキを楽しんで、ゆったりした時間を過ごしていたんです。", hira:"あさは かふぇで こーひーと けーきを たのしんで、ゆったりした じかんを すごしていたんです。", en:"In the morning, I enjoyed coffee and cake at a café and had a leisurely time.", audio:"f4_07.AAC" },
   { kanji:"いつもとは違う朝の過ごし方がとても新鮮でした。", hira:"いつもとは ちがう あさの すごしかたが とても しんせんでした。", en:"Spending my morning in a different way from usual felt really refreshing.", audio:"f4_08.AAC" },
@@ -849,13 +849,14 @@ loadCard();
 .complete-screen>div:not([class]){order:4;width:100%}
 .complete-divider{display:none !important}
 .btn-restart{order:5 !important;margin-top:10px !important;margin-bottom:0 !important}
-.clinks-primary{order:6;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:6px;width:100%;margin:22px 0 0 !important}
+.clinks-primary{order:6;display:grid !important;grid-template-columns:1fr 1fr !important;gap:8px 10px;width:100%;margin:40px 0 0 !important}
 .clinks-secondary{order:7;display:flex !important;justify-content:center;gap:26px;width:100%;margin:auto 0 4px !important}
 /* 主要4: 小型カード・ラベル省略 */
-.clinks-primary .complete-link{padding:8px 3px !important;gap:4px}
+.clinks-primary .complete-link{padding:8px 3px !important;gap:4px;background:transparent !important;border:none !important;box-shadow:none !important}
 .clinks-primary .complete-link-label{display:none}
 .clinks-primary .complete-link-text{font-size:9px !important}
 .clinks-primary .link-icon-wrap{width:22px !important;height:22px !important}
+.clinks-primary .link-icon-wrap svg{fill:#1C1C1C !important}
 /* 副次3: 枠なしアイコン */
 .clinks-secondary .complete-link{background:transparent !important;border:none !important;box-shadow:none !important;padding:2px !important;gap:4px}
 .clinks-secondary .complete-link-label{display:none}
