@@ -495,5 +495,42 @@ loadCard();
 </style>
 
 <script src="/menu.js" defer></script>
+
+<style id="fitV1">
+/* FIT_V1: 完了画面・表紙をスクロールなしで収める (2026-07-11) */
+.complete-screen{padding:14px 16px}
+.complete-logo{width:44px;height:44px;margin-bottom:8px}
+.complete-title{font-size:clamp(20px,5.5vw,24px) !important;margin-bottom:4px}
+.complete-sub{margin-bottom:6px;line-height:1.5}
+.gm-cstats{margin:6px 0 2px;gap:6px}
+.gm-cstat{padding:7px 10px;min-width:74px}
+.gm-cstat .gm-v{font-size:16px}
+.complete-divider{margin:0 auto 8px}
+.complete-links{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
+.complete-link{padding:8px 4px;gap:3px}
+.link-icon-wrap{width:24px;height:24px}
+.complete-link-label{display:none}
+.complete-link-text{font-size:10.5px}
+.btn-restart{padding:6px}
+/* 表紙: 中身はコンパクト化で収まる。装飾の太陽(bottom:-90px)が
+   スクロール領域を作らないよう overflow:hidden に戻す */
+.cover-screen{overflow:hidden}
+@media (max-height:800px){
+  .cover-screen{padding:16px 24px}
+  .cover-logo-img{width:56px;height:56px;margin-bottom:10px}
+  .cover-badge{margin-bottom:8px}
+  .cover-main-title{font-size:clamp(24px,6.5vw,28px) !important}
+  .cover-sentences{margin-bottom:14px}
+  .cover-divider{margin:0 auto 14px}
+  .install-banner{margin-bottom:10px;padding:9px 12px}
+  .gm-greet{margin-bottom:10px;padding:7px 14px;font-size:13px}
+  .btn-start{padding:12px 40px;font-size:15px !important}
+}
+/* 極端に低い画面(横持ち等)のみスクロールを許可する安全弁 */
+@media (max-height:520px){
+  .cover-screen{overflow-y:auto}
+  .cover-screen::before{content:none}
+}
+</style>
 </body>
 </html>
