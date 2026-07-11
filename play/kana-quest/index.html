@@ -300,28 +300,36 @@
       o.connect(g); g.connect(c.destination);
       o.start(t0); o.stop(t0+dur+0.02);
     }
-    // ---- BGM: light synthesized morning arpeggio, looped via lookahead ----
-    let bgmOn=false, bgmTimer=null, bgmNextT=0, bgmStep=0;
-    const BGM_STEP = 0.30;   // sec per 8th note (~100 BPM)
-    const BGM_MELO = [523,659,784,880, 784,659,587,659, 523,659,784,1047, 880,784,659,587];
-    const BGM_BASS = [131,0,0,0, 175,0,0,0, 131,0,0,0, 196,0,0,0];
-    function bgmTick(){
-      const c=ensure(); if(!c) return;
-      while(bgmNextT < c.currentTime + 0.25){
-        const i = bgmStep % BGM_MELO.length;
-        const off = Math.max(0, bgmNextT - c.currentTime);
-        if(BGM_MELO[i]) tone(BGM_MELO[i], 0.26, "triangle", 0.035, off);
-        if(BGM_BASS[i]) tone(BGM_BASS[i], 0.55, "sine",     0.05,  off);
-        bgmStep++; bgmNextT += BGM_STEP;
-      }
+    // ---- BGM: OHAYO NIHONGO theme (bgm.mp3 = main-video BGM2 loop) ----
+    // Looped via WebAudio buffer + GainNode at a whisper — GainNode volume
+    // works on iOS (the <audio> volume property does not).
+    const BGM_GAIN = 0.03;   // barely audible under the SFX
+    let bgmOn=false, bgmBuf=null, bgmSrc=null, bgmGainNode=null, bgmLoading=false;
+    function loadBgm(){
+      if(bgmBuf || bgmLoading) return;
+      bgmLoading=true;
+      fetch("bgm.mp3")
+        .then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); })
+        .then(ab=>{
+          const c=ensure(); if(!c) throw 0;
+          return new Promise((res,rej)=>c.decodeAudioData(ab,res,rej));
+        })
+        .then(buf=>{ bgmBuf=buf; bgmLoading=false; runBgm(); })
+        .catch(()=>{ bgmLoading=false; });
     }
     function runBgm(){
-      if(bgmTimer || muted || !bgmOn) return;
+      if(bgmSrc || muted || !bgmOn) return;
       const c=ensure(); if(!c) return;
-      bgmNextT = c.currentTime + 0.05;
-      bgmTimer = setInterval(bgmTick, 100);
+      if(!bgmBuf){ loadBgm(); return; }   // starts once decode completes
+      bgmGainNode=c.createGain(); bgmGainNode.gain.value=BGM_GAIN;
+      bgmSrc=c.createBufferSource(); bgmSrc.buffer=bgmBuf; bgmSrc.loop=true;
+      bgmSrc.connect(bgmGainNode); bgmGainNode.connect(c.destination);
+      bgmSrc.start();
     }
-    function haltBgm(){ if(bgmTimer){ clearInterval(bgmTimer); bgmTimer=null; } }
+    function haltBgm(){
+      if(bgmSrc){ try{bgmSrc.stop();}catch(e){} try{bgmSrc.disconnect();}catch(e){} bgmSrc=null; }
+      if(bgmGainNode){ try{bgmGainNode.disconnect();}catch(e){} bgmGainNode=null; }
+    }
     // iOS unlock. Two parts, both must run inside a user gesture:
     //  1) play a silent WebAudio buffer to resume the context
     //  2) loop a silent <audio> element — this flips the iOS audio session to
@@ -352,10 +360,10 @@
       if(!document.hidden && ctx && ctx.state==="suspended") ctx.resume();
     });
     return {
-      init(){ ensure(); unlock(); },
+      init(){ ensure(); unlock(); loadBgm(); },
       setMuted(m){ muted=m; if(m) haltBgm(); else runBgm(); },
       isMuted(){ return muted; },
-      startBgm(){ bgmOn=true; bgmStep=0; runBgm(); },
+      startBgm(){ bgmOn=true; runBgm(); },
       stopBgm(){ bgmOn=false; haltBgm(); },
       jump(){ tone(520,0.16,"square",0.16); tone(760,0.12,"square",0.10,0.05); },
       coin(){ tone(880,0.09,"square",0.18); tone(1320,0.14,"square",0.16,0.07); },
