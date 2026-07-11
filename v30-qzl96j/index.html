@@ -543,7 +543,7 @@ loadCard();
 (function(){
   /* BGM_V2: 常にON。Start Practiceで自動開始・ループ再生。
      文の音声再生中は自動で音量を下げる（ダッキング） */
-  var BGM_VOL=0.03, DUCK=0.008;
+  var BGM_VOL=0.015, DUCK=0.005;
   var bgm=document.createElement('audio');
   bgm.src='../adventure/bgm.mp3'; bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
   window.__bgm=bgm;
