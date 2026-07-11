@@ -189,7 +189,6 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
 .link-icon-youtube { background:rgba(255,0,0,0.15); }
 .link-icon-etsy { background:rgba(241,100,30,0.15); }
 .link-icon-tiktok { background:rgba(0,0,0,0.08); }
-.complete-links > a:nth-child(7):last-child { grid-column:2; }
 .link-icon-substack { background:rgba(255,103,25,0.15); }
 .link-icon-threads { background:rgba(255,255,255,0.08); }
 .link-icon-xhs { background:rgba(255,36,66,0.12); }
@@ -287,8 +286,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
     <div class="complete-title">Well done!<br><span>おつかれさま！</span></div>
     <div class="complete-sub">You've completed all 10 sentences.<br>Keep practicing every day!</div>
     <div class="complete-divider"></div>
-    <div class="complete-links">
-      <a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank">
+    <div class="complete-links clinks-primary"><a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank">
         <div class="link-icon-wrap link-icon-spotify">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
         </div>
@@ -296,8 +294,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Listen on</div>
           <div class="complete-link-text">Spotify</div>
         </div>
-      </a>
-      <a class="complete-link" href="https://www.youtube.com/@ohayo.nihongo" target="_blank">
+      </a><a class="complete-link" href="https://www.youtube.com/@ohayo.nihongo" target="_blank">
         <div class="link-icon-wrap link-icon-youtube">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         </div>
@@ -305,8 +302,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Watch on</div>
           <div class="complete-link-text">YouTube</div>
         </div>
-      </a>
-      <a class="complete-link" href="https://ohayonihongo.substack.com" target="_blank">
+      </a><a class="complete-link" href="https://ohayonihongo.substack.com" target="_blank">
         <div class="link-icon-wrap link-icon-substack">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF6719"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
         </div>
@@ -314,18 +310,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Newsletter</div>
           <div class="complete-link-text">Substack</div>
         </div>
-      </a>
-      <a class="complete-link" href="https://www.threads.com/@ohayo.nihongo" target="_blank">
-        <div class="link-icon-wrap link-icon-threads">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="16" height="16" fill="#fff"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.229c8.249.053 14.474 2.452 18.503 7.129 2.932 3.405 4.893 8.111 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.351-22.809-.169-40.06-7.484-51.275-21.742C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.435 74.206 17.12 97.015 16.951c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 9.944 15.807 12.66 26.153l16.194-4.286c-3.304-12.288-8.586-22.993-15.814-31.702C147.933 11.048 125.955 1.555 97.104 1.351h-.149c-28.795.204-50.529 9.83-64.612 28.627C20.611 44.845 14.222 67.087 14 96v.305c.222 28.913 6.61 51.155 18.945 66.022 14.083 18.798 35.817 28.424 64.612 28.627h.149c25.851-.181 44.01-6.963 59.121-22.064 19.61-19.592 19.042-44.137 12.567-59.186-4.484-10.461-13.033-18.952-27.857-24.716z"/></svg>
-        </div>
-        <div class="complete-link-info">
-          <div class="complete-link-label">Follow on</div>
-          <div class="complete-link-text">Threads</div>
-        </div>
-      </a>
-      <a class="complete-link" href="https://xhslink.com/m/8GRXQgNrUMR" target="_blank"><div class="link-icon-wrap link-icon-xhs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF2442"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Follow on</div><div class="complete-link-text">小红书 RED</div></div></a>
-      <a class="complete-link" href="https://www.tiktok.com/@ohayo.nihongo" target="_blank"><div class="link-icon-wrap link-icon-tiktok"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#010101"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Follow on</div><div class="complete-link-text">TikTok</div></div></a><a class="complete-link" href="https://ohayonihongodaily.etsy.com" target="_blank">
+      </a><a class="complete-link" href="https://ohayonihongodaily.etsy.com" target="_blank">
         <div class="link-icon-wrap link-icon-etsy">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#F1641E"><path d="M9.104 4.784c0-.896.144-1.168 1.552-1.168h4.512c1.792 0 2.528.56 3.024 2.24l.24.832.944-.064.064-4.48H1.888l-.048.944 1.04.208c.896.208 1.12.624 1.12 2.64v13.216c0 2.016-.224 2.384-1.12 2.592l-1.04.208.048.944H19.6l1.312-5.04-.88-.24c-.752 1.568-1.792 3.408-4.576 3.408H12c-1.456 0-1.744-.4-1.744-1.6v-6.32c1.84 0 2.912.08 3.52.784.464.528.624 1.12.784 1.984h.944V10.32h-.944c-.16.816-.32 1.408-.784 1.936-.608.704-1.68.784-3.52.784z"/></svg>
         </div>
@@ -333,8 +318,15 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Shop on</div>
           <div class="complete-link-text">Etsy</div>
         </div>
-      </a>
-    </div>
+      </a></div><div class="complete-links clinks-secondary"><a class="complete-link" href="https://www.threads.com/@ohayo.nihongo" target="_blank">
+        <div class="link-icon-wrap link-icon-threads">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" width="16" height="16" fill="#fff"><path d="M141.537 88.988a66.667 66.667 0 0 0-2.518-1.143c-1.482-27.307-16.403-42.94-41.457-43.1h-.34c-14.986 0-27.449 6.396-35.12 18.036l13.779 9.452c5.73-8.695 14.724-10.548 21.348-10.548h.229c8.249.053 14.474 2.452 18.503 7.129 2.932 3.405 4.893 8.111 5.864 14.05-7.314-1.243-15.224-1.626-23.68-1.14-23.82 1.371-39.134 15.264-38.105 34.568.522 9.792 5.4 18.216 13.735 23.719 7.047 4.652 16.124 6.927 25.557 6.412 12.458-.683 22.231-5.436 29.049-14.127 5.178-6.6 8.453-15.153 9.899-25.93 5.937 3.583 10.337 8.298 12.767 13.966 4.132 9.635 4.373 25.468-8.546 38.376-11.319 11.308-24.925 16.2-45.488 16.351-22.809-.169-40.06-7.484-51.275-21.742C35.236 139.966 29.808 120.682 29.605 96c.203-24.682 5.63-43.966 16.133-57.317C56.954 24.435 74.206 17.12 97.015 16.951c22.975.17 40.526 7.52 52.171 21.847 5.71 7.026 9.944 15.807 12.66 26.153l16.194-4.286c-3.304-12.288-8.586-22.993-15.814-31.702C147.933 11.048 125.955 1.555 97.104 1.351h-.149c-28.795.204-50.529 9.83-64.612 28.627C20.611 44.845 14.222 67.087 14 96v.305c.222 28.913 6.61 51.155 18.945 66.022 14.083 18.798 35.817 28.424 64.612 28.627h.149c25.851-.181 44.01-6.963 59.121-22.064 19.61-19.592 19.042-44.137 12.567-59.186-4.484-10.461-13.033-18.952-27.857-24.716z"/></svg>
+        </div>
+        <div class="complete-link-info">
+          <div class="complete-link-label">Follow on</div>
+          <div class="complete-link-text">Threads</div>
+        </div>
+      </a><a class="complete-link" href="https://www.tiktok.com/@ohayo.nihongo" target="_blank"><div class="link-icon-wrap link-icon-tiktok"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#010101"><path d="M12.53.02C13.84 0 15.14.01 16.44 0c.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.63.41-1.11 1.04-1.36 1.75-.21.51-.15 1.07-.14 1.61.24 1.64 1.82 3.02 3.5 2.87 1.12-.01 2.19-.66 2.77-1.61.19-.33.4-.67.41-1.06.1-1.79.06-3.57.07-5.36.01-4.03-.01-8.05.02-12.07z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Follow on</div><div class="complete-link-text">TikTok</div></div></a><a class="complete-link" href="https://xhslink.com/m/8GRXQgNrUMR" target="_blank"><div class="link-icon-wrap link-icon-xhs"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF2442"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg></div><div class="complete-link-info"><div class="complete-link-label">Follow on</div><div class="complete-link-text">小红书 RED</div></div></a></div>
     <button class="btn-restart" onclick="restart()">↩ Start over</button>
   </div>
 </div>
@@ -368,13 +360,13 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
 <script>
 const cards = [
   { kanji:"今朝は少し冷えますが、日差しが優しくて気持ちのいい朝です。", hira:"けさは すこし ひえますが、ひざしが やさしくて きもちのいい あさです。", en:"It's a little chilly this morning, but the sunlight is gentle and it's a pleasant morning.", audio:"f7_01.AAC" },
-  { kanji:"毎日こまめにハンドクリームを塗って、丁寧に保湿を続けてみました。", hira:"まいにち こまめに はんどくりーむを ぬって、ていねいに ほしつを つづけてみました。", en:"I applied hand cream little by little every day and kept up with moisturizing carefully.", audio:"f7_02.AAC" },
+  { kanji:"毎日こまめに塗って、丁寧に保湿を続けてみました。", hira:"まいにちこまめにぬって、ていねいにほしつをつづけてみました。", en:"I applied it diligently every day and kept up a careful moisturizing routine.", audio:"f7_02.AAC" },
   { kanji:"いつもは朝日を目指して歩いていますが、たまには違う景色を見るのもいいですね。", hira:"いつもは あさひを めざして あるいていますが、たまには ちがう けしきを みるのも いいですね。", en:"I usually walk toward the morning sun, but seeing a different view once in a while is nice too.", audio:"f7_03.AAC" },
   { kanji:"朝からこんなに美しいものに出会えて、心がとても豊かになりました。", hira:"あさから こんなに うつくしいものに であえて、こころが とても ゆたかに なりました。", en:"Encountering something so beautiful first thing in the morning made my heart feel so rich.", audio:"f7_04.AAC" },
   { kanji:"早起きの楽しみは、こういうところにもあるのだと改めて感じました。", hira:"はやおきの たのしみは、こういう ところにも あるのだと あらためて かんじました。", en:"I was reminded once again that this is one of the joys of waking up early.", audio:"f7_05.AAC" },
   { kanji:"昨日の午後は、少し緊張しながら、歯医者さんに行きました。", hira:"きのうの ごごは、すこし きんちょうしながら、はいしゃさんに いきました。", en:"Yesterday afternoon, I went to the dentist feeling a little nervous.", audio:"f7_06.AAC" },
   { kanji:"歯の健康を守るためには、早めのお手入れが大切だと改めて感じました。", hira:"はの けんこうを まもるためには、はやめの おていれが たいせつだと あらためて かんじました。", en:"I was reminded once again that early care is important for dental health.", audio:"f7_07.AAC" },
-  { kanji:"今日は、一年に一度の健康診断に行ってきました。", hira:"きょうは、いちねんに いちどの けんこうしんだんに いってきました。", en:"Today I went to my once-a-year health checkup.", audio:"f7_08.AAC" },
+  { kanji:"今日は、1年に1度の健康診断に行ってきました。", hira:"きょうは、いちねんに いちどの けんこうしんだんに いってきました。", en:"Today I went to my once-a-year health checkup.", audio:"f7_08.AAC" },
   { kanji:"検査の間は少し緊張しましたが、無事に終わってホッとしました。", hira:"けんさの あいだは すこし きんちょうしましたが、ぶじに おわって ほっとしました。", en:"I was a little nervous during the checkup, but I was relieved when it finished safely.", audio:"f7_09.AAC" },
   { kanji:"皆さんも、体を大切に、毎日を楽しく過ごしてくださいね。", hira:"みなさんも、からだを たいせつに、まいにちを たのしく すごして くださいね。", en:"Please take good care of your bodies and enjoy every day, everyone!", audio:"f7_10.AAC" },
 ];
@@ -791,5 +783,31 @@ loadCard();
     return a; };
 })();
 </script>
+<style id="clinksV2">
+/* CLINKS_V2: 完了画面リンクの並べ替え（2026-07-11 要望）
+   主要4(Spotify/YouTube/Substack/Etsy)=小型カード横1列 /
+   Start over=Next levelの直下 / 副次3(Threads/TikTok/小红书)=枠なしで画面最下部横1列 */
+.complete-screen{justify-content:flex-start}
+.complete-logo{order:1}
+.complete-title{order:2}
+.complete-sub{order:3}
+.complete-screen>div:not([class]){order:4;width:100%}
+.complete-divider{display:none !important}
+.btn-restart{order:5 !important;margin-top:10px !important;margin-bottom:0 !important}
+.clinks-primary{order:6;display:grid !important;grid-template-columns:repeat(4,1fr) !important;gap:6px;width:100%;margin:22px 0 0 !important}
+.clinks-secondary{order:7;display:flex !important;justify-content:center;gap:26px;width:100%;margin:auto 0 4px !important}
+/* 主要4: 小型カード・ラベル省略 */
+.clinks-primary .complete-link{padding:8px 3px !important;gap:4px}
+.clinks-primary .complete-link-label{display:none}
+.clinks-primary .complete-link-text{font-size:9px !important}
+.clinks-primary .link-icon-wrap{width:22px !important;height:22px !important}
+/* 副次3: 枠なしアイコン */
+.clinks-secondary .complete-link{background:transparent !important;border:none !important;box-shadow:none !important;padding:2px !important;gap:4px}
+.clinks-secondary .complete-link-label{display:none}
+.clinks-secondary .complete-link-text{font-size:9.5px !important;color:#5D7285 !important}
+.clinks-secondary .link-icon-wrap{width:34px !important;height:34px !important;background:transparent !important}
+.clinks-secondary .link-icon-wrap svg{width:26px !important;height:26px !important}
+.clinks-secondary .link-icon-threads svg{fill:#1C1C1C !important}
+</style>
 </body>
 </html>
