@@ -96,6 +96,8 @@
   .pcard .cta{display:inline-block;margin-top:11px;font-size:13px;font-weight:700;letter-spacing:.02em}
   .pcard.app .cta{color:#2C6E9E}
   .pcard.game .cta{color:#C0761F}
+  .pcard.anki .pl{color:#4F7A56}
+  .pcard.anki .cta{color:#4F7A56}
   .pcard .oscr{position:absolute;top:12px;right:14px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#93A6B4}
   /* preview frame */
   .pv{padding:15px 15px 16px}
@@ -250,7 +252,7 @@
   <a class="allbtn" href="/diary/">Browse all 178 excerpts →</a>
 
   <h2 class="sec">Learn &amp; Play</h2>
-  <div class="sect">A flashcard app &amp; a story game — both free to try</div>
+  <div class="sect">A flashcard app, a story game &amp; Anki decks</div>
   <div class="play">
 
     <a class="pcard app" href="/my-flashcards/">
@@ -289,6 +291,18 @@
       </div>
     </a>
 
+    <a class="pcard anki" href="/anki/">
+      <div class="hd">
+        <span class="oscr">New</span>
+        <div class="pl">🔁 Anki Decks · spaced repetition</div>
+        <b>Anki Decks</b>
+      </div>
+      <div class="body">
+        <span class="ds">Spaced-repetition decks with native audio — 50 diary sentences per month, ready for the free Anki app. Try real cards on the deck page.</span>
+        <span class="cta">See the decks →</span>
+      </div>
+    </a>
+
   </div>
 
   <div class="deeper" id="shop" style="margin-top:44px">
@@ -310,6 +324,14 @@
     <p>💬 想要免费学习资料？在小红书私信我们：<span class="hl">「にっき」</span></p>
   </section>
 
+  <div class="oa-email-cta" style="box-sizing:border-box; max-width:560px; margin:32px auto; padding:28px 22px; background:var(--oa-cream, #FAF7F1); color:var(--oa-ink, #1E1E1E); border:1px solid var(--oa-gold, #B98F2F); border-radius:16px; text-align:center; font-family:'DM Sans', -apple-system, 'Helvetica Neue', Arial, sans-serif; line-height:1.6;">
+    <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--oa-gold, #B98F2F); margin-bottom:10px;">Email &middot; Free</div>
+    <h3 style="margin:0 0 10px; font-family:'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-weight:600; font-size:clamp(22px, 6vw, 26px); color:var(--oa-heading, #1C1C1C); letter-spacing:.01em;">&#9728;&#65039; Morning letters from Tokyo</h3>
+    <p style="margin:0 auto 18px; max-width:420px; font-size:14px; color:var(--oa-sub, #4A4A4A);">Get a note when a new morning-diary episode is out &mdash; plus small tips to make your Japanese practice stick.</p>
+    <a href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" data-oa-event="email_signup" style="display:inline-block; box-sizing:border-box; max-width:100%; padding:12px 30px; background:var(--oa-navy, #134B70); color:#FFFFFF; font-size:14px; font-weight:600; letter-spacing:.04em; text-decoration:none; border-radius:48px; white-space:nowrap;">Subscribe free</a>
+    <div style="margin-top:10px; font-size:12px; color:var(--oa-sub, #4A4A4A);">No spam. Unsubscribe anytime.</div>
+  </div>
+
   <footer>
     <div class="socials">
       <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
@@ -323,5 +345,6 @@
   </footer>
 
 </div>
+<script src="/assets/analytics.js"></script>
 </body>
 </html>
