@@ -61,9 +61,10 @@
     padding:24px; z-index:10;
   }
   .card{
-    background:var(--paper); border:1px solid var(--line); border-radius:16px;
-    padding:26px 24px; max-width:340px; width:100%;
-    box-shadow:0 10px 34px rgba(19,75,112,.18);
+    background:rgba(255,255,255,.88); border:1px solid rgba(255,255,255,.65);
+    border-radius:22px; padding:26px 24px; max-width:340px; width:100%;
+    box-shadow:0 18px 50px rgba(19,75,112,.25);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   }
   .card h1{
     font-family:Georgia,serif; font-size:30px; margin:0 0 4px; color:var(--ink);
@@ -81,9 +82,11 @@
     font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;}
   .modeBtn.active{border-color:var(--sun); background:#FFF7EA; color:var(--ink);}
   .cta{
-    display:block; width:100%; background:var(--yellow); color:var(--ink);
-    border:none; border-radius:12px; padding:14px; font-size:16px; font-weight:800;
-    cursor:pointer; letter-spacing:.4px; box-shadow:0 4px 0 #E0A72E;
+    display:block; width:100%; color:var(--ink);
+    background:linear-gradient(180deg,#FFD35C,#F7AE22);
+    border:none; border-radius:14px; padding:14px; font-size:16px; font-weight:800;
+    cursor:pointer; letter-spacing:.4px;
+    box-shadow:0 4px 0 #DE9E1E, 0 10px 22px rgba(247,169,40,.35);
     transition:transform .06s, box-shadow .06s;
   }
   .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #E0A72E;}
@@ -113,9 +116,10 @@
     padding:10px 66px 10px 12px; gap:10px; /* right padding clears the fixed ☰ menu */
   }
   #promptBox{
-    pointer-events:none; background:rgba(255,255,255,.95); border:2px solid var(--sun);
-    border-radius:14px; padding:7px 20px 9px; text-align:center; min-width:118px;
-    box-shadow:0 6px 18px rgba(19,75,112,.18);
+    pointer-events:none; background:rgba(255,255,255,.82); border:2px solid var(--sun);
+    border-radius:16px; padding:7px 20px 9px; text-align:center; min-width:118px;
+    box-shadow:0 8px 24px rgba(19,75,112,.2);
+    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
     position:absolute; left:50%; top:64px; transform:translateX(-50%);
   }
   #promptBox.pop{animation:promptPop .35s ease;}
@@ -128,16 +132,17 @@
   #promptBox .romaji{font-size:34px; font-weight:800; color:var(--navy); line-height:1; font-family:Georgia,serif;}
   #hudRight{display:flex; flex-direction:column; align-items:flex-end; gap:4px; pointer-events:none;}
   .hudPill{
-    background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:20px;
+    background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.75); border-radius:20px;
     padding:3px 11px; font-size:13px; font-weight:700; color:var(--ink);
-    box-shadow:0 2px 8px rgba(19,75,112,.12);
+    box-shadow:0 2px 10px rgba(19,75,112,.14);
+    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
   }
   #hearts{font-size:15px; letter-spacing:1px;}
   #jumpHint{
     position:absolute; bottom:calc(14px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
-    background:var(--yellow); color:var(--ink); border:none; border-radius:50%;
+    background:linear-gradient(180deg,#FFD35C,#F7AE22); color:var(--ink); border:none; border-radius:50%;
     width:74px; height:74px; font-size:14px; font-weight:800; cursor:pointer;
-    box-shadow:0 5px 0 #E0A72E, 0 8px 18px rgba(0,0,0,.15);
+    box-shadow:0 5px 0 #DE9E1E, 0 10px 22px rgba(247,169,40,.4);
   }
   #jumpHint:active{transform:translateY(3px); box-shadow:0 2px 0 #E0A72E;}
   #toast{
@@ -382,6 +387,12 @@
   const g = canvas.getContext("2d");
   let VW=0, VH=0, DPR=1;
 
+  // generated background art (fal.ai flux) — procedural sky is the fallback
+  const bgImg = new Image();
+  let bgReady = false;
+  bgImg.onload = ()=>{ bgReady = true; };
+  bgImg.src = "img/kana-quest.png";
+
   function resize(){
     DPR = Math.min(window.devicePixelRatio||1, 2.5);
     const r = canvas.getBoundingClientRect();
@@ -620,6 +631,16 @@
 
   // ======================= RENDER =======================
   function drawSky(){
+    if(bgReady){
+      // cover-fit, anchored left so the illustrated sun (upper-left) stays
+      // visible on narrow portrait crops; bottom aligned to the ground line
+      const targetH = groundY + 24;
+      const s = Math.max(VW/bgImg.width, targetH/bgImg.height);
+      const w = bgImg.width*s, h = bgImg.height*s;
+      g.drawImage(bgImg, 0, targetH-h, w, h);
+      if(w < VW){ g.fillStyle="#F5EEDF"; g.fillRect(w,0,VW-w,VH); }
+      return;
+    }
     const grad = g.createLinearGradient(0,0,0,VH);
     grad.addColorStop(0,   "#BFE0F2");   // pale morning blue
     grad.addColorStop(0.42,"#F3E9D6");   // cream haze
