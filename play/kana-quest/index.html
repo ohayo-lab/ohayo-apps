@@ -87,6 +87,14 @@
     transition:transform .06s, box-shadow .06s;
   }
   .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #E0A72E;}
+  .cta2{
+    display:block; width:100%; margin-top:10px; background:var(--cream);
+    border:1.5px solid var(--line); border-radius:12px; padding:11px;
+    font-size:14px; font-weight:800; color:var(--ink); text-decoration:none;
+    letter-spacing:.4px;
+  }
+  .cta2 .sub2{display:block; font-size:11px; font-weight:600; color:var(--sub); margin-top:2px; letter-spacing:.2px;}
+  .cta2:active{background:#F1EADD;}
   .statline{font-size:13px; color:var(--sub); margin:14px 0 0;}
   .statline b{color:var(--ink); font-size:22px; font-family:Georgia,serif;}
   .best{font-size:12px; color:var(--gold); margin-top:2px;}
@@ -222,10 +230,13 @@
     <div id="overOverlay" class="overlay hidden">
       <div class="card">
         <div class="kicker">Game Over</div>
-        <h1>おつかれ！</h1>
+        <h1 id="overTitle">おつかれ！</h1>
         <p class="statline">Score<br><b id="finalScore">0</b></p>
         <div class="best" id="finalBest">Best: 0</div>
         <button class="cta" id="replayBtn" style="margin-top:18px;">PLAY AGAIN</button>
+        <a class="cta2" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">
+          PLAY TOMORROW ☀️<span class="sub2">また明日 — practice every morning</span>
+        </a>
         <div class="share" id="shareLine">Tap to copy your score line</div>
       </div>
     </div>
@@ -289,15 +300,51 @@
       o.connect(g); g.connect(c.destination);
       o.start(t0); o.stop(t0+dur+0.02);
     }
+    // ---- BGM: light synthesized morning arpeggio, looped via lookahead ----
+    let bgmOn=false, bgmTimer=null, bgmNextT=0, bgmStep=0;
+    const BGM_STEP = 0.30;   // sec per 8th note (~100 BPM)
+    const BGM_MELO = [523,659,784,880, 784,659,587,659, 523,659,784,1047, 880,784,659,587];
+    const BGM_BASS = [131,0,0,0, 175,0,0,0, 131,0,0,0, 196,0,0,0];
+    function bgmTick(){
+      const c=ensure(); if(!c) return;
+      while(bgmNextT < c.currentTime + 0.25){
+        const i = bgmStep % BGM_MELO.length;
+        const off = Math.max(0, bgmNextT - c.currentTime);
+        if(BGM_MELO[i]) tone(BGM_MELO[i], 0.26, "triangle", 0.035, off);
+        if(BGM_BASS[i]) tone(BGM_BASS[i], 0.55, "sine",     0.05,  off);
+        bgmStep++; bgmNextT += BGM_STEP;
+      }
+    }
+    function runBgm(){
+      if(bgmTimer || muted || !bgmOn) return;
+      const c=ensure(); if(!c) return;
+      bgmNextT = c.currentTime + 0.05;
+      bgmTimer = setInterval(bgmTick, 100);
+    }
+    function haltBgm(){ if(bgmTimer){ clearInterval(bgmTimer); bgmTimer=null; } }
+    // iOS unlock: play a silent buffer inside the user gesture
+    function unlock(){
+      const c=ensure(); if(!c) return;
+      try{
+        const b=c.createBuffer(1,1,22050), s=c.createBufferSource();
+        s.buffer=b; s.connect(c.destination); s.start(0);
+      }catch(e){}
+    }
     return {
-      init(){ ensure(); },
-      setMuted(m){ muted=m; },
+      init(){ ensure(); unlock(); },
+      setMuted(m){ muted=m; if(m) haltBgm(); else runBgm(); },
       isMuted(){ return muted; },
+      startBgm(){ bgmOn=true; bgmStep=0; runBgm(); },
+      stopBgm(){ bgmOn=false; haltBgm(); },
       jump(){ tone(520,0.16,"square",0.16); tone(760,0.12,"square",0.10,0.05); },
       coin(){ tone(880,0.09,"square",0.18); tone(1320,0.14,"square",0.16,0.07); },
       hit(){ tone(180,0.28,"sawtooth",0.22); tone(120,0.30,"sawtooth",0.18,0.02); },
-      over(){ tone(440,0.18,"triangle",0.2); tone(330,0.20,"triangle",0.2,0.16);
-              tone(220,0.34,"triangle",0.2,0.34); }
+      // すごい！ new-best fanfare
+      win(){ tone(523,0.14,"square",0.18); tone(659,0.14,"square",0.18,0.12);
+             tone(784,0.14,"square",0.18,0.24); tone(1047,0.42,"square",0.2,0.36); },
+      // ざんねん… descending
+      lose(){ tone(392,0.2,"triangle",0.2); tone(330,0.22,"triangle",0.2,0.18);
+              tone(262,0.45,"triangle",0.2,0.36); }
     };
   })();
 
@@ -755,11 +802,15 @@
     deck = (mode==="kata") ? KATA : HIRA;
     resetGame();
     state = State.PLAY;
+    Sfx.startBgm();
   }
 
   function gameOver(){
     state = State.OVER;
-    Sfx.over();
+    Sfx.stopBgm();
+    const newBest = score > best && score > 0;
+    if(newBest) Sfx.win(); else Sfx.lose();
+    document.getElementById("overTitle").textContent = newBest ? "すごい！ New Best!" : "おつかれ！";
     if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
     document.getElementById("finalScore").textContent = score;
     document.getElementById("finalBest").textContent = "Best: "+best;
