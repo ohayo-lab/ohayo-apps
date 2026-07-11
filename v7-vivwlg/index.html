@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>OHAYO NIHONGO — Daily Flashcards Vol. 7</title>
 
 <!-- ✦ PWA: iOS (Safari / Add to Home Screen) -->
@@ -750,6 +750,12 @@ loadCard();
   .cover-screen{overflow-y:auto}
   .cover-screen::before{content:none}
 }
+/* セーフエリア: viewport-fit=cover 有効化に伴い、ブラウザでは最低余白・
+   ホーム画面アプリではノッチ/ホームバー分を自動確保 */
+.header{padding-top:max(env(safe-area-inset-top), 14px)}
+.nav-row{padding-bottom:max(calc(env(safe-area-inset-bottom) + 8px), 14px)}
+.cover-screen{padding-top:max(env(safe-area-inset-top), 16px);padding-bottom:max(env(safe-area-inset-bottom), 16px)}
+.complete-screen{padding-top:max(env(safe-area-inset-top), 14px);padding-bottom:max(env(safe-area-inset-bottom), 14px)}
 </style>
 </body>
 </html>
