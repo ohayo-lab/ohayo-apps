@@ -207,7 +207,7 @@ function loadCard() {
   const c = cards[current]; hiraVisible=false; enVisible=false;
   ['hiraSection','enSection'].forEach(id=>document.getElementById(id).classList.remove('visible'));
   ['btnHira','btnEn','btnAudio'].forEach(id=>document.getElementById(id).classList.remove('active','playing'));
-  if(audioObj){audioObj.pause();audioObj=null;}
+  if(audioObj){audioObj.pause();audioObj=null;} if(window.audioTimer){clearTimeout(window.audioTimer);window.audioTimer=null;} {const _b=document.getElementById('btnAudio'); if(_b){_b.classList.remove('playing'); if(_b.dataset.orig){_b.innerHTML=_b.dataset.orig; delete _b.dataset.orig;}}}
   const card=document.getElementById('card'); card.style.animation='none'; card.offsetHeight; card.style.animation='';
   document.getElementById('cardTag').textContent=`Sentence ${String(current+1).padStart(2,'0')}`;
   document.getElementById('cardKanji').textContent=c.kanji; document.getElementById('cardHira').textContent=c.hira; document.getElementById('cardEn').textContent=c.en;
@@ -219,7 +219,7 @@ function loadCard() {
 }
 function toggleHira(){hiraVisible=!hiraVisible;document.getElementById('hiraSection').classList.toggle('visible',hiraVisible);document.getElementById('btnHira').classList.toggle('active',hiraVisible);}
 function toggleEn(){enVisible=!enVisible;document.getElementById('enSection').classList.toggle('visible',enVisible);document.getElementById('btnEn').classList.toggle('active',enVisible);}
-function playAudio(){ /* REPEAT_V1: 1回目=等速 → 4秒無音 → 2回目=0.8倍速(ピッチ維持) */ const btn=document.getElementById('btnAudio'); if(audioObj){try{audioObj.pause()}catch(e){} if(window.audioTimer){clearTimeout(window.audioTimer);window.audioTimer=null;} audioObj=null;btn.classList.remove('playing');return;} const a=new Audio(cards[current].audio); audioObj=a; try{if('preservesPitch' in a)a.preservesPitch=true; else if('webkitPreservesPitch' in a)a.webkitPreservesPitch=true;}catch(e){} let phase=1; const stop=()=>{btn.classList.remove('playing'); if(window.audioTimer){clearTimeout(window.audioTimer);window.audioTimer=null;} if(audioObj===a)audioObj=null;}; btn.classList.add('playing'); a.onended=()=>{ if(phase===1){ phase=2; window.audioTimer=setTimeout(()=>{ window.audioTimer=null; if(audioObj!==a)return; a.playbackRate=0.8; a.currentTime=0; a.play().catch(stop); },4000); } else { stop(); } }; a.playbackRate=1; a.play().catch(stop); }
+function playAudio(){ /* REPEAT_V2: 等速 → 2秒 → 0.8倍速(ピッチ維持・待機中は🐢0.8x表示) */ const btn=document.getElementById('btnAudio'); const restore=()=>{ if(btn.dataset.orig){btn.innerHTML=btn.dataset.orig; delete btn.dataset.orig;} }; if(audioObj){try{audioObj.pause()}catch(e){} if(window.audioTimer){clearTimeout(window.audioTimer);window.audioTimer=null;} audioObj=null;btn.classList.remove('playing');restore();return;} const a=new Audio(cards[current].audio); audioObj=a; try{if('preservesPitch' in a)a.preservesPitch=true; else if('webkitPreservesPitch' in a)a.webkitPreservesPitch=true;}catch(e){} let phase=1; const stop=()=>{btn.classList.remove('playing'); if(window.audioTimer){clearTimeout(window.audioTimer);window.audioTimer=null;} if(audioObj===a)audioObj=null; restore();}; btn.classList.add('playing'); a.onended=()=>{ if(phase===1){ phase=2; if(!btn.dataset.orig){btn.dataset.orig=btn.innerHTML;} btn.innerHTML='<span class="btn-icon">🐢</span>0.8x'; window.audioTimer=setTimeout(()=>{ window.audioTimer=null; if(audioObj!==a)return; a.playbackRate=0.8; a.currentTime=0; a.play().catch(stop); },2000); } else { stop(); } }; a.playbackRate=1; a.play().catch(stop); }
 function nextCard(){if(current<9){current++;loadCard();}else{document.getElementById('completeScreen').classList.add('show');}}
 function prevCard(){if(current>0){current--;loadCard();}}
 function restart(){current=0;document.getElementById('completeScreen').classList.remove('show');document.getElementById('coverScreen').classList.remove('hide');}
@@ -538,5 +538,27 @@ loadCard();
 .cover-screen{padding-top:max(env(safe-area-inset-top), 16px);padding-bottom:max(env(safe-area-inset-bottom), 16px)}
 .complete-screen{padding-top:max(env(safe-area-inset-top), 14px);padding-bottom:max(env(safe-area-inset-bottom), 14px)}
 </style>
+
+<script id="bgmV1">
+(function(){
+  /* BGM_V2: 常にON。Start Practiceで自動開始・ループ再生。
+     文の音声再生中は自動で音量を下げる（ダッキング） */
+  var BGM_VOL=0.12, DUCK=0.03;
+  var bgm=document.createElement('audio');
+  bgm.src='../adventure/bgm.mp3'; bgm.loop=true; bgm.volume=BGM_VOL; bgm.preload='none';
+  window.__bgm=bgm;
+  var started=false;
+  document.addEventListener('click',function(e){
+    if(started)return;
+    var t=e.target&&e.target.closest?e.target.closest('.btn-start'):null;
+    if(t){ started=true; bgm.play().catch(function(){}); } },true);
+  var OA=window.Audio, act=0;
+  window.Audio=function(src){ var a=(src===undefined)?new OA():new OA(src);
+    a.addEventListener('play',function(){ if(!a.__dk){a.__dk=true;act++;} bgm.volume=DUCK; });
+    var up=function(){ if(a.__dk){a.__dk=false; act=Math.max(0,act-1);} if(act===0)bgm.volume=BGM_VOL; };
+    a.addEventListener('pause',up); a.addEventListener('ended',up);
+    return a; };
+})();
+</script>
 </body>
 </html>

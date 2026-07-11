@@ -108,7 +108,7 @@
     pointer-events:none; background:rgba(255,255,255,.95); border:2px solid var(--sun);
     border-radius:14px; padding:7px 20px 9px; text-align:center; min-width:118px;
     box-shadow:0 6px 18px rgba(19,75,112,.18);
-    position:absolute; left:50%; top:10px; transform:translateX(-50%);
+    position:absolute; left:50%; top:64px; transform:translateX(-50%);
   }
   #promptBox.pop{animation:promptPop .35s ease;}
   @keyframes promptPop{
@@ -146,8 +146,6 @@
   footer a:hover{color:var(--gold);}
   @media (max-width:480px){
     header .sub{display:none;}
-    /* keep score/hearts pills clear of the centered prompt box */
-    #hudRight{margin-top:72px;}
   }
   @media (max-width:400px){
     .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
@@ -326,7 +324,7 @@
   const runner = { y:0, vy:0, onGround:true, bob:0, runCycle:0 };
   const GRAV = 2100;         // px/s^2
   const JUMP_V = -820;       // initial jump velocity
-  const RUNNER_R = 26;       // collision radius
+  const RUNNER_R = 21;       // collision radius
 
   best = parseInt(localStorage.getItem("kanaquest_best")||"0",10) || 0;
 
@@ -372,7 +370,7 @@
     t.correct = (romaji === prompt[1]);
     t.x = VW + 40;
     t.y = high ? (groundY - 118 - Math.random()*36) : (groundY - 34);
-    t.r = 30;
+    t.r = 24;
     t.dead = false;
     t.pop = 0;          // collect animation
     t.spin = Math.random()*Math.PI*2;
