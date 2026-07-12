@@ -7,7 +7,7 @@
  */
 (function () {
   "use strict";
-  window.OHAYO_ANALYTICS = { ga4_id: "", goatcounter: "" };
+  window.OHAYO_ANALYTICS = { ga4_id: "G-6N5RB8PK32", goatcounter: "" };
   var cfg = window.OHAYO_ANALYTICS;
 
   try {
