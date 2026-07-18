@@ -70,6 +70,8 @@
     font-family:Georgia,serif; font-size:30px; margin:0 0 4px; color:var(--ink);
     letter-spacing:.5px;
   }
+  .card .logoImg{ display:block; width:100%; max-width:100%; height:auto; margin:2px auto 4px; }
+  #overChar{ display:block; height:90px; width:auto; margin:0 auto 4px; }
   .card .kicker{font-size:12px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:6px;}
   .card p.how{font-size:13.5px; line-height:1.5; color:var(--sub); margin:12px 0 18px;}
   .modeRow{display:flex; gap:10px; justify-content:center; margin-bottom:18px;}
@@ -116,11 +118,13 @@
     padding:10px 66px 10px 12px; gap:10px; /* right padding clears the fixed ☰ menu */
   }
   #promptBox{
-    pointer-events:none; background:rgba(255,255,255,.82); border:2px solid var(--sun);
-    border-radius:16px; padding:7px 20px 9px; text-align:center; min-width:118px;
-    box-shadow:0 8px 24px rgba(19,75,112,.2);
-    backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
-    position:absolute; left:50%; top:64px; transform:translateX(-50%);
+    pointer-events:none;
+    background:transparent url("img/collect_panel.png") no-repeat center/100% 100%;
+    border:none; box-shadow:none;
+    /* panel art is 800:450 with a sun ornament poking above the top edge —
+       extra top padding keeps the label off the sun & inside the cream face */
+    padding:34px 34px 18px; text-align:center; min-width:170px;
+    position:absolute; left:50%; top:58px; transform:translateX(-50%);
   }
   #promptBox.pop{animation:promptPop .35s ease;}
   @keyframes promptPop{
@@ -132,25 +136,22 @@
   #promptBox .romaji{font-size:34px; font-weight:800; color:var(--navy); line-height:1; font-family:Georgia,serif;}
   #hudRight{display:flex; flex-direction:column; align-items:flex-end; gap:4px; pointer-events:none;}
   .hudPill{
-    background:rgba(255,255,255,.72); border:1px solid rgba(255,255,255,.75); border-radius:20px;
-    padding:3px 11px; font-size:13px; font-weight:700; color:var(--ink);
-    box-shadow:0 2px 10px rgba(19,75,112,.14);
-    backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    background:transparent url("img/score_pill.png") no-repeat center/100% 100%;
+    border:none; box-shadow:none;
+    padding:5px 16px; font-size:13px; font-weight:700; color:var(--ink);
   }
-  #hearts{font-size:15px; letter-spacing:1px;}
+  #hearts{font-size:15px; letter-spacing:1px; line-height:0;}
+  #hearts img{height:14px; vertical-align:middle;}
   #jumpHint{
     position:absolute; bottom:calc(14px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
-    background:radial-gradient(circle at 30% 26%, #FFE993 0%, #FFC93C 48%, #EF9A16 100%);
-    color:var(--ink); border:2px solid rgba(255,255,255,.55); border-radius:50%;
+    background:url("img/jump_button.png") no-repeat center/cover;
+    color:var(--ink); border:none; border-radius:50%;
     width:78px; height:78px; font-size:14px; font-weight:800; cursor:pointer; letter-spacing:.5px;
-    box-shadow:0 6px 0 #CE8D10, 0 14px 28px rgba(240,154,24,.45),
-               inset 0 2px 5px rgba(255,255,255,.65), inset 0 -7px 12px rgba(211,142,16,.5);
-    transition:transform .06s, box-shadow .06s;
+    text-shadow:0 1px 2px rgba(255,255,255,.7);
+    transition:transform .06s;
   }
   #jumpHint:active{
     transform:translateY(4px);
-    box-shadow:0 2px 0 #CE8D10, 0 6px 14px rgba(240,154,24,.35),
-               inset 0 2px 5px rgba(255,255,255,.5), inset 0 -4px 8px rgba(211,142,16,.5);
   }
   #toast{
     position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
@@ -185,7 +186,8 @@
   }
   @media (max-width:400px){
     .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
-    #promptBox{min-width:92px; padding:5px 12px 7px;}
+    /* keep top padding so the label stays clear of the panel's sun ornament */
+    #promptBox{min-width:136px; padding:26px 22px 14px;}
   }
 </style>
 </head>
@@ -209,7 +211,7 @@
       </div>
       <div id="hudRight">
         <div class="hudPill" id="scorePill">0</div>
-        <div class="hudPill" id="hearts">❤️❤️❤️</div>
+        <div class="hudPill" id="hearts"></div>
         <div class="hudPill" id="distPill">Lv 1 · 0m</div>
       </div>
     </div>
@@ -227,7 +229,7 @@
     <div id="startOverlay" class="overlay">
       <div class="card">
         <div class="kicker">OHAYO Nihongo</div>
-        <h1>Kana Quest</h1>
+        <img class="logoImg" src="img/logo_kanaquest.png" alt="Kana Quest">
         <p class="how">Run with the morning sun. <b>Jump</b> to grab the kana that matches the prompt — dodge the wrong ones. Tap / Space to jump.</p>
         <div class="modeRow">
           <button class="modeBtn active" data-mode="hira"><span class="jp">あ</span>Hiragana</button>
@@ -242,6 +244,7 @@
     <div id="overOverlay" class="overlay hidden">
       <div class="card">
         <div class="kicker">Game Over</div>
+        <img id="overChar" src="img/char_front.png" alt="">
         <h1 id="overTitle">おつかれ！</h1>
         <p class="statline">Score<br><b id="finalScore">0</b></p>
         <div class="best" id="finalBest">Best: 0</div>
@@ -398,7 +401,21 @@
   const bgImg = new Image();
   let bgReady = false;
   bgImg.onload = ()=>{ bgReady = true; };
-  bgImg.src = "img/bg_sunrise_hd.png";
+  bgImg.src = "img/bg_sunrise_meadow_hd.jpg";
+
+  // sprite art (RGBA, checker-stripped) — vector shapes are the fallback
+  const charRunImg = new Image();  let charRunReady = false;
+  charRunImg.onload = ()=>{ charRunReady = true; };
+  charRunImg.src = "img/char_run.png";
+  const charJumpImg = new Image(); let charJumpReady = false;
+  charJumpImg.onload = ()=>{ charJumpReady = true; };
+  charJumpImg.src = "img/char_jump.png";
+  const tileImg = new Image();     let tileReady = false;
+  tileImg.onload = ()=>{ tileReady = true; };
+  tileImg.src = "img/tile_block.png";
+  const sparkleImg = new Image();  let sparkleReady = false;
+  sparkleImg.onload = ()=>{ sparkleReady = true; };
+  sparkleImg.src = "img/sparkle.png";
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio||1, 2.5);
@@ -436,6 +453,7 @@
   let bgScroll=0, hillScroll=0, groundScroll=0;
   let toastTimer=0;
   let flashRed=0;
+  let sparkles=[];          // correct-collect sparkle bursts {x,y,t}
 
   // runner physics
   const runner = { y:0, vy:0, onGround:true, bob:0, runCycle:0 };
@@ -499,6 +517,7 @@
     worldSpeed = 210*speedK;
     spawnGap = 1.15; spawnTimer = 0.5;
     entities.length=0;
+    sparkles.length=0;
     runner.y=0; runner.vy=0; runner.onGround=true; runner.bob=0; runner.runCycle=0;
     flashRed=0; toastTimer=0;
     newPrompt();
@@ -507,7 +526,13 @@
 
   function updateHUD(){
     document.getElementById("scorePill").textContent = score;
-    document.getElementById("hearts").textContent = "❤️".repeat(hearts) + "🖤".repeat(3-hearts);
+    // hearts as little img sprites (full / empty)
+    let hh="";
+    for(let i=0;i<3;i++){
+      const src = i<hearts ? "img/heart_full.png" : "img/heart_empty.png";
+      hh += '<img src="'+src+'" alt="" style="height:14px;vertical-align:middle;">';
+    }
+    document.getElementById("hearts").innerHTML = hh;
     document.getElementById("distPill").textContent = "Lv "+level+" · "+Math.floor(distance)+"m";
   }
 
@@ -559,6 +584,7 @@
           score += 10 + Math.floor(level*1.5);
           Sfx.coin();
           showToast("+"+(10+Math.floor(level*1.5)), "#B98F2F");
+          sparkles.push({ x:t.x, y:t.y, t:0 });   // celebratory sparkle burst
           newPrompt();
           // clear other correct-looking tiles? no—just proceed
         } else {
@@ -629,6 +655,14 @@
 
     handleCollisions();
 
+    // sparkles: drift with the world, expire after 0.4s
+    for(let i=sparkles.length-1;i>=0;i--){
+      const sp=sparkles[i];
+      sp.t += dt;
+      sp.x -= worldSpeed*dt;
+      if(sp.t>=0.4) sparkles.splice(i,1);
+    }
+
     if(flashRed>0) flashRed=Math.max(0,flashRed-dt);
     if(toastTimer>0){ toastTimer-=dt; if(toastTimer<=0) document.getElementById("toast").style.opacity="0"; }
 
@@ -639,12 +673,12 @@
   // ======================= RENDER =======================
   function drawSky(){
     if(bgReady){
-      // cover-fit, center-anchored so the rising sun (image center) stays
-      // visible on narrow portrait crops; bottom aligned to the ground line
-      const targetH = groundY + 24;
-      const s = Math.max(VW/bgImg.width, targetH/bgImg.height);
+      // cover-fit the WHOLE canvas, center-anchored — the meadow art already
+      // includes its own grass+soil ground, so we fill the full viewport and
+      // let the illustrated ground land near the bottom naturally
+      const s = Math.max(VW/bgImg.width, VH/bgImg.height);
       const w = bgImg.width*s, h = bgImg.height*s;
-      g.drawImage(bgImg, (VW-w)/2, targetH-h, w, h);
+      g.drawImage(bgImg, (VW-w)/2, (VH-h)/2, w, h);
       return;
     }
     const grad = g.createLinearGradient(0,0,0,VH);
@@ -687,7 +721,16 @@
   }
 
   function drawGround(){
-    // beach ground: warm sand with a pale foam lip
+    if(bgReady){
+      // illustrated meadow already paints its own ground — DON'T draw any fill
+      // or overlay on top of it. Only add the moving dashes for a sense of speed.
+      g.strokeStyle="rgba(255,255,255,0.35)"; g.lineWidth=3; g.lineCap="round";
+      for(let x=-groundScroll; x<VW; x+=48){
+        g.beginPath(); g.moveTo(x, groundY+28); g.lineTo(x+18, groundY+28); g.stroke();
+      }
+      return;
+    }
+    // fallback (procedural sky): beach ground with a pale foam lip
     g.fillStyle="#E3BC6B";
     g.fillRect(0, groundY, VW, VH-groundY);
     // foam / dry-sand lip (wave-like)
@@ -705,25 +748,40 @@
     }
   }
 
-  // OHAYO sun mascot — rising-sun semicircle over navy waves, little face
+  // OHAYO sun mascot — sprite (char_run grounded / char_jump airborne),
+  // with a vector fallback for when the art hasn't loaded yet.
   function drawMascot(cx, cy){
     const r=RUNNER_R;
-    g.save();
-    g.translate(cx, cy);
-    // subtle run-lean
-    g.rotate(runner.onGround ? 0 : -0.12);
 
-    // shadow on ground
-    g.restore();
-    g.save();
+    // ground shadow (kept for both sprite + vector)
     const shY = groundY + 6;
     const shScale = 1 - Math.min(0.6, (-runner.y)/220);
+    g.save();
     g.fillStyle="rgba(19,75,112,0.22)";
     g.beginPath();
     g.ellipse(cx, shY, r*0.9*shScale, r*0.32*shScale, 0,0,7);
     g.fill();
     g.restore();
 
+    // ---- sprite path ----
+    const sprite = runner.onGround ? charRunImg : charJumpImg;
+    const ready  = runner.onGround ? charRunReady : charJumpReady;
+    if(ready){
+      const h = 2.6*r;
+      const w = h * (sprite.width/sprite.height);
+      g.save();
+      g.translate(cx, cy);
+      if(runner.onGround){
+        g.rotate(Math.sin(runner.runCycle)*0.04);   // gentle run sway
+      } else {
+        g.rotate(-0.12);                             // airborne lean
+      }
+      g.drawImage(sprite, -w/2, -h/2, w, h);
+      g.restore();
+      return;
+    }
+
+    // ---- vector fallback ----
     g.save();
     g.translate(cx, cy);
     g.rotate(runner.onGround ? Math.sin(runner.runCycle)*0.04 : -0.1);
@@ -797,25 +855,30 @@
     else { sc = 1 + Math.sin(t.spin)*0.03; }
     g.scale(sc,sc);
 
-    // tile card — modern: soft drop shadow + subtle gradient + glossy top
     const r=t.r;
-    g.shadowColor="rgba(19,75,112,0.28)"; g.shadowBlur=12; g.shadowOffsetY=5;
-    const cardGrad=g.createLinearGradient(0,-r,0,r);
-    cardGrad.addColorStop(0,"#FFFFFF");
-    cardGrad.addColorStop(1,"#F0EBDF");
-    g.fillStyle=cardGrad;
-    roundRect(-r, -r, r*2, r*2, 14);
-    g.fill();
-    g.shadowColor="transparent"; g.shadowBlur=0; g.shadowOffsetY=0;
-    // hairline edge
-    g.strokeStyle="rgba(28,28,28,0.08)"; g.lineWidth=1.5;
-    roundRect(-r, -r, r*2, r*2, 14); g.stroke();
-    // glossy top sheen
-    const gloss=g.createLinearGradient(0,-r,0,-r*0.1);
-    gloss.addColorStop(0,"rgba(255,255,255,0.85)");
-    gloss.addColorStop(1,"rgba(255,255,255,0)");
-    g.fillStyle=gloss;
-    roundRect(-r+3, -r+3, r*2-6, r*0.95, 10); g.fill();
+    if(tileReady){
+      // illustrated block sprite (2r × 2r, centered)
+      g.drawImage(tileImg, -r, -r, r*2, r*2);
+    } else {
+      // ---- vector fallback: modern card w/ shadow, gradient, gloss ----
+      g.shadowColor="rgba(19,75,112,0.28)"; g.shadowBlur=12; g.shadowOffsetY=5;
+      const cardGrad=g.createLinearGradient(0,-r,0,r);
+      cardGrad.addColorStop(0,"#FFFFFF");
+      cardGrad.addColorStop(1,"#F0EBDF");
+      g.fillStyle=cardGrad;
+      roundRect(-r, -r, r*2, r*2, 14);
+      g.fill();
+      g.shadowColor="transparent"; g.shadowBlur=0; g.shadowOffsetY=0;
+      // hairline edge
+      g.strokeStyle="rgba(28,28,28,0.08)"; g.lineWidth=1.5;
+      roundRect(-r, -r, r*2, r*2, 14); g.stroke();
+      // glossy top sheen
+      const gloss=g.createLinearGradient(0,-r,0,-r*0.1);
+      gloss.addColorStop(0,"rgba(255,255,255,0.85)");
+      gloss.addColorStop(1,"rgba(255,255,255,0)");
+      g.fillStyle=gloss;
+      roundRect(-r+3, -r+3, r*2-6, r*0.95, 10); g.fill();
+    }
 
     // kana glyph
     g.fillStyle = "#1C1C1C";
@@ -847,6 +910,21 @@
     // mascot
     const cy = groundY - RUNNER_R + runner.y + runner.bob;
     drawMascot(runnerX, cy);
+
+    // correct-collect sparkles (on top): grow 1→1.6, fade out over 0.4s
+    if(sparkleReady){
+      for(const sp of sparkles){
+        const p = Math.min(1, sp.t/0.4);
+        const sc = 1 + p*0.6;
+        const size = 56;
+        g.save();
+        g.globalAlpha = Math.max(0, 1 - p);
+        g.translate(sp.x, sp.y);
+        g.scale(sc, sc);
+        g.drawImage(sparkleImg, -size/2, -size/2, size, size);
+        g.restore();
+      }
+    }
 
     // damage flash
     if(flashRed>0){
@@ -887,6 +965,7 @@
     Sfx.stopBgm();
     const newBest = score > best && score > 0;
     if(newBest) Sfx.win(); else Sfx.lose();
+    document.getElementById("overChar").src = newBest ? "img/char_yatta.png" : "img/char_front.png";
     document.getElementById("overTitle").textContent = newBest ? "すごい！ New Best!" : "おつかれ！";
     if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
     document.getElementById("finalScore").textContent = score;
