@@ -23,7 +23,7 @@
 <meta charset="utf-8">
 <title>Kana Quest · OHAYO NIHONGO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎴</text></svg>">
+<link rel="icon" type="image/png" href="img/char_front.png">
 <style>
   :root{
     --cream:#FAF7F1; --paper:#FFF; --ink:#1C1C1C; --sub:#4A4A4A; --line:#DFD7C9;
@@ -194,10 +194,10 @@
 <body>
 <div id="wrap">
   <header>
-    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">☀️ OHAYO NIHONGO</a>
+    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><img src="img/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO NIHONGO</a>
     <span class="sub">Kana Quest · Free game (beta)</span>
     <span class="spacer"></span>
-    <button id="muteBtn" aria-label="Toggle sound">🔊</button>
+    <button id="muteBtn" aria-label="Toggle sound"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   </header>
 
   <div id="stage">
@@ -220,7 +220,7 @@
 
     <!-- rotate-to-portrait notice (landscape phones) -->
     <div id="rotateOverlay">
-      <div>📱 Please rotate your phone<br>
+      <div>Please rotate your phone<br>
         <span class="sub">縦向きでプレイしてね — the game is paused</span>
       </div>
     </div>
@@ -235,7 +235,7 @@
           <button class="modeBtn active" data-mode="hira"><span class="jp">あ</span>Hiragana</button>
           <button class="modeBtn" data-mode="kata"><span class="jp">ア</span>Katakana</button>
         </div>
-        <button class="cta" id="startBtn">START ☀️</button>
+        <button class="cta" id="startBtn">START</button>
         <div class="best" id="startBest"></div>
       </div>
     </div>
@@ -250,7 +250,7 @@
         <div class="best" id="finalBest">Best: 0</div>
         <button class="cta" id="replayBtn" style="margin-top:18px;">PLAY AGAIN</button>
         <a class="cta2" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">
-          PLAY TOMORROW ☀️<span class="sub2">また明日 — practice every morning</span>
+          PLAY TOMORROW<span class="sub2">また明日 — practice every morning</span>
         </a>
         <div class="share" id="shareLine">Tap to copy your score line</div>
       </div>
@@ -469,8 +469,6 @@
   // Progressive unlock: gojūon rows open up as the level rises.
   // HIRA/KATA are ordered by row; these are the cumulative end indices.
   const ROW_ENDS  = [5,10,15,20,25,30,35,38,43,46]; // あ か さ た な は ま や ら わをん
-  const ROW_HIRA  = ["あ","か","さ","た","な","は","ま","や","ら","わ"];
-  const ROW_KATA  = ["ア","カ","サ","タ","ナ","ハ","マ","ヤ","ラ","ワ"];
   function rowsUnlocked(lv){ return Math.min(ROW_ENDS.length, lv+1); } // Lv1 = あ+か行
   function activeDeck(){ return deck.slice(0, ROW_ENDS[rowsUnlocked(level)-1]); }
 
@@ -591,7 +589,7 @@
           hearts--;
           flashRed=0.35;
           Sfx.hit();
-          showToast("−♥", "#C0392B");
+          showToast("MISS!", "#C0392B");
           if(hearts<=0){ gameOver(); }
         }
         t.dead=true; t.pop=0.001;   // trigger pop anim then recycle
@@ -612,13 +610,8 @@
     distance += worldSpeed*dt/42;   // ~ meters
     const newLevel = 1 + Math.floor(distance/60);
     if(newLevel!==level){
-      const prevRows = rowsUnlocked(level);
       level = newLevel;
-      const nowRows = rowsUnlocked(level);
-      if(nowRows > prevRows){
-        const names = (mode==="kata") ? ROW_KATA : ROW_HIRA;
-        showToast("＋"+names[nowRows-1]+"行!", "#134B70");
-      }
+      showToast("LEVEL "+level+"!", "#B98F2F");
       updateHUD();
     }
     worldSpeed = (210 + Math.min(260, distance*1.1)) * speedK;
@@ -970,7 +963,7 @@
     if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
     document.getElementById("finalScore").textContent = score;
     document.getElementById("finalBest").textContent = "Best: "+best;
-    const line = "I scored "+score+" in Kana Quest 🎴☀️ — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
+    const line = "I scored "+score+" in Kana Quest — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
     const shareEl=document.getElementById("shareLine");
     shareEl.innerHTML = "<b>Share:</b> "+line;
     document.getElementById("hud").classList.add("hidden");
@@ -993,7 +986,7 @@
 
   // share copy
   document.getElementById("shareLine").addEventListener("click",()=>{
-    const line = "I scored "+score+" in Kana Quest 🎴☀️ — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
+    const line = "I scored "+score+" in Kana Quest — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
     if(navigator.clipboard){ navigator.clipboard.writeText(line).then(()=>{
       const el=document.getElementById("shareLine");
       const old=el.innerHTML; el.innerHTML="<b>Copied! ✔</b>";
@@ -1006,7 +999,9 @@
   muteBtn.addEventListener("click",(e)=>{
     e.stopPropagation();
     const m=!Sfx.isMuted(); Sfx.setMuted(m);
-    muteBtn.textContent = m ? "🔇" : "🔊";
+    muteBtn.innerHTML = m
+      ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>'
+      : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>';
   });
 
   // show best on start
