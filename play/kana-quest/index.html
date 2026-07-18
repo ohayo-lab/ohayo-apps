@@ -959,8 +959,14 @@
     Sfx.stopBgm();
     const newBest = score > best && score > 0;
     if(newBest) Sfx.win(); else Sfx.lose();
-    document.getElementById("overChar").src = newBest ? "img/sticker_sugoi.png" : "img/sticker_otsukare.png";
-    document.getElementById("overTitle").textContent = newBest ? "New Best!" : "";
+    // sticker + title tiers: new best > zero score > near best > default
+    let overStk, overTitle;
+    if(newBest){                      overStk="sticker_sugoi.png";    overTitle="New Best!"; }
+    else if(score===0){               overStk="sticker_ganbatte.png"; overTitle=""; }
+    else if(best>0 && score>=best*0.8){ overStk="sticker_iine.png";   overTitle="So close!"; }
+    else{                             overStk="sticker_otsukare.png"; overTitle=""; }
+    document.getElementById("overChar").src = "img/"+overStk;
+    document.getElementById("overTitle").textContent = overTitle;
     if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
     document.getElementById("finalScore").textContent = score;
     document.getElementById("finalBest").textContent = "Best: "+best;
