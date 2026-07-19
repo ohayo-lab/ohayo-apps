@@ -24,9 +24,9 @@
   MODES:
   - Hiragana : hiragana tiles, hiragana column labels.
   - Katakana : katakana tiles, katakana column labels.
-  - Mixed    : a HIRAGANA tile falls, but the 5 columns show KATAKANA.
-               Match the hiragana tile's vowel to the katakana vowel column
-               (ひらがな→カタカナ correspondence training).
+  - Mixed    : hiragana and katakana tiles fall together (50/50 random);
+               columns are labeled by romaji vowels, so both scripts are
+               trained against the same a/i/u/e/o targets.
 
   ん HANDLING: ん (moraic n) has no vowel, so it is EXCLUDED from the tile pool
   entirely. Only kana that map cleanly to a/i/u/e/o are ever spawned.
@@ -72,33 +72,51 @@ header{display:flex;align-items:center;justify-content:space-between;gap:8px;pad
   border-radius:14px;box-shadow:0 6px 18px rgba(28,28,28,.06);overflow:hidden;
   display:flex;flex-direction:column;min-height:0;}
 
-/* HUD */
-.hud{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;
-  border-bottom:1px solid var(--line);font-size:12px;color:var(--sub);gap:6px;flex-wrap:wrap;}
-.hud b{color:var(--ink);font-size:16px;font-variant-numeric:tabular-nums;}
-.hud .cell{display:flex;flex-direction:column;align-items:center;line-height:1.15;}
+/* HUD — floating pills over the game background */
+.hud{position:absolute;top:0;left:0;right:0;z-index:3;pointer-events:none;
+  display:flex;justify-content:space-between;align-items:flex-start;padding:8px 8px;gap:6px;}
+.hud .cell{display:flex;flex-direction:column;align-items:center;line-height:1.05;
+  background:rgba(255,251,240,.86);border:1.5px solid var(--navy);border-radius:14px;
+  padding:4px 12px;min-width:58px;box-shadow:0 2px 6px rgba(19,75,112,.18);}
+.hud .cell span{font-size:10px;letter-spacing:.5px;color:var(--navy);font-weight:700;opacity:.75;}
+.hud b{color:var(--navy);font-size:17px;font-weight:800;font-variant-numeric:tabular-nums;}
 .hud .streak b{color:var(--sun-deep);}
 
 canvas{display:block;flex:1;width:100%;touch-action:none;min-height:0;}
 
-/* overlays */
-.overlay{position:absolute;inset:0;background:rgba(250,247,241,.94);
+/* overlays — transparent so the canvas (bg / final board) shows through */
+.overlay{position:absolute;inset:0;background:transparent;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:22px;z-index:5;}
+  text-align:center;padding:16px;z-index:5;}
 .overlay.hidden{display:none;}
+/* white floating card that holds overlay content */
+.card{background:rgba(255,255,255,.95);border:1.5px solid var(--navy);border-radius:16px;
+  padding:20px 18px;width:100%;max-width:320px;
+  display:flex;flex-direction:column;align-items:center;
+  box-shadow:0 8px 24px rgba(19,75,112,.28);}
 .overlay h1{font-size:40px;margin:0 0 2px;color:var(--ink);letter-spacing:.5px;}
 .overlay .tag{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:12px;text-transform:uppercase;margin-bottom:14px;}
 .overlay p.how{color:var(--sub);font-size:13px;max-width:300px;margin:0 0 20px;line-height:1.5;}
 .modes{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;}
-.btn{font-family:inherit;font-size:16px;font-weight:700;border-radius:12px;padding:14px 18px;
-  cursor:pointer;border:1px solid var(--line);background:var(--paper);color:var(--ink);
-  transition:transform .05s ease;}
-.btn:active{transform:translateY(1px);}
-.btn.primary{background:var(--yellow);border-color:#E7B531;color:#3a2e08;box-shadow:0 4px 0 #E7B531;}
-.btn.primary:active{box-shadow:0 1px 0 #E7B531;transform:translateY(3px);}
-.btn.sub{font-size:14px;font-weight:600;color:var(--navy);background:var(--paper);}
+.btn{font-family:inherit;font-size:16px;font-weight:800;border-radius:14px;padding:14px 18px;
+  cursor:pointer;border:2px solid var(--navy);background:#FFFDF7;color:var(--navy);
+  transition:transform .05s ease,box-shadow .05s ease;box-shadow:0 4px 0 var(--navy);}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--navy);}
+.btn.primary{background:var(--yellow);border-color:var(--navy);color:#3a2e08;box-shadow:0 4px 0 var(--navy);}
+.btn.primary:active{box-shadow:0 1px 0 var(--navy);}
+.btn.sub{font-size:14px;font-weight:700;color:var(--navy);background:#FFFDF7;}
+.btn:disabled{opacity:.45;cursor:default;box-shadow:0 4px 0 rgba(19,75,112,.4);}
+.btn:disabled:active{transform:none;box-shadow:0 4px 0 rgba(19,75,112,.4);}
 .modehint{font-size:11px;color:var(--sub);margin-top:2px;}
 .gover h1{color:var(--sun-deep);}
+/* overlay art */
+.ovlogo{width:80%;max-width:280px;height:auto;margin:0 0 6px;display:block;
+  filter:drop-shadow(0 3px 6px rgba(19,75,112,.22));}
+.mascot{height:90px;width:auto;margin:0 0 10px;display:block;}
+/* game-over sticker (KANA Quest parity: the sticker itself carries the message) */
+.stamp{height:130px;width:auto;margin:2px 0 6px;display:block;}
+.overtitle{color:var(--sun-deep);font-weight:800;font-size:26px;margin:0 0 4px;letter-spacing:.5px;}
+.overtitle:empty{display:none;}
 .scoreline{font-size:15px;color:var(--sub);margin:2px 0 4px;}
 .scoreline b{color:var(--ink);font-size:30px;font-family:Georgia,serif;}
 .best{font-size:13px;color:var(--gold);margin-bottom:18px;}
@@ -128,29 +146,34 @@ footer a{color:var(--sub);border-bottom:1px solid var(--line);}
 
     <!-- START -->
     <div class="overlay" id="startScreen">
-      <div class="tag">五十音 · Gojūon</div>
-      <h1 class="serif">Kana Drop</h1>
-      <p class="how">Route each falling kana into the column of its <b>vowel</b> sound — tap a column, or use ← → and A/I/U/E/O.</p>
-      <div class="modes">
-        <button class="btn primary" data-mode="hira">ひらがな Hiragana</button>
-        <button class="btn sub" data-mode="kata">カタカナ Katakana</button>
-        <button class="btn sub" data-mode="mixed">Mixed かな→カナ</button>
-        <div class="modehint">Mixed: hiragana tile falls, columns show katakana.</div>
+      <div class="card">
+        <img class="ovlogo" src="img/logo_kanadrop.png" alt="Kana Drop">
+        <img class="mascot" src="img/char_front.png" alt="">
+        <p class="how">Route each falling kana into the column of its <b>vowel</b> sound — tap a column, or use ← → and A/I/U/E/O.</p>
+        <div class="modes">
+          <button class="btn primary" data-mode="hira">ひらがな Hiragana</button>
+          <button class="btn sub" data-mode="kata">カタカナ Katakana</button>
+          <button class="btn sub" data-mode="mixed">Mixed かな＋カナ</button>
+          <div class="modehint">Mixed: hiragana &amp; katakana tiles fall together.</div>
+        </div>
       </div>
     </div>
 
     <!-- GAME OVER -->
     <div class="overlay gover hidden" id="overScreen">
-      <div class="tag">Game Over</div>
-      <h1 class="serif">おつかれ！</h1>
-      <div class="scoreline">Score <b id="finalScore">0</b></div>
-      <div class="best" id="bestLine">Best 0</div>
-      <div class="modes">
-        <button class="btn primary" id="againBtn">Play again</button>
-        <button class="btn sub" id="shareBtn">Share your score</button>
-        <button class="btn sub" id="menuBtn">Change mode</button>
+      <div class="card">
+        <div class="tag">Game Over</div>
+        <img class="stamp" id="overStk" src="img/sticker_otsukare.png" alt="">
+        <div class="overtitle" id="overTitle"></div>
+        <div class="scoreline">Score <b id="finalScore">0</b></div>
+        <div class="best" id="bestLine">Best 0</div>
+        <div class="modes">
+          <button class="btn primary" id="againBtn">Play again</button>
+          <button class="btn sub" id="shareBtn">Share your score</button>
+          <button class="btn sub" id="menuBtn">Change mode</button>
+        </div>
+        <div class="copied" id="copiedMsg"></div>
       </div>
-      <div class="copied" id="copiedMsg"></div>
     </div>
   </div>
 
@@ -220,6 +243,7 @@ const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
 let W=0,H=0,DPR=1;
 const COLS=5;
 let colW=0, cellH=0, rowsMax=0, labelH=0;
+let playW=0, playX0=0;   // play field is squeezed to the center so the bg art stays visible
 
 function resize(){
   const r=cv.getBoundingClientRect();
@@ -227,12 +251,36 @@ function resize(){
   W=Math.max(200,r.width); H=Math.max(200,r.height);
   cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  colW=W/COLS;
-  labelH=Math.max(46,Math.min(64,H*0.11));
+  playW=W*0.76; playX0=(W-playW)/2;
+  colW=playW/COLS;
+  labelH=Math.max(64,Math.min(88,H*0.15));
   cellH=Math.min(colW*0.9, (H-labelH)/6.2);
   rowsMax=Math.floor((H-labelH)/cellH);
 }
-window.addEventListener('resize',resize);
+window.addEventListener('resize',()=>{ resize(); if(!running && imgReady) render(); });
+
+/* ---------- Image assets ---------- */
+const IMG={};
+const IMG_SRC={
+  bg:'img/bg_main.png', tile:'img/tile_block.png', tileWrong:'img/tile_block_wrong.png',
+  label:'img/label_panel.png', labelActive:'img/label_panel_active.png',
+  logo:'img/logo_kanadrop.png', charFront:'img/char_front.png',
+  sparkle:'img/sparkle.png',
+  // game-over stickers: kept here as full literal paths so they preload AND
+  // survive the base64-inlining pass used for the self-contained preview build
+  stkSugoi:'img/sticker_sugoi.png', stkGanbatte:'img/sticker_ganbatte.png',
+  stkIine:'img/sticker_iine.png', stkOtsukare:'img/sticker_otsukare.png'
+};
+let imgReady=false;
+function ok(im){ return im && im.complete && im.naturalWidth>0; }
+function preload(done){
+  const keys=Object.keys(IMG_SRC); let n=0;
+  keys.forEach(k=>{
+    const im=new Image(); IMG[k]=im;
+    const fin=()=>{ if(++n>=keys.length){ imgReady=true; done&&done(); } };
+    im.onload=fin; im.onerror=fin; im.src=IMG_SRC[k];
+  });
+}
 
 /* ---------- Audio ---------- */
 let AC=null, muted=false;
@@ -253,7 +301,7 @@ function sndOver(){ [392,330,262].forEach((f,i)=>setTimeout(()=>blip(f,0.3,'sine
 
 /* ---------- Game state ---------- */
 let mode='hira';
-let grid;              // grid[col] = array of {char,ok,pop} bottom-up
+let grid=[[],[],[],[],[]]; // grid[col] = array of {char,ok,pop} bottom-up (empty so idle render is safe)
 let cur=null;          // falling tile
 let curCol=2;
 let fallY=0, fallSpeed=0;
@@ -274,8 +322,11 @@ function pickTile(){
   const allow=allowedHira(level);
   const pool=KANA.filter(x=>allow.has(x.h));
   const t=pool[(Math.random()*pool.length)|0];
-  // Displayed char: hira/mixed -> hiragana glyph, kata -> katakana glyph
-  const disp = (mode==='kata') ? t.k : t.h;
+  // Displayed char: hira -> hiragana, kata -> katakana,
+  // mixed -> hiragana OR katakana at random (50/50)
+  const disp = (mode==='kata') ? t.k
+             : (mode==='mixed') ? (Math.random()<0.5 ? t.h : t.k)
+             : t.h;
   return {char:disp, v:t.v};
 }
 function speedForLevel(l){ return (H*0.28) * (1 + (l-1)*0.18); } // px per second
@@ -283,14 +334,14 @@ function speedForLevel(l){ return (H*0.28) * (1 + (l-1)*0.18); } // px per secon
 function spawn(){
   cur=pickTile();
   curCol=2;
-  fallY=labelH*0.2;
+  fallY=labelH*0.5; // start below the HUD pills so the tile never spawns behind SCORE
   fallSpeed=speedForLevel(level);
 }
 
 function stackHeight(c){ return grid[c].length; }
-function topYofCol(c){ return H - stackHeight(c)*cellH; }
+function topYofCol(c){ return (H-labelH) - stackHeight(c)*cellH; }
 
-function tileCenterX(c){ return c*colW+colW/2; }
+function tileCenterX(c){ return playX0+c*colW+colW/2; }
 
 function lockTile(){
   const c=curCol;
@@ -299,7 +350,7 @@ function lockTile(){
   grid[c].push({char:cur.char, ok:ok, pop:1});
   const row=grid[c].length-1;
   popAnims.push({col:c,row:row,t:0});
-  spawnParticles(tileCenterX(c), H-(row+0.5)*cellH, ok);
+  spawnParticles(tileCenterX(c), (H-labelH)-(row+0.5)*cellH, ok);
   flash={t:0.35,col:c,good:ok};
 
   if(ok){
@@ -343,6 +394,7 @@ function checkLineClear(){
     score += cleared*40;
     sndClear();
     flash={t:0.5,col:-1,good:true};
+    spawnSparkles();
     updateHUD();
   }
 }
@@ -352,6 +404,17 @@ function spawnParticles(x,y,good){
   for(let i=0;i<14;i++){
     const a=Math.random()*Math.PI*2, sp=40+Math.random()*120;
     particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-40,life:1,col:col});
+  }
+}
+function spawnSparkles(){
+  if(!ok(IMG.sparkle)){ // fallback: extra gold burst spread across the field
+    for(let i=0;i<12;i++) spawnParticles(Math.random()*W,(H-labelH)*(0.15+Math.random()*0.6),true);
+    return;
+  }
+  for(let i=0;i<12;i++){
+    const x=Math.random()*W, y=(H-labelH)*(0.15+Math.random()*0.6);
+    const a=Math.random()*Math.PI*2, sp=30+Math.random()*100;
+    particles.push({x,y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-70,life:1,img:true,size:16+Math.random()*20});
   }
 }
 
@@ -381,32 +444,45 @@ function step(t){
   animId=requestAnimationFrame(step);
 }
 
+function drawBg(){
+  const im=IMG.bg;
+  if(ok(im)){
+    const iw=im.naturalWidth, ih=im.naturalHeight;
+    const s=Math.max(W/iw,H/ih); const dw=iw*s, dh=ih*s;
+    ctx.drawImage(im,(W-dw)/2,(H-dh)/2,dw,dh);
+  } else {
+    ctx.fillStyle='#2b4d6e'; ctx.fillRect(0,0,W,H);
+  }
+}
 function render(){
   ctx.clearRect(0,0,W,H);
-  // background column guides
-  for(let c=0;c<COLS;c++){
-    ctx.fillStyle = (c%2===0)?'rgba(223,215,201,.14)':'rgba(223,215,201,.05)';
-    ctx.fillRect(c*colW,0,colW,H-labelH);
-    ctx.strokeStyle='rgba(223,215,201,.6)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(c*colW+.5,0); ctx.lineTo(c*colW+.5,H-labelH); ctx.stroke();
+  drawBg();
+  // subtle column separators
+  for(let c=1;c<COLS;c++){
+    ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(playX0+c*colW+.5,0); ctx.lineTo(playX0+c*colW+.5,H-labelH); ctx.stroke();
   }
   // flash highlight
   if(flash.t>0 && flash.col>=0){
     ctx.fillStyle = flash.good?'rgba(247,169,40,'+(flash.t*0.5)+')':'rgba(198,90,74,'+(flash.t*0.5)+')';
-    ctx.fillRect(flash.col*colW,0,colW,H-labelH);
+    ctx.fillRect(playX0+flash.col*colW,0,colW,H-labelH);
   } else if(flash.t>0 && flash.col<0){
     ctx.fillStyle='rgba(255,201,60,'+(flash.t*0.35)+')';
-    ctx.fillRect(0,0,W,H-labelH);
+    ctx.fillRect(playX0,0,playW,H-labelH);
   }
+
+  // tile draw size: final on-screen width (incl. the 1.16 padding compensation)
+  // lands at ~72% of the column width, leaving side gutters
+  const tsize=Math.min(cellH*0.9, colW*0.62);
 
   // stacked tiles
   for(let c=0;c<COLS;c++){
     for(let r=0;r<grid[c].length;r++){
-      const cellY=H-(r+1)*cellH;
+      const cellY=(H-labelH)-(r+1)*cellH;
       const cell=grid[c][r];
       let sc=1;
       for(const pa of popAnims){ if(pa.col===c&&pa.row===r){ sc=1+Math.sin(Math.min(pa.t,1)*Math.PI)*0.16; } }
-      drawTile(tileCenterX(c),cellY+cellH/2,cellH*0.86,cell.char,cell.ok?'good':'bad',sc);
+      drawTile(tileCenterX(c),cellY+cellH/2,tsize,cell.char,cell.ok?'good':'bad',sc);
     }
   }
 
@@ -415,17 +491,22 @@ function render(){
     const x=tileCenterX(curCol);
     // ghost drop indicator
     const gy=topYofCol(curCol)-cellH/2;
-    ctx.globalAlpha=0.18;
-    drawTile(x,gy,cellH*0.86,cur.char,'ghost',1);
+    ctx.globalAlpha=0.25;
+    drawTile(x,gy,tsize,cur.char,'ghost',1);
     ctx.globalAlpha=1;
-    drawTile(x,fallY+cellH/2,cellH*0.86,cur.char,'fall',1);
+    drawTile(x,fallY+cellH/2,tsize,cur.char,'fall',1);
   }
 
   // particles
   for(const p of particles){
     ctx.globalAlpha=Math.max(0,p.life);
-    ctx.fillStyle=p.col;
-    ctx.beginPath(); ctx.arc(p.x,p.y,3.2,0,Math.PI*2); ctx.fill();
+    if(p.img && ok(IMG.sparkle)){
+      const sz=p.size||18;
+      ctx.drawImage(IMG.sparkle,p.x-sz/2,p.y-sz/2,sz,sz);
+    } else {
+      ctx.fillStyle=p.col||'#F7A928';
+      ctx.beginPath(); ctx.arc(p.x,p.y,3.2,0,Math.PI*2); ctx.fill();
+    }
   }
   ctx.globalAlpha=1;
 
@@ -434,21 +515,31 @@ function render(){
 
 function drawTile(cx,cy,size,char,kind,scale){
   const s=size*(scale||1);
-  const x=cx-s/2, y=cy-s/2, rad=Math.min(14,s*0.2);
-  let fill='#FFFFFF', stroke='#DFD7C9', txt='#1C1C1C';
-  if(kind==='good'){ fill='#FFFFFF'; stroke='#E3D9C2'; txt='#1C1C1C'; }
-  if(kind==='bad'){ fill='#F7E6E2'; stroke='#E1B4AC'; txt='#B4503F'; }
-  if(kind==='fall'){ fill='#134B70'; stroke='#0d3a58'; txt='#FFFFFF'; }
-  if(kind==='ghost'){ fill='#134B70'; stroke='#134B70'; txt='#134B70'; }
-  ctx.beginPath();
-  rr(x,y,s,s,rad); ctx.fillStyle=fill; ctx.fill();
-  ctx.lineWidth=1.4; ctx.strokeStyle=stroke; ctx.stroke();
-  if(kind==='fall'){ // gold underline accent
-    ctx.strokeStyle='#B98F2F'; ctx.lineWidth=2;
-    ctx.beginPath(); ctx.moveTo(x+s*0.28,y+s*0.86); ctx.lineTo(x+s*0.72,y+s*0.86); ctx.stroke();
+  const im = (kind==='bad') ? IMG.tileWrong : IMG.tile;   // fall/good/ghost -> cream tile
+  const txt = (kind==='bad') ? '#7A2E22' : '#1C2A44';
+  if(ok(im)){
+    const d=s*1.16; // compensate for the image's transparent padding so the frame fills the cell
+    if(kind==='fall'){
+      ctx.save();
+      ctx.shadowColor='rgba(19,75,112,.4)'; ctx.shadowBlur=12; ctx.shadowOffsetY=4;
+      ctx.drawImage(im,cx-d/2,cy-d/2,d,d);
+      ctx.restore();
+    } else {
+      ctx.drawImage(im,cx-d/2,cy-d/2,d,d);
+    }
+    ctx.fillStyle=txt;
+  } else {
+    // vector fallback (original look)
+    const x=cx-s/2, y=cy-s/2, rad=Math.min(14,s*0.2);
+    let fill='#FFFFFF', stroke='#E3D9C2', ftxt='#1C1C1C';
+    if(kind==='bad'){ fill='#F7E6E2'; stroke='#E1B4AC'; ftxt='#B4503F'; }
+    if(kind==='fall'){ fill='#134B70'; stroke='#0d3a58'; ftxt='#FFFFFF'; }
+    if(kind==='ghost'){ fill='#134B70'; stroke='#134B70'; ftxt='#134B70'; }
+    ctx.beginPath(); rr(x,y,s,s,rad); ctx.fillStyle=fill; ctx.fill();
+    ctx.lineWidth=1.6; ctx.strokeStyle=stroke; ctx.stroke();
+    ctx.fillStyle=ftxt;
   }
-  ctx.fillStyle=txt;
-  ctx.font='700 '+Math.round(s*0.58)+"px 'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif";
+  ctx.font='800 '+Math.round(s*0.54)+"px 'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif";
   ctx.textAlign='center'; ctx.textBaseline='middle';
   ctx.fillText(char,cx,cy+s*0.02);
 }
@@ -458,25 +549,27 @@ function rr(x,y,w,h,r){
 }
 
 function drawLabels(){
-  const y0=H-labelH;
-  ctx.fillStyle='#FAF7F1'; ctx.fillRect(0,y0,W,labelH);
-  ctx.strokeStyle='#DFD7C9'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(0,y0+.5); ctx.lineTo(W,y0+.5); ctx.stroke();
+  const y0=H-labelH, cyBand=y0+labelH/2;
   const labels = (mode==='kata'||mode==='mixed') ? VLABEL.kata : VLABEL.hira;
   for(let c=0;c<COLS;c++){
     const cx=tileCenterX(c);
     const active = cur && curCol===c;
-    if(active){
-      ctx.fillStyle='#FFC93C';
-      ctx.beginPath(); rr(c*colW+6,y0+6,colW-12,labelH-12,10); ctx.fill();
+    // panel: full column width; allow mild vertical stretch (up to ~1.6:1)
+    // so the plate fills the taller label band and both text lines fit inside
+    let pw=colW*0.97, ph=Math.min(labelH*0.92, pw*0.62);
+    const im = active ? IMG.labelActive : IMG.label;
+    if(ok(im)){
+      ctx.drawImage(im,cx-pw/2,cyBand-ph/2,pw,ph);
+    } else {
+      ctx.fillStyle=active?'#FFC93C':'#FAF7F1';
+      ctx.beginPath(); rr(cx-pw/2,cyBand-ph/2,pw,ph,10); ctx.fill();
+      ctx.strokeStyle=active?'#F08114':'#DFD7C9'; ctx.lineWidth=2; ctx.stroke();
     }
-    ctx.fillStyle=active?'#3a2e08':'#134B70';
-    ctx.font='700 '+Math.round(labelH*0.42)+"px 'Hiragino Sans','Noto Sans JP',sans-serif";
+    // single label: lowercase romaji, vertically centered on the plate
+    ctx.fillStyle=active?'#5b3a12':'#134B70';
+    ctx.font='800 '+Math.round(ph*0.52)+"px system-ui,sans-serif";
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(labels[VOWELS[c]],cx,y0+labelH*0.42);
-    ctx.fillStyle=active?'#6b5410':'#4A4A4A';
-    ctx.font='700 '+Math.round(labelH*0.2)+"px system-ui,sans-serif";
-    ctx.fillText(VOWELS[c],cx,y0+labelH*0.8);
+    ctx.fillText(VOWELS[c],cx,cyBand+ph*0.02);
   }
 }
 
@@ -498,7 +591,7 @@ function hardDrop(){
 let touchX0=null, touchMoved=false, touchColStart=2;
 function colFromX(px){
   const r=cv.getBoundingClientRect();
-  const x=px-r.left;
+  const x=px-r.left-playX0;
   return Math.max(0,Math.min(COLS-1,Math.floor(x/colW)));
 }
 cv.addEventListener('pointerdown',e=>{
@@ -558,6 +651,15 @@ function startGame(m){
 function gameOver(){
   running=false; cur=null;
   cancelAnimationFrame(animId);
+  // sticker + title tiers (KANA Quest parity): new best > zero score > near best > default
+  const newBest = score>best && score>0;
+  let overStk, overTitle;
+  if(newBest){                        overStk=IMG_SRC.stkSugoi;    overTitle='New Best!'; }
+  else if(score===0){                 overStk=IMG_SRC.stkGanbatte; overTitle=''; }
+  else if(best>0 && score>=best*0.8){ overStk=IMG_SRC.stkIine;     overTitle='So close!'; }
+  else{                               overStk=IMG_SRC.stkOtsukare; overTitle=''; }
+  document.getElementById('overStk').src=overStk;
+  document.getElementById('overTitle').textContent=overTitle;
   saveBest();
   sndOver();
   document.getElementById('finalScore').textContent=score;
@@ -591,6 +693,15 @@ const muteBtn=document.getElementById('muteBtn');
 muteBtn.addEventListener('click',()=>{
   muted=!muted; muteBtn.textContent=muted?'🔇':'🔊';
   if(!muted){ audio(); blip(660,0.08,'sine',0.14); }
+});
+
+// preload images, then enable the start buttons (fallback vector art still works on error)
+const startBtns=document.querySelectorAll('.modes .btn[data-mode]');
+startBtns.forEach(b=>b.disabled=true);
+preload(()=>{
+  startBtns.forEach(b=>b.disabled=false);
+  // idle frame: show the stage background behind the start card right away
+  if(!running){ resize(); render(); }
 });
 
 // init
