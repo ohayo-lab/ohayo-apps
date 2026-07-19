@@ -10,7 +10,7 @@
       - Collect the CORRECT kana (matches the prompt reading)  => +score, chime,
         new prompt.
       - Collect a WRONG kana                                    => lose a heart.
-    Start with 3 hearts. 0 hearts = game over. Speed & spawn-rate ramp with
+    Start with 5 hearts. 0 hearts = game over. Speed & spawn-rate ramp with
     distance. Best score saved in localStorage.
 
   This is a BETA PROTOTYPE: art is intentionally minimal canvas shapes, no
@@ -77,30 +77,33 @@
   .card p.how{font-size:13.5px; line-height:1.5; color:var(--sub); margin:12px 0 18px;}
   .modeRow{display:flex; gap:10px; justify-content:center; margin-bottom:18px;}
   .modeBtn{
-    flex:1; background:var(--cream); border:1.5px solid var(--line); border-radius:10px;
-    padding:10px 6px; cursor:pointer; font-size:13px; color:var(--sub); font-weight:600;
+    flex:1; background:#FFFDF7; border:2px solid #134B70; border-radius:10px;
+    padding:10px 6px; cursor:pointer; font-size:13px; color:#134B70; font-weight:700;
     transition:border-color .15s, background .15s;
   }
   .modeBtn .jp{display:block; font-size:19px; color:var(--ink); margin-bottom:2px;
     font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;}
   .modeBtn.active{border-color:var(--sun); background:#FFF7EA; color:var(--ink);}
+  /* button language aligned with Kana Drop (navy 2px border + navy 3D drop shadow) */
   .cta{
-    display:block; width:100%; color:var(--ink);
-    background:linear-gradient(180deg,#FFD35C,#F7AE22);
-    border:none; border-radius:14px; padding:14px; font-size:16px; font-weight:800;
+    display:block; width:100%; color:#3a2e08;
+    background:#FFC93C;
+    border:2px solid #134B70; border-radius:14px; padding:14px; font-size:16px; font-weight:800;
     cursor:pointer; letter-spacing:.4px;
-    box-shadow:0 4px 0 #DE9E1E, 0 10px 22px rgba(247,169,40,.35);
+    box-shadow:0 4px 0 #134B70;
     transition:transform .06s, box-shadow .06s;
   }
-  .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #E0A72E;}
+  .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
   .cta2{
-    display:block; width:100%; margin-top:10px; background:var(--cream);
-    border:1.5px solid var(--line); border-radius:12px; padding:11px;
-    font-size:14px; font-weight:800; color:var(--ink); text-decoration:none;
+    display:block; width:100%; margin-top:10px; background:#FFFDF7;
+    border:2px solid #134B70; border-radius:14px; padding:11px;
+    font-size:14px; font-weight:800; color:#134B70; text-decoration:none;
     letter-spacing:.4px;
+    box-shadow:0 4px 0 #134B70;
+    transition:transform .06s, box-shadow .06s;
   }
   .cta2 .sub2{display:block; font-size:11px; font-weight:600; color:var(--sub); margin-top:2px; letter-spacing:.2px;}
-  .cta2:active{background:#F1EADD;}
+  .cta2:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
   .statline{font-size:13px; color:var(--sub); margin:14px 0 0;}
   .statline b{color:var(--ink); font-size:22px; font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN',sans-serif; font-weight:800;}
   .best{font-size:12px; color:var(--gold); margin-top:2px;}
@@ -142,7 +145,7 @@
     padding:5px 16px; font-size:13px; font-weight:700; color:var(--ink);
   }
   #hearts{font-size:15px; letter-spacing:1px; line-height:0;}
-  #hearts img{height:14px; vertical-align:middle;}
+  #hearts img{height:12px; vertical-align:middle;}
   #jumpHint{
     position:absolute; bottom:calc(14px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
     background:url("img/jump_button.png") no-repeat center/cover;
@@ -196,7 +199,7 @@
 <div id="wrap">
   <header>
     <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><img src="img/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO NIHONGO</a>
-    <span class="sub">Kana Quest · Free game (beta)</span>
+    <span class="sub">Kana Quest · Free game</span>
     <span class="spacer"></span>
     <button id="muteBtn" aria-label="Toggle sound"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   </header>
@@ -445,7 +448,8 @@
   let mode = "hira";
   let deck = HIRA;
 
-  let score=0, best=0, hearts=3, distance=0, level=1;
+  const MAX_HEARTS=5;
+  let score=0, best=0, hearts=MAX_HEARTS, distance=0, level=1;
   let worldSpeed=0;         // px/sec the world scrolls left
   let spawnTimer=0, spawnGap=1.15;
   let prompt=null;          // {kana,romaji}
@@ -453,6 +457,9 @@
   const pool=[];            // recycled tiles
   let bgScroll=0, hillScroll=0, groundScroll=0;
   let toastTimer=0;
+  // grace window: right after a correct grab the prompt switches, so any
+  // still-in-flight tiles carrying the just-cleared reading shouldn't punish.
+  let graceRomaji=null, graceTimer=0;
   let flashRed=0;
   let sparkles=[];          // correct-collect sparkle bursts {x,y,t}
 
@@ -476,7 +483,9 @@
   // prompt stored as [kana,romaji] tuple: prompt[0]=kana, prompt[1]=romaji
   function newPrompt(){
     const d = activeDeck();
-    const e = d[(Math.random()*d.length)|0];
+    const prev = prompt ? prompt[1] : null;   // avoid repeating the same reading
+    let e;
+    do { e = d[(Math.random()*d.length)|0]; } while(d.length>1 && e[1]===prev);
     prompt = [ e[0], e[1] ];
     document.getElementById("promptRomaji").textContent = prompt[1];
     const box = document.getElementById("promptBox");
@@ -512,13 +521,14 @@
   }
 
   function resetGame(){
-    score=0; hearts=3; distance=0; level=1;
+    score=0; hearts=MAX_HEARTS; distance=0; level=1;
     worldSpeed = 210*speedK;
     spawnGap = 1.15; spawnTimer = 0.5;
     entities.length=0;
     sparkles.length=0;
     runner.y=0; runner.vy=0; runner.onGround=true; runner.bob=0; runner.runCycle=0;
     flashRed=0; toastTimer=0;
+    graceRomaji=null; graceTimer=0;
     newPrompt();
     updateHUD();
   }
@@ -527,9 +537,9 @@
     document.getElementById("scorePill").textContent = score;
     // hearts as little img sprites (full / empty)
     let hh="";
-    for(let i=0;i<3;i++){
+    for(let i=0;i<MAX_HEARTS;i++){
       const src = i<hearts ? "img/heart_full.png" : "img/heart_empty.png";
-      hh += '<img src="'+src+'" alt="" style="height:14px;vertical-align:middle;">';
+      hh += '<img src="'+src+'" alt="" style="height:12px;vertical-align:middle;">';
     }
     document.getElementById("hearts").innerHTML = hh;
     document.getElementById("distPill").textContent = "Lv "+level+" · "+Math.floor(distance)+"m";
@@ -584,8 +594,13 @@
           Sfx.coin();
           showToast("+"+(10+Math.floor(level*1.5)), "#B98F2F");
           sparkles.push({ x:t.x, y:t.y, t:0 });   // celebratory sparkle burst
+          graceRomaji = prompt[1];   // the reading just cleared — spare its stragglers
+          graceTimer = 0.6;
           newPrompt();
           // clear other correct-looking tiles? no—just proceed
+        } else if(t.romaji===graceRomaji && graceTimer>0){
+          // grace window: a straggler still carrying the just-cleared reading —
+          // no heart loss, no score, silent pop, no toast
         } else {
           hearts--;
           flashRed=0.35;
@@ -658,6 +673,7 @@
     }
 
     if(flashRed>0) flashRed=Math.max(0,flashRed-dt);
+    if(graceTimer>0) graceTimer=Math.max(0,graceTimer-dt);
     if(toastTimer>0){ toastTimer-=dt; if(toastTimer<=0) document.getElementById("toast").style.opacity="0"; }
 
     // distance HUD refresh (cheap, every frame-ish)
@@ -996,7 +1012,7 @@
     const line = "I scored "+score+" in Kana Quest — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
     if(navigator.clipboard){ navigator.clipboard.writeText(line).then(()=>{
       const el=document.getElementById("shareLine");
-      const old=el.innerHTML; el.innerHTML="<b>Copied! ✔</b>";
+      const old=el.innerHTML; el.innerHTML="<b>Copied!</b>";
       setTimeout(()=>{ el.innerHTML=old; }, 1400);
     }).catch(()=>{}); }
   });
@@ -1023,6 +1039,7 @@
   resize();
 })();
 </script>
+<script src="/assets/analytics.js"></script>
 <script src="/menu.js" defer></script>
 </body>
 </html>
