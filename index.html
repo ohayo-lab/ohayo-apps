@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="p:domain_verify" content="41054cb85cc16ab7932c6834803e81bf"/>
 <title>OHAYO NIHONGO — 1 Minute of Real Japanese, Every Morning</title>
-<meta name="description" content="Short diary-style daily audio in slow, easy Japanese for N5–N3 learners. Listen 1 minute every morning. Free scripts, flashcards & shadowing practice.">
+<meta name="description" content="Short diary-style daily audio in slow, easy Japanese for N5–N3 learners. Listen 1 minute every morning. Free games, flashcards, scripts &amp; shadowing practice.">
 <meta property="og:title" content="OHAYO NIHONGO — 1 Minute of Real Japanese, Every Morning">
 <meta property="og:description" content="Real daily diary audio in slow, easy Japanese. For JLPT N5–N3 learners. Listen, shadow, repeat.">
 <meta property="og:type" content="website">
@@ -17,334 +17,816 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  :root{--white:#fff;--heading:#1C1C1C;--ink:#1E1E1E;--sub:#4A4A4A;--line:#CFE3EF;--sun:#F7A928;--sun-deep:#F08114;--gold:#8A5408;--brand-navy:#134B70;--brand-ocean:#1F72A8}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{overflow-x:hidden;background:linear-gradient(180deg,#EAF3FB 0%,#F3F8FC 480px,#FAFCFE 100%) fixed;color:var(--ink);font-family:'DM Sans','Noto Sans JP',sans-serif;line-height:1.7;-webkit-font-smoothing:antialiased}
-  .wrap{max-width:660px;margin:0 auto;padding:0 22px 76px}
-  nav{position:sticky;top:0;background:rgba(255,255,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);z-index:9}
-  .nv{max-width:660px;margin:0 auto;display:flex;align-items:center;gap:14px;padding:12px 16px;font-size:12px;font-weight:700;letter-spacing:.08em}
-  .nv .logo{color:var(--heading);text-decoration:none;margin-right:auto;letter-spacing:.1em;white-space:nowrap}
-  .nv a{color:#333;text-decoration:none;text-transform:uppercase;font-size:10.5px;white-space:nowrap}
-  /* HERO */
-  .hero{position:relative;background:#0E3A63 url('img/hero_clean.png') center top/cover no-repeat;min-height:400px;display:flex;flex-direction:column;justify-content:center;padding:44px 24px;text-align:center;color:#fff}
-  .hero>*{position:relative;z-index:1}
-  .tag{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(30px,8vw,44px);color:#fff;line-height:1.14;text-shadow:0 2px 10px rgba(10,40,70,.45),0 1px 2px rgba(10,40,70,.35)}
-  .tag i{font-weight:600}
-  .subtag{font-size:clamp(12px,3.6vw,14px);font-weight:600;letter-spacing:.03em;color:#F2FAFF;margin:12px 0 4px;padding:0 6px;text-shadow:0 1px 6px rgba(10,40,70,.5)}
-  /* 今日の一文（自動更新マーカー互換: .lbl/.kanji/.hira/.en, .ep-thumb/.ep-cap） */
-  .today{background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:22px 24px 20px;margin-top:26px;position:relative;box-shadow:0 8px 26px rgba(19,75,112,.12);text-align:center}
-  .today .lbl{font-size:11.5px;font-weight:700;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
-  .today .kanji{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18.5px;line-height:1.9;margin:12px 0 6px;color:#1A1A1A}
-  .today .hira{font-family:'Noto Sans JP',sans-serif;font-size:13px;line-height:1.85;color:#4A4A4A}
-  .today .en{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:15.5px;color:#3E5468;margin-top:8px}
-  .listen-label{font-size:12.5px;font-weight:700;letter-spacing:.04em;color:#3A3A3A;margin-top:14px;margin-bottom:11px}
-  .listenBtns{display:flex;justify-content:center;gap:12px;margin-bottom:14px}
-  .btn-sp,.btn-yt{display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;border-radius:999px;padding:13px 22px;font-weight:700;font-size:14px;line-height:1;color:#fff!important}
-  .btn-sp{background:#1DB954}
-  .btn-yt{background:#FF0000}
-  .btn-sp img{width:19px;height:19px;display:block}
-  .btn-yt img{width:24px;height:17px;display:block}
-  .ep-thumb{display:block;margin:6px 0 4px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-  .ep-thumb img{width:100%;display:block}
-  .ep-cap{font-size:12px;color:var(--sub);margin-bottom:10px}
-  .today-link{font-size:13px;font-weight:600;color:#5A5A5A;text-decoration:none;border-bottom:1.5px solid #D8B24A;padding-bottom:2px}
-  /* Starter（Substack埋込） */
-  .btn-starter{display:block;text-align:center;text-decoration:none;border-radius:999px;padding:16px;font-weight:700;font-size:15.5px;background:#FFC93C;color:#111;box-shadow:0 5px 16px rgba(255,201,60,.5);margin-top:16px}
-  .starterCard{background:var(--white);border:1.5px solid var(--line);border-radius:14px;padding:16px 20px 12px;margin-top:10px;text-align:center}
-  .starterCard .sc{font-size:11px;font-weight:700;letter-spacing:.2em;color:var(--sub);text-transform:uppercase;margin-bottom:6px}
-  .substack{width:100%;height:112px;border:none}
-  .embed-note{font-size:11.5px;color:var(--sub)}
-  /* セクション見出し */
-  h2.sec{font-size:11px;font-weight:700;letter-spacing:.28em;color:#3A3A3A;margin:42px 0 4px;text-transform:uppercase;text-align:center}
-  .sect{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:25px;color:var(--heading);text-align:center;margin-bottom:16px}
-  /* 3ステップ */
-  .steps{display:flex;align-items:stretch;gap:3px}
-  .step{flex:1;min-width:0;background:var(--white);border:1px solid var(--line);border-top:3px solid var(--sun);border-radius:12px;padding:16px 4px;text-align:center}
-  .step .n{display:inline-block;width:34px;height:34px;line-height:34px;border-radius:50%;background:#FDE8C0;color:#8A5408;font-weight:700;font-size:15.5px}
-  .arw{align-self:center;color:#A55E00;font-size:16px;font-weight:700;flex-shrink:0}
-  .step b{display:block;font-size:12px;letter-spacing:.16em;color:var(--heading);margin-top:5px}
-  .step span{font-size:11.5px;color:var(--sub)}
-  /* Reading Room */
-  .feat{display:block;border-radius:16px;padding:22px;text-decoration:none;margin-bottom:11px;background:linear-gradient(150deg,#EAF2FA,#D6E6F5);border:1px solid #CBDDEE;box-shadow:0 4px 16px rgba(31,114,168,.1)}
-  .feat-tag{font-size:10.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:#2C6E9E}
-  .feat b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:24px;line-height:1.25;color:var(--heading);margin:6px 0 4px}
-  .feat .fj{display:block;font-family:'Noto Sans JP',sans-serif;font-size:12.5px;font-weight:500;color:#2B2B2B}
-  .feat .fp{display:inline-block;margin-top:12px;font-size:12px;font-weight:700;color:#2C6E9E;border-bottom:1.5px solid #B9D3E8;padding-bottom:2px}
-  .drow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:11px}
-  .dcard{border-radius:12px;padding:14px 16px;text-decoration:none;color:var(--ink)}
-  .dcard.pal-peach{background:linear-gradient(160deg,#FCF7F0,#F7E3D2);border:1px solid #EAD8C6}
-  .dcard.pal-peach .n{color:#A05E32}
-  .dcard.pal-sage{background:linear-gradient(160deg,#F6FAF6,#E1EDE2);border:1px solid #D0E0D1}
-  .dcard.pal-sage .n{color:#4F7A56}
-  .dcard .n{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:700;font-size:15.5px}
-  .dcard b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:17.5px;line-height:1.28;margin:3px 0;color:var(--heading)}
-  .dcard span{font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:12px;color:#2B2B2B}
-  .allbtn{display:block;text-align:center;margin-top:12px;border:1.5px solid #2A2A2A;border-radius:999px;padding:12px;color:var(--heading);font-weight:700;font-size:13.5px;letter-spacing:.05em;text-decoration:none;background:var(--white)}
-  /* Learn & Play — cards with a mini UI preview */
-  .play{display:grid;grid-template-columns:1fr;gap:14px}
-  .pcard{position:relative;display:block;border-radius:18px;overflow:hidden;text-decoration:none;background:#fff;border:1px solid var(--line);box-shadow:0 5px 18px rgba(31,114,168,.12);transition:transform .15s,box-shadow .15s}
-  .pcard:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(31,114,168,.18)}
-  .pcard .hd{padding:16px 17px 10px;position:relative}
-  .pcard .body{padding:12px 17px 17px}
-  .pcard .pl{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.14em;text-transform:uppercase}
-  .pcard.app .pl{color:#2C6E9E}
-  .pcard.game .pl{color:#C0761F}
-  .pcard b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:23px;color:var(--heading);margin:5px 0 3px}
-  .pcard .ds{font-size:12.5px;font-weight:500;color:var(--sub);line-height:1.55;display:block}
-  .pcard .cta{display:inline-block;margin-top:11px;font-size:13px;font-weight:700;letter-spacing:.02em}
-  .pcard.app .cta{color:#2C6E9E}
-  .pcard.game .cta{color:#C0761F}
-  .pcard.anki .pl{color:#4F7A56}
-  .pcard.anki .cta{color:#4F7A56}
-  .pcard .oscr{position:absolute;top:12px;right:14px;font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#93A6B4}
-  /* preview frame */
-  .pv{padding:15px 15px 16px}
-  .pv-fc{background:linear-gradient(160deg,#DCEDFB 0%,#EAF2F6 55%,#F7E9CE 100%)}
-  .pv-fc .pvtop{display:flex;justify-content:space-between;align-items:center;font-size:10.5px;font-weight:700;color:#5B6B78;margin-bottom:10px}
-  .pv-fc .pvtop .lvl{font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:600;font-size:11px;color:#B06E24}
-  .fc-card{background:#fff;border-radius:13px;box-shadow:0 5px 14px rgba(19,75,112,.16);padding:15px 14px 13px;text-align:center}
-  .fc-jp{font-family:'Noto Serif JP',serif;font-size:15.5px;font-weight:700;color:#1A1A1A;line-height:1.5}
-  .fc-tg{display:flex;justify-content:center;gap:6px;margin-top:12px}
-  .fc-tg i{font-style:normal;font-size:10px;font-weight:700;padding:6px 11px;border-radius:999px;background:#F1F6FB;color:#2C6E9E;border:1px solid #D8EAF5}
-  .fc-tg i.on{background:#F7A928;color:#fff;border-color:#F7A928}
-  .pv-adv{background:linear-gradient(160deg,#0E3A63 0%,#1A5D8C 100%)}
-  .pv-adv .pvttl{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-  .pv-adv .pvttl b{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#fff;letter-spacing:.02em}
-  .pv-adv .pvttl b i{color:#F7C55E;font-style:normal}
-  .pv-adv .pvttl .xp{font-size:9.5px;font-weight:700;color:#BFD8EA;letter-spacing:.06em}
-  .adv-row{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.97);border-radius:12px;padding:9px 11px;margin-bottom:8px}
-  .adv-row:last-child{margin-bottom:0;opacity:.72}
-  .adv-row .ic{width:30px;height:30px;border-radius:9px;background:linear-gradient(160deg,#2E77AE,#123f61);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
-  .adv-row .tt{flex:1;min-width:0;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12.5px;color:#14324a;line-height:1.15}
-  .adv-row .tt em{display:block;font-style:normal;font-weight:700;font-size:8.5px;letter-spacing:.12em;text-transform:uppercase;margin-top:3px}
-  .adv-row.free .tt em{color:#2E8B57}
-  .adv-row.lock .tt em{color:#8AA0B2}
-  .adv-row .go{width:30px;height:30px;border-radius:50%;background:#F08114;color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0;box-shadow:0 2px 8px rgba(240,129,20,.5)}
-  .adv-row .lk{font-size:14px;flex-shrink:0}
-  /* GO DEEPER */
-  .deeper{background:linear-gradient(160deg,#123E63,#1C6AA0);border-radius:20px;padding:26px 20px 22px;box-shadow:0 10px 30px rgba(18,62,99,.3)}
-  .deeper .dl{font-size:11px;font-weight:700;letter-spacing:.28em;color:#F7C55E;text-transform:uppercase;text-align:center}
-  .deeper .dt{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:27px;color:#fff;text-align:center;margin:4px 0}
-  .deeper .ds{font-size:13px;color:#D8ECF7;text-align:center;margin-bottom:16px}
-  .packs{display:grid;gap:10px}
-  .pk{position:relative;background:var(--white);border-radius:12px;padding:15px 42px 15px 18px;text-decoration:none;color:var(--ink)}
-  .pk::after{content:'→';position:absolute;right:16px;top:50%;transform:translateY(-50%);color:var(--sun-deep);font-size:19px;font-weight:700}
-  .pk.hot{border:2px solid #FFC93C;box-shadow:0 6px 20px rgba(255,201,60,.4);padding-top:26px}
-  .pk.hot .badge{position:absolute;top:-10px;left:14px;background:#fff;color:#C08A1E;font-size:9.5px;font-weight:700;letter-spacing:.14em;padding:4px 12px;border-radius:999px;border:1.5px solid #F7C55E;box-shadow:0 2px 8px rgba(0,0,0,.08)}
-  .pk.soon{opacity:.92}
-  .pk.soon::after{content:''}
-  .pk .pl{font-size:11px;font-weight:700;letter-spacing:.24em;color:var(--gold);text-transform:uppercase}
-  .pk b{display:block;font-family:'Cormorant Garamond',serif;font-weight:700;font-size:19px;color:var(--heading);margin:3px 0 1px}
-  .pk span{display:block;font-size:12px;color:var(--sub)}
-  /* 中文 */
-  .zh{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:20px 22px;margin-top:42px}
-  .zh h2{font-family:'Noto Sans JP','DM Sans',sans-serif;font-size:16px;color:var(--heading);margin-bottom:10px}
-  .zh p{font-size:13px;color:var(--ink);margin-bottom:8px;line-height:1.8}
-  .zh .hl{color:#B45309;font-weight:700}
-  /* footer */
-  footer{text-align:center;margin-top:48px;color:var(--sub);font-size:11.5px;line-height:1.9}
-  .socials{display:flex;justify-content:center;gap:18px;margin-bottom:10px}
-  .socials a{color:#333;font-weight:700;font-size:12px;text-decoration:none;letter-spacing:.06em}
-  footer a{color:var(--sub)}
+:root{
+  --sun:#F7A928; --sun-deep:#F08114; --sun-hot:#FF6B35;
+  --brand-navy:#134B70; --brand-ocean:#1F72A8;
+  --cream:#FFF9F0; --cream-card:#FFF6E6;
+  --ink:#1C3446; --ink-soft:#5A7183; --line:#E4EEF4;
+  --gold:#B98F2F;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans','Noto Sans JP',-apple-system,sans-serif;
+  --jp:'Noto Sans JP',sans-serif;
+  --jp-serif:'Noto Serif JP',serif;
+  /* ===== 額縁（全パネル共通仕様）===== */
+  --frame-radius:20px;
+  --frame-shadow:0 16px 34px -16px rgba(19,75,112,.32);
+  --frame-border:1px solid rgba(19,75,112,.10);
+  --band-pad:13px 15px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+/* 空→海の一続きグラデ */
+body{font-family:var(--sans);color:var(--ink);line-height:1.6;overflow-x:hidden;
+  background:linear-gradient(180deg,
+    #FFF4E0 0%, #FCEEDC 16%,
+    #F4F6F2 34%, #E9F3FA 55%,
+    #DCEDf7 76%, #CFE5F2 100%)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+/* 再生アイコン（絵文字不使用・CSS三角） */
+.ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
+  border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor}
 
-  /* ===== Mobile scale (≤480px) ===== */
-  @media (max-width:480px){
-    .tag{font-size:clamp(24px,6.8vw,32px)}
-    .subtag{font-size:12px}
-    .hero{min-height:330px;padding:36px 20px}
-    .today{padding:18px 16px 16px}
-    .today .kanji{font-size:15.5px;line-height:1.85}
-    .today .hira{font-size:11.5px}
-    .today .en{font-size:13.5px}
-    .today .lbl{font-size:10.5px}
-    .listen-label{font-size:11.5px}
-    .btn-sp,.btn-yt{padding:11px 18px;font-size:13px}
-    .btn-starter{padding:14px;font-size:14px}
-    .starterCard .sc{font-size:9.5px}
-    h2.sec{font-size:10px;margin:34px 0 3px}
-    .sect{font-size:20px;margin-bottom:13px}
-    .step b{font-size:10.5px}
-    .step span{font-size:10.5px}
-    .feat{padding:18px}
-    .feat b{font-size:19px}
-    .feat .fj{font-size:11.5px}
-    .dcard b{font-size:15px}
-    .dcard .n{font-size:13.5px}
-    .dcard span{font-size:11px}
-    .allbtn{font-size:12.5px;padding:11px}
-    .pcard b{font-size:20px}
-    .pcard .ds{font-size:11.5px}
-    .fc-jp{font-size:14px}
-    .deeper .dt{font-size:21px}
-    .deeper .ds{font-size:12px}
-    .pk b{font-size:16.5px}
-    .pk span{font-size:11px}
-    .zh p{font-size:12px}
-    footer{font-size:10.5px}
-  }
+/* ===== NAV ===== */
+nav{position:sticky;top:0;z-index:50;background:rgba(255,250,240,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:10px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700}
+.logo b{font-family:var(--sans);font-size:17px;font-weight:800;letter-spacing:.05em;color:var(--ink);white-space:nowrap}
+.nav-links{display:flex;gap:20px;font-weight:600;font-size:14px}
+.nav-links a{color:var(--ink-soft)}
+.nav-cta{background:var(--brand-navy);color:#fff;font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;box-shadow:0 6px 14px -8px rgba(19,75,112,.55);white-space:nowrap;flex-shrink:0}
+@media(max-width:700px){.nav-links{display:none}}
+@media(max-width:400px){
+  .logo b{font-size:14.5px;letter-spacing:.03em}
+  .nav-cta{font-size:12px;padding:8px 13px}
+}
+
+/* ===== HERO ===== */
+.hero{position:relative;padding:46px 0 64px;overflow:hidden;
+  background:url("/img/lp/hero_landscape.png") left center/cover no-repeat, linear-gradient(168deg,#2F6FA6,#1F72A8)}
+.hero-grid{position:relative;z-index:2;max-width:660px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5.6vw,3.4rem);line-height:1.06;color:#fff;margin:12px 0 10px;text-shadow:0 2px 10px rgba(9,40,66,.55),0 2px 26px rgba(9,40,66,.45)}
+.hero h1 i{color:#FFD97A;text-shadow:0 2px 8px rgba(9,40,66,.8),0 2px 20px rgba(9,40,66,.55)}
+.hero .sub{color:#F2F9FE;font-size:15px;max-width:42ch;text-shadow:0 1px 6px rgba(9,40,66,.75),0 1px 16px rgba(9,40,66,.5)}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.btn{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:15px;padding:12px 20px;border-radius:999px;line-height:1}
+.email-cta .btn{font-weight:800}
+.btn-sun{background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(240,129,20,.6)}
+.btn-ghost{background:rgba(255,255,255,.9);color:var(--ink)}
+.hero-note{margin-top:14px;font-size:12px;font-weight:700;color:#fff;
+  display:flex;flex-wrap:wrap;align-items:center;row-gap:2px;
+  text-shadow:0 1px 2px rgba(9,40,66,.9),0 2px 10px rgba(9,40,66,.55)}
+.hero-note span{white-space:nowrap}
+.hero-note span:not(:last-child)::after{content:"·";margin:0 9px;opacity:.65;font-weight:400}
+@media(max-width:860px){
+  .hero{padding:40px 0 56px}
+  .hero-grid{text-align:center;margin:0 auto}
+  .hero .sub{margin:0 auto}
+  .hero-cta{justify-content:center}
+  .hero-note{justify-content:center}
+}
+/* 折り返す幅では中黒が行末に取り残されるので、区切りは余白で表現する */
+@media(max-width:600px){
+  .hero-note{gap:3px 14px}
+  .hero-note span:not(:last-child)::after{content:none}
+}
+
+/* ===== 棚 ===== */
+.shelf{padding:26px 0 8px;position:relative}
+.shelf-head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-bottom:10px}
+.shelf-head .t{display:flex;align-items:flex-end;gap:12px}
+.mag-no{font-family:var(--serif);font-style:italic;font-weight:700;font-size:54px;line-height:1;color:var(--sun-deep)}
+.shelf-head .tt .eyebrow{
+  display:inline-flex;align-items:center;
+  font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:#fff;background:var(--brand-navy);
+  padding:5px 12px;border-radius:999px;
+  margin-bottom:8px;line-height:1;
+  box-shadow:0 5px 12px -5px rgba(19,75,112,.5)}
+.shelf-head h2{font-family:var(--serif);font-weight:700;font-size:clamp(25px,4.2vw,34px);color:var(--ink);line-height:1.05}
+.caption{font-size:14px;color:var(--ink);font-style:italic;font-family:var(--serif);margin:0 0 6px}
+.caption b{color:var(--sun-deep);font-style:normal;font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
+.row{display:flex;align-items:flex-start;gap:14px;overflow-x:auto;padding:14px 18px 22px;margin:0 -18px;
+  scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+.row::-webkit-scrollbar{display:none}
+.row{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 93%,transparent);mask-image:linear-gradient(90deg,#000 0,#000 93%,transparent)}
+.row > *{scroll-snap-align:start;flex:0 0 auto}
+
+/* ===== 案内キャラ ===== */
+.guide{display:flex;justify-content:center;align-items:center;margin:2px 0 4px}
+.guide img{width:58px;filter:drop-shadow(0 8px 14px rgba(10,45,75,.3))}
+.guide .bubble{background:rgba(255,255,255,.94);border-radius:14px;padding:8px 13px;font-size:12px;font-weight:700;color:var(--ink);margin-left:8px;box-shadow:0 10px 22px -12px rgba(10,45,75,.35)}
+
+/* ===== 額縁は統一（.panel）===== */
+.panel{width:266px;border-radius:var(--frame-radius);overflow:hidden;background:#fff;
+  border:var(--frame-border);box-shadow:var(--frame-shadow);
+  display:flex;flex-direction:column;transition:transform .16s ease}
+.panel:active,.panel:hover{transform:translateY(-4px)}
+.pv{height:168px;position:relative;overflow:hidden;flex:0 0 auto}
+.band{padding:var(--band-pad);display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line)}
+.band .bn{min-width:0}
+.band b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--brand-navy);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.band span{display:block;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
+.tp-free{background:#DCF6EC;color:#1E9A5E}
+.tp-soon{background:#F1F0F6;color:#7A7690}
+.tp-shop{background:var(--cream-card);color:var(--sun-deep)}
+.panel-wide{width:340px}
+
+/* ===== 各パネルの「絵」 ===== */
+.pv-kq{background:url("/img/lp/bg_sunrise_meadow_hd.jpg") center 30%/cover}
+.pv-kq .kq-logo{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:78%;filter:drop-shadow(0 3px 8px rgba(60,30,0,.3))}
+.pv-kq .kq-char{position:absolute;bottom:6px;left:14px;width:64px;filter:drop-shadow(0 4px 6px rgba(60,30,0,.35))}
+.pv-kq .kq-cta{position:absolute;bottom:12px;right:12px;background:linear-gradient(180deg,#FFD35C,#F7AE22);
+  color:#1C1C1C;font-weight:800;font-size:12px;padding:8px 14px;border-radius:12px;box-shadow:0 3px 0 #DE9E1E;
+  display:inline-flex;align-items:center;gap:6px}
+.pv-sb{background:url("/img/lp/sb_bg_main.jpg") center 78%/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:14px}
+.sb-wordmark{font-family:var(--sans);font-weight:800;font-size:19px;line-height:1.08;letter-spacing:.14em;
+  text-align:center;color:#fff;
+  text-shadow:0 2px 0 rgba(19,75,112,.92),0 4px 0 rgba(19,75,112,.34),0 7px 16px rgba(9,40,66,.5)}
+.pv-sb .chip{box-shadow:0 2px 0 #E8E0D2,0 6px 14px rgba(9,40,66,.22)}
+.pv-sb .sb-slot{background:rgba(255,255,255,.55);color:#8A7C60}
+.sb-line{display:flex;gap:6px}
+.chip{background:#fff;border:1.5px solid #DFD7C9;border-radius:12px;padding:7px 10px;font-family:var(--jp);font-weight:700;font-size:14px;color:#1C1C1C;box-shadow:0 2px 0 #E8E0D2}
+.chip.done{border-color:var(--sun);background:#FFF7EA}
+.sb-slot{border:1.5px dashed #CBBFA6;border-radius:12px;padding:7px 14px;color:#B9AD93;font-size:13px}
+.pv-kd{background:url("/img/lp/kd_bg_main.png") center/cover}
+.pv-kd .kd-logo{position:absolute;top:14px;left:50%;transform:translateX(-50%);width:70%;filter:drop-shadow(0 3px 8px rgba(0,30,60,.35))}
+.kd-tile{position:absolute;width:44px;filter:drop-shadow(0 4px 8px rgba(0,20,50,.3))}
+.kd-t1{left:16px;bottom:34px;transform:rotate(-10deg)}
+.kd-t2{left:50%;bottom:12px;transform:translateX(-50%) rotate(6deg)}
+.kd-t3{right:16px;bottom:44px;transform:rotate(14deg)}
+.kd-glyph{position:absolute;width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--jp);font-weight:700;font-size:17px;color:#6B4514;pointer-events:none}
+.kd-g1{left:16px;bottom:34px;transform:rotate(-10deg)}
+.kd-g2{left:50%;bottom:12px;transform:translateX(-50%) rotate(6deg)}
+.kd-g3{right:16px;bottom:44px;transform:rotate(14deg)}
+.pv-fc{background:linear-gradient(160deg,#2E6E97,#134B70);display:flex;align-items:center;justify-content:center;padding:14px}
+.fc-card{background:#fff;border-radius:14px;width:88%;padding:13px 14px;box-shadow:0 10px 24px rgba(0,20,40,.35);position:relative}
+.fc-top{display:flex;justify-content:space-between;font-size:10px;font-weight:800;color:#B45309}
+.fc-top .streak{background:#FFF4E3;border:1px solid #F5C88A;border-radius:999px;padding:3px 8px}
+.fc-top .xp{background:#DDF1FB;color:#1F72A8;border-radius:999px;padding:3px 8px}
+.fc-jp{font-family:var(--jp-serif);font-weight:700;font-size:15.5px;color:#1C1C1C;text-align:center;margin:12px 0 10px;line-height:1.6}
+.fc-btns{display:flex;justify-content:center;gap:6px}
+.fc-b{font-size:10.5px;font-weight:700;border-radius:999px;padding:5px 10px;background:#F2F8FC;color:#134B70;border:1px solid #D8EAF5;white-space:nowrap}
+.fc-b.play{background:linear-gradient(135deg,#F7A928,#F08114);color:#fff;border:none}
+.pv-adv{background:linear-gradient(180deg,#0F3555 0%,#1F72A8 42%,#7FB9D9 68%,#F4D98B 88%,#F7A928 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:14px}
+.adv-kick{font-size:9px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:#FFD97A;animation:blink 2.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.55}}
+.adv-h{font-weight:900;font-size:21px;line-height:1.12;color:#fff;text-shadow:0 3px 14px rgba(9,30,48,.5)}
+.adv-h em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.adv-chips{display:flex;gap:6px}
+.adv-chip{font-size:10px;font-weight:800;color:#fff;background:rgba(13,46,71,.55);border:1px solid rgba(191,230,249,.3);border-radius:999px;padding:5px 10px;backdrop-filter:blur(6px)}
+.adv-chip.gold{border-color:rgba(255,217,122,.55);color:#FFE9B8}
+.pv-dy{background:linear-gradient(135deg,#134B70 0%,#1F72A8 55%,#3E93C4 100%);padding:14px 15px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.dy-kick{font-size:9.5px;letter-spacing:.22em;color:#F7C55E;font-weight:700;text-transform:uppercase}
+.dy-h{font-family:var(--serif);font-weight:700;font-size:17.5px;color:#fff;line-height:1.25}
+.dy-jp{font-family:var(--jp);font-size:11.5px;color:#BFE6F9}
+.dy-read{margin-top:10px;display:inline-flex;align-self:flex-start;font-size:10px;font-weight:800;letter-spacing:.1em;
+  text-transform:uppercase;color:#0E3E5F;background:rgba(255,255,255,.92);padding:6px 12px;border-radius:999px}
+.pv-pod{background:#fff;padding:13px 15px;display:flex;flex-direction:column;justify-content:center;gap:5px;text-align:center}
+.lbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
+.kanji{font-family:var(--jp-serif);font-weight:700;font-size:15px;color:#1A1A1A;line-height:1.55}
+.en{font-family:var(--serif);font-style:italic;font-size:12.5px;color:#3E5468}
+.pod-btns{display:flex;justify-content:center;gap:7px;margin-top:6px}
+.pod-sp,.pod-yt{display:inline-flex;align-items:center;gap:5px;color:#fff;font-weight:700;font-size:11px;border-radius:999px;padding:7px 12px}
+.pod-sp{background:#1DB954}
+.pod-yt{background:#FF0000}
+/* Today's diary: 再生画面と同じ風景写真を背景に
+   ※ 本文は日次自動更新で長さが変わるため、行数クランプで額縁(168/156px)に必ず収める */
+.pv-today{background:url("/img/lp/diary_landscape.png") center 60%/cover no-repeat;
+  gap:2px;padding:10px 14px}
+/* クランプ後の行高を flex に潰させない（潰れると行が半分に切れる） */
+.pv-today > *{flex:0 0 auto}
+.pv-today .pod-sp,.pv-today .pod-yt{padding:6px 11px;font-size:10.5px}
+.pv-today .lbl{color:#FFE9A8;text-shadow:0 1px 3px rgba(9,40,66,.85);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-today .kanji,.pv-today .hira,.pv-today .en{
+  display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;
+  /* 日本語は文字間で折り返させて行を埋める（keep-allだと読点の後で不自然に落ちる） */
+  word-break:normal;overflow-wrap:break-word;line-break:strict}
+.pv-today .kanji{color:#fff;font-size:15px;line-height:1.45;-webkit-line-clamp:2;
+  text-shadow:0 1px 2px rgba(9,40,66,.9),0 3px 12px rgba(9,40,66,.55)}
+.hira{font-family:var(--jp);font-size:11px;line-height:1.4;color:#4A6273}
+.pv-today .hira{color:rgba(255,255,255,.92);font-size:10.5px;-webkit-line-clamp:2;
+  text-shadow:0 1px 3px rgba(9,40,66,.9)}
+.pv-today .en{color:rgba(255,255,255,.95);font-size:11.5px;line-height:1.35;-webkit-line-clamp:1;
+  text-shadow:0 1px 3px rgba(9,40,66,.85)}
+.pv-today .pod-btns{margin-top:3px}
+.pv-today .pod-sp,.pv-today .pod-yt{box-shadow:0 3px 10px rgba(9,40,66,.35)}
+@media(max-width:600px){
+  .pv-today .kanji{font-size:13.5px;-webkit-line-clamp:2}
+  .pv-today .hira{font-size:10px;-webkit-line-clamp:2}
+  .pv-today .en{font-size:10.5px;-webkit-line-clamp:1}
+}
+
+/* KDP バッジ */
+.pv-kdp{position:relative}
+.kdp-tag{position:absolute;top:11px;left:10px;white-space:nowrap;z-index:8;
+  font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#B45309;
+  background:rgba(255,255,255,.85);padding:4px 11px;border-radius:999px;box-shadow:0 3px 9px rgba(120,80,20,.18)}
+
+/* ===== 04 Shop：実商品画像パネル ===== */
+.pv-shopimg{padding:0;background:linear-gradient(180deg,#DCEAF4,#FBF4E6)}
+.pv-shopimg .pv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 34%}
+.pv-shopimg .pv-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:16px;gap:6px;font-family:var(--serif);font-weight:700;font-size:16px;color:var(--brand-navy)}
+.pv-shopimg .pv-fallback small{font-family:var(--sans);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sun-deep)}
+
+/* ===== 04 Shop：Anki レビュー画面のミニレプリカ ===== */
+.pv-anki{background:#F5F6F8;padding:0;display:flex;flex-direction:column;position:relative;overflow:hidden}
+.anki-topbar{display:flex;align-items:center;justify-content:space-between;gap:5px;
+  padding:6px 10px;background:#fff;border-bottom:1px solid #E7E9ED}
+.anki-deck-name{flex:0 0 auto;font-family:var(--sans);font-weight:800;font-size:8.5px;letter-spacing:.01em;
+  color:#2B3A47;white-space:nowrap}
+.anki-tag{flex:0 1 auto;font-size:7.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;
+  color:#1E9A5E;background:#E4F6EC;border:1px solid #BFE3D2;padding:3px 7px;border-radius:999px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.anki-counts{display:flex;align-items:center;justify-content:center;gap:13px;padding:5px 0 1px}
+.anki-counts .ac{display:inline-flex;align-items:center;gap:4px;font-family:var(--sans);
+  font-weight:800;font-size:13px;line-height:1}
+.anki-counts .ac::before{content:"";width:7px;height:7px;border-radius:50%}
+.anki-counts .ac.new{color:#2C6BE0}.anki-counts .ac.new::before{background:#2C6BE0}
+.anki-counts .ac.learn{color:#D64541}.anki-counts .ac.learn::before{background:#D64541}
+.anki-counts .ac.due{color:#2F9E58}.anki-counts .ac.due::before{background:#2F9E58}
+.anki-card{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:2px 14px 5px}
+.anki-q{font-family:var(--jp-serif);font-weight:700;font-size:15px;line-height:1.55;color:#1C2A36;text-align:center}
+.anki-audio{position:relative;width:27px;height:27px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(135deg,#2FBE7E,#1E9A5E);box-shadow:0 5px 11px -3px rgba(30,120,80,.5)}
+.anki-audio::after{content:"";position:absolute;top:50%;left:53%;transform:translate(-50%,-50%);
+  border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent #fff}
+.anki-show{flex:0 0 auto;text-align:center;font-family:var(--sans);font-weight:800;font-size:11px;
+  letter-spacing:.02em;color:#33404C;padding:8px 0;background:linear-gradient(180deg,#FEFEFE,#EDEFF2);
+  border-top:1px solid #DCE0E5;box-shadow:inset 0 1px 0 #fff}
+
+/* ===== 04 Shop：Daily+ Newsletter ＝「金の朝刊」 ===== */
+.pv-dnp{position:relative;overflow:hidden;padding:12px 14px 11px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+  background:radial-gradient(128% 104% at 50% -14%,#1C567E 0%,#123B58 46%,#0A2740 100%)}
+.pv-dnp::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.55;
+  background:
+    radial-gradient(76px 50px at 85% 90%,rgba(233,196,104,.44),transparent 70%),
+    radial-gradient(64px 44px at 13% 11%,rgba(233,196,104,.30),transparent 72%)}
+.dn-badge{position:absolute;top:11px;right:11px;z-index:9;
+  font-size:8.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#3B2A07;
+  background:linear-gradient(135deg,#FBE7B4,#E7C266 44%,#C99A2E 100%);
+  padding:4px 10px;border-radius:999px;border:1px solid rgba(150,110,36,.55);
+  box-shadow:0 3px 9px rgba(90,58,12,.45),inset 0 1px 0 rgba(255,251,236,.7)}
+.dn-paper{position:relative;z-index:2;width:174px;padding:10px 15px 12px;border-radius:3px;
+  background:linear-gradient(180deg,#FFFDF6,#FAF1DA);transform:rotate(-1.3deg);
+  box-shadow:0 15px 26px -9px rgba(0,14,28,.6),0 0 0 1px rgba(201,154,46,.42),
+             inset 0 0 0 3px rgba(255,255,255,.55)}
+.dn-mast{font-family:var(--serif);font-weight:700;font-size:26px;line-height:.86;color:#123B57;text-align:left}
+.dn-mast em{font-style:normal;color:var(--sun-deep)}
+.dn-rule{height:2px;margin:5px 0 6px;border-radius:2px;
+  background:linear-gradient(90deg,#C99A2E,#EAD08A 48%,#C99A2E 84%,transparent)}
+.dn-jp{font-family:var(--jp-serif);font-weight:700;font-size:11px;line-height:1.35;color:#1F2E39;text-align:left;white-space:nowrap}
+.dn-en{font-family:var(--serif);font-style:italic;font-size:9.5px;color:#5B7284;text-align:left;margin-top:2px}
+.dn-sparkle{position:absolute;top:6px;right:6px;z-index:8;width:110px;height:70px;pointer-events:none;
+  background:
+    radial-gradient(3px 3px at 18px 40px,#FFF3CE 40%,transparent 70%),
+    radial-gradient(2.2px 2.2px at 44px 56px,#F2DE9A 40%,transparent 70%),
+    radial-gradient(2.2px 2.2px at 8px 18px,#F2DE9A 40%,transparent 70%),
+    conic-gradient(from 218deg at 88% 22%,rgba(251,231,180,.34) 0 9deg,transparent 9deg 26deg,
+      rgba(251,231,180,.22) 26deg 33deg,transparent 33deg 58deg,rgba(251,231,180,.28) 58deg 66deg,transparent 66deg)}
+.dn-sparkle::before{content:"";position:absolute;right:30px;top:26px;width:11px;height:11px;
+  background:radial-gradient(circle,#FFF7DF 18%,transparent 60%),
+    conic-gradient(#FFF3CE 0 2deg,transparent 2deg 88deg,#FFF3CE 88deg 92deg,transparent 92deg 178deg,
+      #FFF3CE 178deg 182deg,transparent 182deg 268deg,#FFF3CE 268deg 272deg,transparent 272deg);
+  border-radius:50%;filter:blur(.2px)}
+.dn-list{position:relative;z-index:2;display:flex;flex-direction:column;gap:2px;align-items:flex-start;
+  align-self:center;padding-left:2px}
+.dn-list span{display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--sans);font-weight:700;font-size:9px;letter-spacing:.01em;color:#EBD199}
+.dn-list span::before{content:"";width:4px;height:7.5px;flex:0 0 auto;margin:0 1px 2px 0;
+  border:solid #E7C266;border-width:0 1.6px 1.6px 0;transform:rotate(42deg)}
+@media(max-width:600px){
+  .pv-dnp{gap:8px;padding:10px 12px}
+  .dn-paper{width:162px;padding:9px 13px 11px}
+  .dn-mast{font-size:24px}
+  .dn-jp{font-size:10.5px}
+  .dn-list span{font-size:8.5px}
+}
+
+/* ===== 04 Shop：2段構成 ===== */
+@media(min-width:980px){
+  .shop-lead{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;overflow:visible;
+    -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
+  .shop-lead > .panel{width:auto}
+  /* 01 Play棚もデスクトップでは4枚グリッド。横スクロールだと4枚目が切れ、
+     スクロールバー非表示のため「続きがある」合図が無く導線が失われるため。 */
+  #play .row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;overflow:visible;
+    -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
+  #play .row > .panel{width:auto}
+}
+.shop-feature{display:flex;justify-content:center;padding:0 0 24px}
+.shop-feature .panel{width:100%;max-width:660px}
+.pv.pv-dnp-lg{flex-direction:row;align-items:center;justify-content:center;
+  gap:34px;padding:14px 30px}
+.pv-dnp-lg .dn-badge{top:11px;right:13px;font-size:9px;padding:4px 11px;letter-spacing:.13em}
+.pv-dnp-lg .dn-sparkle{top:6px;right:8px;transform:scale(1.1);transform-origin:top right}
+.pv-dnp-lg .dn-paper{width:224px;padding:11px 18px 13px;transform:rotate(-1.6deg);border-radius:4px}
+.pv-dnp-lg .dn-mast{font-size:29px}
+.pv-dnp-lg .dn-rule{height:2px;margin:6px 0 7px}
+.pv-dnp-lg .dn-jp{font-size:13px;line-height:1.4}
+.pv-dnp-lg .dn-en{font-size:11px;margin-top:3px}
+.pv-dnp-lg .dn-list{gap:8px;align-self:center;padding-left:0}
+.pv-dnp-lg .dn-list span{font-size:12px;gap:8px;letter-spacing:.005em}
+.pv-dnp-lg .dn-list span::before{width:5px;height:9px;border-width:0 2px 2px 0;margin:0 1px 3px 0}
+@media(max-width:760px){
+  .shop-feature{padding:0 0 20px}
+  .shop-feature .panel{max-width:none}
+  .pv.pv-dnp-lg{flex-direction:column;align-items:flex-start;justify-content:center;
+    gap:10px;padding:12px 14px}
+  .pv-dnp-lg .dn-badge{top:10px;right:11px;font-size:8px;padding:4px 9px;letter-spacing:.1em}
+  .pv-dnp-lg .dn-sparkle{top:4px;right:5px;transform:scale(.8);transform-origin:top right}
+  .pv-dnp-lg .dn-paper{width:194px;padding:8px 13px 10px;align-self:flex-start}
+  .pv-dnp-lg .dn-mast{font-size:22px}
+  .pv-dnp-lg .dn-rule{margin:4px 0 5px}
+  .pv-dnp-lg .dn-jp{font-size:11.5px}
+  .pv-dnp-lg .dn-en{font-size:10px}
+  .pv-dnp-lg .dn-list{flex-direction:row;flex-wrap:wrap;align-self:stretch;width:100%;
+    justify-content:flex-start;gap:3px 13px;padding-left:2px}
+  .pv-dnp-lg .dn-list span{font-size:10.5px;gap:6px}
+  .shop-feature .band b{font-size:18px}
+}
+
+/* ===== 02 Learn：Starter Pack ゴールデンチケット ===== */
+.pv-stb{background:radial-gradient(120% 120% at 50% -20%, #1C567E 0%, #133F5C 46%, #0D2E44 100%)}
+.pv-stb::before{content:"";position:absolute;inset:0;opacity:.4;pointer-events:none;
+  background:radial-gradient(60px 40px at 82% 88%,rgba(247,169,40,.4),transparent 70%),
+             radial-gradient(50px 34px at 16% 16%,rgba(231,200,119,.35),transparent 70%)}
+.b-ticket{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-2deg);
+  width:288px;height:126px;border-radius:9px;display:flex;overflow:hidden;
+  background:linear-gradient(155deg,#FFFDF6 0%,#FDF3DE 52%,#F7E6C4 100%);
+  box-shadow:0 16px 30px -10px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.25)}
+.b-ticket::before{content:"";position:absolute;inset:5px;border-radius:5px;pointer-events:none;
+  border:1.5px solid transparent;
+  background:linear-gradient(135deg,#C79B34,#F2DE9A 30%,#B7861F 55%,#EED592 78%,#B7861F) border-box;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);
+          -webkit-mask-composite:xor;mask-composite:exclude}
+.b-stub{flex:0 0 68px;position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border-right:2px dashed rgba(154,116,32,.5)}
+.b-stub .b-icon{width:46px;height:46px;border-radius:9px;object-fit:cover;
+  box-shadow:0 3px 8px rgba(120,85,25,.35),0 0 0 1.5px rgba(183,134,31,.45)}
+.b-notch{position:absolute;z-index:4;width:14px;height:14px;border-radius:50%;background:#123B57}
+.b-notch.t{top:-7px}.b-notch.bt{bottom:-7px}
+.b-face{flex:1;position:relative;padding:15px 16px 13px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.b-kick{font-family:var(--sans);font-weight:800;font-size:8.5px;letter-spacing:.24em;color:#B08221;text-transform:uppercase}
+.b-title{font-family:var(--serif);font-weight:700;font-size:26px;line-height:.95;color:#123B57}
+.b-title em{font-style:italic;color:var(--sun-deep)}
+.b-title .nw{white-space:nowrap}
+.b-admit{display:inline-flex;align-items:center;gap:6px;margin-top:3px}
+.b-admit .box{font-family:var(--sans);font-weight:800;font-size:8px;letter-spacing:.16em;color:#fff;
+  background:var(--brand-navy);border-radius:3px;padding:3px 7px;text-transform:uppercase}
+.b-admit .you{font-family:var(--serif);font-style:italic;font-weight:700;font-size:14px;color:#9A7420}
+.pv-stb .stb-cta{position:absolute;right:14px;bottom:12px;z-index:9;display:inline-flex;align-items:center;gap:5px;
+  background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#fff;
+  font-family:var(--sans);font-weight:800;font-size:12px;border-radius:999px;padding:8px 15px;
+  box-shadow:0 8px 16px -6px rgba(240,129,20,.7),0 0 0 3px rgba(255,255,255,.55)}
+.pv-stb .stb-seal{position:absolute;left:14px;top:13px;z-index:9;font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:#8A6512;background:rgba(255,250,238,.94);border:1px solid #E7C877;
+  padding:4px 10px;border-radius:999px;box-shadow:0 4px 10px rgba(20,90,60,.18)}
+@media(max-width:600px){
+  .b-ticket{width:262px;height:118px}
+  .b-title{font-size:23px}
+}
+
+/* ===== 02 Learn：Morning Loop ===== */
+.pv-loop{background:linear-gradient(165deg,#FFF3DE,#FFE7C6)!important;gap:9px;justify-content:center}
+.pv-loop .lbl{color:var(--sun-deep)}
+.loop-steps{display:flex;align-items:center;justify-content:center;gap:3px}
+.loop-steps .ls{display:flex;flex-direction:column;align-items:center;gap:0;min-width:50px}
+.loop-steps .ls b{font-family:var(--serif);font-weight:700;font-size:27px;color:var(--sun-deep);line-height:1}
+.loop-steps .ls em{font-style:normal;font-family:var(--jp);font-weight:700;font-size:13px;color:var(--brand-navy);margin-top:1px}
+.loop-steps .ls small{font-size:8.5px;font-weight:700;letter-spacing:.03em;color:var(--ink-soft)}
+.loop-steps .ls-arr{font-size:16px;color:var(--sun);font-weight:800;margin-bottom:14px}
+
+/* ===== 買わない人の受け皿 ===== */
+.buy-fallback{text-align:center;margin:6px auto 24px}
+.ghost-pill{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:13px;color:var(--ink);
+  background:rgba(255,255,255,.92);border:1px solid rgba(19,75,112,.14);border-radius:999px;padding:10px 20px;
+  box-shadow:0 8px 20px -12px rgba(19,75,112,.42);transition:transform .16s ease}
+.ghost-pill:hover,.ghost-pill:active{transform:translateY(-2px)}
+.ghost-pill .gp-arr{color:var(--brand-ocean)}
+
+@media(prefers-reduced-motion:reduce){.adv-kick{animation:none}}
+
+@media(max-width:600px){
+  .loop-steps .ls{min-width:44px}
+  .loop-steps .ls b{font-size:24px}
+  .loop-steps .ls em{font-size:12px}
+}
+
+/* ===== メールCTA帯 ===== */
+.email-cta{position:relative;overflow:hidden;margin:30px auto;max-width:620px;text-align:center;background:
+  radial-gradient(420px 200px at 50% 0%, rgba(247,169,40,.22), transparent 62%),
+  linear-gradient(180deg,var(--cream-card),#FFEBC8);
+  border:1px solid rgba(247,169,40,.3);border-radius:24px;padding:32px 22px;box-shadow:var(--frame-shadow)}
+.email-cta .k{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:6px}
+.email-cta h3{font-family:var(--serif);font-weight:700;font-size:24px;color:var(--brand-navy);margin-bottom:8px}
+.email-cta p{font-size:13.5px;color:var(--ink-soft);max-width:40ch;margin:0 auto 16px}
+.email-cta::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--sun-hot) 22%,var(--sun) 42%,#FFD97A 50%,var(--sun) 58%,var(--sun-hot) 78%,transparent)}
+
+/* ===== 中文・FOOTER ===== */
+.zh{background:rgba(255,240,244,.92);border-radius:20px;padding:22px;margin:8px 0 30px;font-size:13px;color:#5A3A48}
+.zh b{color:#B01E4E}
+footer{background:var(--brand-navy);color:rgba(255,255,255,.75);text-align:center;padding:30px 0;font-size:12px}
+footer .soc{display:flex;justify-content:center;gap:16px;margin-bottom:10px;font-weight:700;color:rgba(255,255,255,.85);flex-wrap:wrap}
+footer .soc a{color:rgba(255,255,255,.9)}
+footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underline-offset:2px}
+
+@media(max-width:600px){
+  .panel{width:236px}
+  .panel-wide{width:300px}
+  .pv{height:156px}
+  .mag-no{font-size:42px}
+  #learn .band b{font-size:16px}
+  .band span{font-size:10.5px}
+  #read .shelf-head .t{align-items:flex-start}
+  .shelf-head .tt .eyebrow{font-size:10.5px;padding:4px 11px;letter-spacing:.11em}
+}
+
+/* ===== 03 Read：アーカイブ ===== */
+.pv-arch{background:linear-gradient(155deg,#6B4E1E 0%,#8A6A38 55%,#A9884E 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:15px 14px;text-align:center;position:relative}
+.arch-page{position:relative;width:150px;background:#fff;border-radius:9px;box-shadow:0 13px 26px rgba(0,20,40,.42);
+  padding:9px 11px 10px;text-align:left;z-index:3}
+.arch-page::before,.arch-page::after{content:"";position:absolute;border-radius:9px;background:rgba(255,255,255,.34);z-index:-1}
+.arch-page::before{left:7px;right:7px;top:-6px;height:22px}
+.arch-page::after{left:14px;right:14px;top:-11px;height:18px;background:rgba(255,255,255,.2)}
+.arch-pg-top{display:flex;align-items:center;gap:5px;margin-bottom:6px}
+.arch-pg-top .ac-sun{width:11px;height:11px;border-radius:50%;flex:0 0 auto;
+  background:radial-gradient(circle at 50% 40%,#FFE79A,#F7A928 70%)}
+.arch-pg-title{font-family:var(--serif);font-weight:700;font-size:11px;color:#0E3E5F;line-height:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.arch-pg-lines{display:flex;flex-direction:column;gap:4px;margin-bottom:8px}
+.arch-pg-lines i{height:4px;border-radius:2px;background:#DCE6EE}
+.arch-pg-lines i:nth-child(1){width:100%}.arch-pg-lines i:nth-child(2){width:90%}.arch-pg-lines i.s{width:54%}
+.arch-pg-read{font-size:9.5px;font-weight:800;letter-spacing:.02em;color:#1F72A8}
+.arch-cap{font-size:10.5px;font-weight:700;color:#F9F1DF;line-height:1.15}
+.arch-cap b{font-family:var(--serif);font-weight:700;font-size:16px;color:#FFE1A8;margin-right:2px}
+
+/* ===== 04 Shop：Flashcards アプリ ===== */
+.pv-fcapp{background:linear-gradient(158deg,#E4EFF8 0%,#F4E9D7 100%);display:flex;align-items:center;justify-content:center;position:relative;padding:10px;overflow:hidden}
+.pv-fcapp .app-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--brand-navy);
+  padding:4px 10px;border-radius:999px;box-shadow:0 3px 9px rgba(19,75,112,.32)}
+.pv-fcapp .phone{position:absolute;left:50%;top:16px;width:94px;height:203px;border-radius:19px;background:#0E2233;
+  padding:8px 6px;box-shadow:0 18px 30px -10px rgba(9,30,50,.5);border:1px solid rgba(255,255,255,.16);
+  transform:translateX(-50%) rotate(-6deg)}
+.pv-fcapp .phone-notch{position:absolute;top:11px;left:50%;transform:translateX(-50%);z-index:3;
+  width:30px;height:5px;border-radius:3px;background:rgba(255,255,255,.42)}
+.pv-fcapp .fcapp-shot{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center top}
+.pv-fcapp .fcapp-screen{position:relative;width:100%;height:100%;border-radius:13px;overflow:hidden;
+  background:linear-gradient(180deg,#EAF4FB,#FBF4E6);display:flex;flex-direction:column;padding:9px 7px 9px}
+
+/* ===== 04 Shop：KDP 紙の本 ===== */
+.pv-kdp{background:linear-gradient(180deg,#FBEFD6 0%,#F3E0BE 100%);position:relative;
+  display:flex;align-items:flex-end;justify-content:center;padding:0;overflow:hidden}
+.kdp-scene{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:9px;padding:0 14px 18px}
+.kdp-spines{display:flex;align-items:flex-end;gap:3px}
+.ksp{width:14px;height:96px;border-radius:2px 3px 0 0;position:relative;
+  box-shadow:inset -3px 0 4px rgba(0,0,0,.16),inset 2px 0 2px rgba(255,255,255,.16),0 6px 11px rgba(120,80,20,.2);
+  display:flex;align-items:center;justify-content:center}
+.ksp em{font-style:normal;writing-mode:vertical-rl;font-size:7px;font-weight:800;letter-spacing:.09em;color:rgba(255,255,255,.92)}
+.sp2{background:#1F72A8}.sp3{background:#C9622B;height:102px}.sp4{background:#2F7D5C}
+.sp5{background:#8B5FA8;height:100px}.sp6{background:#B8452F}
+.kdp-cover{position:relative;width:86px;height:116px;margin-left:2px;flex:0 0 auto}
+.kc-pages{position:absolute;top:3px;bottom:5px;right:-5px;width:8px;border-radius:0 2px 2px 0;
+  background:repeating-linear-gradient(180deg,#fff 0 1.4px,#E4DAC4 1.4px 2.8px);
+  transform:skewY(-16deg);transform-origin:top left;box-shadow:2px 3px 6px rgba(120,90,40,.22)}
+.kc-face{position:absolute;inset:0;z-index:2;border-radius:3px 6px 6px 3px;
+  background:linear-gradient(158deg,#1C6091,#123F5F);border-left:4px solid #0D3350;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 8px;text-align:center;
+  box-shadow:0 16px 28px rgba(19,60,90,.42)}
+.kc-sun{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#FFE79A,#F7A928 70%);box-shadow:0 2px 8px rgba(240,129,20,.5)}
+.kc-face b{font-family:var(--serif);font-weight:700;font-size:13px;line-height:1.02;letter-spacing:.03em;color:#fff}
+.kc-face em{font-style:italic;font-family:var(--serif);font-weight:600;font-size:9.5px;color:#FFE1A8;line-height:1}
+.kc-face small{font-size:7px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:rgba(255,255,255,.72)}
+.kdp-shelf{position:absolute;left:6%;right:6%;bottom:9px;height:7px;border-radius:3px;z-index:0;
+  background:linear-gradient(180deg,#CE9E5C,#A97C3C);box-shadow:0 6px 12px rgba(120,80,30,.32)}
 </style>
 </head>
 <body>
-<nav><div class="nv">
-  <a class="logo" href="/">☀️ OHAYO NIHONGO</a>
-  <a href="/diary/">Diary</a><a href="/my-flashcards/">Flashcards</a><a href="#shop">Shop</a>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
+  <div class="nav-links"><a href="#play">Play</a><a href="#learn">Learn</a><a href="#read">Read</a><a href="#shop">Shop</a></div>
+  <a class="nav-cta" href="#email" data-oa-event="email_signup">Join free</a>
 </div></nav>
 
-<div class="hero">
-  <div class="tag">One minute of real Japanese,<br><i>every morning.</i></div>
-  <div class="subtag">A slow listening diary from Tokyo · JLPT N5–N3</div>
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="hero-text">
+      <h1>One minute of real Japanese,<br><i>every morning.</i></h1>
+      <p class="sub">A slow listening diary from Tokyo — and a whole shelf of free ways to play with it.</p>
+      <div class="hero-cta">
+        <a class="btn btn-sun" href="#play" data-oa-event="play_game"><span class="ico-play"></span>Play free</a>
+        <a class="btn btn-ghost" href="#read">Today's diary</a>
+      </div>
+      <div class="hero-note"><span>178 diaries</span><span>3 free games</span><span>JLPT N5–N3</span><span>100% free to start</span></div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ 01 遊ぶ棚 ============ -->
+<section class="shelf" id="play"><div class="wrap">
+  <div class="shelf-head">
+    <div class="t"><span class="mag-no">01</span>
+      <span class="tt"><span class="eyebrow">Play</span><h2>Pick tonight's game</h2></span></div>
+  </div>
+  <p class="caption"><b>Editor's pick</b>Start with Kana Quest — our most-loved game, straight from the meadow at sunrise.</p>
+  <div class="row">
+
+    <a class="panel" href="/play/kana-quest/" data-oa-event="play_game">
+      <div class="pv pv-kq">
+        <img class="kq-logo" src="/img/lp/logo_kanaquest.png" alt="">
+        <img class="kq-char" src="/img/lp/char_run.png" alt="">
+        <span class="kq-cta">START<span class="ico-play"></span></span>
+      </div>
+      <div class="band"><span class="bn"><b>Kana Quest</b><span>Run &amp; jump to collect kana</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/play/kana-drop/" data-oa-event="play_game">
+      <div class="pv pv-kd">
+        <img class="kd-logo" src="/img/lp/logo_kanadrop.png" alt="">
+        <img class="kd-tile kd-t1" src="/img/lp/kd_tile_block.png" alt="">
+        <img class="kd-tile kd-t2" src="/img/lp/kd_tile_block.png" alt="">
+        <img class="kd-tile kd-t3" src="/img/lp/kd_tile_block.png" alt="">
+        <span class="kd-glyph kd-g1">あ</span>
+        <span class="kd-glyph kd-g2">き</span>
+        <span class="kd-glyph kd-g3">ら</span>
+      </div>
+      <div class="band"><span class="bn"><b>Kana Drop</b><span>Catch the falling kana</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/play/sentence-builder/" data-oa-event="play_game">
+      <div class="pv pv-sb">
+        <div class="sb-wordmark">SENTENCE<br>BUILDER</div>
+        <div class="sb-line"><span class="chip done">今朝は</span><span class="chip done">コーヒーを</span></div>
+        <div class="sb-line"><span class="chip">飲みました</span><span class="sb-slot">＿＿＿</span></div>
+      </div>
+      <div class="band"><span class="bn"><b>Sentence Builder</b><span>Snap words into sentences</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/adventure/" data-oa-event="play_game">
+      <div class="pv pv-adv">
+        <div class="adv-kick">Interactive story</div>
+        <div class="adv-h">Diary <em>Adventure</em></div>
+        <div class="adv-chips"><span class="adv-chip gold">CH.1 FREE</span><span class="adv-chip">Earn XP</span></div>
+      </div>
+      <div class="band"><span class="bn"><b>Diary Adventure</b><span>Choose your morning</span></span><span class="tagpill tp-free">Ch.1 free</span></div>
+    </a>
+
+  </div>
+</div></section>
+
+<a class="guide" href="#learn"><img src="/img/lp/char_front.png" alt=""><span class="bubble">遊んだら、つぎは まなぶ！ Keep the streak</span></a>
+
+<!-- ============ 02 学ぶ棚 ============ -->
+<section class="shelf" id="learn"><div class="wrap">
+  <div class="shelf-head">
+    <div class="t"><span class="mag-no">02</span>
+      <span class="tt"><span class="eyebrow">Learn</span><h2>Build the habit, step by step</h2></span></div>
+  </div>
+  <p class="caption"><b>The ladder</b>Start free, keep climbing — grab the Starter Pack, play the web app, then run the daily loop.</p>
+  <div class="row">
+
+    <a class="panel panel-wide" href="#email" data-oa-event="email_signup">
+      <div class="pv pv-stb">
+        <div class="b-ticket">
+          <div class="b-stub">
+            <span class="b-notch t"></span>
+            <span class="b-notch bt"></span>
+            <img class="b-icon" src="/img/lp/brand_icon.png" alt="">
+          </div>
+          <div class="b-face">
+            <span class="b-kick">The Morning Invitation</span>
+            <span class="b-title">7-Day <span class="nw"><em>Starter</em> Pack</span></span>
+            <span class="b-admit"><span class="box">Admit</span><span class="you">You</span></span>
+          </div>
+        </div>
+        <span class="stb-seal">Free</span>
+        <span class="stb-cta">Get it free →</span>
+      </div>
+      <div class="band"><span class="bn"><b>Starter Pack</b><span>7 mornings · free to your inbox</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/my-flashcards/">
+      <div class="pv pv-fc">
+        <div class="fc-card">
+          <div class="fc-top"><span class="streak">Day 12 streak</span><span class="xp">+50 XP</span></div>
+          <div class="fc-jp">ゆで卵を 食べました。</div>
+          <div class="fc-btns"><span class="fc-b play">Audio</span><span class="fc-b">EN</span></div>
+        </div>
+      </div>
+      <div class="band"><span class="bn"><b>Flashcards Web App</b><span>No install · add to home screen</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/diary/">
+      <div class="pv pv-pod pv-loop">
+        <div class="lbl">How it works</div>
+        <div class="loop-steps">
+          <span class="ls"><b>1</b><em>きく</em><small>Listen</small></span>
+          <span class="ls-arr">→</span>
+          <span class="ls"><b>2</b><em>まねる</em><small>Shadow</small></span>
+          <span class="ls-arr">→</span>
+          <span class="ls"><b>3</b><em>よむ</em><small>Read</small></span>
+        </div>
+        <div class="en">One minute a day — that's the whole method.</div>
+      </div>
+      <div class="band"><span class="bn"><b>The Morning Loop</b><span>Three steps, one minute</span></span><span class="tagpill tp-free">Method</span></div>
+    </a>
+
+  </div>
+</div></section>
+
+<!-- ============ 03 読む棚 ============ -->
+<section class="shelf" id="read"><div class="wrap">
+  <div class="shelf-head">
+    <div class="t"><span class="mag-no">03</span>
+      <span class="tt"><span class="eyebrow">Read</span><h2>178 mornings in the Reading Room</h2></span></div>
+  </div>
+  <p class="caption"><b>Keep reading</b>Loved a game? Every one was built from these one-minute morning diaries.</p>
+  <div class="row">
+
+    <a class="panel panel-wide" href="/diary/">
+      <div class="pv pv-pod pv-today">
+        <!-- LP_EXCERPT_START -->
+        <div class="lbl">From today's diary — きょうの いっぷん</div>
+        <div class="kanji">今日は、朝からずっとお腹が空いてしかたありません。</div>
+        <div class="hira">きょうは、あさからずっとおなかがすいてしかたありません。</div>
+        <div class="en">I was hungry all day—my stomach kept growling at 10:30 AM, 2 PM, and even after dinner at night.</div>
+        <!-- LP_EXCERPT_END -->
+        <div class="pod-btns"><span class="pod-sp"><span class="ico-play"></span>Spotify</span><span class="pod-yt"><span class="ico-play"></span>YouTube</span></div>
+      </div>
+      <div class="band"><span class="bn"><b>Today's 1-minute diary</b><span>New every morning</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/diary/178/">
+      <div class="pv pv-dy">
+        <div class="dy-kick">Reading Room · No.178</div>
+        <div class="dy-h">A Real Rainy Season This Year</div>
+        <div class="dy-jp">今年は本当に梅雨らしい梅雨</div>
+        <div class="dy-read">Read the excerpt</div>
+      </div>
+      <div class="band"><span class="bn"><b>Newest page</b><span>No.178 · read + listen</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+    <a class="panel" href="/diary/">
+      <div class="pv pv-arch">
+        <div class="arch-page">
+          <div class="arch-pg-top"><span class="ac-sun"></span><span class="arch-pg-title">No.178 · Rainy season</span></div>
+          <div class="arch-pg-lines"><i></i><i></i><i class="s"></i></div>
+          <span class="arch-pg-read">Browse all 178 →</span>
+        </div>
+        <div class="arch-cap"><b>178</b>short excerpts — read a few lines, then listen</div>
+      </div>
+      <div class="band"><span class="bn"><b>The Archive</b><span>Short excerpts · No.1–178</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+
+  </div>
+</div></section>
+
+<!-- ============ メールCTA帯 ============ -->
+<section id="email"><div class="wrap">
+  <div class="email-cta">
+    <div class="k">Email · Free</div>
+    <h3>Morning letters from Tokyo</h3>
+    <p>Get a note when a new morning-diary episode is out — plus small tips to make your practice stick.</p>
+    <a class="btn btn-sun" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" data-oa-event="email_signup" target="_blank" rel="noopener">Subscribe free</a>
+  </div>
+</div></section>
+
+<!-- ============ 04 買う棚 ============ -->
+<section class="shelf" id="shop"><div class="wrap">
+  <div class="shelf-head">
+    <div class="t"><span class="mag-no">04</span>
+      <span class="tt"><span class="eyebrow">Shop</span><h2>Take the diary with you</h2></span></div>
+  </div>
+  <p class="caption"><b>Made from the diary</b>Every pack below is built from the same daily entries you just played with.</p>
+  <div class="row shop-lead">
+
+    <a class="panel" href="https://ohayonihongodaily.etsy.com/?section_id=58431119" target="_blank" rel="noopener" data-oa-event="buy_etsy">
+      <div class="pv pv-shopimg">
+        <div class="pv-fallback"><small>Etsy</small>10-Day Audio<br>+ Script Pack</div>
+        <img class="pv-img" src="/img/lp/etsy_ap_vol01.png" alt="10-Day Audio + Script Pack" loading="lazy" onerror="this.style.display='none'">
+      </div>
+      <div class="band"><span class="bn"><b>Audio + Script Packs</b><span>MP3 + PDF · download</span></span><span class="tagpill tp-shop">Etsy</span></div>
+    </a>
+
+    <a class="panel" href="https://ohayonihongodaily.etsy.com/?section_id=58431109" target="_blank" rel="noopener" data-oa-event="buy_etsy">
+      <div class="pv pv-fcapp">
+        <span class="app-badge">Web app</span>
+        <div class="phone">
+          <span class="phone-notch"></span>
+          <div class="fcapp-screen">
+            <img class="fcapp-shot" src="/img/lp/fcapp_real.png" alt="Daily Flashcard app" loading="lazy" onerror="this.style.display='none'">
+          </div>
+        </div>
+      </div>
+      <div class="band"><span class="bn"><b>Flashcards App</b><span>Vol.1–30 · for your phone</span></span><span class="tagpill tp-shop">Etsy</span></div>
+    </a>
+
+    <a class="panel" href="https://www.amazon.com/s?k=OHAYO+NIHONGO+Diary+Reader" target="_blank" rel="noopener">
+      <div class="pv pv-kdp">
+        <span class="kdp-tag">The diary, now in print</span>
+        <div class="kdp-scene">
+          <div class="kdp-spines">
+            <span class="ksp sp2"><em>FEB</em></span>
+            <span class="ksp sp3"><em>MAR</em></span>
+            <span class="ksp sp4"><em>APR</em></span>
+            <span class="ksp sp5"><em>MAY</em></span>
+            <span class="ksp sp6"><em>JUN</em></span>
+          </div>
+          <div class="kdp-cover">
+            <span class="kc-pages"></span>
+            <div class="kc-face">
+              <span class="kc-sun"></span>
+              <b>OHAYO<br>NIHONGO</b>
+              <em>Diary Reader</em>
+              <small>Vol.1 · January</small>
+            </div>
+          </div>
+        </div>
+        <span class="kdp-shelf"></span>
+      </div>
+      <div class="band"><span class="bn"><b>Diary Reader</b><span>Paperback &amp; Kindle</span></span><span class="tagpill tp-shop">Out now</span></div>
+    </a>
+
+    <a class="panel" href="/anki/">
+      <div class="pv pv-anki">
+        <div class="anki-topbar">
+          <span class="anki-deck-name">OHAYO NIHONGO · Jan</span>
+          <span class="anki-tag">Audio review deck</span>
+        </div>
+        <div class="anki-counts">
+          <span class="ac new">10</span>
+          <span class="ac learn">3</span>
+          <span class="ac due">25</span>
+        </div>
+        <div class="anki-card">
+          <div class="anki-q">あめが ふって います。</div>
+          <span class="anki-audio" aria-hidden="true"></span>
+        </div>
+        <div class="anki-show">Show Answer</div>
+      </div>
+      <div class="band"><span class="bn"><b>Anki Decks</b><span>Native audio · for Anki</span></span><span class="tagpill tp-soon">Soon</span></div>
+    </a>
+
+  </div>
+
+  <div class="shop-feature">
+    <a class="panel" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">
+      <div class="pv pv-dnp pv-dnp-lg">
+        <span class="dn-badge">Paid upgrade</span>
+        <div class="dn-paper">
+          <div class="dn-mast">Daily<em>+</em></div>
+          <div class="dn-rule"></div>
+          <div class="dn-jp">今朝は 寒い 朝でした。</div>
+          <div class="dn-en">A cold morning today.</div>
+        </div>
+        <span class="dn-sparkle" aria-hidden="true"></span>
+        <div class="dn-list"><span>Full morning script</span><span>English translation</span><span>Every single morning</span></div>
+      </div>
+      <div class="band"><span class="bn"><b>Daily+ Newsletter</b><span>Full script + English · daily</span></span><span class="tagpill tp-soon">Soon</span></div>
+    </a>
+
+  </div>
+</div></section>
+
+<div class="wrap buy-fallback">
+  <a class="ghost-pill" href="#email" data-oa-event="email_signup">Not buying yet? Get free morning letters <span class="gp-arr">→</span></a>
 </div>
 
 <div class="wrap">
+  <div class="zh" lang="zh-Hans"><b>中文学习者请看这里</b> — OHAYO NIHONGO 每天更新1分钟慢速日语日记。小红书搜索：<b>OHAYO NIHONGO</b>（每天更新带平假名字幕的短视频）。想要免费学习资料？私信：<b>「にっき」</b></div>
+</div>
 
-  <div class="today">
-    <!-- LP_EXCERPT_START -->
-    <div class="lbl">From the Diary #192 — きょうの いっぷん</div>
-    <div class="kanji">今日は、朝からずっとお腹が空いてしかたありません。</div>
-    <div class="hira">きょうは、あさからずっとおなかがすいてしかたありません。</div>
-    <div class="en">I was hungry all day—my stomach kept growling at 10:30 AM, 2 PM, and even after dinner at night.</div>
-    <!-- LP_EXCERPT_END -->
-    <div class="listen-label">Listen to today's 1-minute diary</div>
-    <div class="listenBtns">
-      <a class="btn-sp" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener"><img src="img/spotify_icon_white.svg" alt="">Spotify</a>
-      <a class="btn-yt" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener"><img src="img/youtube_icon_white.svg" alt="">YouTube</a>
-    </div>
-    <!-- LP_EPTHUMB_START -->
-    <a class="ep-thumb" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">
-      <img src="img/ep-sample.jpg" alt="OHAYO NIHONGO Episode 192 — So Hungry I Could Eat All Day" loading="lazy">
-    </a>
-    <p class="ep-cap">Episode 192 — a new diary every morning ☀️</p>
-    <!-- LP_EPTHUMB_END -->
-    <a class="today-link" href="/diary/">Read today's diary →</a>
-  </div>
-
-  <a class="btn-starter" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Get the Free Starter Pack</a>
-  <div class="starterCard" id="starter">
-    <div class="sc">Free diary audio · scripts · sample flashcards — to your inbox</div>
-    <iframe class="substack" src="https://ohayonihongo.substack.com/embed" frameborder="0" scrolling="no" title="Subscribe to OHAYO NIHONGO"></iframe>
-    <p class="embed-note">No spam. Just a little Japanese, every morning. ☀️</p>
-  </div>
-
-  <h2 class="sec">How it works</h2>
-  <div class="sect">Three small steps, one quiet habit</div>
-  <div class="steps">
-    <div class="step"><div class="n">1</div><b>LISTEN</b><span>a 1-minute diary</span></div>
-    <div class="arw">→</div>
-    <div class="step"><div class="n">2</div><b>SHADOW</b><span>repeat aloud</span></div>
-    <div class="arw">→</div>
-    <div class="step"><div class="n">3</div><b>READ</b><span>kanji &amp; hiragana</span></div>
-  </div>
-
-  <h2 class="sec">The Reading Room</h2>
-  <div class="sect">178 daily diaries — read a little, listen free</div>
-  <a class="feat" href="/diary/178/">
-    <div class="feat-tag">Latest · No. 178</div>
-    <b>A Real Rainy Season This Year</b>
-    <span class="fj">今年は本当に梅雨らしい梅雨</span>
-    <span class="fp">▶ Read today's excerpt &amp; listen</span>
-  </a>
-  <div class="drow">
-    <a class="dcard pal-peach" href="/diary/177/"><div class="n">No. 177</div><b>I Woke Up Thinking Thursday Was Saturday</b><span>木曜日を土曜日だと思い込んだ朝</span></a>
-    <a class="dcard pal-sage" href="/diary/176/"><div class="n">No. 176</div><b>The Girl Who Works Three Registers</b><span>レジ3台を使いこなす女の子</span></a>
-  </div>
-  <a class="allbtn" href="/diary/">Browse all 178 excerpts →</a>
-
-  <h2 class="sec">Learn &amp; Play</h2>
-  <div class="sect">A flashcard app, a story game &amp; Anki decks</div>
-  <div class="play">
-
-    <a class="pcard app" href="/my-flashcards/">
-      <div class="hd">
-        <span class="oscr">Tap to preview</span>
-        <div class="pl">📱 Web App · add to home screen</div>
-        <b>My Flashcards</b>
-      </div>
-      <div class="pv pv-fc" aria-hidden="true">
-        <div class="pvtop"><span>🔥 3-day streak · 120 XP</span><span class="lvl">Sunrise Beginner</span></div>
-        <div class="fc-card">
-          <div class="fc-jp">今朝は 本当に 寒い 朝でした。</div>
-          <div class="fc-tg"><i class="on">🔊 Audio</i><i>ひらがな</i><i>EN</i></div>
-        </div>
-      </div>
-      <div class="body">
-        <span class="ds">A real flashcard <b style="display:inline;font:inherit;color:inherit">app</b> in your browser — flip audio · hiragana · English, and it keeps your streak &amp; XP. Start free, add decks you own.</span>
-        <span class="cta">Open the app →</span>
-      </div>
-    </a>
-
-    <a class="pcard game" href="/adventure/">
-      <div class="hd">
-        <span class="oscr">Tap to play</span>
-        <div class="pl">🎮 Story Game · Chapter 1 free</div>
-        <b>Diary Adventure</b>
-      </div>
-      <div class="pv pv-adv" aria-hidden="true">
-        <div class="pvttl"><b>Story <i>Map</i></b><span class="xp">🔥 0 · ★ 0 XP</span></div>
-        <div class="adv-row free"><span class="ic">☀️</span><span class="tt">Winter Morning<em>Free · Chapter 1</em></span><span class="go">▶</span></div>
-        <div class="adv-row lock"><span class="ic">⛄</span><span class="tt">Snowy Morning<em>Season 1 · Locked</em></span><span class="lk">🔒</span></div>
-      </div>
-      <div class="body">
-        <span class="ds">A choose-your-morning <b style="display:inline;font:inherit;color:inherit">game</b> built from real diary days — pick a path, unlock chapters, earn XP. Play “Winter Morning” free.</span>
-        <span class="cta">Play free →</span>
-      </div>
-    </a>
-
-    <a class="pcard anki" href="/anki/">
-      <div class="hd">
-        <span class="oscr">New</span>
-        <div class="pl">🔁 Anki Decks · spaced repetition</div>
-        <b>Anki Decks</b>
-      </div>
-      <div class="body">
-        <span class="ds">Spaced-repetition decks with native audio — 50 diary sentences per month, ready for the free Anki app. Try real cards on the deck page.</span>
-        <span class="cta">See the decks →</span>
-      </div>
-    </a>
-
-  </div>
-
-  <div class="deeper" id="shop" style="margin-top:44px">
-    <div class="dl">Go Deeper</div>
-    <div class="dt">Take the diary with you</div>
-    <div class="ds">Full scripts, audio &amp; study tools — made from the same daily diary.</div>
-    <div class="packs">
-      <a class="pk hot" href="https://ohayonihongodaily.etsy.com/?section_id=58431119" target="_blank" rel="noopener"><div class="badge">START HERE</div><div class="pl">Etsy</div><b>Audio + Script Packs</b><span>10-day sets · PDF booklet &amp; MP3 audio</span></a>
-      <a class="pk" href="https://ohayonihongodaily.etsy.com/?section_id=58431109" target="_blank" rel="noopener"><div class="pl">Etsy</div><b>Flashcard Apps (Vol. 1–30)</b><span>Phone-ready flashcards from every diary entry</span></a>
-      <div class="pk soon"><div class="pl">Amazon · Coming soon</div><b>Diary Reader Paperbacks</b><span>Monthly volumes · kanji, hiragana &amp; notes pages</span></div>
-      <a class="pk soon" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener"><div class="pl">Substack · Coming soon</div><b>Daily+</b><span>The full script &amp; translation in your inbox, every morning</span></a>
-    </div>
-  </div>
-
-  <section class="zh" id="zh" lang="zh-Hans">
-    <h2>🇨🇳 中文学习者请看这里</h2>
-    <p>OHAYO NIHONGO 每天更新 <span class="hl">1分钟慢速日语日记</span>，是日本人的真实日常，不是教材，也不是AI生成。适合 N5–N3 的日语学习者做听力和跟读练习。</p>
-    <p>📕 小红书 / bilibili 搜索：<span class="hl">OHAYO NIHONGO</span>（带平假名字幕视频每日更新）</p>
-    <p>💬 想要免费学习资料？在小红书私信我们：<span class="hl">「にっき」</span></p>
-  </section>
-
-  <div class="oa-email-cta" style="box-sizing:border-box; max-width:560px; margin:32px auto; padding:28px 22px; background:var(--oa-cream, #FAF7F1); color:var(--oa-ink, #1E1E1E); border:1px solid var(--oa-gold, #B98F2F); border-radius:16px; text-align:center; font-family:'DM Sans', -apple-system, 'Helvetica Neue', Arial, sans-serif; line-height:1.6;">
-    <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--oa-gold, #B98F2F); margin-bottom:10px;">Email &middot; Free</div>
-    <h3 style="margin:0 0 10px; font-family:'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-weight:600; font-size:clamp(22px, 6vw, 26px); color:var(--oa-heading, #1C1C1C); letter-spacing:.01em;">&#9728;&#65039; Morning letters from Tokyo</h3>
-    <p style="margin:0 auto 18px; max-width:420px; font-size:14px; color:var(--oa-sub, #4A4A4A);">Get a note when a new morning-diary episode is out &mdash; plus small tips to make your Japanese practice stick.</p>
-    <a href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" data-oa-event="email_signup" style="display:inline-block; box-sizing:border-box; max-width:100%; padding:12px 30px; background:var(--oa-navy, #134B70); color:#FFFFFF; font-size:14px; font-weight:600; letter-spacing:.04em; text-decoration:none; border-radius:48px; white-space:nowrap;">Subscribe free</a>
-    <div style="margin-top:10px; font-size:12px; color:var(--oa-sub, #4A4A4A);">No spam. Unsubscribe anytime.</div>
-  </div>
-
-  <footer>
-    <div class="socials">
+<footer>
+  <div class="wrap">
+    <div class="soc">
+      <a href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener">Spotify</a>
+      <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
       <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
       <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
       <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Substack</a>
-      <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener">Etsy</a>
+      <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener" data-oa-event="buy_etsy">Etsy</a>
     </div>
     <p>New diary every morning on Spotify &amp; YouTube — “OHAYO NIHONGO”</p>
     <p>© 2026 OHAYO NIHONGO · A real diary, read slowly, every morning.</p>
-    <p style="margin-top:8px"><a href="/legal/">特定商取引法に基づく表記 / Legal</a></p>
-  </footer>
+    <p style="margin-top:8px"><a class="legal" href="/legal/">特定商取引法に基づく表記 / Legal</a></p>
+  </div>
+</footer>
 
-</div>
 <script src="/assets/analytics.js"></script>
 </body>
 </html>
