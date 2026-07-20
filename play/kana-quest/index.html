@@ -35,23 +35,39 @@
     font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     color:var(--ink); touch-action:none; user-select:none; -webkit-user-select:none;
   }
-  #wrap{position:fixed; inset:0; display:flex; flex-direction:column;}
+  /* IMMERSIVE FULL-BLEED LAYOUT — the canvas fills the whole viewport and the
+     header / footer float on top of the artwork (no cream bands). */
+  #wrap{position:fixed; inset:0;}
   header{
-    flex:0 0 auto; background:var(--cream); border-bottom:1px solid var(--line);
-    padding:6px 14px; display:flex; align-items:baseline; gap:10px; z-index:5;
+    position:absolute; top:0; left:0; right:0; z-index:12;
+    background:transparent; border-bottom:none;
+    padding:calc(6px + env(safe-area-inset-top,0px)) 14px 6px;
+    display:flex; align-items:baseline; gap:10px; pointer-events:none;
   }
+  header > *{pointer-events:auto;}
   header a.brand{
     font-family:Georgia,"Times New Roman",serif; font-weight:700; font-size:15px;
-    color:var(--ink); text-decoration:none; letter-spacing:.2px;
+    color:var(--cream); text-decoration:none; letter-spacing:.2px;
+    text-shadow:0 1px 4px rgba(19,75,112,.75), 0 0 12px rgba(19,75,112,.45);
   }
-  header .sub{font-size:11px; color:var(--sub);}
-  header .spacer{flex:1;}
+  header .sub{font-size:11px; color:rgba(250,247,241,.9);
+    text-shadow:0 1px 4px rgba(19,75,112,.75);}
+  header .spacer{flex:1; pointer-events:none;}
   #muteBtn{
-    background:var(--paper); border:1px solid var(--line); border-radius:8px;
-    font-size:14px; padding:3px 9px; cursor:pointer; color:var(--ink);
+    background:rgba(19,75,112,.42); border:1px solid rgba(250,247,241,.4); border-radius:999px;
+    font-size:14px; padding:5px 11px; cursor:pointer; color:var(--cream);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
     margin-right:54px; /* keep clear of the fixed ☰ menu (menu.js) */
   }
-  #stage{position:relative; flex:1 1 auto; min-height:0;}
+  /* soft scrims so header / footer text stays legible over any part of the art */
+  #wrap::before, #wrap::after{
+    content:""; position:absolute; left:0; right:0; z-index:4; pointer-events:none;
+  }
+  #wrap::before{top:0; height:96px;
+    background:linear-gradient(180deg, rgba(19,75,112,.42) 0%, rgba(19,75,112,.16) 55%, rgba(19,75,112,0) 100%);}
+  #wrap::after{bottom:0; height:76px;
+    background:linear-gradient(0deg, rgba(19,75,112,.46) 0%, rgba(19,75,112,.16) 60%, rgba(19,75,112,0) 100%);}
+  #stage{position:absolute; inset:0;}
   canvas{display:block; width:100%; height:100%; touch-action:none;}
 
   /* ---- overlays ---- */
@@ -62,7 +78,7 @@
   }
   .card{
     background:rgba(228,244,252,.9); border:1px solid rgba(255,255,255,.65);
-    border-radius:22px; padding:26px 24px; max-width:340px; width:100%;
+    border-radius:22px; padding:18px 22px; max-width:340px; width:100%;
     box-shadow:0 18px 50px rgba(19,75,112,.25);
     backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
   }
@@ -72,43 +88,92 @@
     letter-spacing:.5px;
   }
   .card .logoImg{ display:block; width:100%; max-width:100%; height:auto; margin:2px auto 4px; }
-  #overChar{ display:block; height:130px; width:auto; margin:0 auto 6px; }
+  #overChar{ display:block; height:70px; width:auto; margin:0 auto 6px; }
+  /* 終了画面のタイポは3ゲーム共通スケール:
+     見出し20px / スコア数値22px / ラベル12.5px / Best 11px / 主CTA 14.5px / 従ボタン12px
+     （"Game Over" のキッカーは廃止したので上余白も詰める） */
+  #overOverlay .card{ padding-top:14px; padding-bottom:16px; }
+  /* 終了画面のピルは kana-drop と同寸に揃える */
+  #overOverlay .ctaLp{ font-size:13px; padding:10px 12px; margin-top:11px; }
+  #overOverlay .ctaLp .sub2{ font-size:10px; }
+  #overOverlay .cta2{ font-size:12px; padding:8px 16px; margin-top:8px; }
+  #overOverlay #overChar{ height:58px; }
+  #overOverlay .card h1{ font-size:21px; margin:0 0 2px; }
   .card .kicker{font-size:12px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:6px;}
-  .card p.how{font-size:13.5px; line-height:1.5; color:var(--sub); margin:12px 0 18px;}
-  .modeRow{display:flex; gap:10px; justify-content:center; margin-bottom:18px;}
+  .card p.how{font-size:12.5px; line-height:1.45; color:var(--sub); margin:9px 0 13px;}
+  .modeRow{display:flex; gap:9px; justify-content:center; margin-bottom:13px;}
   .modeBtn{
     flex:1; background:#FFFDF7; border:2px solid #134B70; border-radius:10px;
-    padding:10px 6px; cursor:pointer; font-size:13px; color:#134B70; font-weight:700;
+    padding:7px 6px; cursor:pointer; font-size:11.5px; color:#134B70; font-weight:700;
     transition:border-color .15s, background .15s;
   }
-  .modeBtn .jp{display:block; font-size:19px; color:var(--ink); margin-bottom:2px;
+  .modeBtn .jp{display:block; font-size:16px; color:var(--ink); margin-bottom:1px;
     font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;}
   .modeBtn.active{border-color:var(--sun); background:#FFF7EA; color:var(--ink);}
   /* button language aligned with Kana Drop (navy 2px border + navy 3D drop shadow) */
   .cta{
     display:block; width:100%; color:#3a2e08;
     background:#FFC93C;
-    border:2px solid #134B70; border-radius:14px; padding:14px; font-size:16px; font-weight:800;
+    border:2px solid #134B70; border-radius:14px; padding:11px; font-size:14px; font-weight:800;
     cursor:pointer; letter-spacing:.4px;
     box-shadow:0 4px 0 #134B70;
     transition:transform .06s, box-shadow .06s;
   }
   .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
   .cta2{
+    /* 従ボタンは3ゲーム共通寸法（font 12px / padding 9px 18px / 高さ約37px） */
     display:block; width:100%; margin-top:10px; background:#FFFDF7;
-    border:2px solid #134B70; border-radius:14px; padding:11px;
-    font-size:14px; font-weight:800; color:#134B70; text-decoration:none;
-    letter-spacing:.4px;
+    border:2px solid #134B70; border-radius:14px; padding:9px 18px;
+    font-size:12px; font-weight:700; color:#134B70; text-decoration:none;
+    letter-spacing:.4px; font-family:inherit; cursor:pointer;
+    box-shadow:0 3px 0 #134B70;
+    transition:transform .06s, box-shadow .06s;
+  }
+  .cta2 .sub2{display:block; font-size:10.5px; font-weight:600; color:var(--sub); margin-top:2px; letter-spacing:.2px;}
+  .cta2:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
+  /* primary LP return CTA — the strongest button on the game-over card */
+  .ctaLp{
+    display:block; width:100%; margin-top:14px; text-align:center;
+    background:linear-gradient(180deg,#FFD76B,#FFC93C); color:#3A2E08;
+    border:2px solid #134B70; border-radius:14px; padding:13px 12px;
+    font-family:inherit; font-size:14.5px; font-weight:800; line-height:1.25;
+    white-space:nowrap;
+    text-decoration:none; letter-spacing:.2px; cursor:pointer;
     box-shadow:0 4px 0 #134B70;
     transition:transform .06s, box-shadow .06s;
   }
-  .cta2 .sub2{display:block; font-size:11px; font-weight:600; color:var(--sub); margin-top:2px; letter-spacing:.2px;}
-  .cta2:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
-  .statline{font-size:13px; color:var(--sub); margin:14px 0 0;}
+  .ctaLp .sub2{
+    display:block; margin-top:3px; font-size:10.5px; font-weight:700;
+    color:#5C4A12; letter-spacing:.2px;
+    font-family:'Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+  }
+  .ctaLp:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
+  /* ------------------------------------------------------------------
+     LINEスタンプ誘導（販売申請の許可後に有効化）
+     許可が下りたら、主CTA（.ctaLp）の直後に次の1行を追加するだけ:
+       <a class="cta-sub-line" data-oa-event="get_sticker"
+          href="<スタンプ販売URL>" target="_blank" rel="noopener">
+         Get the OHAYO sun stickers →<span class="sub2">LINEスタンプ はんばいちゅう</span>
+       </a>
+     ※CSSは下に用意済み。レイアウト調整は不要。
+     ------------------------------------------------------------------ */
+  .cta-sub-line{
+    display:block; width:100%; margin-top:9px; text-align:center;
+    background:transparent; color:var(--sub);
+    border:1px solid var(--line); border-radius:12px; padding:9px 12px;
+    font-family:inherit; font-size:12.5px; font-weight:700; line-height:1.25;
+    text-decoration:none; cursor:pointer;
+  }
+  .cta-sub-line .sub2{
+    display:block; margin-top:3px; font-size:10.5px; font-weight:600; color:var(--sub);
+    font-family:'Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+  }
+  .cta-sub-line:active{transform:translateY(1px);}
+  .statline{font-size:12.5px; color:var(--sub); margin:11px 0 0;}
   .statline b{color:var(--ink); font-size:22px; font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN',sans-serif; font-weight:800;}
-  .best{font-size:12px; color:var(--gold); margin-top:2px;}
+  .best{font-size:11px; color:var(--gold); margin-top:2px;}
   .share{
-    margin-top:14px; font-size:12px; color:var(--sub); background:var(--cream);
+    margin-top:12px; font-size:11px; color:var(--sub); background:var(--cream);
     border:1px dashed var(--line); border-radius:8px; padding:9px 10px; line-height:1.4;
     cursor:pointer; word-break:break-word;
   }
@@ -119,7 +184,8 @@
   #hud{
     position:absolute; top:0; left:0; right:0; z-index:6; pointer-events:none;
     display:flex; align-items:flex-start; justify-content:flex-end;
-    padding:10px 66px 10px 12px; gap:10px; /* right padding clears the fixed ☰ menu */
+    /* top padding clears the floating header (brand + mute) that now overlays the canvas */
+    padding:calc(46px + env(safe-area-inset-top,0px)) 66px 10px 12px; gap:10px;
   }
   #promptBox{
     pointer-events:none;
@@ -128,7 +194,7 @@
     /* panel art is 800:450 with a sun ornament poking above the top edge —
        extra top padding keeps the label off the sun & inside the cream face */
     padding:34px 34px 18px; text-align:center; min-width:170px;
-    position:absolute; left:50%; top:58px; transform:translateX(-50%);
+    position:absolute; left:50%; top:calc(94px + env(safe-area-inset-top,0px)); transform:translateX(-50%);
   }
   #promptBox.pop{animation:promptPop .35s ease;}
   @keyframes promptPop{
@@ -147,7 +213,7 @@
   #hearts{font-size:15px; letter-spacing:1px; line-height:0;}
   #hearts img{height:12px; vertical-align:middle;}
   #jumpHint{
-    position:absolute; bottom:calc(14px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
+    position:absolute; bottom:calc(30px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
     background:url("img/jump_button.png") no-repeat center/cover;
     color:var(--ink); border:none; border-radius:50%;
     width:78px; height:78px; font-size:14px; font-weight:800; cursor:pointer; letter-spacing:.5px;
@@ -164,11 +230,14 @@
     text-shadow:0 2px 8px rgba(0,0,0,.25);
   }
   footer{
-    flex:0 0 auto; background:var(--cream); border-top:1px solid var(--line);
-    text-align:center; padding:5px 5px calc(5px + env(safe-area-inset-bottom,0px)); font-size:11px; z-index:5;
+    position:absolute; left:0; right:0; bottom:0; z-index:12;
+    background:transparent; border-top:none; pointer-events:none;
+    text-align:center; padding:5px 96px calc(6px + env(safe-area-inset-bottom,0px)) 12px;
+    font-size:11px;
   }
-  footer a{color:var(--sub); text-decoration:none;}
-  footer a:hover{color:var(--gold);}
+  footer a{color:rgba(250,247,241,.92); text-decoration:none; pointer-events:auto;
+    text-shadow:0 1px 4px rgba(19,75,112,.8), 0 0 12px rgba(19,75,112,.5);}
+  footer a:hover{color:var(--yellow);}
   /* landscape phones: too short to play — ask to rotate (game pauses via JS) */
   #rotateOverlay{
     position:absolute; inset:0; z-index:20; display:none;
@@ -181,12 +250,19 @@
     #rotateOverlay{display:flex;}
   }
   @media (max-width:480px){
-    header .sub{display:none;}
+    /* ヘッダーは kana-drop と同じ体裁: 1行目=ロゴ+ミュート / 2行目=サブタイトル */
+    header{flex-wrap:wrap; align-items:center; row-gap:0;}
+    header a.brand{order:1; white-space:nowrap; font-size:14px;}
+    header .spacer{order:2;}
+    #muteBtn{order:3;}
+    header .sub{display:block; order:4; width:100%; margin-top:-1px; font-size:10.5px;}
     /* score/hearts/level in ONE row at top-right; prompt box sits BELOW it */
     #hudRight{flex-direction:row; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:5px;}
     .hudPill{font-size:12px; padding:2px 9px;}
     #hearts{font-size:13px;}
-    #promptBox{top:54px;}
+    /* full-bleed layout: the HUD row is pushed below the floating header,
+       so the prompt panel drops with it */
+    #promptBox{top:calc(90px + env(safe-area-inset-top,0px));}
   }
   @media (max-width:400px){
     .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
@@ -232,7 +308,6 @@
     <!-- START overlay -->
     <div id="startOverlay" class="overlay">
       <div class="card">
-        <div class="kicker">OHAYO Nihongo</div>
         <img class="logoImg" src="img/logo_kanaquest.png" alt="Kana Quest">
         <p class="how">Run with the morning sun. <b>Jump</b> to grab the kana that matches the prompt — dodge the wrong ones. Tap / Space to jump.</p>
         <div class="modeRow">
@@ -247,15 +322,14 @@
     <!-- GAME OVER overlay -->
     <div id="overOverlay" class="overlay hidden">
       <div class="card">
-        <div class="kicker">Game Over</div>
         <img id="overChar" src="img/sticker_otsukare.png" alt="">
         <h1 id="overTitle"></h1>
         <p class="statline">Score<br><b id="finalScore">0</b></p>
         <div class="best" id="finalBest">Best: 0</div>
-        <button class="cta" id="replayBtn" style="margin-top:18px;">PLAY AGAIN</button>
-        <a class="cta2" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">
-          PLAY TOMORROW<span class="sub2">また明日 — practice every morning</span>
+        <a class="ctaLp" data-oa-event="play_to_lp" href="../../?utm_source=game&amp;utm_medium=cta&amp;utm_campaign=play&amp;utm_content=kanaquest">
+          Read today's diary<span class="sub2">きょうの にっきを よんでみる？</span>
         </a>
+        <button class="cta2" id="replayBtn">PLAY AGAIN</button>
         <div class="share" id="shareLine">Tap to copy your score line</div>
       </div>
     </div>
@@ -298,7 +372,7 @@
 
   // ======================= WEBAUDIO SFX =======================
   const Sfx = (function(){
-    let ctx=null, muted=false;
+    let ctx=null, muted=(localStorage.getItem('kq_muted')==='1');
     function ensure(){
       if(!ctx){
         try{ ctx = new (window.AudioContext||window.webkitAudioContext)(); }
@@ -322,12 +396,14 @@
     // ---- BGM: OHAYO NIHONGO theme (bgm.mp3 = main-video BGM2 loop) ----
     // Looped via WebAudio buffer + GainNode at a whisper — GainNode volume
     // works on iOS (the <audio> volume property does not).
-    const BGM_GAIN = 0.03;   // barely audible under the SFX
+    // ブランド接触点としてBGMを「うっすら聴こえる」レベルに（2026-07-20 オーナー指示で 0.03→0.09）
+    // ポッドキャストと同じテーマ曲なので、毎日聴く人ほど記憶に残る。SFXは邪魔しない範囲で。
+    const BGM_GAIN = 0.09;
     let bgmOn=false, bgmBuf=null, bgmSrc=null, bgmGainNode=null, bgmLoading=false;
     function loadBgm(){
       if(bgmBuf || bgmLoading) return;
       bgmLoading=true;
-      fetch("bgm.mp3")
+      fetch("bgm.mp3?v=2")
         .then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); })
         .then(ab=>{
           const c=ensure(); if(!c) throw 0;
@@ -1019,9 +1095,11 @@
 
   // mute
   const muteBtn=document.getElementById("muteBtn");
+  if(Sfx.isMuted()) muteBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>';
   muteBtn.addEventListener("click",(e)=>{
     e.stopPropagation();
     const m=!Sfx.isMuted(); Sfx.setMuted(m);
+    try{ localStorage.setItem('kq_muted', m?'1':'0'); }catch(e){}
     muteBtn.innerHTML = m
       ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>'
       : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>';

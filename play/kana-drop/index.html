@@ -40,41 +40,58 @@
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{margin:0;padding:0;height:100%;}
+/* IMMERSIVE FULL-BLEED LAYOUT — the canvas (which paints bg_main.png itself)
+   fills the whole viewport and the header / footer float on top of it.
+   No cream bands, no inset card frame. */
+html{-webkit-text-size-adjust:100%;background:#2b4d6e;}
 body{
-  background:var(--cream); color:var(--ink);
+  background:transparent; color:var(--ink);
   font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
-  overflow:hidden; overscroll-behavior:none;
-  height:100dvh;
-  display:flex; flex-direction:column; align-items:center;
-  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
+  overflow:hidden;
+  height:100%;
 }
 a{color:var(--navy);text-decoration:none;}
 .serif{font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;}
 .kana{font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;font-weight:700;}
 
-.wrap{width:100%;max-width:460px;height:100%;display:flex;flex-direction:column;padding:8px 12px;}
+.wrap{position:fixed;inset:0;}
 
-/* header */
-header{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 2px 8px;}
+/* soft scrims so header / footer text stays legible over any part of the art */
+.wrap::before,.wrap::after{content:"";position:absolute;left:0;right:0;z-index:4;pointer-events:none;}
+.wrap::before{top:0;height:104px;
+  background:linear-gradient(180deg, rgba(19,75,112,.44) 0%, rgba(19,75,112,.16) 58%, rgba(19,75,112,0) 100%);}
+.wrap::after{bottom:0;height:76px;
+  background:linear-gradient(0deg, rgba(19,75,112,.46) 0%, rgba(19,75,112,.16) 60%, rgba(19,75,112,0) 100%);}
+
+/* header — floats over the canvas */
+header{position:absolute;top:0;left:0;right:0;z-index:12;pointer-events:none;
+  display:flex;align-items:center;justify-content:space-between;gap:8px;
+  padding:calc(6px + env(safe-area-inset-top,0px)) 14px 8px;}
+header > *{pointer-events:auto;}
 .brand{display:flex;flex-direction:column;line-height:1.1;}
-.brand a{font-weight:800;font-size:15px;letter-spacing:.2px;color:var(--ink);}
-.brand small{color:var(--sub);font-size:11px;margin-top:1px;}
-.brand .accent{display:block;height:2px;width:34px;background:var(--gold);border-radius:2px;margin-top:3px;}
-#muteBtn{border:1px solid var(--line);background:var(--paper);border-radius:10px;
-  width:40px;height:40px;font-size:18px;cursor:pointer;display:grid;place-items:center;}
+.brand a{font-weight:800;font-size:15px;letter-spacing:.2px;color:var(--cream);
+  text-shadow:0 1px 4px rgba(19,75,112,.78), 0 0 12px rgba(19,75,112,.45);}
+.brand small{color:rgba(250,247,241,.9);font-size:11px;margin-top:1px;
+  text-shadow:0 1px 4px rgba(19,75,112,.78);}
+.brand .accent{display:block;height:2px;width:34px;background:var(--yellow);border-radius:2px;margin-top:3px;}
+#muteBtn{border:1px solid rgba(250,247,241,.4);background:rgba(19,75,112,.42);border-radius:999px;
+  width:38px;height:38px;font-size:18px;cursor:pointer;display:grid;place-items:center;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+  color:var(--cream);}
 @media (max-width:600px){
   /* keep the mute button clear of the fixed ☰ menu (menu.js, top:14 right:14) */
   #muteBtn{margin-right:54px;}
 }
 
-/* card / stage */
-.stage{flex:1;position:relative;background:var(--paper);border:1px solid var(--line);
-  border-radius:14px;box-shadow:0 6px 18px rgba(28,28,28,.06);overflow:hidden;
-  display:flex;flex-direction:column;min-height:0;}
+/* stage — now the full viewport, frameless */
+.stage{position:absolute;inset:0;background:transparent;border:none;
+  border-radius:0;box-shadow:none;overflow:hidden;
+  display:flex;flex-direction:column;}
 
-/* HUD — floating pills over the game background */
-.hud{position:absolute;top:0;left:0;right:0;z-index:3;pointer-events:none;
-  display:flex;justify-content:space-between;align-items:flex-start;padding:8px 8px;gap:6px;}
+/* HUD — floating pills over the game background (offset to clear the header) */
+.hud{position:absolute;top:0;left:0;right:0;z-index:6;pointer-events:none;
+  display:flex;justify-content:space-between;align-items:flex-start;gap:6px;
+  padding:calc(58px + env(safe-area-inset-top,0px)) 10px 0;}
 .hud .cell{display:flex;flex-direction:column;align-items:center;line-height:1.05;
   background:rgba(255,251,240,.86);border:1.5px solid var(--navy);border-radius:14px;
   padding:4px 12px;min-width:58px;box-shadow:0 2px 6px rgba(19,75,112,.18);}
@@ -87,16 +104,38 @@ canvas{display:block;flex:1;width:100%;touch-action:none;min-height:0;}
 /* overlays — transparent so the canvas (bg / final board) shows through */
 .overlay{position:absolute;inset:0;background:transparent;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:16px;z-index:5;}
+  text-align:center;z-index:5;
+  padding:calc(58px + env(safe-area-inset-top,0px)) 16px calc(34px + env(safe-area-inset-bottom,0px));
+  /* カードが stage より高くなっても中身に届くようにする */
+  overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .overlay.hidden{display:none;}
+/* ④ スタート画面のカードは HUD ピルより必ず下に出す。
+   flex-start + auto マージンで「余白があれば中央・無ければHUDの下」に収まる。 */
+#startScreen{justify-content:flex-start;
+  padding-top:calc(118px + env(safe-area-inset-top,0px));}
+#startScreen .card{margin-top:auto;margin-bottom:auto;}
+/* 終了画面も同じく HUD より下に。ピルを小さくして card 全体を圧縮する */
+#overScreen{justify-content:flex-start;
+  padding-top:calc(114px + env(safe-area-inset-top,0px));}
+#overScreen .card{margin-top:auto;margin-bottom:auto;padding:14px 16px;}
+#overScreen .stamp{height:58px;}
+#overScreen .overtitle{font-size:18px;}
+#overScreen .scoreline{font-size:12px;}
+#overScreen .scoreline b{font-size:19px;}
+#overScreen .best{font-size:10.5px;margin-bottom:10px;}
+#overScreen .btn.lp{font-size:13px;padding:10px 12px;margin-bottom:7px;}
+#overScreen .btn.lp .sub2{font-size:10px;margin-top:3px;}
+#overScreen #againBtn,#overScreen #shareBtn,#overScreen #menuBtn{
+  font-size:12px;padding:8px 16px;box-shadow:0 3px 0 var(--navy);}
+#overScreen .modes{gap:7px;}
 /* white floating card that holds overlay content */
 .card{background:rgba(255,255,255,.95);border:1.5px solid var(--navy);border-radius:16px;
-  padding:20px 18px;width:100%;max-width:320px;
+  padding:16px 18px;width:100%;max-width:320px;
   display:flex;flex-direction:column;align-items:center;
   box-shadow:0 8px 24px rgba(19,75,112,.28);}
 .overlay h1{font-size:40px;margin:0 0 2px;color:var(--ink);letter-spacing:.5px;}
 .overlay .tag{color:var(--gold);font-weight:700;letter-spacing:2px;font-size:12px;text-transform:uppercase;margin-bottom:14px;}
-.overlay p.how{color:var(--sub);font-size:13px;max-width:300px;margin:0 0 20px;line-height:1.5;}
+.overlay p.how{color:var(--sub);font-size:12.5px;max-width:300px;margin:0 0 14px;line-height:1.45;}
 .modes{display:flex;flex-direction:column;gap:10px;width:100%;max-width:280px;}
 .btn{font-family:inherit;font-size:16px;font-weight:800;border-radius:14px;padding:14px 18px;
   cursor:pointer;border:2px solid var(--navy);background:#FFFDF7;color:var(--navy);
@@ -105,35 +144,86 @@ canvas{display:block;flex:1;width:100%;touch-action:none;min-height:0;}
 .btn.primary{background:var(--yellow);border-color:var(--navy);color:#3a2e08;box-shadow:0 4px 0 var(--navy);}
 .btn.primary:active{box-shadow:0 1px 0 var(--navy);}
 .btn.sub{font-size:14px;font-weight:700;color:var(--navy);background:#FFFDF7;}
+/* ① スタート画面のモード選択は小さめに（kana-quest と同寸） */
+#startScreen .btn{font-size:14px;padding:10px 16px;}
+#startScreen .modes{gap:8px;}
+#startScreen .modehint{margin-top:6px;}
+/* primary LP return CTA — the strongest button on the game-over card */
+.btn.lp{
+  display:block;text-align:center;text-decoration:none;line-height:1.25;
+  background:linear-gradient(180deg,#FFD76B,var(--yellow));color:#3A2E08;
+  border-color:var(--navy);font-size:14.5px;padding:13px 12px;
+  margin-bottom:8px;white-space:nowrap;
+}
+/* 従ボタンは3ゲーム共通寸法（font 12px / padding 9px 18px / 高さ約37px） */
+#againBtn,#shareBtn,#menuBtn{font-size:12px;font-weight:700;padding:9px 18px;box-shadow:0 3px 0 var(--navy);}
+.btn.lp .sub2{
+  display:block;margin-top:3px;font-size:10.5px;font-weight:700;color:#5C4A12;
+  font-family:'Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+}
 .btn:disabled{opacity:.45;cursor:default;box-shadow:0 4px 0 rgba(19,75,112,.4);}
+  /* ------------------------------------------------------------------
+     LINEスタンプ誘導（販売申請の許可後に有効化）
+     許可が下りたら、主CTA（.btn.lp）の直後に次の1行を追加するだけ:
+       <a class="cta-sub-line" data-oa-event="get_sticker"
+          href="<スタンプ販売URL>" target="_blank" rel="noopener">
+         Get the OHAYO sun stickers →<span class="sub2">LINEスタンプ はんばいちゅう</span>
+       </a>
+     ※CSSは下に用意済み。レイアウト調整は不要。
+     ------------------------------------------------------------------ */
+.cta-sub-line{
+  display:block;text-align:center;text-decoration:none;line-height:1.25;
+  margin-top:2px;background:transparent;color:var(--sub);
+  border:1px solid var(--line);border-radius:12px;padding:9px 12px;
+  font-family:inherit;font-size:12.5px;font-weight:700;box-shadow:none;cursor:pointer;
+}
+.cta-sub-line .sub2{
+  display:block;margin-top:3px;font-size:10.5px;font-weight:600;color:var(--sub);
+  font-family:'Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+}
 .btn:disabled:active{transform:none;box-shadow:0 4px 0 rgba(19,75,112,.4);}
 .modehint{font-size:11px;color:var(--sub);margin-top:2px;}
 .gover h1{color:var(--sun-deep);}
 /* overlay art */
-.ovlogo{width:80%;max-width:280px;height:auto;margin:0 0 6px;display:block;
+/* スタート画面はロゴ＋説明＋モード選択のみ（サンくん画像は廃止）。
+   ロゴ下の余白で、無くなったマスコット分のバランスを取る。 */
+.ovlogo{width:72%;max-width:240px;height:auto;margin:2px 0 10px;display:block;
   filter:drop-shadow(0 3px 6px rgba(19,75,112,.22));}
-.mascot{height:90px;width:auto;margin:0 0 10px;display:block;}
 /* game-over sticker (KANA Quest parity: the sticker itself carries the message) */
-.stamp{height:130px;width:auto;margin:2px 0 6px;display:block;}
-.overtitle{color:var(--sun-deep);font-weight:800;font-size:26px;margin:0 0 4px;letter-spacing:.5px;}
+/* 終了画面のタイポは3ゲーム共通スケール:
+   見出し20px / スコア数値22px / ラベル12.5px / Best 11px / 主CTA 14.5px / 従ボタン12px */
+.stamp{height:70px;width:auto;margin:0 0 6px;display:block;}
+.gover .card{padding-top:16px;}
+.overtitle{color:var(--sun-deep);font-weight:800;font-size:20px;margin:0 0 3px;letter-spacing:.4px;}
 .overtitle:empty{display:none;}
-.scoreline{font-size:15px;color:var(--sub);margin:2px 0 4px;}
-.scoreline b{color:var(--ink);font-size:30px;font-family:Georgia,serif;}
-.best{font-size:13px;color:var(--gold);margin-bottom:18px;}
-.copied{font-size:12px;color:var(--navy);height:16px;margin-top:8px;}
+.scoreline{font-size:12.5px;color:var(--sub);margin:2px 0 3px;}
+.scoreline b{color:var(--ink);font-size:22px;font-family:Georgia,serif;}
+.best{font-size:11px;color:var(--gold);margin-bottom:14px;}
+.copied{font-size:11px;color:var(--navy);height:15px;margin-top:7px;}
+/* 低い画面（iPhone SE 等）ではゲームオーバーカードを詰めて、
+   LINEスタンプ誘導を足しても全ボタンが stage 内に収まるようにする */
+@media (max-height:600px){
+  .gover .stamp{height:56px;margin:0 0 4px;}
+  .gover .best{margin-bottom:10px;}
+  .gover .modes{gap:7px;}
+  .gover .card{padding-top:14px;}
+}
 
-footer{padding:8px 4px 4px;text-align:center;font-size:11px;color:var(--sub);}
-footer a{color:var(--sub);border-bottom:1px solid var(--line);}
+footer{position:absolute;left:0;right:0;bottom:0;z-index:12;pointer-events:none;
+  padding:6px 12px calc(6px + env(safe-area-inset-bottom,0px));
+  text-align:center;font-size:11px;color:rgba(250,247,241,.92);
+  text-shadow:0 1px 4px rgba(19,75,112,.8), 0 0 12px rgba(19,75,112,.5);}
+footer a{color:var(--yellow);border-bottom:1px solid rgba(255,201,60,.6);pointer-events:auto;}
 </style>
 
 <div class="wrap">
   <header>
     <div class="brand">
-      <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">☀️ OHAYO NIHONGO</a>
+      <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><img src="img/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO NIHONGO</a>
       <small>Kana Drop · Free game</small>
       <span class="accent"></span>
     </div>
-    <button id="muteBtn" aria-label="Toggle sound">🔊</button>
+    <button id="muteBtn" aria-label="Toggle sound"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   </header>
 
   <div class="stage">
@@ -148,7 +238,6 @@ footer a{color:var(--sub);border-bottom:1px solid var(--line);}
     <div class="overlay" id="startScreen">
       <div class="card">
         <img class="ovlogo" src="img/logo_kanadrop.png" alt="Kana Drop">
-        <img class="mascot" src="img/char_front.png" alt="">
         <p class="how">Route each falling kana into the column of its <b>vowel</b> sound — tap a column, or use ← → and A/I/U/E/O.</p>
         <div class="modes">
           <button class="btn primary" data-mode="hira">ひらがな Hiragana</button>
@@ -162,13 +251,15 @@ footer a{color:var(--sub);border-bottom:1px solid var(--line);}
     <!-- GAME OVER -->
     <div class="overlay gover hidden" id="overScreen">
       <div class="card">
-        <div class="tag">Game Over</div>
         <img class="stamp" id="overStk" src="img/sticker_otsukare.png" alt="">
         <div class="overtitle" id="overTitle"></div>
         <div class="scoreline">Score <b id="finalScore">0</b></div>
         <div class="best" id="bestLine">Best 0</div>
         <div class="modes">
-          <button class="btn primary" id="againBtn">Play again</button>
+          <a class="btn lp" data-oa-event="play_to_lp" href="../../?utm_source=game&amp;utm_medium=cta&amp;utm_campaign=play&amp;utm_content=kanadrop">
+            Read today's diary<span class="sub2">きょうの にっきを よんでみる？</span>
+          </a>
+          <button class="btn sub" id="againBtn">Play again</button>
           <button class="btn sub" id="shareBtn">Share your score</button>
           <button class="btn sub" id="menuBtn">Change mode</button>
         </div>
@@ -244,6 +335,7 @@ let W=0,H=0,DPR=1;
 const COLS=5;
 let colW=0, cellH=0, rowsMax=0, labelH=0;
 let playW=0, playX0=0;   // play field is squeezed to the center so the bg art stays visible
+let topInset=0;          // reserved band at the top for the floating header + HUD pills
 
 function resize(){
   const r=cv.getBoundingClientRect();
@@ -251,11 +343,15 @@ function resize(){
   W=Math.max(200,r.width); H=Math.max(200,r.height);
   cv.width=Math.round(W*DPR); cv.height=Math.round(H*DPR);
   ctx.setTransform(DPR,0,0,DPR,0,0);
-  playW=W*0.76; playX0=(W-playW)/2;
+  playW=W*0.86; playX0=(W-playW)/2;
   colW=playW/COLS;
   labelH=Math.max(64,Math.min(88,H*0.15));
-  cellH=Math.min(colW*0.9, (H-labelH)/6.2);
-  rowsMax=Math.floor((H-labelH)/cellH);
+  // the canvas is now full-bleed behind the header + HUD; keep the stack and the
+  // spawn point below that band so tiles are never hidden by the overlaid UI.
+  topInset=Math.round(Math.min(150,Math.max(104,H*0.17)));
+  const fieldH=Math.max(120, H-labelH-topInset);
+  cellH=Math.min(colW*0.9, fieldH/5.2);
+  rowsMax=Math.floor(fieldH/cellH);
 }
 window.addEventListener('resize',()=>{ resize(); if(!running && imgReady) render(); });
 
@@ -283,7 +379,7 @@ function preload(done){
 }
 
 /* ---------- Audio ---------- */
-let AC=null, muted=false;
+let AC=null, muted=(localStorage.getItem('kd_muted')==='1');
 function audio(){ if(!AC){ try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){} } return AC; }
 function blip(freq,dur,type,vol){
   if(muted) return; const ac=audio(); if(!ac) return;
@@ -298,6 +394,58 @@ function sndCorrect(){ blip(523,0.09,'sine',0.16); setTimeout(()=>blip(784,0.12,
 function sndWrong(){ blip(150,0.18,'sawtooth',0.14); }
 function sndClear(){ [523,659,784,1046].forEach((f,i)=>setTimeout(()=>blip(f,0.16,'triangle',0.16),i*80)); }
 function sndOver(){ [392,330,262].forEach((f,i)=>setTimeout(()=>blip(f,0.3,'sine',0.16),i*140)); }
+
+/* ---------- BGM: OHAYO NIHONGO theme (bgm.mp3 = ポッドキャストと同じBGM2ループ) ----------
+   毎朝のポッドキャストと同じテーマ曲をゲーム中もうっすら流すことでブランド接触点を増やす。
+   iOSでは <audio> の volume が効かないため WebAudio の GainNode で音量を作る。
+   音量は kana-quest で確定した値に3ゲーム統一（2026-07-20）。 */
+const BGM_GAIN = 0.09;
+let bgmOn=false, bgmBuf=null, bgmSrc=null, bgmGainNode=null, bgmLoading=false;
+function loadBgm(){
+  if(bgmBuf || bgmLoading) return;
+  bgmLoading=true;
+  fetch("bgm.mp3?v=2")
+    .then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); })
+    .then(ab=>{ const c=audio(); if(!c) throw 0;
+      return new Promise((res,rej)=>c.decodeAudioData(ab,res,rej)); })
+    .then(buf=>{ bgmBuf=buf; bgmLoading=false; runBgm(); })
+    .catch(()=>{ bgmLoading=false; });
+}
+function runBgm(){
+  if(bgmSrc || muted || !bgmOn) return;
+  const c=audio(); if(!c) return;
+  if(!bgmBuf){ loadBgm(); return; }
+  bgmGainNode=c.createGain(); bgmGainNode.gain.value=BGM_GAIN;
+  bgmSrc=c.createBufferSource(); bgmSrc.buffer=bgmBuf; bgmSrc.loop=true;
+  bgmSrc.connect(bgmGainNode); bgmGainNode.connect(c.destination);
+  bgmSrc.start();
+}
+function haltBgm(){
+  if(bgmSrc){ try{bgmSrc.stop();}catch(e){} try{bgmSrc.disconnect();}catch(e){} bgmSrc=null; }
+  if(bgmGainNode){ try{bgmGainNode.disconnect();}catch(e){} bgmGainNode=null; }
+}
+function startBgm(){ bgmOn=true; runBgm(); }
+function stopBgm(){ bgmOn=false; haltBgm(); }
+/* iOSのアンロック: ユーザー操作の中で無音バッファと無音<audio>を再生し、
+   サイレントスイッチでWebAudioが消えないようにする（kana-quest と同方式） */
+let mediaUnlock=null;
+const SILENT_WAV="data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
+function unlockAudio(){
+  const c=audio(); if(!c) return;
+  if(c.state==="suspended") c.resume();
+  try{ const b=c.createBuffer(1,1,22050), s2=c.createBufferSource();
+       s2.buffer=b; s2.connect(c.destination); s2.start(0); }catch(e){}
+  try{
+    if(!mediaUnlock){ mediaUnlock=new Audio(SILENT_WAV); mediaUnlock.loop=true;
+      mediaUnlock.setAttribute("playsinline",""); }
+    mediaUnlock.play().catch(()=>{});
+  }catch(e){}
+  loadBgm();
+}
+["touchend","click"].forEach(ev=>window.addEventListener(ev, unlockAudio, {once:true, capture:true}));
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden && AC && AC.state==="suspended") AC.resume();
+});
 
 /* ---------- Game state ---------- */
 let mode='hira';
@@ -334,7 +482,7 @@ function speedForLevel(l){ return (H*0.28) * (1 + (l-1)*0.18); } // px per secon
 function spawn(){
   cur=pickTile();
   curCol=2;
-  fallY=labelH*0.5; // start below the HUD pills so the tile never spawns behind SCORE
+  fallY=topInset; // start below the floating header + HUD pills so the tile is always visible
   fallSpeed=speedForLevel(level);
 }
 
@@ -460,15 +608,15 @@ function render(){
   // subtle column separators
   for(let c=1;c<COLS;c++){
     ctx.strokeStyle='rgba(255,255,255,.25)'; ctx.lineWidth=1;
-    ctx.beginPath(); ctx.moveTo(playX0+c*colW+.5,0); ctx.lineTo(playX0+c*colW+.5,H-labelH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(playX0+c*colW+.5,topInset); ctx.lineTo(playX0+c*colW+.5,H-labelH); ctx.stroke();
   }
   // flash highlight
   if(flash.t>0 && flash.col>=0){
     ctx.fillStyle = flash.good?'rgba(247,169,40,'+(flash.t*0.5)+')':'rgba(198,90,74,'+(flash.t*0.5)+')';
-    ctx.fillRect(playX0+flash.col*colW,0,colW,H-labelH);
+    ctx.fillRect(playX0+flash.col*colW,topInset,colW,H-labelH-topInset);
   } else if(flash.t>0 && flash.col<0){
     ctx.fillStyle='rgba(255,201,60,'+(flash.t*0.35)+')';
-    ctx.fillRect(playX0,0,playW,H-labelH);
+    ctx.fillRect(playX0,topInset,playW,H-labelH-topInset);
   }
 
   // tile draw size: final on-screen width (incl. the 1.16 padding compensation)
@@ -628,8 +776,9 @@ window.addEventListener('keydown',e=>{
   else if(k==='o'){ moveTo(4); hardDrop(); }
 });
 
-// prevent page scroll/zoom on the stage
-document.querySelector('.stage').addEventListener('touchmove',e=>e.preventDefault(),{passive:false});
+// prevent page scroll/zoom on the stage — but ONLY while a game is running.
+// (常時 preventDefault だと、スタート/ゲームオーバー画面でページが一切スクロールできなくなる)
+document.querySelector('.stage').addEventListener('touchmove',e=>{ if(running) e.preventDefault(); },{passive:false});
 document.addEventListener('gesturestart',e=>e.preventDefault());
 
 /* ---------- Flow ---------- */
@@ -645,11 +794,13 @@ function startGame(m){
   document.getElementById('overScreen').classList.add('hidden');
   spawn();
   running=true; lastT=0;
+  startBgm();
   cancelAnimationFrame(animId);
   animId=requestAnimationFrame(step);
 }
 function gameOver(){
   running=false; cur=null;
+  stopBgm();
   cancelAnimationFrame(animId);
   // sticker + title tiers (KANA Quest parity): new best > zero score > near best > default
   const newBest = score>best && score>0;
@@ -679,7 +830,7 @@ document.getElementById('menuBtn').addEventListener('click',()=>{
   document.getElementById('startScreen').classList.remove('hidden');
 });
 document.getElementById('shareBtn').addEventListener('click',async()=>{
-  const txt='I scored '+score+' on Kana Drop ('+modeName(mode)+') 🎴 Learn Japanese kana at play.ohayonihongo.net → https://www.ohayonihongo.net/';
+  const txt='I scored '+score+' on Kana Drop ('+modeName(mode)+'). Learn Japanese kana at play.ohayonihongo.net → https://www.ohayonihongo.net/';
   const msg=document.getElementById('copiedMsg');
   try{ await navigator.clipboard.writeText(txt); msg.textContent='Copied! Paste it anywhere ✓'; }
   catch(e){
@@ -689,9 +840,14 @@ document.getElementById('shareBtn').addEventListener('click',async()=>{
 });
 
 // mute
+const SVG_SOUND_ON='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>';
+const SVG_SOUND_OFF='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>';
 const muteBtn=document.getElementById('muteBtn');
+if(muted) muteBtn.innerHTML=SVG_SOUND_OFF;
 muteBtn.addEventListener('click',()=>{
-  muted=!muted; muteBtn.textContent=muted?'🔇':'🔊';
+  muted=!muted; muteBtn.innerHTML=muted?SVG_SOUND_OFF:SVG_SOUND_ON;
+  try{ localStorage.setItem('kd_muted', muted?'1':'0'); }catch(e){}
+  if(muted) haltBgm(); else runBgm();
   if(!muted){ audio(); blip(660,0.08,'sine',0.14); }
 });
 
@@ -708,4 +864,5 @@ preload(()=>{
 resize();
 })();
 </script>
+<script src="/assets/analytics.js"></script>
 <script src="/menu.js" defer></script>

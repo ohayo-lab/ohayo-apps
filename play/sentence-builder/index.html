@@ -82,6 +82,8 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 
 /* STATS BAR */
 .stats{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:12px;}
+/* 終了画面ではゲーム操作UIを隠す（終了後にEnd等を押せてしまうのを防ぐ） */
+body.is-finished .stats{display:none;}
 .chip{
   font-size:11px;font-weight:700;background:rgba(19,75,112,.42);border:1px solid rgba(250,247,241,.28);
   color:rgba(250,247,241,.85);border-radius:999px;padding:5px 11px;white-space:nowrap;
@@ -89,6 +91,11 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 }
 .chip b{color:#FFFFFF;}
 .chip.streak b{color:var(--yellow);}
+/* streak marker — 絵文字を使わない小さな金のドット */
+.chip.streak .dot{
+  display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--yellow);margin-right:6px;vertical-align:1px;
+}
 .chip.best b{color:var(--yellow);}
 .chip.diff{cursor:pointer;user-select:none;}
 .chip.diff:active{transform:scale(.95);}
@@ -119,7 +126,7 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 
 /* ANSWER ROW */
 .answer{
-  min-height:58px;background:#FCFAF5;border:1.5px dashed var(--line);border-radius:12px;
+  min-height:50px;background:#FCFAF5;border:1.5px dashed var(--line);border-radius:12px;
   padding:8px;display:flex;flex-wrap:wrap;gap:7px;align-content:flex-start;
   margin-bottom:6px;transition:border-color .2s,background .2s;
 }
@@ -139,15 +146,15 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 
 /* DECK */
 .deck-label{font-size:9px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sub);margin:12px 0 7px;}
-.deck{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;min-height:46px;align-content:flex-start;}
+.deck{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:4px;min-height:40px;align-content:flex-start;}
 
 /* TILES */
 .tile{
-  font-family:var(--jp);font-size:17px;font-weight:600;line-height:1.2;
+  font-family:var(--jp);font-size:13px;font-weight:600;line-height:1.2;
   background:var(--paper);border:1.5px solid var(--line);color:var(--ink);
-  border-radius:11px;padding:11px 14px;cursor:pointer;user-select:none;
+  border-radius:10px;padding:7px 10px;cursor:pointer;user-select:none;
   transition:transform .12s ease,background .15s,border-color .15s,box-shadow .15s;
-  box-shadow:0 2px 5px rgba(28,28,28,.04);min-height:44px;
+  box-shadow:0 2px 5px rgba(28,28,28,.04);min-height:35px;
   display:inline-flex;align-items:center;
 }
 .tile:active{transform:scale(.93);}
@@ -163,7 +170,16 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
 .tile.spent{opacity:.28;pointer-events:none;}
 
 /* CONTROLS */
-.controls{display:flex;gap:8px;margin-top:14px;}
+/* 操作行はカード下端に固定。タイルを全部解答欄に置くと
+   解答欄とデッキが二重に積まれて縦に伸びるため、固定しないと
+   Check ボタンが画面外に出て答え合わせができなくなる。 */
+.controls{
+  display:flex;gap:8px;margin-top:14px;
+  position:sticky;bottom:0;z-index:6;
+  margin-left:-17px;margin-right:-17px;
+  padding:8px 17px 10px;
+  background:linear-gradient(180deg,rgba(250,247,241,0) 0,#FAF7F1 30%);
+}
 .btn{
   flex:1;border:1px solid var(--line);background:var(--paper);color:var(--sub);
   border-radius:12px;padding:12px 8px;font-family:var(--ui);font-size:13px;font-weight:700;
@@ -193,8 +209,9 @@ header{display:flex;justify-content:space-between;align-items:flex-start;gap:10p
   color:var(--gold);background:#FBF1D6;border:1px solid #ECD9A8;border-radius:999px;
   padding:4px 12px;margin-bottom:10px;
 }
-.reveal-kanji{position:relative;z-index:1;font-family:var(--jp);font-size:19px;font-weight:600;line-height:1.6;color:var(--ink);margin-bottom:7px;}
-.reveal-en{position:relative;z-index:1;font-family:var(--serif);font-style:italic;font-size:13.5px;line-height:1.5;color:var(--sub);}
+/* 正解表示の日本語は 19px → 11.5px（約60%）。行間を広げて可読性を確保する。 */
+.reveal-kanji{position:relative;z-index:1;font-family:var(--jp);font-size:11.5px;font-weight:700;line-height:1.75;color:var(--ink);margin-bottom:5px;}
+.reveal-en{position:relative;z-index:1;font-family:var(--serif);font-style:italic;font-size:11px;line-height:1.5;color:var(--sub);}
 .next-wrap{position:relative;z-index:1;margin-top:14px;}
 .btn-next{
   width:100%;border:none;background:var(--yellow);color:#111;border-radius:12px;
@@ -246,22 +263,60 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
 /* FINISH */
 .finish{display:none;flex-direction:column;align-items:center;text-align:center;flex:1;justify-content:center;padding:20px 6px;animation:cardIn .4s ease;}
 .finish.show{display:flex;}
+/* 終了画面のタイポは3ゲーム共通スケール:
+   見出し20px / 数値22px / ラベル12.5px 相当 / 主CTA 14.5px / 従ボタン12px */
 .finish-stamp{
-  width:170px;height:auto;margin-bottom:14px;
+  height:70px;width:auto;margin-bottom:9px;
   filter:drop-shadow(0 10px 24px rgba(18,69,106,.35));
   animation:heroRise .7s cubic-bezier(.22,1,.36,1);
 }
 @keyframes heroRise{from{opacity:0;transform:translateY(18px) scale(.97);}to{opacity:1;transform:translateY(0) scale(1);}}
-.finish-title{font-family:var(--serif);font-size:26px;font-weight:700;color:var(--navy);margin-bottom:4px;text-shadow:0 1px 8px rgba(250,247,241,.75);}
-.finish-jp{font-family:var(--jp);font-size:15px;color:#33536E;margin-bottom:12px;text-shadow:0 1px 6px rgba(250,247,241,.7);}
-.finish-stats{display:flex;gap:10px;justify-content:center;margin-bottom:16px;flex-wrap:wrap;}
-.fstat{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.7);border-radius:12px;padding:12px 18px;min-width:88px;box-shadow:0 6px 18px rgba(18,69,106,.18);}
+.finish-title{font-family:var(--serif);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:3px;text-shadow:0 1px 8px rgba(250,247,241,.75);}
+.finish-jp{font-family:var(--jp);font-size:12.5px;color:#33536E;margin-bottom:10px;text-shadow:0 1px 6px rgba(250,247,241,.7);}
+.finish-stats{display:flex;gap:9px;justify-content:center;margin-bottom:13px;flex-wrap:wrap;}
+.fstat{background:rgba(255,255,255,.92);border:1px solid rgba(255,255,255,.7);border-radius:12px;padding:9px 16px;min-width:82px;box-shadow:0 6px 18px rgba(18,69,106,.18);}
 .fstat .v{font-size:22px;font-weight:800;color:var(--navy);}
-.fstat .l{font-size:9px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-top:2px;}
+.fstat .l{font-size:8.5px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--sub);margin-top:2px;}
+/* primary LP return CTA — the strongest button on the finish screen */
+.btn-lp{
+  display:block;max-width:320px;width:100%;text-align:center;text-decoration:none;
+  border:2px solid var(--navy);border-radius:12px;padding:13px 18px;line-height:1.25;
+  background:linear-gradient(180deg,#FFD76B,var(--yellow));color:#3A2E08;
+  font-family:inherit;font-size:14.5px;font-weight:800;cursor:pointer;white-space:nowrap;
+  box-shadow:0 4px 0 var(--navy);
+  transition:transform .07s ease,box-shadow .07s ease;
+}
+.btn-lp .sub2{
+  display:block;margin-top:3px;font-size:10.5px;font-weight:700;color:#5C4A12;
+  font-family:var(--jp);
+}
+.btn-lp:active{transform:translateY(3px);box-shadow:0 1px 0 var(--navy);}
+  /* ------------------------------------------------------------------
+     LINEスタンプ誘導（販売申請の許可後に有効化）
+     許可が下りたら、主CTA（.btn-lp）の直後に次の1行を追加するだけ:
+       <a class="cta-sub-line" data-oa-event="get_sticker"
+          href="<スタンプ販売URL>" target="_blank" rel="noopener">
+         Get the OHAYO sun stickers →<span class="sub2">LINEスタンプ はんばいちゅう</span>
+       </a>
+     ※CSSは下に用意済み。レイアウト調整は不要。
+     ------------------------------------------------------------------ */
+.cta-sub-line{
+  display:block;max-width:320px;width:100%;margin-top:10px;text-align:center;text-decoration:none;
+  border:1px solid var(--line);border-radius:12px;padding:9px 14px;line-height:1.25;
+  background:transparent;color:var(--sub);
+  font-family:inherit;font-size:12.5px;font-weight:700;cursor:pointer;box-shadow:none;
+}
+.cta-sub-line .sub2{
+  display:block;margin-top:3px;font-size:10.5px;font-weight:600;color:var(--sub);
+  font-family:var(--jp);
+}
+.cta-sub-line:active{transform:scale(.98);}
+/* 従ボタンは3ゲーム共通寸法（font 12px / padding 9px 18px / 高さ約37px） */
 .btn-again{
-  border:none;background:var(--yellow);color:#111;border-radius:12px;
-  padding:14px 44px;font-size:15px;font-weight:800;cursor:pointer;
-  box-shadow:0 5px 16px rgba(255,201,60,.45);
+  margin-top:10px;background:transparent;color:var(--navy);border-radius:12px;
+  border:1.5px solid var(--navy);
+  padding:9px 18px;font-size:12px;font-weight:700;cursor:pointer;
+  font-family:inherit;
 }
 .btn-again:active{transform:scale(.97);}
 
@@ -273,8 +328,9 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
 @media (max-width:380px){
   .wrap{padding:10px 10px 14px;}
   .card{padding:14px 12px;}
+  .controls{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px;}
   .prompt{font-size:15px;}
-  .tile{font-size:15px;padding:9px 11px;border-radius:10px;}
+  .tile{font-size:13px;padding:7px 10px;border-radius:10px;}
   .answer{gap:6px;}
   .deck{gap:7px;}
 }
@@ -287,6 +343,34 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
   .controls{margin-top:10px;}
   .reveal{margin-top:10px;padding-top:10px;}
   footer{margin-top:10px;}
+}
+/* 背の低い端末（iPhone SE等・Safariのアドレスバーで実効高さが縮む場合）:
+   長文（タイル9〜10枚＝3行）でも Check ボタンまで画面内に収める。
+   これが無いと最終行のボタンが画面外に出てゲームが進められない。 */
+@media (max-height:620px){
+  .card{padding:13px 14px;}
+  .prompt{font-size:15px;line-height:1.4;}
+  .prompt-hint{margin-bottom:6px;}
+  .answer{min-height:48px;margin-bottom:4px;}
+  .deck{gap:6px;min-height:40px;}
+  .deck-label{margin:6px 0 4px;}
+  .tile{font-size:12px;padding:6px 9px;min-height:32px;border-radius:9px;}
+  .controls{margin-top:8px;margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px;}
+  /* カード上部（ヘッダー＋チップ列）も詰めて、盤面に高さを譲る */
+  .wrap{padding-top:8px;}
+  header{margin-bottom:6px;}
+  .brand-sub{display:none;}
+  .gold-rule{margin-bottom:6px;}
+  .stats{gap:5px;margin-bottom:6px;}
+  .chip,.shuffle-btn{font-size:11px;padding:5px 9px;}
+  /* 終了画面も圧縮: LP誘導CTAとPlay againを必ず画面内に収める */
+  .finish{padding:10px 6px;}
+  .finish-stamp{margin-bottom:7px;}
+  .finish-title{font-size:21px;}
+  .finish-jp{font-size:13px;margin-bottom:8px;}
+  .finish-stats{gap:8px;margin-bottom:10px;}
+  .fstat{padding:8px 14px;min-width:76px;}
+  .fstat .v{font-size:18px;}
 }
 </style>
 </head>
@@ -312,18 +396,18 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
 <div class="wrap">
   <header>
     <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">
-      <span class="brand-name">☀️ OHAYO <span>NIHONGO</span></span>
+      <span class="brand-name"><img src="img/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO <span>NIHONGO</span></span>
       <span class="brand-sub">Sentence Builder · Free game</span>
     </a>
-    <button class="mute-btn" id="muteBtn" aria-label="Toggle sound" title="Sound on/off">🔊</button>
+    <button class="mute-btn" id="muteBtn" aria-label="Toggle sound" title="Sound on/off"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   </header>
   <div class="gold-rule"></div>
 
   <div class="stats">
     <span class="chip">Round <b id="progNum">1</b> / <b id="progTot">30</b></span>
-    <span class="chip streak">🔥 <b id="streakN">0</b></span>
+    <span class="chip streak"><i class="dot"></i><b id="streakN">0</b></span>
     <span class="chip best">Best <b id="bestN">0</b></span>
-    <span class="chip diff" id="diffChip" title="Toggle difficulty">Auto ↕</span>
+    <span class="chip diff" id="diffChip" title="Toggle difficulty">Auto ↕︎</span>
     <span class="chip spacer"></span>
     <button class="shuffle-btn" id="shuffleBtn">⇄ Shuffle deck</button>
     <button class="shuffle-btn" id="endBtn" title="Finish and see your results">✕ End</button>
@@ -344,7 +428,7 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
     <div class="deck" id="deck"></div>
 
     <div class="controls">
-      <button class="btn" id="hintBtn">💡 Hint</button>
+      <button class="btn" id="hintBtn">Hint</button>
       <button class="btn" id="resetBtn">↺ Clear</button>
       <button class="btn btn-check" id="checkBtn" disabled>Check ✓</button>
     </div>
@@ -367,6 +451,9 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
       <div class="fstat"><div class="v" id="fSolved">0</div><div class="l">Solved</div></div>
       <div class="fstat"><div class="v" id="fBest">0</div><div class="l">Best streak</div></div>
     </div>
+    <a class="btn-lp" data-oa-event="play_to_lp" href="../../?utm_source=game&amp;utm_medium=cta&amp;utm_campaign=play&amp;utm_content=sentencebuilder">
+      Read today's diary<span class="sub2">きょうの にっきを よんでみる？</span>
+    </a>
     <button class="btn-again" id="againBtn">Play again ↻</button>
   </div>
 
@@ -413,7 +500,7 @@ var SENTENCES = [
   {en:"It is said that eating beans equal to your age brings good health.", kanji:"自分の年齢の数だけ豆を食べると、健康になると言われています。", chunks:["じぶんの","ねんれいの","かずだけ","まめを","たべると、","けんこうに","なると","いわれています。"]},
   {en:"Even I can't help feeling a little heavy-hearted on Sunday evenings.", kanji:"私も日曜日の夜は、どうしても心が少し重くなってしまいます。", chunks:["わたしも","にちようびの","よるは、","どうしても","こころが","すこし","おもくなって","しまいます。"]},
   {en:"So I decided to create one little treat for myself on Sunday nights.", kanji:"そこで私は、日曜日の夜に自分へのご褒美を一つ作ることにしました。", chunks:["そこで","わたしは、","にちようびの","よるに","じぶんへの","ごほうびを","ひとつ","つくることに","しました。"]},
-  {en:"Finding a little bit of spring inside my room made today a very happy day.", kanji:"部屋の中の小さな春を見つけて、今日はとても幸せな気分になりました。", chunks:["へやの","なか、","ちいさな","はるを","みつけて、","きょうは","とても","しあわせな","きぶんに","なりました。"]},
+  {en:"Finding a little bit of spring inside my room made today a very happy day.", kanji:"部屋の中の小さな春を見つけて、今日はとても幸せな気分になりました。", chunks:["へやの","なかの","ちいさな","はるを","みつけて、","きょうは","とても","しあわせな","きぶんに","なりました。"]},
   {en:"Since I started studying, my world has changed greatly.", kanji:"勉強を始めてから、私の世界は大きく変わりました。", chunks:["べんきょうを","はじめてから、","わたしの","せかいは","おおきく","かわりました。"]},
   {en:"Yesterday, I went to lunch with a friend.", kanji:"昨日は、お友達とランチに行きました。", chunks:["きのうは、","おともだちと","らんちに","いきました。"]},
   {en:"I'll try to remember to do it properly next time.", kanji:"次回は忘れないようにやってみようと思います。", chunks:["じかいは","わすれないように","やってみようと","おもいます。"]},
@@ -467,6 +554,57 @@ function beep(freq, dur, type, vol, when){
   o.connect(g); g.connect(actx.destination);
   o.start(t); o.stop(t + dur + 0.02);
 }
+/* ---------- BGM: OHAYO NIHONGO theme (bgm.mp3 = ポッドキャストと同じBGM2ループ) ----------
+   毎朝のポッドキャストと同じテーマ曲をゲーム中もうっすら流し、ブランド接触点を増やす。
+   iOSでは <audio> の volume が効かないため WebAudio の GainNode で音量を作る。
+   音量は kana-quest で確定した値に3ゲーム統一（2026-07-20）。 */
+var BGM_GAIN = 0.09;
+var bgmOn=false, bgmBuf=null, bgmSrc=null, bgmGainNode=null, bgmLoading=false;
+function loadBgm(){
+  if(bgmBuf || bgmLoading) return;
+  bgmLoading=true;
+  fetch("bgm.mp3?v=2")
+    .then(function(r){ if(!r.ok) throw 0; return r.arrayBuffer(); })
+    .then(function(ab){ audioInit(); if(!actx) throw 0;
+      return new Promise(function(res,rej){ actx.decodeAudioData(ab,res,rej); }); })
+    .then(function(buf){ bgmBuf=buf; bgmLoading=false; runBgm(); })
+    .catch(function(){ bgmLoading=false; });
+}
+function runBgm(){
+  if(bgmSrc || muted || !bgmOn) return;
+  audioInit(); if(!actx) return;
+  if(!bgmBuf){ loadBgm(); return; }
+  bgmGainNode=actx.createGain(); bgmGainNode.gain.value=BGM_GAIN;
+  bgmSrc=actx.createBufferSource(); bgmSrc.buffer=bgmBuf; bgmSrc.loop=true;
+  bgmSrc.connect(bgmGainNode); bgmGainNode.connect(actx.destination);
+  bgmSrc.start();
+}
+function haltBgm(){
+  if(bgmSrc){ try{bgmSrc.stop();}catch(e){} try{bgmSrc.disconnect();}catch(e){} bgmSrc=null; }
+  if(bgmGainNode){ try{bgmGainNode.disconnect();}catch(e){} bgmGainNode=null; }
+}
+function startBgm(){ bgmOn=true; runBgm(); }
+function stopBgm(){ bgmOn=false; haltBgm(); }
+/* iOSアンロック（kana-quest と同方式） */
+var mediaUnlock=null;
+var SILENT_WAV="data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
+function unlockAudio(){
+  audioInit(); if(!actx) return;
+  if(actx.state==="suspended") actx.resume();
+  try{ var b=actx.createBuffer(1,1,22050), s2=actx.createBufferSource();
+       s2.buffer=b; s2.connect(actx.destination); s2.start(0); }catch(e){}
+  try{
+    if(!mediaUnlock){ mediaUnlock=new Audio(SILENT_WAV); mediaUnlock.loop=true;
+      mediaUnlock.setAttribute("playsinline",""); }
+    mediaUnlock.play().catch(function(){});
+  }catch(e){}
+  loadBgm();
+}
+['touchend','click'].forEach(function(ev){
+  window.addEventListener(ev, unlockAudio, {once:true, capture:true}); });
+document.addEventListener('visibilitychange', function(){
+  if(!document.hidden && actx && actx.state==='suspended') actx.resume(); });
+
 function sfxTap(){ beep(520, 0.07, 'sine', 0.09); }
 function sfxPlace(){ beep(660, 0.08, 'triangle', 0.10); }
 function sfxRemove(){ beep(340, 0.07, 'sine', 0.08); }
@@ -530,7 +668,7 @@ function renderStats(){
   $('bestN').textContent = best;
   $('pfill').style.width = ((pos)/(TOTAL))*100 + '%';
   var dc = $('diffChip');
-  dc.textContent = (difficulty==='auto'?'Auto ↕':difficulty==='easy'?'Short →':'Long →');
+  dc.textContent = (difficulty==='auto'?'Auto ↕︎':difficulty==='easy'?'Short →':'Long →');
 }
 
 function loadSentence(){
@@ -750,6 +888,8 @@ function nextSentence(){
 }
 
 function showFinish(completed){
+  stopBgm();
+  document.body.classList.add('is-finished');
   elCard.style.display = 'none';
   $('fSolved').textContent = solved;
   $('fBest').textContent = best;
@@ -770,6 +910,7 @@ function showFinish(completed){
 }
 
 function restartGame(){
+  document.body.classList.remove('is-finished');
   solved = 0; streak = 0; pos = 0;
   buildDeckOrder();
   elFinish.classList.remove('show');
@@ -806,10 +947,13 @@ function cycleDiff(){
   localStorage.setItem('sb_diff', difficulty);
   reshuffleDeck();
 }
+var SVG_SOUND_ON='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>';
+var SVG_SOUND_OFF='<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>';
 function toggleMute(){
   muted = !muted;
   localStorage.setItem('sb_muted', muted ? '1' : '0');
-  $('muteBtn').textContent = muted ? '🔇' : '🔊';
+  if(muted) haltBgm(); else runBgm();
+  $('muteBtn').innerHTML = muted ? SVG_SOUND_OFF : SVG_SOUND_ON;
   if(!muted){ audioInit(); sfxTap(); }
 }
 
@@ -820,6 +964,7 @@ $('startBtn').addEventListener('click', function(){
   $('overlay').classList.add('hide');
   document.body.classList.add('playing');
   sfxTap();
+  startBgm();
 });
 $('checkBtn').addEventListener('click', checkAnswer);
 $('hintBtn').addEventListener('click', useHint);
@@ -835,10 +980,11 @@ $('muteBtn').addEventListener('click', toggleMute);
 document.addEventListener('gesturestart', function(e){ e.preventDefault(); });
 
 /* INIT */
-$('muteBtn').textContent = muted ? '🔇' : '🔊';
+$('muteBtn').innerHTML = muted ? SVG_SOUND_OFF : SVG_SOUND_ON;
 buildDeckOrder();
 loadSentence();
 </script>
+<script src="/assets/analytics.js"></script>
 <script src="/menu.js" defer></script>
 </body>
 </html>
