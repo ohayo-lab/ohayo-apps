@@ -142,7 +142,10 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .panel:active,.panel:hover{transform:translateY(-4px)}
 .pv{height:168px;position:relative;overflow:hidden;flex:0 0 auto}
 .band{padding:var(--band-pad);display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line)}
-.band .bn{min-width:0}
+.band{flex-wrap:nowrap}
+/* タグが長い時にバンドが2行へ折り返してパネルの縦が伸びるのを防ぐ。
+   .bn 側を縮ませ、タグは縮めない（タイトルは ellipsis で詰まる） */
+.band .bn{min-width:0;flex:1 1 auto}
 .band b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--brand-navy);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .band span{display:block;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
@@ -163,7 +166,17 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .pv-kq .kq-cta{position:absolute;bottom:12px;right:12px;background:linear-gradient(180deg,#FFD35C,#F7AE22);
   color:#1C1C1C;font-weight:800;font-size:12px;padding:8px 14px;border-radius:12px;box-shadow:0 3px 0 #DE9E1E;
   display:inline-flex;align-items:center;gap:6px}
-.pv-sb{background:url("/img/lp/sb_bg_main.jpg") center 78%/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:14px}
+.pv-sb{background:url("/img/lp/sb_bg_main.jpg") center 78%/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:14px;overflow:hidden}
+/* 06のゲームパネルは3列に並ぶため、幅が狭いと固定pxの中身が収まらず潰れる。
+   コンテナ幅に追従する単位にして、狭い時は自動で小さくなるようにする（2026-07-21実測で判明） */
+.pv-sb{container-type:inline-size}
+@container (max-width: 200px){
+  .sb-wordmark{font-size:clamp(11px,9cqw,19px);letter-spacing:.08em}
+  .pv-sb .chip{padding:4px 6px;font-size:clamp(8px,5.5cqw,14px);border-radius:8px}
+  .pv-sb .sb-slot{padding:4px 8px;font-size:clamp(8px,5cqw,13px);border-radius:8px}
+  .sb-line{gap:4px}
+  .pv-sb{gap:6px;padding:9px}
+}
 .sb-wordmark{font-family:var(--sans);font-weight:800;font-size:19px;line-height:1.08;letter-spacing:.14em;
   text-align:center;color:#fff;
   text-shadow:0 2px 0 rgba(19,75,112,.92),0 4px 0 rgba(19,75,112,.34),0 7px 16px rgba(9,40,66,.5)}
@@ -821,7 +834,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
           <div class="ank-hero-brand"><span class="ank-sun" aria-hidden="true"></span>OHAYO NIHONGO</div>
           <div class="ank-hero-h">Anki Decks</div>
         </div>
-        <span class="ank-tag">Try a real card · free</span>
+        <span class="ank-tag">Try a real card</span>
         <div class="ank-card">
           <div class="ank-brand">OHAYO NIHONGO</div>
           <span class="ank-play" aria-hidden="true"></span>
