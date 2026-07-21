@@ -5,9 +5,10 @@
   if (window.__ohayoMenu) return;
   window.__ohayoMenu = true;
 
+  // /diary/ アーカイブは動線から隔離済みのためメニューに出さない（2026-07-21オーナー確定）。
+  // ページとsitemapは残してあるのでSEOは維持される。ここに戻さないこと。
   var LINKS = [
     { href: "/",              label: "Home",       jp: "ホーム" },
-    { href: "/diary/",        label: "Diary",      jp: "にっき" },
     { href: "/my-flashcards/",label: "Flashcards", jp: "フラッシュカード" },
     { href: "/adventure/",    label: "Adventure",  jp: "アドベンチャー" },
     { href: "/#shop",         label: "Shop",       jp: "ショップ" }
