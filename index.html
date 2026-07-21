@@ -184,8 +184,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    左下のアプリアイコン＝バンドの「add to home screen」と噛み合わせるための絵。 */
 .pv-fc{background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 34%,#FFF0CE 72%,#FFDFA8 100%);
   display:block;padding:0;overflow:hidden}
-/* パネルの高さは168px。top:14+height:192=206 で下が33px切れていたので、中に収まる寸法にする */
-.fc-phone{position:absolute;left:50%;top:11px;width:80px;height:146px;z-index:3;
+/* 端末は下がパネルからはみ出して切れるのが正（.panel の overflow:hidden で切る）。
+   小さく収めると縦横比が玩具のように見えるため、実機に近い比率のまま大きく置く。
+   中身は小さくて読めないので、january版のスクショで問題ない（2026-07-21オーナー確定）。
+   ※これは不具合ではないので「切れている」を理由に縮めないこと */
+.fc-phone{position:absolute;left:50%;top:14px;width:106px;height:192px;z-index:3;
   transform:translateX(-50%) rotate(-5deg);border-radius:20px;background:#12293D;padding:6px 5px;
   box-shadow:0 20px 34px -14px rgba(9,30,50,.55),0 0 0 1px rgba(255,255,255,.2)}
 .fc-screen{position:relative;width:100%;height:100%;border-radius:15px;overflow:hidden;
@@ -202,7 +205,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .fc-home span{font-size:7.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#2C5A76}
 @media(max-width:600px){
   /* 236px幅では端末が左に寄ると HOME SCREEN のラベルに被るので、端末を少し右へ */
-  .fc-phone{left:57%;width:76px;height:138px}
+  .fc-phone{left:57%;width:100px;height:184px}
   .fc-home img{width:36px;height:36px}
   .fc-home span{font-size:7px;letter-spacing:.04em}
 }
