@@ -214,6 +214,11 @@ footer{position:absolute;left:0;right:0;bottom:0;z-index:12;pointer-events:none;
   text-align:center;font-size:11px;color:rgba(250,247,241,.92);
   text-shadow:0 1px 4px rgba(19,75,112,.8), 0 0 12px rgba(19,75,112,.5);}
 footer a{color:var(--yellow);border-bottom:1px solid rgba(255,201,60,.6);pointer-events:auto;}
+
+/* ===== OHAYO icon set — 絵文字不使用・CSS図形/インラインSVG ===== */
+.ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
+.ico-check{width:.32em;height:.6em;border:solid currentColor;border-width:0 .15em .15em 0;
+  transform:rotate(45deg);vertical-align:.04em;margin:0 .2em .1em .06em}
 </style>
 
 <div class="wrap">
@@ -832,9 +837,9 @@ document.getElementById('menuBtn').addEventListener('click',()=>{
 document.getElementById('shareBtn').addEventListener('click',async()=>{
   const txt='I scored '+score+' on Kana Drop ('+modeName(mode)+'). Learn Japanese kana at play.ohayonihongo.net → https://www.ohayonihongo.net/';
   const msg=document.getElementById('copiedMsg');
-  try{ await navigator.clipboard.writeText(txt); msg.textContent='Copied! Paste it anywhere ✓'; }
+  try{ await navigator.clipboard.writeText(txt); msg.innerHTML='Copied! Paste it anywhere <span class="ico ico-check" aria-hidden="true"></span>'; }
   catch(e){
-    if(navigator.share){ try{ await navigator.share({text:txt}); msg.textContent='Shared ✓'; return; }catch(_){} }
+    if(navigator.share){ try{ await navigator.share({text:txt}); msg.innerHTML='Shared <span class="ico ico-check" aria-hidden="true"></span>'; return; }catch(_){} }
     msg.textContent='Copy: '+txt;
   }
 });

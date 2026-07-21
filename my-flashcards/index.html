@@ -75,21 +75,41 @@
     border-radius:12px;padding:12px 14px}
   footer{text-align:center;margin-top:34px;font-size:11.5px;color:var(--sub)}
   footer a{color:var(--ocean)}
+
+/* ===== OHAYO icon set — 絵文字不使用・CSS図形/インラインSVG ===== */
+.ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
+.ico-book{width:.6em;height:.76em;border:.1em solid currentColor;border-left-width:.2em;
+  border-radius:.06em .13em .13em .06em}
+/* 炎。五角形だと炎に見えなかったので、下がふくらみ上が尖る形＋内側に明るいコア */
+.ico-flame{width:.52em;height:.7em;background:#F0870F;
+  border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+  transform:rotate(-2deg);vertical-align:-.1em;margin-right:.18em}
+.ico-flame::before{content:"";position:absolute;left:50%;top:-.16em;transform:translateX(-50%);
+  width:0;height:0;border-style:solid;border-width:0 .18em .3em .18em;
+  border-color:transparent transparent #F0870F transparent}
+.ico-flame::after{content:"";position:absolute;left:50%;bottom:.07em;transform:translateX(-50%);
+  width:.24em;height:.34em;background:#FFD37A;
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%}
+.ico-phone{width:.5em;height:.76em;border:.1em solid currentColor;border-radius:.12em}
+.ico-phone::after{content:"";position:absolute;left:50%;bottom:.07em;transform:translateX(-50%);
+  width:.2em;height:.07em;border-radius:.07em;background:currentColor}
+.ico-check{width:.32em;height:.6em;border:solid currentColor;border-width:0 .15em .15em 0;
+  transform:rotate(45deg);vertical-align:.04em;margin:0 .2em .1em .06em}
 </style>
 </head>
 <body>
 <div class="wrap">
   <a class="brand" href="/">OHAYO NIHONGO</a>
-  <h1>My Flashcards 📚</h1>
+  <h1>My Flashcards</h1>
   <div class="jp-sub">わたしの ほんだな — all your volumes in one place</div>
 
   <div class="stats">
-    <div class="stat"><div class="v" id="stStreak">🔥 0</div><div class="l">Day streak</div></div>
+    <div class="stat"><div class="v" id="stStreak"><span class="ico ico-flame" aria-hidden="true"></span> 0</div><div class="l">Day streak</div></div>
     <div class="stat"><div class="v" id="stXp">0</div><div class="l">Total XP</div></div>
     <div class="stat"><div class="v" id="stVols">1</div><div class="l">Volumes</div></div>
   </div>
   <div class="badge-line">
-    <span class="badge" id="stBadge">🌅 Sunrise Beginner</span>
+    <span class="badge" id="stBadge">Sunrise Beginner</span>
     <div class="nextlvl" id="stNext"></div>
   </div>
 
@@ -107,7 +127,7 @@
     <div class="msg" id="regMsg"></div>
   </div>
 
-  <div class="hint">📲 <b>Tip:</b> Add this page to your home screen — it opens like an app, and your bookshelf, streak and XP are always one tap away.</div>
+  <div class="hint"><span class="ico ico-phone" aria-hidden="true"></span> <b>Tip:</b> Add this page to your home screen — it opens like an app, and your bookshelf, streak and XP are always one tap away.</div>
 
   <footer>New sentences every month · <a href="https://ohayonihongodaily.etsy.com/?section_id=58431109">Get volumes on Etsy</a><br>
   © 2026 OHAYO NIHONGO · <a href="/legal/">Legal</a></footer>
@@ -115,11 +135,11 @@
 
 <script>
 const LEVELS=[
-  {min:0,name:"Sunrise Beginner",emoji:"🌅"},
-  {min:100,name:"Morning Listener",emoji:"🎧"},
-  {min:300,name:"Wave Rider",emoji:"🌊"},
-  {min:600,name:"Daily Diarist",emoji:"📖"},
-  {min:1000,name:"OHAYO Master",emoji:"☀️"}];
+  {min:0,name:"Sunrise Beginner"},
+  {min:100,name:"Morning Listener"},
+  {min:300,name:"Wave Rider"},
+  {min:600,name:"Daily Diarist"},
+  {min:1000,name:"OHAYO Master"}];
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const ACCENTS=["#FF7A3D","#3DCFB8","#F5C842","#A855F7","#FF6B9D","#38BDF8","#F87171","#84CC16","#FCB637","#22D3EE"];
 const ETSY="https://ohayonihongodaily.etsy.com/?section_id=58431109";
@@ -132,13 +152,13 @@ function volAccent(v){ return ACCENTS[(v-1)%10] }
 function renderStats(){
   const st=+(localStorage.getItem("ohayo_streak")||0);
   const xp=+(localStorage.getItem("ohayo_xp")||0);
-  document.getElementById("stStreak").textContent="🔥 "+st;
+  document.getElementById("stStreak").innerHTML='<span class="ico ico-flame" aria-hidden="true"></span> '+st;
   document.getElementById("stXp").textContent=xp;
   document.getElementById("stVols").textContent=1+shelf().length;
   let L=LEVELS[0]; LEVELS.forEach(l=>{if(xp>=l.min)L=l});
   const N=LEVELS.find(l=>xp<l.min);
-  document.getElementById("stBadge").textContent=L.emoji+" "+L.name;
-  document.getElementById("stNext").textContent=N?("Next: "+N.emoji+" "+N.name+" at "+N.min+" XP ("+(N.min-xp)+" to go)"):"Max level! すごい！";
+  document.getElementById("stBadge").textContent=L.name;
+  document.getElementById("stNext").textContent=N?("Next: "+N.name+" at "+N.min+" XP ("+(N.min-xp)+" to go)"):"Max level! すごい！";
 }
 
 function renderShelf(){
@@ -183,7 +203,7 @@ async function registerVol(){
   const m=raw.match(/(?:ohayonihongo\.net\/)?(v(\d+)-[a-z0-9]+)\/?\s*$/i);
   if(!m){ msg.textContent="✕ That doesn't look like a volume link. Please paste the full link from your delivery PDF."; msg.className="msg ng"; return; }
   const slug=m[1].toLowerCase(), vol=parseInt(m[2],10);
-  if(shelf().some(x=>x.slug===slug)){ msg.textContent="Already on your shelf! 📚"; msg.className="msg ok"; return; }
+  if(shelf().some(x=>x.slug===slug)){ msg.textContent="Already on your shelf!"; msg.className="msg ok"; return; }
   msg.textContent="Checking…"; msg.className="msg ok";
   try{
     const r=await fetch("/"+slug+"/", {method:"HEAD"});
@@ -194,7 +214,7 @@ async function registerVol(){
   }
   const s=shelf(); s.push({slug:slug, vol:vol}); saveShelf(s);
   document.getElementById("regInput").value="";
-  msg.textContent="✓ Vol."+vol+" added to your bookshelf!";
+  msg.innerHTML='<span class="ico ico-check" aria-hidden="true"></span> Vol.'+vol+" added to your bookshelf!";
   msg.className="msg ok";
   renderShelf(); renderStats();
 }

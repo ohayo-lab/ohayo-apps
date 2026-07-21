@@ -372,6 +372,11 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
   .fstat{padding:8px 14px;min-width:76px;}
   .fstat .v{font-size:18px;}
 }
+
+/* ===== OHAYO icon set — 絵文字不使用・CSS図形/インラインSVG ===== */
+.ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
+.ico-check{width:.32em;height:.6em;border:solid currentColor;border-width:0 .15em .15em 0;
+  transform:rotate(45deg);vertical-align:.04em;margin:0 .2em .1em .06em}
 </style>
 </head>
 <body>
@@ -430,12 +435,12 @@ footer a b{color:var(--yellow);font-weight:700;border-bottom:1px solid var(--yel
     <div class="controls">
       <button class="btn" id="hintBtn">Hint</button>
       <button class="btn" id="resetBtn">↺ Clear</button>
-      <button class="btn btn-check" id="checkBtn" disabled>Check ✓</button>
+      <button class="btn btn-check" id="checkBtn" disabled>Check <span class="ico ico-check" aria-hidden="true"></span></button>
     </div>
 
     <div class="reveal" id="reveal">
       <img class="reveal-mark" src="img/mark_correct_sm.png" alt="Correct" aria-hidden="true">
-      <div class="reveal-badge">✓ Correct! せいかい！</div>
+      <div class="reveal-badge"><span class="ico ico-check" aria-hidden="true"></span> Correct! せいかい！</div>
       <div class="reveal-kanji" id="revKanji"></div>
       <div class="reveal-en" id="revEn"></div>
       <div class="next-wrap"><button class="btn-next" id="nextBtn">Next →</button></div>

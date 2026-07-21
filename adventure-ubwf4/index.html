@@ -7,7 +7,7 @@
  課金: Lemon Squeezy ライセンスキー（../adventure/adventure_config.js で設定）
    - 有料作は闇URL直アクセスでもロック画面（認証後のみ本文描画）
    - TESTモード: config.test_mode=true 時、キー "TEST-OHAYO" で解放
- 音: START起点BGM(../adventure/bgm.mp3 vol0.1 loop・🔇トグル) + Web Audioアルペジオ
+ 音: START起点BGM(../adventure/bgm.mp3 vol0.1 loop・ミュートトグル) + Web Audioアルペジオ
  デバッグ: ?view=scene / ?view=ending / ?static=1（有料作は認証後のみ有効）
 ═══════════════════════════════════════════════════════════════════
 -->
@@ -32,6 +32,41 @@ html,body{min-height:100%;background:#0D2E47;font-family:var(--sans)}
 html.static *{animation:none!important;transition:none!important}
 body{display:flex;justify-content:center}
 .app{width:100%;max-width:430px;height:100dvh;position:relative;overflow:hidden;background:#0D2E47}
+
+/* ═══════ OHAYO icon set（絵文字不使用・CSS図形/インラインSVG・正典 ohayo-icons.css 準拠） ═══════
+   em基準なので置いた場所の font-size に追従。色は currentColor（例外=sun/flame の #F7A928）。 */
+.ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
+.ico-sun{width:.68em;height:.68em;border-radius:50%;background:#F7A928;
+  box-shadow:0 0 0 .13em rgba(247,169,40,.30)}
+.ico-book{width:.6em;height:.76em;border:.1em solid currentColor;border-left-width:.2em;
+  border-radius:.06em .13em .13em .06em}
+.ico-gift{width:.76em;height:.66em;border:.1em solid currentColor;border-radius:.07em;
+  background:
+    linear-gradient(currentColor,currentColor) center/.13em 100% no-repeat,
+    linear-gradient(currentColor,currentColor) center/100% .11em no-repeat}
+.ico-gift::before{content:"";position:absolute;left:50%;top:-.2em;transform:translateX(-50%);
+  width:.34em;height:.16em;border:.09em solid currentColor;border-bottom:0;
+  border-radius:.2em .2em 0 0}
+.ico-head{width:.78em;height:.4em;border:.11em solid currentColor;border-bottom:0;
+  border-radius:.42em .42em 0 0;margin-bottom:.16em}
+.ico-head::before,.ico-head::after{content:"";position:absolute;bottom:-.2em;width:.18em;height:.26em;
+  background:currentColor;border-radius:.06em}
+.ico-head::before{left:-.11em}
+.ico-head::after{right:-.11em}
+.ico-snd{width:1.05em;height:1.05em;vertical-align:-.2em;flex:0 0 auto;fill:currentColor;stroke:none}
+.ico-snd .snd-wave{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ico-snd .snd-slash{display:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ico-snd.is-off .snd-wave{display:none}
+.ico-snd.is-off .snd-slash{display:block}
+.ico-lock{width:.62em;height:.5em;background:currentColor;border-radius:.09em;margin-top:.22em}
+.ico-lock::before{content:"";position:absolute;left:50%;top:-.3em;transform:translateX(-50%);
+  width:.34em;height:.3em;border:.1em solid currentColor;border-bottom:0;border-radius:.24em .24em 0 0}
+.ico-lock.is-open::before{left:16%;transform:none}
+.ico-flame{width:.54em;height:.68em;background:#F7A928;
+  clip-path:polygon(50% 0,100% 52%,78% 100%,22% 100%,0 52%);
+  vertical-align:-.06em;margin-right:.14em}
+.ico-star{width:.74em;height:.74em;background:currentColor;
+  clip-path:polygon(50% 0,61.8% 34.5%,98% 34.5%,69% 56%,79.4% 90.5%,50% 69%,20.6% 90.5%,31% 56%,2% 34.5%,38.2% 34.5%)}
 
 /* ═══════ SCENE BACKGROUND ═══════ */
 .bg-layer{position:absolute;inset:0;z-index:0;transition:opacity .6s ease}
@@ -124,7 +159,7 @@ body{display:flex;justify-content:center}
   width:42px;height:42px;border-radius:999px;border:1px solid rgba(191,230,249,.35);
   background:rgba(13,46,71,.6);color:#EAF6FF;font-size:17px;cursor:pointer;display:none;
   backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(7,24,39,.4)}
-.mute-fab.on{display:block}
+.mute-fab.on{display:flex;align-items:center;justify-content:center}
 
 /* ═══════ STORY PANEL ═══════ */
 .panel-wrap{position:absolute;left:0;right:0;bottom:0;z-index:9;display:none;
@@ -192,6 +227,9 @@ body{display:flex;justify-content:center}
 .c-key{flex-shrink:0;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--ocean),#3E93C4);
   box-shadow:0 3px 8px rgba(31,114,168,.35)}
+/* ラベル(A/B/C)を持たない選択肢は共通シェブロンのマーカー（絵文字は使わない） */
+.c-key:empty::before{content:"";width:7px;height:7px;border:solid #fff;border-width:2px 2px 0 0;
+  transform:rotate(45deg);margin-left:-3px}
 .choice.gold .c-key{background:linear-gradient(135deg,#FF8A3D,#FFB63D);box-shadow:0 3px 8px rgba(240,129,20,.4)}
 .c-main{font-size:13.5px;font-weight:800;color:var(--navy);line-height:1.45}
 .c-sub{font-size:10px;color:#8A94A0;margin-top:2px;line-height:1.45}
@@ -333,7 +371,7 @@ body{display:flex;justify-content:center}
     <div class="t-feats">
       <span class="t-feat">JLPT N5–N3</span><span class="t-feat">5 SCENES</span><span class="t-feat">+XP &amp; BADGE</span>
     </div>
-    <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう ☀️</div>
+    <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span></div>
     <div class="start-wrap">
       <span class="start-ring"></span>
       <button class="btn-start" onclick="startGame()"><span class="play">▶</span>START THE MORNING</button>
@@ -346,8 +384,8 @@ body{display:flex;justify-content:center}
     <div class="hud-row">
       <div class="hud-logo">OHAYO <span>NIHONGO</span></div>
       <div class="hud-chips">
-        <span class="chip" id="streakChip">🔥 0</span>
-        <span class="chip xp" id="xpChip">⭐ 0 XP</span>
+        <span class="chip" id="streakChip"><span class="ico ico-flame" aria-hidden="true"></span> 0</span>
+        <span class="chip xp" id="xpChip"><span class="ico ico-star" aria-hidden="true"></span> 0 XP</span>
       </div>
     </div>
     <div class="prog-row">
@@ -368,7 +406,7 @@ body{display:flex;justify-content:center}
         </button>
       </div>
       <div class="transcript" id="transcript" style="display:none">
-        <div class="tr-label">🎧 いま流れている日記の原文 — Original diary text</div>
+        <div class="tr-label"><span class="ico ico-head" aria-hidden="true"></span> いま流れている日記の原文 — Original diary text</div>
         <div class="tr-text" id="trText"></div>
       </div>
       <div class="p-kanji" id="pKanji"></div>
@@ -420,22 +458,26 @@ body{display:flex;justify-content:center}
     <div class="e-title">今日はここまで。また明日！</div>
     <div class="e-sub" id="eSub">You lived one full morning in Japanese — see you tomorrow!</div>
     <div class="e-stats">
-      <div class="estat"><div class="v" id="eStreak">🔥 0</div><div class="l">Day streak</div></div>
+      <div class="estat"><div class="v" id="eStreak"><span class="ico ico-flame" aria-hidden="true"></span> 0</div><div class="l">Day streak</div></div>
       <div class="estat"><div class="v" id="eGain">+0</div><div class="l">Story XP</div></div>
       <div class="estat"><div class="v" id="eXp">0</div><div class="l">Total XP</div></div>
     </div>
     <div class="e-vocab">
-      <div class="e-vocab-title">📖 Words you met today — 今日出会った言葉</div>
+      <div class="e-vocab-title"><span class="ico ico-book" aria-hidden="true"></span> Words you met today — 今日出会った言葉</div>
       <div id="vocabList"></div>
     </div>
-    <a class="cta p" id="ctaMain" href="../adventure/">📖 Choose your next story</a>
-    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">🎁 Get the Free Starter Pack</a>
+    <a class="cta p" id="ctaMain" href="../adventure/"><span class="ico ico-book" aria-hidden="true"></span> Choose your next story</a>
+    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><span class="ico ico-gift" aria-hidden="true"></span> Get the Free Starter Pack</a>
     <div class="e-note">Real 1-minute Japanese diary audio, scripts &amp; flashcards — new episode every morning.</div>
     <button class="btn-again" onclick="restart()">↩ 違う朝を生きてみる — Try another path</button>
     <div class="e-foot">Every path is a real diary episode from April in Tokyo.<br>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></div>
   </div>
 
-  <button class="mute-fab" id="muteBtn" onclick="toggleMute()">🔊</button>
+  <button class="mute-fab" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound"><svg class="ico-snd" id="muteIco" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 9.5h3.6L12 5.4v13.2L7.6 14.5H4z"/>
+    <path class="snd-wave" d="M15.4 9.2a4 4 0 0 1 0 5.6M18 6.8a7.4 7.4 0 0 1 0 10.4"/>
+    <path class="snd-slash" d="M15.6 9.4l5 5.2M20.6 9.4l-5 5.2"/>
+  </svg></button>
 </div>
 
 <script>
@@ -1005,126 +1047,126 @@ const BADGE_ICONS = {
 /* ═══════════════ STORY DATA（build_adventures.pyが注入） ═══════════════ */
 const SCENES = {
   wake: {
-    step:1, tag:"Scene 1 · Laundry in the Sun · From Diary #92", emoji:"🧺",
+    step:1, tag:"Scene 1 · Laundry in the Sun · From Diary #92",
     kanji:"今朝、久しぶりに洗濯物をベランダに干しました。私はひどい花粉症なので、この2ヶ月間は外に干せなかったんです。今日は朝からの青い空に誘われて、太陽の下で洗濯物を干せました。当たり前のことなのに、それだけでありがたいなぁと思わずにはいられません。さあ、この後はどうする？",
     hira:"けさ、ひさしぶりに せんたくものを べらんだに ほしました。わたしは ひどい かふんしょうなので、この にかげつかんは そとに ほせなかったんです。きょうは あさからの あおい そらに さそわれて、たいようの したで せんたくものを ほせました。あたりまえの ことなのに、それだけで ありがたいなぁと おもわずには いられません。さあ、このあとは どうする？",
     en:"This morning, for the first time in ages, I hung my laundry out on the balcony. I have terrible hay fever, so for the past two months I couldn't dry anything outside. Today, invited by the blue sky, I could hang my laundry in the sun. It's such an ordinary thing, and yet I can't help feeling grateful for just that. So — what's next?",
     vocab:[{w:"洗濯物",r:"せんたくもの",e:"laundry"},{w:"花粉症",r:"かふんしょう",e:"hay fever"},{w:"当たり前",r:"あたりまえ",e:"ordinary, taken for granted"}],
     choices:[
-      {emoji:"🚶‍♀️", main:"朝の散歩に出かける", sub:"あさの さんぽに でかける — Head out for a morning walk", to:"asaaruki"},
-      {emoji:"🧹", main:"クローゼットの掃除をする", sub:"くろーぜっとの そうじを する — Clean out the closet", to:"closet"}
+      {main:"朝の散歩に出かける", sub:"あさの さんぽに でかける — Head out for a morning walk", to:"asaaruki"},
+      {main:"クローゼットの掃除をする", sub:"くろーぜっとの そうじを する — Clean out the closet", to:"closet"}
     ]
   },
   asaaruki: {
-    step:2, tag:"Scene 2 · Good Morning People · From Diary #93", emoji:"🚶‍♀️",
+    step:2, tag:"Scene 2 · Good Morning People · From Diary #93",
     kanji:"「朝は、悪い人がいない」ということを聞いたことはありますか？朝早起きして活動している人は、みんな機嫌がいいんです。朝、太陽の光を浴びて軽く体を動かすだけで、前向きに心持ちが変わります。大事なことを決めるのも、夜ではなく朝の方が良い決断ができるんです。……さて、お腹がすきました。お昼はどうする？",
     hira:"「あさは、わるい ひとが いない」ということを きいたことは ありますか？あさ はやおきして かつどうしている ひとは、みんな きげんが いいんです。あさ、たいようの ひかりを あびて かるく からだを うごかすだけで、まえむきに こころもちが かわります。だいじな ことを きめるのも、よるではなく あさの ほうが いい けつだんが できるんです。……さて、おなかが すきました。おひるは どうする？",
     en:"Have you ever heard that 'there are no bad people in the morning'? People who get up early and are out being active are all in a good mood. Just by bathing in the morning sun and moving your body lightly, your state of mind turns positive. Even for important decisions, I make better ones in the morning, not at night... Now I'm hungry. What about lunch?",
     vocab:[{w:"機嫌",r:"きげん",e:"mood"},{w:"心持ち",r:"こころもち",e:"state of mind"},{w:"決断",r:"けつだん",e:"decision"}],
     choices:[
-      {emoji:"🍙", main:"お鍋で炊いたお米のおにぎり", sub:"おなべで たいた おこめの おにぎり — Onigiri from pot-cooked rice", to:"onigiri"},
-      {emoji:"🍱", main:"お弁当を買って公園で食べる", sub:"おべんとうを かって こうえんで たべる — Buy a bento and eat in the park", to:"bento"},
-      {emoji:"☕", main:"カフェで一杯（ホット？アイス？）", sub:"かふぇで いっぱい（ほっと？あいす？）— A cup at the café: hot or iced?", to:"cafe"}
+      {main:"お鍋で炊いたお米のおにぎり", sub:"おなべで たいた おこめの おにぎり — Onigiri from pot-cooked rice", to:"onigiri"},
+      {main:"お弁当を買って公園で食べる", sub:"おべんとうを かって こうえんで たべる — Buy a bento and eat in the park", to:"bento"},
+      {main:"カフェで一杯（ホット？アイス？）", sub:"かふぇで いっぱい（ほっと？あいす？）— A cup at the café: hot or iced?", to:"cafe"}
     ]
   },
   closet: {
-    step:2, tag:"Scene 2 · Happy Closet · From Diary #91", emoji:"🧹",
+    step:2, tag:"Scene 2 · Happy Closet · From Diary #91",
     kanji:"掃除は好きですか？私は、掃除は好きじゃないです。でも、1〜2ヶ月に1回、いろんな物が詰め込まれたクローゼットを掃除し終わった時だけは別です。見た目は何も変わらないのに、クローゼットが「気持ちいいよー！」と喜んでいる声が聞こえてくるような気がします。同時に私の気持ちもスッキリ！……さて、お腹がすきました。お昼はどうする？",
     hira:"そうじは すきですか？わたしは、そうじは すきじゃないです。でも、いちから にかげつに いっかい、いろんな ものが つめこまれた くろーぜっとを そうじしおわった ときだけは べつです。みためは なにも かわらないのに、くろーぜっとが「きもちいいよー！」と よろこんでいる こえが きこえてくるような きが します。どうじに わたしの きもちも すっきり！……さて、おなかが すきました。おひるは どうする？",
     en:"Do you like cleaning? I don't. But once every month or two, when I finish cleaning out the closet stuffed with all sorts of things, it's different. Nothing looks different from the outside, yet I feel like I can hear the closet happily saying, 'That feels so good!' And at the same time, my own mood is refreshed too!... Now I'm hungry. What about lunch?",
     vocab:[{w:"掃除",r:"そうじ",e:"cleaning"},{w:"詰め込む",r:"つめこむ",e:"to stuff in"},{w:"スッキリ",r:"すっきり",e:"refreshed"}],
     choices:[
-      {emoji:"🍙", main:"お鍋で炊いたお米のおにぎり", sub:"おなべで たいた おこめの おにぎり — Onigiri from pot-cooked rice", to:"onigiri"},
-      {emoji:"🍱", main:"お弁当を買って公園で食べる", sub:"おべんとうを かって こうえんで たべる — Buy a bento and eat in the park", to:"bento"},
-      {emoji:"☕", main:"カフェで一杯（ホット？アイス？）", sub:"かふぇで いっぱい（ほっと？あいす？）— A cup at the café: hot or iced?", to:"cafe"}
+      {main:"お鍋で炊いたお米のおにぎり", sub:"おなべで たいた おこめの おにぎり — Onigiri from pot-cooked rice", to:"onigiri"},
+      {main:"お弁当を買って公園で食べる", sub:"おべんとうを かって こうえんで たべる — Buy a bento and eat in the park", to:"bento"},
+      {main:"カフェで一杯（ホット？アイス？）", sub:"かふぇで いっぱい（ほっと？あいす？）— A cup at the café: hot or iced?", to:"cafe"}
     ]
   },
   onigiri: {
-    step:3, tag:"Scene 3 · Rice Recharge · From Diary #89", emoji:"🍙",
+    step:3, tag:"Scene 3 · Rice Recharge · From Diary #89",
     kanji:"最近、AIから受け取る情報の量が膨大で、脳がとても疲れています。そこで、脳の疲労を回復させるために、お弁当をサンドイッチからおにぎりに変えてみました。パンよりも白米の方が腹持ちもいいんです。我が家には炊飯器がないので、お鍋でお米を炊きます。さて、午後はどう過ごす？",
     hira:"さいきん、AIから うけとる じょうほうの りょうが ぼうだいで、のうが とても つかれています。そこで、のうの ひろうを かいふくさせるために、おべんとうを さんどいっちから おにぎりに かえてみました。ぱんよりも はくまいの ほうが はらもちも いいんです。わがやには すいはんきが ないので、おなべで おこめを たきます。さて、ごごは どう すごす？",
     en:"Lately, the amount of information I take in from AI is enormous, and my brain is very tired. So, to help my brain recover, I switched my packed lunch from sandwiches to onigiri rice balls. White rice keeps you full longer than bread. There's no rice cooker in my home, so I cook the rice in a pot. Now — how to spend the afternoon?",
     vocab:[{w:"脳",r:"のう",e:"brain"},{w:"疲労",r:"ひろう",e:"fatigue"},{w:"腹持ち",r:"はらもち",e:"staying full"}],
     choices:[
-      {emoji:"🌱", main:"ベランダの野菜の芽を観察する", sub:"べらんだの やさいの めを かんさつする — Observe the vegetable sprouts on the balcony", to:"veranda"},
-      {emoji:"🛋", main:"予定のない週末を満喫する", sub:"よていの ない しゅうまつを まんきつする — Savor a plan-free weekend", to:"weekend"}
+      {main:"ベランダの野菜の芽を観察する", sub:"べらんだの やさいの めを かんさつする — Observe the vegetable sprouts on the balcony", to:"veranda"},
+      {main:"予定のない週末を満喫する", sub:"よていの ない しゅうまつを まんきつする — Savor a plan-free weekend", to:"weekend"}
     ]
   },
   bento: {
-    step:3, tag:"Scene 3 · Park Bento · From Diary #94", emoji:"🍱",
+    step:3, tag:"Scene 3 · Park Bento · From Diary #94",
     kanji:"あまりにも天気が良かったので、お弁当を買って公園で食べました。桜の季節が終わった今は、暑すぎず寒すぎず、外を心地よく楽しめる貴重な季節です。公園にはたくさんの人が来ていて、みんなこの季節を楽しんでいました。これだけで本当に幸せな気分になれるし、お金では買えないものだなぁって、心の底から思います。さて、午後はどう過ごす？",
     hira:"あまりにも てんきが よかったので、おべんとうを かって こうえんで たべました。さくらの きせつが おわった いまは、あつすぎず さむすぎず、そとを ここちよく たのしめる きちょうな きせつです。こうえんには たくさんの ひとが きていて、みんな この きせつを たのしんでいました。これだけで ほんとうに しあわせな きぶんに なれるし、おかねでは かえない ものだなぁって、こころの そこから おもいます。さて、ごごは どう すごす？",
     en:"The weather was so wonderful that I bought a bento and ate it in the park. Now that cherry-blossom season is over, it's neither too hot nor too cold — a precious season for comfortably enjoying the outdoors. The park was full of people, all enjoying this season. Just this makes me truly happy, and from the bottom of my heart I think it's something money can't buy. Now — how to spend the afternoon?",
     vocab:[{w:"貴重",r:"きちょう",e:"precious"},{w:"心地よい",r:"ここちよい",e:"comfortable, pleasant"},{w:"心の底",r:"こころのそこ",e:"bottom of one's heart"}],
     choices:[
-      {emoji:"🌱", main:"ベランダの野菜の芽を観察する", sub:"べらんだの やさいの めを かんさつする — Observe the vegetable sprouts on the balcony", to:"veranda"},
-      {emoji:"🛋", main:"予定のない週末を満喫する", sub:"よていの ない しゅうまつを まんきつする — Savor a plan-free weekend", to:"weekend"}
+      {main:"ベランダの野菜の芽を観察する", sub:"べらんだの やさいの めを かんさつする — Observe the vegetable sprouts on the balcony", to:"veranda"},
+      {main:"予定のない週末を満喫する", sub:"よていの ない しゅうまつを まんきつする — Savor a plan-free weekend", to:"weekend"}
     ]
   },
   cafe: {
-    step:3, tag:"Scene 3 · Hot or Iced? · From Diary #97", emoji:"☕",
+    step:3, tag:"Scene 3 · Hot or Iced? · From Diary #97",
     kanji:"週末はカフェに行くのがルーティーンです。最近、暖かくなってきたので、ホットにするかアイスにするか悩んでしまうんです。スマホで注文するとき、ホットを選んだ後に、いや、アイスかな、いや、やっぱりホットかな……と、4回くらい注文を変更しました。そんな優柔不断な自分にちょっと呆れてしまいます。さて、午後はどう過ごす？",
     hira:"しゅうまつは かふぇに いくのが るーてぃーんです。さいきん、あたたかく なってきたので、ほっとに するか あいすに するか なやんでしまうんです。すまほで ちゅうもんするとき、ほっとを えらんだ あとに、いや、あいすかな、いや、やっぱり ほっとかな……と、よんかいくらい ちゅうもんを へんこうしました。そんな ゆうじゅうふだんな じぶんに ちょっと あきれてしまいます。さて、ごごは どう すごす？",
     en:"Going to a café on weekends is my routine. It's gotten warmer lately, so I agonize over whether to order hot or iced. Ordering on my phone, I chose hot, then thought, no, maybe iced... no, hot after all... and changed my order about four times. I'm a little exasperated with my own indecisiveness. Now — how to spend the afternoon?",
     vocab:[{w:"注文",r:"ちゅうもん",e:"order"},{w:"優柔不断",r:"ゆうじゅうふだん",e:"indecisive"},{w:"呆れる",r:"あきれる",e:"to be exasperated"}],
     choices:[
-      {emoji:"🌱", main:"ベランダの野菜の芽を観察する", sub:"べらんだの やさいの めを かんさつする — Observe the vegetable sprouts on the balcony", to:"veranda"},
-      {emoji:"🛋", main:"予定のない週末を満喫する", sub:"よていの ない しゅうまつを まんきつする — Savor a plan-free weekend", to:"weekend"}
+      {main:"ベランダの野菜の芽を観察する", sub:"べらんだの やさいの めを かんさつする — Observe the vegetable sprouts on the balcony", to:"veranda"},
+      {main:"予定のない週末を満喫する", sub:"よていの ない しゅうまつを まんきつする — Savor a plan-free weekend", to:"weekend"}
     ]
   },
   veranda: {
-    step:4, tag:"Scene 4 · Tiny Sprouts · From Diary #87", emoji:"🌱",
+    step:4, tag:"Scene 4 · Tiny Sprouts · From Diary #87",
     kanji:"先週プランターに蒔いた野菜の種から、小さい小さい芽が出てきました。想像よりも早く芽が出てきたので、毎朝ベランダで観察を楽しんでいます。土を触るのも楽しいし、少しずつ育っていく様子を眺めるのも楽しい。朝、小さい野菜の芽が土からひょっこり顔を出しているのを見ると、エネルギーをもらえます。",
     hira:"せんしゅう ぷらんたーに まいた やさいの たねから、ちいさい ちいさい めが でてきました。そうぞうよりも はやく めが でてきたので、まいあさ べらんだで かんさつを たのしんでいます。つちを さわるのも たのしいし、すこしずつ そだっていく ようすを ながめるのも たのしい。あさ、ちいさい やさいの めが つちから ひょっこり かおを だしているのを みると、えねるぎーを もらえます。",
     en:"From the vegetable seeds I planted in the planter last week, tiny, tiny sprouts have appeared. They came up faster than I imagined, so every morning I enjoy observing them on the balcony. Touching the soil is fun, and watching them grow little by little is fun too. When I see the little sprouts poking their faces up out of the soil in the morning, they give me energy.",
     vocab:[{w:"種",r:"たね",e:"seed"},{w:"芽",r:"め",e:"sprout"},{w:"観察",r:"かんさつ",e:"observation"}],
     choices:[
-      {emoji:"🍝", main:"ベランダでパスタと白ワイン", sub:"べらんだで ぱすたと しろわいん — Pasta and white wine on the balcony", to:"pasta"},
-      {emoji:"🌺", main:"散歩でサツキを見に行く", sub:"さんぽで さつきを みに いく — Walk out to see the satsuki azaleas", to:"satsuki"}
+      {main:"ベランダでパスタと白ワイン", sub:"べらんだで ぱすたと しろわいん — Pasta and white wine on the balcony", to:"pasta"},
+      {main:"散歩でサツキを見に行く", sub:"さんぽで さつきを みに いく — Walk out to see the satsuki azaleas", to:"satsuki"}
     ]
   },
   weekend: {
-    step:4, tag:"Scene 4 · Empty Weekend · From Diary #95", emoji:"🛋",
+    step:4, tag:"Scene 4 · Empty Weekend · From Diary #95",
     kanji:"ゆううつな月曜日から、あっという間に週末がやってきます。私は週末に何も予定がないと、とても幸せな気分になります。やった！あれもこれも、やりたいことがたくさん！とワクワクするんです。やりたいことがありすぎて、時間が足りない。こういうふうに思えることは、幸せなことですね。",
     hira:"ゆううつな げつようびから、あっというまに しゅうまつが やってきます。わたしは しゅうまつに なにも よていが ないと、とても しあわせな きぶんに なります。やった！あれも これも、やりたいことが たくさん！と わくわくするんです。やりたいことが ありすぎて、じかんが たりない。こういうふうに おもえることは、しあわせな ことですね。",
     en:"From gloomy Monday, the weekend arrives in the blink of an eye. When I have no plans at all for the weekend, I feel wonderfully happy. 'Yes! This and that — so many things I want to do!' I get excited. Too many things I want to do, and not enough time. Being able to feel this way is a kind of happiness, isn't it?",
     vocab:[{w:"予定",r:"よてい",e:"plans"},{w:"ゆううつ",r:"ゆううつ",e:"gloomy"},{w:"足りない",r:"たりない",e:"not enough"}],
     choices:[
-      {emoji:"💆", main:"ヘッドスパでリラックス", sub:"へっどすぱで りらっくす — Relax with a head spa", to:"headspa"},
-      {emoji:"✨", main:"雨上がりの朝の散歩へ", sub:"あめあがりの あさの さんぽへ — A walk after the rain", to:"kirakira"}
+      {main:"ヘッドスパでリラックス", sub:"へっどすぱで りらっくす — Relax with a head spa", to:"headspa"},
+      {main:"雨上がりの朝の散歩へ", sub:"あめあがりの あさの さんぽへ — A walk after the rain", to:"kirakira"}
     ]
   },
   pasta: {
-    step:5, tag:"Final Scene · Balcony Pasta · From Diary #113", emoji:"🍝",
+    step:5, tag:"Final Scene · Balcony Pasta · From Diary #113",
     kanji:"今朝は本当に爽やかな天気でした。ふと思いついて、家でパスタを作って、白ワインと一緒にベランダで食べることにしました。去年は体調が悪くて、ベランダで過ごす心地よさをすっかり忘れていたんです。そうだ！私はベランダでこんな時間を楽しむのが好きだったと思い出しました。いい一日になりました。",
     hira:"けさは ほんとうに さわやかな てんきでした。ふと おもいついて、いえで ぱすたを つくって、しろわいんと いっしょに べらんだで たべることに しました。きょねんは たいちょうが わるくて、べらんだで すごす ここちよさを すっかり わすれていたんです。そうだ！わたしは べらんだで こんな じかんを たのしむのが すきだったと おもいだしました。いい いちにちに なりました。",
     en:"This morning the weather was truly refreshing. On a whim, I decided to make pasta at home and eat it on the balcony with white wine. Last year I was unwell, and I had completely forgotten how pleasant it is to spend time on my balcony. That's right — I remembered that I love enjoying moments like this out here. It turned into a good day.",
     vocab:[{w:"爽やか",r:"さわやか",e:"refreshing"},{w:"思いつく",r:"おもいつく",e:"to hit on an idea"},{w:"思い出す",r:"おもいだす",e:"to remember"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   },
   satsuki: {
-    step:5, tag:"Final Scene · Satsuki in Bloom · From Diary #104", emoji:"🌺",
+    step:5, tag:"Final Scene · Satsuki in Bloom · From Diary #104",
     kanji:"2日間の外泊から帰ってきた翌朝、いつものようにウォーキングに出かけたら、サツキの花が満開になっていて驚きました。こんもりと山のように、一面がピンクや紫に咲いていました。たった2日留守にしただけなのに！満開のサツキを見ると、あぁ、もうすぐ5月が来るなあ、という気持ちになります。季節が動いているのを感じる瞬間でした。",
     hira:"ふつかかんの がいはくから かえってきた よくあさ、いつものように うぉーきんぐに でかけたら、さつきの はなが まんかいに なっていて おどろきました。こんもりと やまのように、いちめんが ぴんくや むらさきに さいていました。たった ふつか るすに しただけなのに！まんかいの さつきを みると、あぁ、もうすぐ ごがつが くるなあ、という きもちに なります。きせつが うごいているのを かんじる しゅんかんでした。",
     en:"The morning after coming home from two nights away, I went out for my usual walk and was surprised to find the satsuki azaleas in full bloom. They were mounded up like little mountains, whole stretches blooming in pink and purple. I was only away for two days! Seeing the azaleas in full bloom makes me feel that May is almost here. It was a moment when I could feel the season moving.",
     vocab:[{w:"留守",r:"るす",e:"being away from home"},{w:"驚く",r:"おどろく",e:"to be surprised"},{w:"瞬間",r:"しゅんかん",e:"moment"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   },
   headspa: {
-    step:5, tag:"Final Scene · Head Spa Bliss · From Diary #105", emoji:"💆",
+    step:5, tag:"Final Scene · Head Spa Bliss · From Diary #105",
     kanji:"髪の毛を切りに行ってきました。いつも、ヘッドスパとヘアカットのコースをお願いしています。私は昔から人に身を委ねるのが苦手で、なかなかリラックスできませんでした。でも最近は、ヘッドスパを受けるたびに、気持ちよく意識が遠のいてしまうようになりました。今日も、このままお家のベッドに運んでほしいっていうくらい、リラックスできました。",
     hira:"かみのけを きりに いってきました。いつも、へっどすぱと へあかっとの こーすを おねがいしています。わたしは むかしから ひとに みを ゆだねるのが にがてで、なかなか りらっくす できませんでした。でも さいきんは、へっどすぱを うけるたびに、きもちよく いしきが とおのいて しまうように なりました。きょうも、このまま おうちの べっどに はこんでほしいっていうくらい、りらっくす できました。",
     en:"I went to get my hair cut. I always ask for the head spa and haircut course. I've never been good at surrendering myself into someone's hands, and for a long time I couldn't relax. But recently, every time I get a head spa, I drift pleasantly out of consciousness. Today, too, I was so relaxed I wished they could carry me straight home to my bed.",
     vocab:[{w:"身を委ねる",r:"みをゆだねる",e:"to entrust oneself"},{w:"意識",r:"いしき",e:"consciousness"},{w:"リラックス",r:"りらっくす",e:"relaxation"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   },
   kirakira: {
-    step:5, tag:"Final Scene · Sparkling Drops · From Diary #111", emoji:"✨",
+    step:5, tag:"Final Scene · Sparkling Drops · From Diary #111",
     kanji:"今朝は小雨が降っていましたが、そのままウォーキングに出かけました。途中から雨が止んで、お日様が差してきました。緑の葉っぱや芝生の上に残った雨の雫が、太陽の光でキラキラ輝いていました。この美しさと同じ景色は、二度と現れません。こんな美しい景色から1日を始められることは、なんて贅沢なんだろうと思いました。",
     hira:"けさは こさめが ふっていましたが、そのまま うぉーきんぐに でかけました。とちゅうから あめが やんで、おひさまが さしてきました。みどりの はっぱや しばふの うえに のこった あめの しずくが、たいようの ひかりで きらきら かがやいていました。この うつくしさと おなじ けしきは、にどと あらわれません。こんな うつくしい けしきから いちにちを はじめられることは、なんて ぜいたくなんだろうと おもいました。",
     en:"This morning a light rain was falling, but I headed out for my walk anyway. Along the way the rain stopped and the sun came out. The raindrops left on the green leaves and the lawn sparkled in the sunlight. A scene exactly as beautiful as this will never appear again. I thought — what a luxury it is to be able to start the day with such a beautiful sight.",
     vocab:[{w:"雫",r:"しずく",e:"raindrop, droplet"},{w:"輝く",r:"かがやく",e:"to sparkle"},{w:"贅沢",r:"ぜいたく",e:"luxury"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   }
 };
 const TOTAL_STEPS = 5;
@@ -1170,10 +1212,10 @@ function showLock(){
   const pack=GROUP==='specials'?p.specials:p.season1;
   const all=p.allaccess||{};
   const bp=document.getElementById('buyPack'), ba=document.getElementById('buyAll');
-  bp.textContent=`🔓 ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
-  ba.innerHTML=`<span class="best">Best value</span>📚 ${all.label||'All-Access'} — ${all.price||''} · every story`;
+  bp.innerHTML=`<span class="ico ico-lock is-open" aria-hidden="true"></span> ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
+  ba.innerHTML=`<span class="best">Best value</span><span class="ico ico-book" aria-hidden="true"></span> ${all.label||'All-Access'} — ${all.price||''} · every story`;
   if(pack&&pack.checkout_url){ bp.href=pack.checkout_url; bp.removeAttribute('aria-disabled'); }
-  else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.textContent+=' (coming soon)'; }
+  else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.innerHTML+=' (coming soon)'; }
   if(all.checkout_url){ ba.href=all.checkout_url; ba.removeAttribute('aria-disabled'); }
   else { ba.href='#'; ba.setAttribute('aria-disabled','true'); }
   if(CFG.test_mode) document.getElementById('lkTest').style.display='inline-block';
@@ -1210,7 +1252,7 @@ async function activateKey(){
         lockMsg(tier==='season1'?'Key accepted — but this story needs the Specials Pack.':'Key accepted — but this story needs the Season 1 Pass.','err');
       } else {
         saveLic({key, instance_id:r.instance&&r.instance.id, product_id:r.meta.product_id, tier, activated_at:Date.now(), validated_at:Date.now()});
-        lockMsg('Unlocked! Enjoy the story ☀️','ok');
+        lockMsg('Unlocked! Enjoy the story','ok');
         setTimeout(hideLockAndShowTitle,500);
       }
     } else {
@@ -1257,13 +1299,18 @@ function startBgm(){
   bgmStarted=true; bgm.muted=muted;
   bgm.play().catch(()=>{});
   const mb=document.getElementById('muteBtn');
-  mb.classList.add('on'); mb.textContent=muted?'🔇':'🔊';
+  mb.classList.add('on'); paintMute();
+}
+/* アイコンはインラインSVG。クラス付け替えだけで ON/OFF を切り替える（DOMは壊さない） */
+function paintMute(){
+  const ic=document.getElementById('muteIco');
+  if(ic) ic.classList.toggle('is-off',muted);
 }
 function toggleMute(){
   muted=!muted; localStorage.setItem('ohayo_adv_mute',muted?'1':'0');
   bgm.muted=muted;
   if(!muted && bgmStarted && bgm.paused) bgm.play().catch(()=>{});
-  document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';
+  paintMute();
 }
 /* AudioContextは1つを使い回す。自動再生ポリシー対策で、クリック等の
    ユーザー操作中に生成+resumeしておかないと発音されない（suspendedのまま）。 */
@@ -1357,9 +1404,9 @@ function setBg(key){
   bgFront=!bgFront;
 }
 function renderStats(bump){
-  document.getElementById('streakChip').textContent=`🔥 ${store.streak}`;
+  document.getElementById('streakChip').innerHTML=`<span class="ico ico-flame" aria-hidden="true"></span> ${store.streak}`;
   const xc=document.getElementById('xpChip');
-  xc.textContent=`⭐ ${store.xp} XP`;
+  xc.innerHTML=`<span class="ico ico-star" aria-hidden="true"></span> ${store.xp} XP`;
   if(bump){xc.classList.remove('bump');xc.offsetHeight;xc.classList.add('bump');}
 }
 function startGame(){
@@ -1397,7 +1444,7 @@ function loadScene(id){
   document.getElementById('cLabel').textContent=isFinal?'— The morning is complete —':'どうする？ — What will you do?';
   document.getElementById('choices').innerHTML=s.choices.map(c=>
     `<button class="choice${(c.gold||c.go)?' gold':''}" onclick="choose('${c.to}',event)">
-       <span class="c-key">${c.key||c.emoji||'›'}</span>
+       <span class="c-key" aria-hidden="true">${c.key||''}</span>
        <span><span class="c-main">${c.main}</span><br><span class="c-sub">${c.sub}</span></span>
        <span class="c-arrow">›</span><span class="c-xp">+${XP_PER_CHOICE} XP</span>
      </button>`).join('');
@@ -1433,7 +1480,7 @@ function finish(){
   document.getElementById('badgeIcon').innerHTML=BADGE_ICONS[B.icon]||BADGE_ICONS.sun;
   document.getElementById('badgeName').textContent=B.name;
   document.getElementById('badgeSub').textContent=B.sub;
-  document.getElementById('eStreak').textContent=`🔥 ${store.streak}`;
+  document.getElementById('eStreak').innerHTML=`<span class="ico ico-flame" aria-hidden="true"></span> ${store.streak}`;
   document.getElementById('eGain').textContent=`+${gainedXP||XP_PER_CHOICE*TOTAL_STEPS}`;
   document.getElementById('eXp').textContent=store.xp;
   document.getElementById('vocabList').innerHTML=collected.map(v=>
@@ -1462,7 +1509,9 @@ function confetti(){
 /* ═══════════════ boot ═══════════════ */
 function unlockBoot(){
   const st=store.streak;
-  document.getElementById('greet').textContent=st>0?`おはよう！ 🔥 ${st}にち つづいてるよ！`:'おはよう！ きょうの ぼうけんを はじめよう ☀️';
+  document.getElementById('greet').innerHTML=st>0
+    ?`おはよう！ <span class="ico ico-flame" aria-hidden="true"></span> ${st}にち つづいてるよ！`
+    :'おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span>';
   setBg(TITLE_ART);
   document.getElementById('titleScreen').style.visibility='visible';
   renderStats(false);

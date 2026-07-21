@@ -7,7 +7,7 @@
  課金: Lemon Squeezy ライセンスキー（../adventure/adventure_config.js で設定）
    - 有料作は闇URL直アクセスでもロック画面（認証後のみ本文描画）
    - TESTモード: config.test_mode=true 時、キー "TEST-OHAYO" で解放
- 音: START起点BGM(../adventure/bgm.mp3 vol0.1 loop・🔇トグル) + Web Audioアルペジオ
+ 音: START起点BGM(../adventure/bgm.mp3 vol0.1 loop・ミュートトグル) + Web Audioアルペジオ
  デバッグ: ?view=scene / ?view=ending / ?static=1（有料作は認証後のみ有効）
 ═══════════════════════════════════════════════════════════════════
 -->
@@ -32,6 +32,41 @@ html,body{min-height:100%;background:#0D2E47;font-family:var(--sans)}
 html.static *{animation:none!important;transition:none!important}
 body{display:flex;justify-content:center}
 .app{width:100%;max-width:430px;height:100dvh;position:relative;overflow:hidden;background:#0D2E47}
+
+/* ═══════ OHAYO icon set（絵文字不使用・CSS図形/インラインSVG・正典 ohayo-icons.css 準拠） ═══════
+   em基準なので置いた場所の font-size に追従。色は currentColor（例外=sun/flame の #F7A928）。 */
+.ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
+.ico-sun{width:.68em;height:.68em;border-radius:50%;background:#F7A928;
+  box-shadow:0 0 0 .13em rgba(247,169,40,.30)}
+.ico-book{width:.6em;height:.76em;border:.1em solid currentColor;border-left-width:.2em;
+  border-radius:.06em .13em .13em .06em}
+.ico-gift{width:.76em;height:.66em;border:.1em solid currentColor;border-radius:.07em;
+  background:
+    linear-gradient(currentColor,currentColor) center/.13em 100% no-repeat,
+    linear-gradient(currentColor,currentColor) center/100% .11em no-repeat}
+.ico-gift::before{content:"";position:absolute;left:50%;top:-.2em;transform:translateX(-50%);
+  width:.34em;height:.16em;border:.09em solid currentColor;border-bottom:0;
+  border-radius:.2em .2em 0 0}
+.ico-head{width:.78em;height:.4em;border:.11em solid currentColor;border-bottom:0;
+  border-radius:.42em .42em 0 0;margin-bottom:.16em}
+.ico-head::before,.ico-head::after{content:"";position:absolute;bottom:-.2em;width:.18em;height:.26em;
+  background:currentColor;border-radius:.06em}
+.ico-head::before{left:-.11em}
+.ico-head::after{right:-.11em}
+.ico-snd{width:1.05em;height:1.05em;vertical-align:-.2em;flex:0 0 auto;fill:currentColor;stroke:none}
+.ico-snd .snd-wave{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ico-snd .snd-slash{display:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ico-snd.is-off .snd-wave{display:none}
+.ico-snd.is-off .snd-slash{display:block}
+.ico-lock{width:.62em;height:.5em;background:currentColor;border-radius:.09em;margin-top:.22em}
+.ico-lock::before{content:"";position:absolute;left:50%;top:-.3em;transform:translateX(-50%);
+  width:.34em;height:.3em;border:.1em solid currentColor;border-bottom:0;border-radius:.24em .24em 0 0}
+.ico-lock.is-open::before{left:16%;transform:none}
+.ico-flame{width:.54em;height:.68em;background:#F7A928;
+  clip-path:polygon(50% 0,100% 52%,78% 100%,22% 100%,0 52%);
+  vertical-align:-.06em;margin-right:.14em}
+.ico-star{width:.74em;height:.74em;background:currentColor;
+  clip-path:polygon(50% 0,61.8% 34.5%,98% 34.5%,69% 56%,79.4% 90.5%,50% 69%,20.6% 90.5%,31% 56%,2% 34.5%,38.2% 34.5%)}
 
 /* ═══════ SCENE BACKGROUND ═══════ */
 .bg-layer{position:absolute;inset:0;z-index:0;transition:opacity .6s ease}
@@ -124,7 +159,7 @@ body{display:flex;justify-content:center}
   width:42px;height:42px;border-radius:999px;border:1px solid rgba(191,230,249,.35);
   background:rgba(13,46,71,.6);color:#EAF6FF;font-size:17px;cursor:pointer;display:none;
   backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(7,24,39,.4)}
-.mute-fab.on{display:block}
+.mute-fab.on{display:flex;align-items:center;justify-content:center}
 
 /* ═══════ STORY PANEL ═══════ */
 .panel-wrap{position:absolute;left:0;right:0;bottom:0;z-index:9;display:none;
@@ -192,6 +227,9 @@ body{display:flex;justify-content:center}
 .c-key{flex-shrink:0;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--ocean),#3E93C4);
   box-shadow:0 3px 8px rgba(31,114,168,.35)}
+/* ラベル(A/B/C)を持たない選択肢は共通シェブロンのマーカー（絵文字は使わない） */
+.c-key:empty::before{content:"";width:7px;height:7px;border:solid #fff;border-width:2px 2px 0 0;
+  transform:rotate(45deg);margin-left:-3px}
 .choice.gold .c-key{background:linear-gradient(135deg,#FF8A3D,#FFB63D);box-shadow:0 3px 8px rgba(240,129,20,.4)}
 .c-main{font-size:13.5px;font-weight:800;color:var(--navy);line-height:1.45}
 .c-sub{font-size:10px;color:#8A94A0;margin-top:2px;line-height:1.45}
@@ -333,7 +371,7 @@ body{display:flex;justify-content:center}
     <div class="t-feats">
       <span class="t-feat">JLPT N5–N3</span><span class="t-feat">5 SCENES</span><span class="t-feat">+XP &amp; BADGE</span>
     </div>
-    <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう ☀️</div>
+    <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span></div>
     <div class="start-wrap">
       <span class="start-ring"></span>
       <button class="btn-start" onclick="startGame()"><span class="play">▶</span>START THE MORNING</button>
@@ -346,8 +384,8 @@ body{display:flex;justify-content:center}
     <div class="hud-row">
       <div class="hud-logo">OHAYO <span>NIHONGO</span></div>
       <div class="hud-chips">
-        <span class="chip" id="streakChip">🔥 0</span>
-        <span class="chip xp" id="xpChip">⭐ 0 XP</span>
+        <span class="chip" id="streakChip"><span class="ico ico-flame" aria-hidden="true"></span> 0</span>
+        <span class="chip xp" id="xpChip"><span class="ico ico-star" aria-hidden="true"></span> 0 XP</span>
       </div>
     </div>
     <div class="prog-row">
@@ -368,7 +406,7 @@ body{display:flex;justify-content:center}
         </button>
       </div>
       <div class="transcript" id="transcript" style="display:none">
-        <div class="tr-label">🎧 いま流れている日記の原文 — Original diary text</div>
+        <div class="tr-label"><span class="ico ico-head" aria-hidden="true"></span> いま流れている日記の原文 — Original diary text</div>
         <div class="tr-text" id="trText"></div>
       </div>
       <div class="p-kanji" id="pKanji"></div>
@@ -420,22 +458,26 @@ body{display:flex;justify-content:center}
     <div class="e-title">今日はここまで。また明日！</div>
     <div class="e-sub" id="eSub">You lived one full morning in Japanese — see you tomorrow!</div>
     <div class="e-stats">
-      <div class="estat"><div class="v" id="eStreak">🔥 0</div><div class="l">Day streak</div></div>
+      <div class="estat"><div class="v" id="eStreak"><span class="ico ico-flame" aria-hidden="true"></span> 0</div><div class="l">Day streak</div></div>
       <div class="estat"><div class="v" id="eGain">+0</div><div class="l">Story XP</div></div>
       <div class="estat"><div class="v" id="eXp">0</div><div class="l">Total XP</div></div>
     </div>
     <div class="e-vocab">
-      <div class="e-vocab-title">📖 Words you met today — 今日出会った言葉</div>
+      <div class="e-vocab-title"><span class="ico ico-book" aria-hidden="true"></span> Words you met today — 今日出会った言葉</div>
       <div id="vocabList"></div>
     </div>
-    <a class="cta p" id="ctaMain" href="../adventure/">📖 Choose your next story</a>
-    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">🎁 Get the Free Starter Pack</a>
+    <a class="cta p" id="ctaMain" href="../adventure/"><span class="ico ico-book" aria-hidden="true"></span> Choose your next story</a>
+    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><span class="ico ico-gift" aria-hidden="true"></span> Get the Free Starter Pack</a>
     <div class="e-note">Real 1-minute Japanese diary audio, scripts &amp; flashcards — new episode every morning.</div>
     <button class="btn-again" onclick="restart()">↩ 違う朝を生きてみる — Try another path</button>
     <div class="e-foot">Every path is a real diary episode from my mornings out in Tokyo and beyond.<br>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></div>
   </div>
 
-  <button class="mute-fab" id="muteBtn" onclick="toggleMute()">🔊</button>
+  <button class="mute-fab" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound"><svg class="ico-snd" id="muteIco" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 9.5h3.6L12 5.4v13.2L7.6 14.5H4z"/>
+    <path class="snd-wave" d="M15.4 9.2a4 4 0 0 1 0 5.6M18 6.8a7.4 7.4 0 0 1 0 10.4"/>
+    <path class="snd-slash" d="M15.6 9.4l5 5.2M20.6 9.4l-5 5.2"/>
+  </svg></button>
 </div>
 
 <script>
@@ -1005,126 +1047,126 @@ const BADGE_ICONS = {
 /* ═══════════════ STORY DATA（build_adventures.pyが注入） ═══════════════ */
 const SCENES = {
   wake: {
-    step:1, tag:"Scene 1 · Morning Walk · From Diary #16", emoji:"🌸",
+    step:1, tag:"Scene 1 · Morning Walk · From Diary #16",
     kanji:"寒波が来ていて、今朝の気温は0度。それでも、いつものようにウォーキングに出かけます。歩いている途中で、春を見つけました。河津桜のつぼみが膨らみ始めて、少しだけピンク色が見えます。春は、もうそこまで来ています。出かける朝は、いいことがありそうな予感がします。さあ、今日はどこへ行く？",
     hira:"かんぱが きていて、けさの きおんは れいど。それでも、いつものように うぉーきんぐに でかけます。あるいている とちゅうで、はるを みつけました。かわづざくらの つぼみが ふくらみはじめて、すこしだけ ぴんくいろが みえます。はるは、もう そこまで きています。でかける あさは、いいことが ありそうな よかんが します。さあ、きょうは どこへ いく？",
     en:"A cold wave has come, and this morning it was 0°C. Even so, I head out for my usual walk. On the way, I found spring: the buds of the Kawazu cherry blossoms were starting to swell, showing just a hint of pink. Spring is already almost here. On mornings when I head out, I have a feeling something good will happen. So — where to today?",
     vocab:[{w:"寒波",r:"かんぱ",e:"cold wave"},{w:"つぼみ",r:"つぼみ",e:"flower bud"},{w:"予感",r:"よかん",e:"premonition, feeling"}],
     choices:[
-      {emoji:"🗻", main:"もう少し歩いて、富士山を探す", sub:"もう すこし あるいて、ふじさんを さがす — Walk further and look for Mt. Fuji", to:"fuji"},
-      {emoji:"🌕", main:"気分を変えて、違う方向へ歩く", sub:"きぶんを かえて、ちがう ほうこうへ あるく — Change things up and walk a different way", to:"moon"}
+      {main:"もう少し歩いて、富士山を探す", sub:"もう すこし あるいて、ふじさんを さがす — Walk further and look for Mt. Fuji", to:"fuji"},
+      {main:"気分を変えて、違う方向へ歩く", sub:"きぶんを かえて、ちがう ほうこうへ あるく — Change things up and walk a different way", to:"moon"}
     ]
   },
   fuji: {
-    step:2, tag:"Scene 2 · Mt. Fuji · From Diary #17", emoji:"🗻",
+    step:2, tag:"Scene 2 · Mt. Fuji · From Diary #17",
     kanji:"気温はマイナス3度。でも、空は真っ青に晴れています。冬ならではの澄んだ空気の中、美しい富士山の姿がくっきり見えました。東京には「富士見」と名前のつく場所がたくさんあります。冬の晴れた日は、富士山探しがおすすめですよ。……さて、今日はどの街へ出かける？",
     hira:"きおんは まいなす さんど。でも、そらは まっさおに はれています。ふゆ ならではの すんだ くうきの なか、うつくしい ふじさんの すがたが くっきり みえました。とうきょうには「ふじみ」と なまえの つく ばしょが たくさん あります。ふゆの はれた ひは、ふじさん さがしが おすすめですよ。……さて、きょうは どの まちへ でかける？",
     en:"It was minus 3°C, but the sky was a clear, deep blue. In the crisp air that only winter brings, I could see the beautiful shape of Mt. Fuji sharply. Tokyo has many places with \"Fujimi\" (Fuji view) in their names. On sunny winter days, I really recommend a search for Mt. Fuji... Now — which part of town shall I head to today?",
     vocab:[{w:"澄んだ",r:"すんだ",e:"clear (air)"},{w:"富士山",r:"ふじさん",e:"Mt. Fuji"},{w:"くっきり",r:"くっきり",e:"sharply, clearly"}],
     choices:[
-      {emoji:"🏃‍♀️", main:"東京マラソンでにぎわう街へ", sub:"とうきょうまらそんで にぎわう まちへ — Into town, buzzing with the Tokyo Marathon", to:"marathon"},
-      {emoji:"🏙", main:"初めての錦糸町へ", sub:"はじめての きんしちょうへ — To Kinshicho for the first time", to:"kinshicho"},
-      {emoji:"🌳", main:"新しい高輪ゲートウェイ駅へ", sub:"あたらしい たかなわげーとうぇいえきへ — To the new Takanawa Gateway Station", to:"takanawa"}
+      {main:"東京マラソンでにぎわう街へ", sub:"とうきょうまらそんで にぎわう まちへ — Into town, buzzing with the Tokyo Marathon", to:"marathon"},
+      {main:"初めての錦糸町へ", sub:"はじめての きんしちょうへ — To Kinshicho for the first time", to:"kinshicho"},
+      {main:"新しい高輪ゲートウェイ駅へ", sub:"あたらしい たかなわげーとうぇいえきへ — To the new Takanawa Gateway Station", to:"takanawa"}
     ]
   },
   moon: {
-    step:2, tag:"Scene 2 · White Full Moon · From Diary #34", emoji:"🌕",
+    step:2, tag:"Scene 2 · White Full Moon · From Diary #34",
     kanji:"気分を変えて、いつもと違う方向へ歩いてみました。すると、空の低いところに、とても大きくて、まん丸の月が見えたんです。明るくなってきた空の中で、白い月が静かに沈んでいく姿に感動しました。朝からこんなに美しいものに出会えて、心がとても豊かになりました。……さて、今日はどの街へ出かける？",
     hira:"きぶんを かえて、いつもと ちがう ほうこうへ あるいてみました。すると、そらの ひくい ところに、とても おおきくて、まんまるの つきが みえたんです。あかるく なってきた そらの なかで、しろい つきが しずかに しずんでいく すがたに かんどうしました。あさから こんなに うつくしいものに であえて、こころが とても ゆたかに なりました。……さて、きょうは どの まちへ でかける？",
     en:"For a change of mood, I walked in a different direction than usual. And there, low in the sky, I saw a huge, perfectly round moon. I was moved by the sight of the white moon quietly sinking in the brightening sky. Meeting something this beautiful first thing in the morning made my heart feel so rich... Now — which part of town shall I head to today?",
     vocab:[{w:"まん丸",r:"まんまる",e:"perfectly round"},{w:"沈む",r:"しずむ",e:"to sink, to set"},{w:"豊か",r:"ゆたか",e:"rich, full"}],
     choices:[
-      {emoji:"🏃‍♀️", main:"東京マラソンでにぎわう街へ", sub:"とうきょうまらそんで にぎわう まちへ — Into town, buzzing with the Tokyo Marathon", to:"marathon"},
-      {emoji:"🏙", main:"初めての錦糸町へ", sub:"はじめての きんしちょうへ — To Kinshicho for the first time", to:"kinshicho"},
-      {emoji:"🌳", main:"新しい高輪ゲートウェイ駅へ", sub:"あたらしい たかなわげーとうぇいえきへ — To the new Takanawa Gateway Station", to:"takanawa"}
+      {main:"東京マラソンでにぎわう街へ", sub:"とうきょうまらそんで にぎわう まちへ — Into town, buzzing with the Tokyo Marathon", to:"marathon"},
+      {main:"初めての錦糸町へ", sub:"はじめての きんしちょうへ — To Kinshicho for the first time", to:"kinshicho"},
+      {main:"新しい高輪ゲートウェイ駅へ", sub:"あたらしい たかなわげーとうぇいえきへ — To the new Takanawa Gateway Station", to:"takanawa"}
     ]
   },
   marathon: {
-    step:3, tag:"Scene 3 · Marathon Morning · From Diary #54", emoji:"🏃‍♀️",
+    step:3, tag:"Scene 3 · Marathon Morning · From Diary #54",
     kanji:"昨日は、東京マラソンが開催されました。毎年この大会が近づくと、世界中から続々とランナーたちが東京に集まってきます。私が毎朝ウォーキングをしている公園にも外国人のランナーたちが増えて、いつもと違う景色になっていました。街で見かけるランナーたちは、荷物をほとんど持たず、とても身軽な格好で歩いているのが印象的です。走りながら東京の街を楽しんだ後は、日本の観光もたっぷり楽しんでもらえたら嬉しいです。……さて、この後はどうする？",
     hira:"きのうは、とうきょうまらそんが かいさいされました。まいとし この たいかいが ちかづくと、せかいじゅうから ぞくぞくと らんなーたちが とうきょうに あつまってきます。わたしが まいあさ うぉーきんぐを している こうえんにも がいこくじんの らんなーたちが ふえて、いつもと ちがう けしきに なっていました。まちで みかける らんなーたちは、にもつを ほとんど もたず、とても みがるな かっこうで あるいているのが いんしょうてきです。はしりながら とうきょうの まちを たのしんだ あとは、にほんの かんこうも たっぷり たのしんで もらえたら うれしいです。……さて、このあとは どうする？",
     en:"Yesterday, the Tokyo Marathon was held. Every year as the race approaches, runners stream into Tokyo from all over the world. Even in the park where I walk every morning, the number of runners from abroad grew, and the scenery looked different from usual. The runners you spot around town carry almost no luggage and walk in wonderfully light, easy outfits — it leaves an impression. After enjoying the city of Tokyo as they run, I hope they'll enjoy plenty of sightseeing in Japan, too... Now — what's next?",
     vocab:[{w:"開催",r:"かいさい",e:"holding (an event)"},{w:"身軽",r:"みがる",e:"traveling light"},{w:"観光",r:"かんこう",e:"sightseeing"}],
     choices:[
-      {emoji:"🗼", main:"夕方の街でスカイツリーを見つける", sub:"ゆうがたの まちで すかいつりーを みつける — Spot the Skytree in the evening streets", to:"skytree"},
-      {emoji:"🗺", main:"知らない街を巡る計画を立てる", sub:"しらない まちを めぐる けいかくを たてる — Plan a tour of unknown towns", to:"map"}
+      {main:"夕方の街でスカイツリーを見つける", sub:"ゆうがたの まちで すかいつりーを みつける — Spot the Skytree in the evening streets", to:"skytree"},
+      {main:"知らない街を巡る計画を立てる", sub:"しらない まちを めぐる けいかくを たてる — Plan a tour of unknown towns", to:"map"}
     ]
   },
   kinshicho: {
-    step:3, tag:"Scene 3 · First Kinshicho · From Diary #124", emoji:"🏙",
+    step:3, tag:"Scene 3 · First Kinshicho · From Diary #124",
     kanji:"東京に住んで35年以上になりますが、まだ行ったことがない街がたくさんあります。昨日、初めて錦糸町という街に行きました。すごく遠い場所のような気がしていたんですが、東京駅からたった3駅で、意外と近くてびっくりしました。駅に降りてまず目に入ったのは、駅前の大きな公園です。ショッピングモールやレストランなど、ありとあらゆるものが揃っていました。もっと下町のようなイメージだったので、あまりにも都会で衝撃を受けました。……さて、この後はどうする？",
     hira:"とうきょうに すんで さんじゅうごねん いじょうに なりますが、まだ いったことが ない まちが たくさん あります。きのう、はじめて きんしちょうという まちに いきました。すごく とおい ばしょのような きが していたんですが、とうきょうえきから たった さんえきで、いがいと ちかくて びっくりしました。えきに おりて まず めに はいったのは、えきまえの おおきな こうえんです。しょっぴんぐもーるや れすとらんなど、ありとあらゆる ものが そろっていました。もっと したまちのような いめーじだったので、あまりにも とかいで しょうげきを うけました。……さて、このあとは どうする？",
     en:"I've lived in Tokyo for over 35 years, and there are still so many neighborhoods I've never visited. Yesterday, I went to a town called Kinshicho for the first time. I had the feeling it was somewhere far away, but it's only three stops from Tokyo Station — surprisingly close! Stepping off the train, the first thing I saw was the big park in front of the station. Shopping malls, restaurants — absolutely everything was there. I had imagined something more like an old downtown neighborhood, so I was shocked by how urban it was... Now — what's next?",
     vocab:[{w:"意外と",r:"いがいと",e:"surprisingly"},{w:"下町",r:"したまち",e:"old downtown"},{w:"都会",r:"とかい",e:"big city"}],
     choices:[
-      {emoji:"🗼", main:"夕方の街でスカイツリーを見つける", sub:"ゆうがたの まちで すかいつりーを みつける — Spot the Skytree in the evening streets", to:"skytree"},
-      {emoji:"🗺", main:"知らない街を巡る計画を立てる", sub:"しらない まちを めぐる けいかくを たてる — Plan a tour of unknown towns", to:"map"}
+      {main:"夕方の街でスカイツリーを見つける", sub:"ゆうがたの まちで すかいつりーを みつける — Spot the Skytree in the evening streets", to:"skytree"},
+      {main:"知らない街を巡る計画を立てる", sub:"しらない まちを めぐる けいかくを たてる — Plan a tour of unknown towns", to:"map"}
     ]
   },
   takanawa: {
-    step:3, tag:"Scene 3 · Takanawa Gateway · From Diary #121", emoji:"🌳",
+    step:3, tag:"Scene 3 · Takanawa Gateway · From Diary #121",
     kanji:"東京にできた一番新しい駅、高輪ゲートウェイ駅に立ち寄ってみました。建築家の隈研吾さんが設計した駅で、木をたくさん使っていて、ナチュラル感と開放感が溢れています。駅がまるごとくつろげる空間のようになっていて、改札から一歩出ると、線路を見下ろすカフェや、子供たちが遊べる人工芝生のスペースがあります。コンクリートに囲まれた閉塞的な駅ではなく、本当に気持ちが良い空間でした。これからもこの駅を楽しむために足を運びたいと思います。……さて、この後はどうする？",
     hira:"とうきょうに できた いちばん あたらしい えき、たかなわげーとうぇいえきに たちよってみました。けんちくかの くまけんごさんが せっけいした えきで、きを たくさん つかっていて、なちゅらるかんと かいほうかんが あふれています。えきが まるごと くつろげる くうかんのように なっていて、かいさつから いっぽ でると、せんろを みおろす かふぇや、こどもたちが あそべる じんこうしばふの すぺーすが あります。こんくりーとに かこまれた へいそくてきな えきではなく、ほんとうに きもちが いい くうかんでした。これからも この えきを たのしむために あしを はこびたいと おもいます。……さて、このあとは どうする？",
     en:"I stopped by Takanawa Gateway Station, the newest station built in Tokyo. Designed by the architect Kengo Kuma, it uses lots of wood and overflows with a natural, open feeling. The whole station is like a space made for relaxing — one step out of the ticket gates, there's a café looking down over the tracks and an artificial-lawn space where children can play. Not a closed-in station surrounded by concrete, but a truly pleasant space. I want to keep coming back to enjoy this station... Now — what's next?",
     vocab:[{w:"設計",r:"せっけい",e:"design"},{w:"開放感",r:"かいほうかん",e:"open, airy feeling"},{w:"改札",r:"かいさつ",e:"ticket gates"}],
     choices:[
-      {emoji:"🗼", main:"夕方の街でスカイツリーを見つける", sub:"ゆうがたの まちで すかいつりーを みつける — Spot the Skytree in the evening streets", to:"skytree"},
-      {emoji:"🗺", main:"知らない街を巡る計画を立てる", sub:"しらない まちを めぐる けいかくを たてる — Plan a tour of unknown towns", to:"map"}
+      {main:"夕方の街でスカイツリーを見つける", sub:"ゆうがたの まちで すかいつりーを みつける — Spot the Skytree in the evening streets", to:"skytree"},
+      {main:"知らない街を巡る計画を立てる", sub:"しらない まちを めぐる けいかくを たてる — Plan a tour of unknown towns", to:"map"}
     ]
   },
   skytree: {
-    step:4, tag:"Scene 4 · Surprise Skytree · From Diary #126", emoji:"🗼",
+    step:4, tag:"Scene 4 · Surprise Skytree · From Diary #126",
     kanji:"先日、錦糸町という街で朝から夕方まで仕事をしていました。帰り道、特にあてもなく、駅の周りをぶらぶらと歩いてみたんです。ふと空を見上げたら、大きな東京スカイツリーが目の前にあって、思わず「あ、スカイツリーだ！」と声が出てしまいました。錦糸町からこんなに近いとは思っていなかったので、少し驚いたんです。好奇心が出てきて、そのまま歩いて行きそうになりましたが、もう夕方遅い時間だったので、家に帰ることにしました。新しい街を歩くのは、やっぱり楽しいです。……最後は、どんな話でしめくくる？",
     hira:"せんじつ、きんしちょうという まちで あさから ゆうがたまで しごとを していました。かえりみち、とくに あてもなく、えきの まわりを ぶらぶらと あるいてみたんです。ふと そらを みあげたら、おおきな とうきょうすかいつりーが めのまえに あって、おもわず「あ、すかいつりーだ！」と こえが でてしまいました。きんしちょうから こんなに ちかいとは おもっていなかったので、すこし おどろいたんです。こうきしんが でてきて、そのまま あるいて いきそうに なりましたが、もう ゆうがた おそい じかんだったので、いえに かえることに しました。あたらしい まちを あるくのは、やっぱり たのしいです。……さいごは、どんな はなしで しめくくる？",
     en:"The other day, I worked in Kinshicho from morning till evening. On the way home, with no particular destination, I wandered around near the station. When I happened to look up at the sky, there was the huge Tokyo Skytree right in front of me — 'Oh! It's the Skytree!' I couldn't help saying out loud. I hadn't realized it was this close to Kinshicho, so I was a little surprised. My curiosity stirred, and I almost started walking straight toward it, but it was already late in the evening, so I decided to head home. Walking through a new town really is fun... Now — which story shall wrap up the day?",
     vocab:[{w:"見上げる",r:"みあげる",e:"to look up"},{w:"好奇心",r:"こうきしん",e:"curiosity"},{w:"思わず",r:"おもわず",e:"without thinking"}],
     choices:[
-      {emoji:"🚉", main:"8年ぶりの渋谷駅の話", sub:"はちねんぶりの しぶやえきの はなし — Shibuya Station after eight years", to:"shibuya"},
-      {emoji:"🏙", main:"連休の静かな東京の話", sub:"れんきゅうの しずかな とうきょうの はなし — Quiet Tokyo during the holidays", to:"gw"}
+      {main:"8年ぶりの渋谷駅の話", sub:"はちねんぶりの しぶやえきの はなし — Shibuya Station after eight years", to:"shibuya"},
+      {main:"連休の静かな東京の話", sub:"れんきゅうの しずかな とうきょうの はなし — Quiet Tokyo during the holidays", to:"gw"}
     ]
   },
   map: {
-    step:4, tag:"Scene 4 · The Unknown-Town Plan · From Diary #131", emoji:"🗺",
+    step:4, tag:"Scene 4 · The Unknown-Town Plan · From Diary #131",
     kanji:"東京にはまだ行ったことがない街がたくさんあるなぁ、と改めて思ったので、ちょっと面白いことを考えつきました。まだ行ったことがない街を、順番に巡ってみようと思ったんです。平日は会社に行っているし、週末もやりたいことがあるので、なかなか時間を取れませんが、まずは一度、東京の地図を開いて、行ったことがない場所に印をつけてみようと思います。東京はとても広いので、本当に知らない街巡りができるのか分かりませんが、まずは地図を広げるところから。ちょっとだけワクワクしてきました。……最後は、どんな話でしめくくる？",
     hira:"とうきょうには まだ いったことが ない まちが たくさん あるなぁ、と あらためて おもったので、ちょっと おもしろいことを かんがえつきました。まだ いったことが ない まちを、じゅんばんに めぐってみようと おもったんです。へいじつは かいしゃに いっているし、しゅうまつも やりたいことが あるので、なかなか じかんを とれませんが、まずは いちど、とうきょうの ちずを ひらいて、いったことが ない ばしょに しるしを つけてみようと おもいます。とうきょうは とても ひろいので、ほんとうに しらない まちめぐりが できるのか わかりませんが、まずは ちずを ひろげる ところから。ちょっとだけ わくわく してきました。……さいごは、どんな はなしで しめくくる？",
     en:"It struck me again that there are still so many towns in Tokyo I've never been to — and it gave me a fun idea. I decided to visit the towns I've never been to, one by one, in order. On weekdays I'm at the office, and weekends have their own plans, so it's hard to find the time. But first, I'm going to open a map of Tokyo and mark the places I've never visited. Tokyo is huge, so I don't know if I can really tour every unknown town — but it starts with spreading out the map. I'm getting just a little excited... Now — which story shall wrap up the day?",
     vocab:[{w:"巡る",r:"めぐる",e:"to tour, go around"},{w:"地図",r:"ちず",e:"map"},{w:"印",r:"しるし",e:"mark"}],
     choices:[
-      {emoji:"✈️", main:"60歳の友達のイタリア旅の話", sub:"ろくじゅっさいの ともだちの いたりあたびの はなし — My friend's Italy trip at 60", to:"italy"},
-      {emoji:"☕", main:"日曜の朝のスタバの話", sub:"にちようの あさの すたばの はなし — Sunday morning at Starbucks", to:"starbucks"}
+      {main:"60歳の友達のイタリア旅の話", sub:"ろくじゅっさいの ともだちの いたりあたびの はなし — My friend's Italy trip at 60", to:"italy"},
+      {main:"日曜の朝のスタバの話", sub:"にちようの あさの すたばの はなし — Sunday morning at Starbucks", to:"starbucks"}
     ]
   },
   shibuya: {
-    step:5, tag:"Final Scene · Shibuya Reborn · From Diary #166", emoji:"🚉",
+    step:5, tag:"Final Scene · Shibuya Reborn · From Diary #166",
     kanji:"今日は久しぶりに渋谷に行きました。私は8年くらい前まで渋谷駅からバスで10分ほどの場所に住んでいて、目をつむっていても歩けるくらい、渋谷の街を熟知していたんです。でも今日、渋谷駅に降りたら、駅ががらりと変わっていて驚きました。向かいたい場所は分かっているのに、そこにたどり着くまでの道が分からないんです。たった8年で、渋谷駅の周りは私の知らない街になっていました。なんだか全然知らない場所に来たみたいな感覚でした。たまには、渋谷の街も歩かないとだめですね。",
     hira:"きょうは ひさしぶりに しぶやに いきました。わたしは はちねんくらい まえまで しぶやえきから ばすで じゅっぷんほどの ばしょに すんでいて、めを つむっていても あるけるくらい、しぶやの まちを じゅくちして いたんです。でも きょう、しぶやえきに おりたら、えきが がらりと かわっていて おどろきました。むかいたい ばしょは わかっているのに、そこに たどりつくまでの みちが わからないんです。たった はちねんで、しぶやえきの まわりは わたしの しらない まちに なっていました。なんだか ぜんぜん しらない ばしょに きたみたいな かんかくでした。たまには、しぶやの まちも あるかないと だめですね。",
     en:"Today I went to Shibuya for the first time in a long while. Until about eight years ago, I lived ten minutes by bus from Shibuya Station, and I knew the town so thoroughly I could have walked it with my eyes closed. But today, when I stepped off at Shibuya Station, I was stunned — the station had completely changed. I knew where I wanted to go, yet I couldn't find the way to get there. In just eight years, the area around Shibuya Station had become a town I didn't know. It felt like arriving somewhere entirely unfamiliar. I really should walk the streets of Shibuya once in a while.",
     vocab:[{w:"熟知",r:"じゅくち",e:"knowing thoroughly"},{w:"がらりと",r:"がらりと",e:"completely (change)"},{w:"感覚",r:"かんかく",e:"feeling, sensation"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   },
   gw: {
-    step:5, tag:"Final Scene · Quiet Tokyo · From Diary #116", emoji:"🏙",
+    step:5, tag:"Final Scene · Quiet Tokyo · From Diary #116",
     kanji:"ゴールデンウィーク中は、街の人が少なくなっていて、うれしい限りです。普段東京にいる人たちは、家から出ないのか、旅行に行っているのか分かりませんが、とにかく人が減っています。最近は、東京に住んでいる人の数より、海外からの旅行者の数の方が多くなっているそうです。私はこの休みの間、どこにも旅行に行かず、家の近くで過ごそうと思っています。値段が高い長い休みの間ではなく、時期をずらして休暇をとって、旅行に行こうと思います。",
     hira:"ごーるでんうぃーくちゅうは、まちの ひとが すくなく なっていて、うれしい かぎりです。ふだん とうきょうに いる ひとたちは、いえから でないのか、りょこうに いっているのか わかりませんが、とにかく ひとが へっています。さいきんは、とうきょうに すんでいる ひとの かずより、かいがいからの りょこうしゃの かずの ほうが おおく なっている そうです。わたしは この やすみの あいだ、どこにも りょこうに いかず、いえの ちかくで すごそうと おもっています。ねだんが たかい ながい やすみの あいだではなく、じきを ずらして きゅうかを とって、りょこうに いこうと おもいます。",
     en:"During Golden Week, the streets have fewer people, and I couldn't be happier about it. Whether the people usually in Tokyo are staying home or off traveling, I don't know — but the crowds have thinned. These days, they say the number of travelers from overseas is greater than the number of people living in Tokyo. As for me, I'm not traveling anywhere this holiday; I plan to spend it near home. Rather than during the long, expensive holidays, I'll shift my vacation to another time and travel then.",
     vocab:[{w:"普段",r:"ふだん",e:"usually"},{w:"旅行者",r:"りょこうしゃ",e:"traveler"},{w:"ずらす",r:"ずらす",e:"to shift (timing)"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   },
   italy: {
-    step:5, tag:"Final Scene · Italy at 60 · From Diary #14", emoji:"✈️",
+    step:5, tag:"Final Scene · Italy at 60 · From Diary #14",
     kanji:"今日は私の友達のちょっと素敵な話です。その友達は今年60歳になるんですが、先日会ったときに「今年は一人でイタリア旅行に行ってみようかな」と少し照れながら話してくれたんです。60歳になると、将来のことやお金の不安も出てくる年齢ですよね。でも同時に、体が元気なうちにしかできないこともある。彼女はまさに「今だからこそ長い距離の旅にチャレンジしてみたい」と思ったそうです。今の年齢でできることを思い切り楽しむことも大切だなって、改めて感じました。",
     hira:"きょうは わたしの ともだちの ちょっと すてきな はなしです。その ともだちは ことし ろくじゅっさいに なるんですが、せんじつ あったときに「ことしは ひとりで いたりありょこうに いってみようかな」と すこし てれながら はなして くれたんです。ろくじゅっさいに なると、しょうらいの ことや おかねの ふあんも でてくる ねんれいですよね。でも どうじに、からだが げんきな うちにしか できないことも ある。かのじょは まさに「いまだからこそ ながい きょりの たびに ちゃれんじ してみたい」と おもった そうです。いまの ねんれいで できることを おもいきり たのしむことも たいせつだなって、あらためて かんじました。",
     en:"Today, a rather lovely story about my friend. She turns 60 this year, and when we met the other day, she told me, a little shyly, 'Maybe this year I'll try traveling to Italy on my own.' At 60, worries about the future and money start to appear, don't they? But at the same time, there are things you can only do while your body is healthy. She felt exactly that — 'precisely because it's now, I want to take on a long-distance journey.' It made me feel once again how important it is to fully enjoy what you can do at the age you are now.",
     vocab:[{w:"照れる",r:"てれる",e:"to be shy"},{w:"距離",r:"きょり",e:"distance"},{w:"思い切り",r:"おもいきり",e:"to the fullest"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   },
   starbucks: {
-    step:5, tag:"Final Scene · Café Time · From Diary #19", emoji:"☕",
+    step:5, tag:"Final Scene · Café Time · From Diary #19",
     kanji:"晴れた朝は、いつものスターバックスへ。窓の外の空を見ながらカフェラテを飲み、読書をしたり、日記のアイデアをまとめたり。自分自身を見つめる、大好きな時間です。出かける朝の締めくくりは、やっぱりこの場所がいちばん落ち着きます。",
     hira:"はれた あさは、いつもの すたーばっくすへ。まどの そとの そらを みながら かふぇらてを のみ、どくしょを したり、にっきの あいであを まとめたり。じぶんじしんを みつめる、だいすきな じかんです。でかける あさの しめくくりは、やっぱり この ばしょが いちばん おちつきます。",
     en:"On a sunny morning, I go to my usual Starbucks. I drink a caffè latte while watching the sky outside the window, read, and gather ideas for this diary. It's a time I love — time to quietly look at myself. To close a morning spent out and about, this place calms me most of all.",
     vocab:[{w:"読書",r:"どくしょ",e:"reading"},{w:"日記",r:"にっき",e:"diary"},{w:"見つめる",r:"みつめる",e:"to gaze at, to reflect on"}],
-    choices:[{emoji:"🌅", main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
+    choices:[{main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the day", to:"END", go:true}]
   }
 };
 const TOTAL_STEPS = 5;
@@ -1170,10 +1212,10 @@ function showLock(){
   const pack=GROUP==='specials'?p.specials:p.season1;
   const all=p.allaccess||{};
   const bp=document.getElementById('buyPack'), ba=document.getElementById('buyAll');
-  bp.textContent=`🔓 ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
-  ba.innerHTML=`<span class="best">Best value</span>📚 ${all.label||'All-Access'} — ${all.price||''} · every story`;
+  bp.innerHTML=`<span class="ico ico-lock is-open" aria-hidden="true"></span> ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
+  ba.innerHTML=`<span class="best">Best value</span><span class="ico ico-book" aria-hidden="true"></span> ${all.label||'All-Access'} — ${all.price||''} · every story`;
   if(pack&&pack.checkout_url){ bp.href=pack.checkout_url; bp.removeAttribute('aria-disabled'); }
-  else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.textContent+=' (coming soon)'; }
+  else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.innerHTML+=' (coming soon)'; }
   if(all.checkout_url){ ba.href=all.checkout_url; ba.removeAttribute('aria-disabled'); }
   else { ba.href='#'; ba.setAttribute('aria-disabled','true'); }
   if(CFG.test_mode) document.getElementById('lkTest').style.display='inline-block';
@@ -1210,7 +1252,7 @@ async function activateKey(){
         lockMsg(tier==='season1'?'Key accepted — but this story needs the Specials Pack.':'Key accepted — but this story needs the Season 1 Pass.','err');
       } else {
         saveLic({key, instance_id:r.instance&&r.instance.id, product_id:r.meta.product_id, tier, activated_at:Date.now(), validated_at:Date.now()});
-        lockMsg('Unlocked! Enjoy the story ☀️','ok');
+        lockMsg('Unlocked! Enjoy the story','ok');
         setTimeout(hideLockAndShowTitle,500);
       }
     } else {
@@ -1257,13 +1299,18 @@ function startBgm(){
   bgmStarted=true; bgm.muted=muted;
   bgm.play().catch(()=>{});
   const mb=document.getElementById('muteBtn');
-  mb.classList.add('on'); mb.textContent=muted?'🔇':'🔊';
+  mb.classList.add('on'); paintMute();
+}
+/* アイコンはインラインSVG。クラス付け替えだけで ON/OFF を切り替える（DOMは壊さない） */
+function paintMute(){
+  const ic=document.getElementById('muteIco');
+  if(ic) ic.classList.toggle('is-off',muted);
 }
 function toggleMute(){
   muted=!muted; localStorage.setItem('ohayo_adv_mute',muted?'1':'0');
   bgm.muted=muted;
   if(!muted && bgmStarted && bgm.paused) bgm.play().catch(()=>{});
-  document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';
+  paintMute();
 }
 /* AudioContextは1つを使い回す。自動再生ポリシー対策で、クリック等の
    ユーザー操作中に生成+resumeしておかないと発音されない（suspendedのまま）。 */
@@ -1357,9 +1404,9 @@ function setBg(key){
   bgFront=!bgFront;
 }
 function renderStats(bump){
-  document.getElementById('streakChip').textContent=`🔥 ${store.streak}`;
+  document.getElementById('streakChip').innerHTML=`<span class="ico ico-flame" aria-hidden="true"></span> ${store.streak}`;
   const xc=document.getElementById('xpChip');
-  xc.textContent=`⭐ ${store.xp} XP`;
+  xc.innerHTML=`<span class="ico ico-star" aria-hidden="true"></span> ${store.xp} XP`;
   if(bump){xc.classList.remove('bump');xc.offsetHeight;xc.classList.add('bump');}
 }
 function startGame(){
@@ -1397,7 +1444,7 @@ function loadScene(id){
   document.getElementById('cLabel').textContent=isFinal?'— The morning is complete —':'どうする？ — What will you do?';
   document.getElementById('choices').innerHTML=s.choices.map(c=>
     `<button class="choice${(c.gold||c.go)?' gold':''}" onclick="choose('${c.to}',event)">
-       <span class="c-key">${c.key||c.emoji||'›'}</span>
+       <span class="c-key" aria-hidden="true">${c.key||''}</span>
        <span><span class="c-main">${c.main}</span><br><span class="c-sub">${c.sub}</span></span>
        <span class="c-arrow">›</span><span class="c-xp">+${XP_PER_CHOICE} XP</span>
      </button>`).join('');
@@ -1433,7 +1480,7 @@ function finish(){
   document.getElementById('badgeIcon').innerHTML=BADGE_ICONS[B.icon]||BADGE_ICONS.sun;
   document.getElementById('badgeName').textContent=B.name;
   document.getElementById('badgeSub').textContent=B.sub;
-  document.getElementById('eStreak').textContent=`🔥 ${store.streak}`;
+  document.getElementById('eStreak').innerHTML=`<span class="ico ico-flame" aria-hidden="true"></span> ${store.streak}`;
   document.getElementById('eGain').textContent=`+${gainedXP||XP_PER_CHOICE*TOTAL_STEPS}`;
   document.getElementById('eXp').textContent=store.xp;
   document.getElementById('vocabList').innerHTML=collected.map(v=>
@@ -1462,7 +1509,9 @@ function confetti(){
 /* ═══════════════ boot ═══════════════ */
 function unlockBoot(){
   const st=store.streak;
-  document.getElementById('greet').textContent=st>0?`おはよう！ 🔥 ${st}にち つづいてるよ！`:'おはよう！ きょうの ぼうけんを はじめよう ☀️';
+  document.getElementById('greet').innerHTML=st>0
+    ?`おはよう！ <span class="ico ico-flame" aria-hidden="true"></span> ${st}にち つづいてるよ！`
+    :'おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span>';
   setBg(TITLE_ART);
   document.getElementById('titleScreen').style.visibility='visible';
   renderStats(false);

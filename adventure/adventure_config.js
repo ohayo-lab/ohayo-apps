@@ -1,5 +1,5 @@
 // OHAYO NIHONGO — Diary Adventure 課金設定（Lemon Squeezy）
-// ★ストア開設後にこのファイルだけ書き換える（ゲーム本体の再生成は不要）
+// [重要] ストア開設後にこのファイルだけ書き換える（ゲーム本体の再生成は不要）
 //   手順書: Vault「Lemon_Squeezyストア開設キット.md」
 // ・test_mode: true の間はキー "TEST-OHAYO" で全作解放（公開前検証用）。
 //   本番販売を始めるときに false にする。（Stripe/LSの本人確認 in review 完了後）

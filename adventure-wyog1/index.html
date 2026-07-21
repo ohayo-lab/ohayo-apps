@@ -7,7 +7,7 @@
  課金: Lemon Squeezy ライセンスキー（../adventure/adventure_config.js で設定）
    - 有料作は闇URL直アクセスでもロック画面（認証後のみ本文描画）
    - TESTモード: config.test_mode=true 時、キー "TEST-OHAYO" で解放
- 音: START起点BGM(../adventure/bgm.mp3 vol0.1 loop・🔇トグル) + Web Audioアルペジオ
+ 音: START起点BGM(../adventure/bgm.mp3 vol0.1 loop・ミュートトグル) + Web Audioアルペジオ
  デバッグ: ?view=scene / ?view=ending / ?static=1（有料作は認証後のみ有効）
 ═══════════════════════════════════════════════════════════════════
 -->
@@ -31,6 +31,41 @@ html,body{min-height:100%;background:#0D2E47;font-family:var(--sans)}
 html.static *{animation:none!important;transition:none!important}
 body{display:flex;justify-content:center}
 .app{width:100%;max-width:430px;height:100dvh;position:relative;overflow:hidden;background:#0D2E47}
+
+/* ═══════ OHAYO icon set（絵文字不使用・CSS図形/インラインSVG・正典 ohayo-icons.css 準拠） ═══════
+   em基準なので置いた場所の font-size に追従。色は currentColor（例外=sun/flame の #F7A928）。 */
+.ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
+.ico-sun{width:.68em;height:.68em;border-radius:50%;background:#F7A928;
+  box-shadow:0 0 0 .13em rgba(247,169,40,.30)}
+.ico-book{width:.6em;height:.76em;border:.1em solid currentColor;border-left-width:.2em;
+  border-radius:.06em .13em .13em .06em}
+.ico-gift{width:.76em;height:.66em;border:.1em solid currentColor;border-radius:.07em;
+  background:
+    linear-gradient(currentColor,currentColor) center/.13em 100% no-repeat,
+    linear-gradient(currentColor,currentColor) center/100% .11em no-repeat}
+.ico-gift::before{content:"";position:absolute;left:50%;top:-.2em;transform:translateX(-50%);
+  width:.34em;height:.16em;border:.09em solid currentColor;border-bottom:0;
+  border-radius:.2em .2em 0 0}
+.ico-head{width:.78em;height:.4em;border:.11em solid currentColor;border-bottom:0;
+  border-radius:.42em .42em 0 0;margin-bottom:.16em}
+.ico-head::before,.ico-head::after{content:"";position:absolute;bottom:-.2em;width:.18em;height:.26em;
+  background:currentColor;border-radius:.06em}
+.ico-head::before{left:-.11em}
+.ico-head::after{right:-.11em}
+.ico-snd{width:1.05em;height:1.05em;vertical-align:-.2em;flex:0 0 auto;fill:currentColor;stroke:none}
+.ico-snd .snd-wave{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ico-snd .snd-slash{display:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ico-snd.is-off .snd-wave{display:none}
+.ico-snd.is-off .snd-slash{display:block}
+.ico-lock{width:.62em;height:.5em;background:currentColor;border-radius:.09em;margin-top:.22em}
+.ico-lock::before{content:"";position:absolute;left:50%;top:-.3em;transform:translateX(-50%);
+  width:.34em;height:.3em;border:.1em solid currentColor;border-bottom:0;border-radius:.24em .24em 0 0}
+.ico-lock.is-open::before{left:16%;transform:none}
+.ico-flame{width:.54em;height:.68em;background:#F7A928;
+  clip-path:polygon(50% 0,100% 52%,78% 100%,22% 100%,0 52%);
+  vertical-align:-.06em;margin-right:.14em}
+.ico-star{width:.74em;height:.74em;background:currentColor;
+  clip-path:polygon(50% 0,61.8% 34.5%,98% 34.5%,69% 56%,79.4% 90.5%,50% 69%,20.6% 90.5%,31% 56%,2% 34.5%,38.2% 34.5%)}
 
 /* ═══════ SCENE BACKGROUND ═══════ */
 .bg-layer{position:absolute;inset:0;z-index:0;transition:opacity .6s ease}
@@ -123,7 +158,7 @@ body{display:flex;justify-content:center}
   width:42px;height:42px;border-radius:999px;border:1px solid rgba(191,230,249,.35);
   background:rgba(13,46,71,.6);color:#EAF6FF;font-size:17px;cursor:pointer;display:none;
   backdrop-filter:blur(6px);box-shadow:0 4px 14px rgba(7,24,39,.4)}
-.mute-fab.on{display:block}
+.mute-fab.on{display:flex;align-items:center;justify-content:center}
 
 /* ═══════ STORY PANEL ═══════ */
 .panel-wrap{position:absolute;left:0;right:0;bottom:0;z-index:9;display:none;
@@ -191,6 +226,9 @@ body{display:flex;justify-content:center}
 .c-key{flex-shrink:0;width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:900;color:#fff;background:linear-gradient(135deg,var(--ocean),#3E93C4);
   box-shadow:0 3px 8px rgba(31,114,168,.35)}
+/* ラベル(A/B/C)を持たない選択肢は共通シェブロンのマーカー（絵文字は使わない） */
+.c-key:empty::before{content:"";width:7px;height:7px;border:solid #fff;border-width:2px 2px 0 0;
+  transform:rotate(45deg);margin-left:-3px}
 .choice.gold .c-key{background:linear-gradient(135deg,#FF8A3D,#FFB63D);box-shadow:0 3px 8px rgba(240,129,20,.4)}
 .c-main{font-size:13.5px;font-weight:800;color:var(--navy);line-height:1.45}
 .c-sub{font-size:10px;color:#8A94A0;margin-top:2px;line-height:1.45}
@@ -332,7 +370,7 @@ body{display:flex;justify-content:center}
     <div class="t-feats">
       <span class="t-feat">JLPT N5–N3</span><span class="t-feat">3 SCENES</span><span class="t-feat">+XP &amp; BADGE</span>
     </div>
-    <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう ☀️</div>
+    <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span></div>
     <div class="start-wrap">
       <span class="start-ring"></span>
       <button class="btn-start" onclick="startGame()"><span class="play">▶</span>START THE MORNING</button>
@@ -345,8 +383,8 @@ body{display:flex;justify-content:center}
     <div class="hud-row">
       <div class="hud-logo">OHAYO <span>NIHONGO</span></div>
       <div class="hud-chips">
-        <span class="chip" id="streakChip">🔥 0</span>
-        <span class="chip xp" id="xpChip">⭐ 0 XP</span>
+        <span class="chip" id="streakChip"><span class="ico ico-flame" aria-hidden="true"></span> 0</span>
+        <span class="chip xp" id="xpChip"><span class="ico ico-star" aria-hidden="true"></span> 0 XP</span>
       </div>
     </div>
     <div class="prog-row">
@@ -367,7 +405,7 @@ body{display:flex;justify-content:center}
         </button>
       </div>
       <div class="transcript" id="transcript" style="display:none">
-        <div class="tr-label">🎧 いま流れている日記の原文 — Original diary text</div>
+        <div class="tr-label"><span class="ico ico-head" aria-hidden="true"></span> いま流れている日記の原文 — Original diary text</div>
         <div class="tr-text" id="trText"></div>
       </div>
       <div class="p-kanji" id="pKanji"></div>
@@ -419,22 +457,26 @@ body{display:flex;justify-content:center}
     <div class="e-title">今日はここまで。また明日！</div>
     <div class="e-sub" id="eSub">You lived one full morning in Japanese — see you tomorrow!</div>
     <div class="e-stats">
-      <div class="estat"><div class="v" id="eStreak">🔥 0</div><div class="l">Day streak</div></div>
+      <div class="estat"><div class="v" id="eStreak"><span class="ico ico-flame" aria-hidden="true"></span> 0</div><div class="l">Day streak</div></div>
       <div class="estat"><div class="v" id="eGain">+0</div><div class="l">Story XP</div></div>
       <div class="estat"><div class="v" id="eXp">0</div><div class="l">Total XP</div></div>
     </div>
     <div class="e-vocab">
-      <div class="e-vocab-title">📖 Words you met today — 今日出会った言葉</div>
+      <div class="e-vocab-title"><span class="ico ico-book" aria-hidden="true"></span> Words you met today — 今日出会った言葉</div>
       <div id="vocabList"></div>
     </div>
-    <a class="cta p" id="ctaMain" href="../adventure/">🔓 Unlock Season 1 — 5 more stories</a>
-    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">🎁 Get the Free Starter Pack</a>
+    <a class="cta p" id="ctaMain" href="../adventure/"><span class="ico ico-lock is-open" aria-hidden="true"></span> Unlock Season 1 — 5 more stories</a>
+    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><span class="ico ico-gift" aria-hidden="true"></span> Get the Free Starter Pack</a>
     <div class="e-note">Real 1-minute Japanese diary audio, scripts &amp; flashcards — new episode every morning.</div>
     <button class="btn-again" onclick="restart()">↩ 違う朝を生きてみる — Try another path</button>
     <div class="e-foot">Every path is a real diary episode from January in Tokyo.<br>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></div>
   </div>
 
-  <button class="mute-fab" id="muteBtn" onclick="toggleMute()">🔊</button>
+  <button class="mute-fab" id="muteBtn" onclick="toggleMute()" aria-label="Toggle sound"><svg class="ico-snd" id="muteIco" viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M4 9.5h3.6L12 5.4v13.2L7.6 14.5H4z"/>
+    <path class="snd-wave" d="M15.4 9.2a4 4 0 0 1 0 5.6M18 6.8a7.4 7.4 0 0 1 0 10.4"/>
+    <path class="snd-slash" d="M15.6 9.4l5 5.2M20.6 9.4l-5 5.2"/>
+  </svg></button>
 </div>
 
 <script>
@@ -1044,7 +1086,7 @@ const SCENES = {
     hira:"ふゆの あさごはんの ていばん、あたたかい おかゆ。あずきと さつまいもを いれて、ことこと にこむだけ。かんたんで おいしくて、こころも からだも ぽかぽかに なります。さいこうの ふゆの えねるぎーちゃーじです！",
     en:"My go-to winter breakfast: warm rice porridge. I just add boiled red beans and sweet potato, and let it simmer slowly. Simple, delicious, and it makes my heart and body warm all over — the best winter energy charge!",
     vocab:[{w:"定番",r:"ていばん",e:"go-to, staple"},{w:"お粥",r:"おかゆ",e:"rice porridge"},{w:"煮込む",r:"にこむ",e:"to simmer"}],
-    choices:[{key:"★", gold:true, main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the morning", to:"END"}]
+    choices:[{gold:true, main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the morning", to:"END"}]
   },
   starbucks: {
     step:3, bg:'cafe', tag:"Scene 3 · Café Time · From Diary #19",
@@ -1052,7 +1094,7 @@ const SCENES = {
     hira:"はれた あさは、いつもの すたーばっくすへ。まどの そとの そらを みながら かふぇらてを のみ、どくしょを したり、にっきの あいであを まとめたり。じぶんじしんを みつめる、だいすきな じかんです。",
     en:"On a sunny morning, I go to my usual Starbucks. I drink a caffè latte while watching the sky outside the window, read, and gather ideas for this diary. It's a time I love — time to quietly look at myself.",
     vocab:[{w:"読書",r:"どくしょ",e:"reading"},{w:"日記",r:"にっき",e:"diary"},{w:"見つめる",r:"みつめる",e:"to gaze at, to reflect on"}],
-    choices:[{key:"★", gold:true, main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the morning", to:"END"}]
+    choices:[{gold:true, main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the morning", to:"END"}]
   },
   soup: {
     step:3, bg:'kitchen', tag:"Scene 3 · Soup Challenge · From Diary #13",
@@ -1060,7 +1102,7 @@ const SCENES = {
     hira:"おーでぃおぶっくの しょうせつに でてきた、おいしそうな やさいすーぷ。さっそく まねして つくって、ばげっとと いっしょに たべてみたら、ほんとうに おいしくて だいまんぞく！ たべることって、ほんとうに しあわせな ことですね。",
     en:"A delicious-sounding vegetable soup appeared in a novel I was listening to as an audiobook. I imitated it right away and ate it with a baguette — it came out truly delicious, and I was very satisfied! Eating really is a happy thing, isn't it?",
     vocab:[{w:"小説",r:"しょうせつ",e:"novel"},{w:"真似する",r:"まねする",e:"to imitate"},{w:"大満足",r:"だいまんぞく",e:"very satisfied"}],
-    choices:[{key:"★", gold:true, main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the morning", to:"END"}]
+    choices:[{gold:true, main:"1日をしめくくる", sub:"いちにちを しめくくる — Wrap up the morning", to:"END"}]
   }
 };
 const TOTAL_STEPS = 3;
@@ -1106,10 +1148,10 @@ function showLock(){
   const pack=GROUP==='specials'?p.specials:p.season1;
   const all=p.allaccess||{};
   const bp=document.getElementById('buyPack'), ba=document.getElementById('buyAll');
-  bp.textContent=`🔓 ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
-  ba.innerHTML=`<span class="best">Best value</span>📚 ${all.label||'All-Access'} — ${all.price||''} · every story`;
+  bp.innerHTML=`<span class="ico ico-lock is-open" aria-hidden="true"></span> ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
+  ba.innerHTML=`<span class="best">Best value</span><span class="ico ico-book" aria-hidden="true"></span> ${all.label||'All-Access'} — ${all.price||''} · every story`;
   if(pack&&pack.checkout_url){ bp.href=pack.checkout_url; bp.removeAttribute('aria-disabled'); }
-  else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.textContent+=' (coming soon)'; }
+  else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.innerHTML+=' (coming soon)'; }
   if(all.checkout_url){ ba.href=all.checkout_url; ba.removeAttribute('aria-disabled'); }
   else { ba.href='#'; ba.setAttribute('aria-disabled','true'); }
   if(CFG.test_mode) document.getElementById('lkTest').style.display='inline-block';
@@ -1146,7 +1188,7 @@ async function activateKey(){
         lockMsg(tier==='season1'?'Key accepted — but this story needs the Specials Pack.':'Key accepted — but this story needs the Season 1 Pass.','err');
       } else {
         saveLic({key, instance_id:r.instance&&r.instance.id, product_id:r.meta.product_id, tier, activated_at:Date.now(), validated_at:Date.now()});
-        lockMsg('Unlocked! Enjoy the story ☀️','ok');
+        lockMsg('Unlocked! Enjoy the story','ok');
         setTimeout(hideLockAndShowTitle,500);
       }
     } else {
@@ -1193,13 +1235,18 @@ function startBgm(){
   bgmStarted=true; bgm.muted=muted;
   bgm.play().catch(()=>{});
   const mb=document.getElementById('muteBtn');
-  mb.classList.add('on'); mb.textContent=muted?'🔇':'🔊';
+  mb.classList.add('on'); paintMute();
+}
+/* アイコンはインラインSVG。クラス付け替えだけで ON/OFF を切り替える（DOMは壊さない） */
+function paintMute(){
+  const ic=document.getElementById('muteIco');
+  if(ic) ic.classList.toggle('is-off',muted);
 }
 function toggleMute(){
   muted=!muted; localStorage.setItem('ohayo_adv_mute',muted?'1':'0');
   bgm.muted=muted;
   if(!muted && bgmStarted && bgm.paused) bgm.play().catch(()=>{});
-  document.getElementById('muteBtn').textContent=muted?'🔇':'🔊';
+  paintMute();
 }
 /* AudioContextは1つを使い回す。自動再生ポリシー対策で、クリック等の
    ユーザー操作中に生成+resumeしておかないと発音されない（suspendedのまま）。 */
@@ -1293,9 +1340,9 @@ function setBg(key){
   bgFront=!bgFront;
 }
 function renderStats(bump){
-  document.getElementById('streakChip').textContent=`🔥 ${store.streak}`;
+  document.getElementById('streakChip').innerHTML=`<span class="ico ico-flame" aria-hidden="true"></span> ${store.streak}`;
   const xc=document.getElementById('xpChip');
-  xc.textContent=`⭐ ${store.xp} XP`;
+  xc.innerHTML=`<span class="ico ico-star" aria-hidden="true"></span> ${store.xp} XP`;
   if(bump){xc.classList.remove('bump');xc.offsetHeight;xc.classList.add('bump');}
 }
 function startGame(){
@@ -1333,7 +1380,7 @@ function loadScene(id){
   document.getElementById('cLabel').textContent=isFinal?'— The morning is complete —':'どうする？ — What will you do?';
   document.getElementById('choices').innerHTML=s.choices.map(c=>
     `<button class="choice${(c.gold||c.go)?' gold':''}" onclick="choose('${c.to}',event)">
-       <span class="c-key">${c.key||c.emoji||'›'}</span>
+       <span class="c-key" aria-hidden="true">${c.key||''}</span>
        <span><span class="c-main">${c.main}</span><br><span class="c-sub">${c.sub}</span></span>
        <span class="c-arrow">›</span><span class="c-xp">+${XP_PER_CHOICE} XP</span>
      </button>`).join('');
@@ -1369,7 +1416,7 @@ function finish(){
   document.getElementById('badgeIcon').innerHTML=BADGE_ICONS[B.icon]||BADGE_ICONS.sun;
   document.getElementById('badgeName').textContent=B.name;
   document.getElementById('badgeSub').textContent=B.sub;
-  document.getElementById('eStreak').textContent=`🔥 ${store.streak}`;
+  document.getElementById('eStreak').innerHTML=`<span class="ico ico-flame" aria-hidden="true"></span> ${store.streak}`;
   document.getElementById('eGain').textContent=`+${gainedXP||XP_PER_CHOICE*TOTAL_STEPS}`;
   document.getElementById('eXp').textContent=store.xp;
   document.getElementById('vocabList').innerHTML=collected.map(v=>
@@ -1398,7 +1445,9 @@ function confetti(){
 /* ═══════════════ boot ═══════════════ */
 function unlockBoot(){
   const st=store.streak;
-  document.getElementById('greet').textContent=st>0?`おはよう！ 🔥 ${st}にち つづいてるよ！`:'おはよう！ きょうの ぼうけんを はじめよう ☀️';
+  document.getElementById('greet').innerHTML=st>0
+    ?`おはよう！ <span class="ico ico-flame" aria-hidden="true"></span> ${st}にち つづいてるよ！`
+    :'おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span>';
   setBg(TITLE_ART);
   document.getElementById('titleScreen').style.visibility='visible';
   renderStats(false);

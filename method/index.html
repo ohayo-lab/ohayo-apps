@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Morning Loop Method — Listen, Shadow, Read in One Minute | OHAYO NIHONGO</title>
+<meta name="description" content="The whole OHAYO NIHONGO method in one minute a day: listen, shadow, read — shown step by step with one real sentence from a Tokyo morning diary. JLPT N5–N3.">
+<link rel="canonical" href="https://www.ohayonihongo.net/method/">
+<meta property="og:title" content="The Morning Loop Method — One Minute of Real Japanese">
+<meta property="og:description" content="Listen, shadow, read. Three steps, one minute, one real sentence from a Tokyo morning diary.">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.ohayonihongo.net/method/">
+<meta property="og:image" content="https://www.ohayonihongo.net/img/hero-banner.jpg">
+<link rel="icon" href="/favicon.ico" sizes="48x48">
+<link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== トークンは LP(index.html) の :root をそのまま踏襲。新規発明なし ===== */
+:root{
+  --sun:#F7A928; --sun-deep:#F08114; --sun-hot:#FF6B35;
+  --brand-navy:#134B70; --brand-ocean:#1F72A8;
+  --cream:#FFF9F0; --cream-card:#FFF6E6;
+  --ink:#1C3446; --ink-soft:#5A7183; --line:#E4EEF4;
+  --gold:#B98F2F;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans','Noto Sans JP',-apple-system,sans-serif;
+  --jp:'Noto Sans JP',sans-serif;
+  --jp-serif:'Noto Serif JP',serif;
+  --frame-radius:20px;
+  --frame-shadow:0 16px 34px -16px rgba(19,75,112,.32);
+  --frame-border:1px solid rgba(19,75,112,.10);
+  --band-pad:13px 15px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);color:var(--ink);line-height:1.6;overflow-x:hidden;
+  background:linear-gradient(180deg,
+    #FFF4E0 0%, #FCEEDC 16%,
+    #F4F6F2 34%, #E9F3FA 55%,
+    #DCEDF7 76%, #CFE5F2 100%)}
+a{color:inherit;text-decoration:none}
+img{max-width:100%;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 18px}
+.narrow{max-width:760px;margin:0 auto}
+/* 再生アイコン（絵文字不使用・CSS三角） */
+.ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
+  border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor}
+
+/* ===== NAV（LP と同一） ===== */
+nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,240,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:10px}
+.logo{display:flex;align-items:center;gap:8px;font-weight:700}
+.logo b{font-family:var(--sans);font-size:17px;font-weight:800;letter-spacing:.05em;color:var(--ink);white-space:nowrap}
+.nav-links{display:flex;gap:20px;font-weight:600;font-size:14px}
+.nav-links a{color:var(--ink-soft)}
+.nav-burger{display:none;-webkit-appearance:none;appearance:none;background:none;border:0;
+  width:44px;height:44px;margin-right:-8px;cursor:pointer;padding:0;
+  flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.nav-burger span{display:block;width:19px;height:1.5px;border-radius:2px;background:var(--ink);transition:transform .22s,opacity .18s}
+.nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+@media(max-width:700px){
+  .nav-links{display:none}
+  .nav-burger{display:flex}
+  /* 開いたときだけ、ナビ直下にドロップダウンとして出す。リンクの出どころは .nav-links 一つに保つ */
+  .nav-links.open{display:flex;flex-direction:column;gap:1px;line-height:1.25;
+    position:absolute;top:calc(100% + 6px);right:14px;min-width:172px;z-index:60;
+    background:#fff;border:1px solid var(--line);border-radius:13px;padding:6px;
+    box-shadow:0 14px 34px -12px rgba(19,75,112,.32)}
+  .nav-links.open a{padding:10px 14px;border-radius:9px;color:var(--ink);font-size:14.5px;line-height:1.25}
+  .nav-links.open a:active{background:#F1F7FC}
+}
+@media(max-width:400px){
+  .logo b{font-size:14.5px;letter-spacing:.03em}
+  }
+
+/* ===== HERO（LP と同一の絵・同一の文字組） ===== */
+.hero{position:relative;padding:44px 0 56px;overflow:hidden;
+  background:url("/img/lp/hero_landscape.png") left center/cover no-repeat, linear-gradient(168deg,#2F6FA6,#1F72A8)}
+.hero-grid{position:relative;z-index:2;max-width:660px}
+.hero .crumb{font-size:12px;font-weight:600;color:#E4F2FB;text-shadow:0 1px 6px rgba(9,40,66,.8)}
+.hero .crumb a{color:#FFD97A}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.95rem,5.4vw,3.2rem);line-height:1.06;color:#fff;margin:12px 0 10px;text-shadow:0 2px 10px rgba(9,40,66,.55),0 2px 26px rgba(9,40,66,.45)}
+.hero h1 i{color:#FFD97A;text-shadow:0 2px 8px rgba(9,40,66,.8),0 2px 20px rgba(9,40,66,.55)}
+/* Hero から降ろした導入。ヒーロー画像に文字を重ねず、地の文として読ませる */
+.lede{padding:26px 0 2px;text-align:center}
+.lede p{font-family:var(--serif);font-style:italic;font-size:clamp(16px,3.4vw,20px);
+  line-height:1.55;color:var(--ink);max-width:46ch;margin:0 auto}
+@media(max-width:600px){.lede{padding:22px 0 0}}
+/* JLPT 表記は crumb の行末に併記する（2026-07-21オーナー確定・案2）。
+   ピルにすると主張が強すぎて N1/N2 層を取りこぼす。かつ Hero 下端の淡い空の上では
+   白文字が 1.66:1 まで沈んで読めなかったため、承認済みの crumb と同じ濃い帯の位置へ寄せた。
+   オーバーレイもピルも足さない。 */
+.crumb .lv{margin-left:10px;padding-left:10px;border-left:1px solid rgba(255,255,255,.42);
+  font-size:11px;font-weight:600;letter-spacing:.06em;color:rgba(255,255,255,.86)}
+@media(max-width:420px){.crumb .lv{margin-left:7px;padding-left:7px;font-size:10.5px}}
+@media(max-width:860px){
+  .hero{padding:36px 0 48px}
+  .hero-grid{text-align:center;margin:0 auto}
+}
+
+/* ===== 見出し（LP の棚ヘッダを踏襲） ===== */
+.shelf{padding:30px 0 6px}
+.shelf-head{display:flex;align-items:flex-end;gap:12px;margin-bottom:10px}
+.mag-no{font-family:var(--serif);font-style:italic;font-weight:700;font-size:54px;line-height:1;color:var(--sun-deep)}
+.eyebrow{display:inline-flex;align-items:center;
+  font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
+  color:#fff;background:var(--brand-navy);padding:5px 12px;border-radius:999px;
+  margin-bottom:8px;line-height:1;box-shadow:0 5px 12px -5px rgba(19,75,112,.5)}
+.shelf-head h2{font-family:var(--serif);font-weight:700;font-size:clamp(25px,4.2vw,34px);color:var(--ink);line-height:1.05}
+.caption{font-size:14px;color:var(--ink);font-style:italic;font-family:var(--serif);margin:0 0 6px}
+.caption b{color:var(--sun-deep);font-style:normal;font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
+@media(max-width:600px){.mag-no{font-size:42px}.eyebrow{font-size:10.5px;padding:4px 11px;letter-spacing:.11em}}
+
+/* ===== 額縁（LP の .panel を踏襲） ===== */
+.panel{border-radius:var(--frame-radius);overflow:hidden;background:#fff;
+  border:var(--frame-border);box-shadow:var(--frame-shadow);display:flex;flex-direction:column}
+.band{padding:var(--band-pad);display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line)}
+.band b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--brand-navy);line-height:1.15}
+.band span.s{display:block;font-size:11.5px;color:var(--ink-soft)}
+.tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
+.tp-free{background:#DCF6EC;color:#1E9A5E}
+
+/* ===== 01 実例の1文（.lbl/.kanji/.hira/.en は LP と同じ役割・同じ色） ===== */
+.spec{margin:6px 0 4px;border-radius:var(--frame-radius);overflow:hidden;
+  border:var(--frame-border);box-shadow:var(--frame-shadow);background:#fff}
+.spec-in{background:url("/img/lp/diary_landscape.png") center 60%/cover no-repeat;padding:26px 22px 24px;text-align:center}
+.spec .lbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:#FFE9A8;text-shadow:0 1px 3px rgba(9,40,66,.85)}
+.spec .kanji{font-family:var(--jp-serif);font-weight:700;font-size:clamp(16.5px,4.3vw,27px);line-height:1.6;color:#fff;
+  margin-top:10px;text-shadow:0 1px 3px rgba(9,40,66,.9),0 3px 14px rgba(9,40,66,.6);
+  word-break:normal;overflow-wrap:break-word;line-break:strict}
+.spec .hira{font-family:var(--jp);font-size:clamp(11.5px,2.7vw,15px);line-height:1.55;color:rgba(255,255,255,.94);
+  margin-top:6px;text-shadow:0 1px 3px rgba(9,40,66,.9);
+  word-break:normal;overflow-wrap:break-word;line-break:strict}
+.spec .en{font-family:var(--serif);font-style:italic;font-size:clamp(13.5px,3vw,17px);color:#fff;margin-top:10px;
+  text-shadow:0 1px 3px rgba(9,40,66,.85)}
+@media(max-width:430px){.spec-in{padding:22px 14px}}
+/* 出典はテキストのみ（/diary/ アーカイブは LP 動線から隔離しているため、ここからも送らない） */
+.spec-src{padding:11px 15px;font-size:11.5px;color:var(--ink-soft);text-align:center;border-top:1px solid var(--line);background:#fff}
+.spec-src i{font-style:italic;color:var(--ink)}
+  margin:12px 0 2px;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:default}
+
+/* ===== 02 3ステップ ===== */
+.steps{display:flex;flex-direction:column;gap:14px;margin-top:6px}
+.step{background:#fff;border-radius:var(--frame-radius);border:var(--frame-border);box-shadow:var(--frame-shadow);
+  display:grid;grid-template-columns:132px 1fr;overflow:hidden}
+.step-rail{background:linear-gradient(165deg,#FFF3DE,#FFE7C6);padding:20px 12px 18px;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;text-align:center}
+.step-rail b{font-family:var(--serif);font-weight:700;font-size:44px;line-height:1;color:var(--sun-deep)}
+.step-rail em{font-style:normal;font-family:var(--jp);font-weight:400;font-size:16px;color:var(--brand-navy);margin-top:2px}
+.step-rail small{font-size:18px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand-navy)}
+.step-body{padding:18px 20px 20px;min-width:0}
+.step-body h3{font-family:var(--serif);font-weight:700;font-size:21px;color:var(--brand-navy);line-height:1.2}
+.step-body p{font-size:14px;color:var(--ink);margin-top:7px}
+.step-body p.why{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--ink-soft);
+  margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
+.step-body p.why b{font-style:normal;font-family:var(--sans);font-weight:800;font-size:10px;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--gold);margin-right:7px}
+@media(max-width:640px){
+  .step{grid-template-columns:1fr}
+  .step-rail{flex-direction:row;justify-content:flex-start;gap:11px;padding:12px 16px;text-align:left}
+  .step-rail b{font-size:30px}
+  .step-rail em{font-size:15px;margin-top:0}
+  .step-rail small{font-size:16.5px;letter-spacing:.06em}
+  .step-body{padding:15px 16px 17px}
+  .step-body h3{font-size:18.5px}
+  .step-body p{font-size:13.5px}
+  .step-body p.why{font-size:13.5px}
+}
+
+/* デモ枠（各ステップで「その1文」がどう見えるか） */
+.demo{margin-top:13px;background:#F7FBFD;border:1px solid var(--line);border-radius:14px;padding:14px 15px}
+.demo-k{font-size:9.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--brand-ocean);margin-bottom:9px}
+/* 1 きく：音の波（CSS図形・絵文字なし） */
+.wave{display:flex;align-items:center;gap:3px;height:36px}
+.wave i{display:block;width:4px;border-radius:2px;background:linear-gradient(180deg,var(--sun),var(--sun-deep));opacity:.85;
+  transform-origin:center center}
+.wave.on i{animation:wv .82s ease-in-out infinite}
+.wave.on i:nth-child(3n+2){animation-delay:.14s}
+.wave.on i:nth-child(3n+3){animation-delay:.28s}
+@keyframes wv{0%,100%{transform:scaleY(1);opacity:.85}50%{transform:scaleY(.4);opacity:.55}}
+@media(prefers-reduced-motion:reduce){.wave.on i{animation:none}}
+/* Try Listen：実際に鳴るボタン（<audio controls> は出さない＝保存導線を作らない） */
+.try-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:13px}
+.try-row-slim{margin-top:11px;margin-bottom:2px}
+.tryplay{-webkit-appearance:none;appearance:none;border:none;cursor:pointer;font-family:var(--sans);
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  min-height:44px;padding:11px 22px;border-radius:999px;color:#fff;font-weight:800;font-size:13.5px;letter-spacing:.02em;
+  background:linear-gradient(135deg,var(--sun),var(--sun-deep));
+  box-shadow:0 8px 18px -8px rgba(240,129,20,.75);transition:transform .14s ease,box-shadow .14s ease}
+.tryplay:hover,.tryplay:active{transform:translateY(-1px)}
+.tryplay:focus-visible{outline:2px solid var(--brand-navy);outline-offset:3px}
+.tryplay.is-playing{background:linear-gradient(135deg,#2E6E97,var(--brand-navy));
+  box-shadow:0 8px 18px -8px rgba(19,75,112,.7)}
+.tryplay .ico-stop{display:none;width:9px;height:9px;border-radius:2px;background:currentColor;flex:0 0 auto}
+.tryplay.is-playing .ico-play{display:none}
+.tryplay.is-playing .ico-stop{display:block}
+.try-note{font-size:12px;color:var(--ink-soft);line-height:1.4}
+/* 2 まねる：3チャンク */
+.chunks{display:flex;flex-wrap:wrap;align-items:center;gap:7px}
+.chunk{background:#fff;border:1.5px solid #DFD7C9;border-radius:12px;padding:8px 11px;box-shadow:0 2px 0 #E8E0D2}
+.chunk .cj{font-family:var(--jp-serif);font-weight:700;font-size:15px;color:#1C1C1C;line-height:1.35}
+.chunk .ch{display:block;font-family:var(--jp);font-size:10.5px;color:#7A8C99;margin-top:2px}
+.chunk-sep{color:var(--sun-deep);font-weight:800;font-size:15px}
+/* 3 よむ：語彙 */
+.vocab{width:100%;border-collapse:collapse;font-size:13.5px;background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.vocab td{padding:9px 12px;border-bottom:1px solid #F0F4F7;vertical-align:top}
+.vocab tr:last-child td{border-bottom:none}
+.vocab .vk{font-family:var(--jp-serif);font-weight:700;width:30%;color:#1C2A36}
+.vocab .vr{font-family:var(--jp);color:var(--ink-soft);width:32%;font-size:12.5px}
+.read-line{font-family:var(--jp-serif);font-weight:700;font-size:16px;line-height:1.75;color:#1C2A36;margin-bottom:11px;
+  word-break:normal;overflow-wrap:break-word}
+.read-line u{text-decoration:none;background:linear-gradient(180deg,transparent 62%,#FFE0A6 62%)}
+.bridge{margin:24px auto 14px;max-width:36ch;font-family:var(--serif);font-style:italic;font-size:clamp(19px,4.6vw,25px);line-height:1.4;color:var(--ink);text-align:center}
+.read-hira{font-family:var(--jp);font-weight:400;font-size:13.5px;color:var(--ink-soft);margin-top:-5px}
+@media(max-width:600px){
+  .demo{padding:12px 12px}
+  /* 折り返すと区切り点が行末に取り残されるので、区切りはチップの箱で表現する */
+  .chunk-sep{display:none}
+  .chunks{gap:8px}
+  .chunk .cj{font-size:14px}
+  .read-line{font-size:15px}
+  .read-line.read-hira{font-size:12.5px}
+  .vocab{font-size:12.5px}
+  .vocab .vr{font-size:11.5px}
+}
+
+/* ===== 03 1分の実感 ===== */
+.minute{margin:26px auto 4px;max-width:660px;background:
+  radial-gradient(420px 200px at 50% 0%, rgba(247,169,40,.22), transparent 62%),
+  linear-gradient(180deg,var(--cream-card),#FFEBC8);
+  border:1px solid rgba(247,169,40,.3);border-radius:24px;padding:26px 22px 24px;text-align:center;
+  box-shadow:var(--frame-shadow);position:relative;overflow:hidden}
+.minute::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--sun-hot) 22%,var(--sun) 42%,#FFD97A 50%,var(--sun) 58%,var(--sun-hot) 78%,transparent)}
+.minute .k{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:12px}
+.bar{display:flex;height:66px;border-radius:13px;overflow:hidden;box-shadow:0 6px 16px -8px rgba(19,75,112,.45)}
+.bar span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+  font-size:11px;font-weight:800;letter-spacing:.03em;color:#fff;min-width:0;white-space:nowrap;overflow:hidden}
+/* 秒数は数字で書かない（2026-07-21オーナー確定）。
+   このページで見せているのは「1センテンスのサンプル」だが、実際の練習は1分の日記まるごと。
+   だから「きく○秒」と数字を出すと実物と食い違う。帯の幅は3工程の重みの体感を示すだけで、
+   秒数を表しているのではない。数字表記を復活させないこと。 */
+.bar .s1{flex:20 1 0;background:linear-gradient(135deg,#FFC661,#F7A928)}
+.bar .s2{flex:25 1 0;background:linear-gradient(135deg,#F79F2C,#F08114)}
+.bar .s3{flex:15 1 0;background:linear-gradient(135deg,#3E93C4,#1F72A8)}
+.bar em{font-style:normal;font-family:var(--jp);font-weight:700;font-size:14px;line-height:1.2}
+.bar small{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92;line-height:1.2}
+.minute h3{font-family:var(--serif);font-weight:700;font-size:clamp(21px,4.6vw,28px);color:var(--brand-navy);margin-top:16px;line-height:1.2}
+@media(max-width:520px){
+  .bar{height:58px}
+  .bar em{font-size:12.5px}
+  .bar small{font-size:8.5px;letter-spacing:.1em}
+}
+
+/* ===== 出口＝Starter Pack ゴールデンチケット（LP 02 Learn の .pv-stb をそのまま踏襲） ===== */
+.exit{max-width:660px;margin:22px auto 30px}
+/* 額縁が658px幅と広いため、LPと同寸(288px)のままだと占有率0.44で券が浮いて見える。
+   等倍で拡大してLPの見え方(約0.86)に近づける。モバイルは@640で従来値に戻る。 */
+.exit .b-ticket{width:430px;height:188px;border-radius:12px}
+.exit .b-kick{font-size:12px}
+.exit .b-title{font-size:38px}
+.exit .b-admit{gap:8px;margin-top:5px}
+.exit .b-admit .box{font-size:11px;letter-spacing:.16em}
+.exit .b-admit .you{font-size:20px}
+.exit .panel{transition:transform .16s ease}
+.exit .panel:hover,.exit .panel:active{transform:translateY(-4px)}
+.pv{height:186px;position:relative;overflow:hidden;flex:0 0 auto}
+.pv-stb{background:radial-gradient(120% 120% at 50% -20%, #1C567E 0%, #133F5C 46%, #0D2E44 100%)}
+.pv-stb::before{content:"";position:absolute;inset:0;opacity:.4;pointer-events:none;
+  background:radial-gradient(60px 40px at 82% 88%,rgba(247,169,40,.4),transparent 70%),
+             radial-gradient(50px 34px at 16% 16%,rgba(231,200,119,.35),transparent 70%)}
+.b-ticket{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-2deg);
+  width:288px;height:126px;border-radius:9px;display:flex;overflow:hidden;
+  background:linear-gradient(155deg,#FFFDF6 0%,#FDF3DE 52%,#F7E6C4 100%);
+  box-shadow:0 16px 30px -10px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.25)}
+.b-ticket::before{content:"";position:absolute;inset:5px;border-radius:5px;pointer-events:none;
+  border:1.5px solid transparent;
+  background:linear-gradient(135deg,#C79B34,#F2DE9A 30%,#B7861F 55%,#EED592 78%,#B7861F) border-box;
+  -webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);
+          -webkit-mask-composite:xor;mask-composite:exclude}
+.b-stub{flex:0 0 68px;position:relative;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
+  border-right:2px dashed rgba(154,116,32,.5)}
+.b-stub .b-icon{width:46px;height:46px;border-radius:9px;object-fit:cover;
+  box-shadow:0 3px 8px rgba(120,85,25,.35),0 0 0 1.5px rgba(183,134,31,.45)}
+.b-notch{position:absolute;z-index:4;width:14px;height:14px;border-radius:50%;background:#123B57}
+.b-notch.t{top:-7px}.b-notch.bt{bottom:-7px}
+.b-face{flex:1;position:relative;padding:15px 16px 13px;display:flex;flex-direction:column;justify-content:center;gap:4px}
+.b-kick{font-family:var(--sans);font-weight:800;font-size:8.5px;letter-spacing:.24em;color:#B08221;text-transform:uppercase}
+.b-title{font-family:var(--serif);font-weight:700;font-size:26px;line-height:.95;color:#123B57}
+.b-title em{font-style:italic;color:var(--sun-deep)}
+.b-title .nw{white-space:nowrap}
+.b-admit{display:inline-flex;align-items:center;gap:6px;margin-top:3px}
+.b-admit .box{font-family:var(--sans);font-weight:800;font-size:8px;letter-spacing:.16em;color:#fff;
+  background:var(--brand-navy);border-radius:3px;padding:3px 7px;text-transform:uppercase}
+.b-admit .you{font-family:var(--serif);font-style:italic;font-weight:700;font-size:14px;color:#9A7420}
+.pv-stb .stb-cta{position:absolute;right:14px;bottom:12px;z-index:9;display:inline-flex;align-items:center;gap:5px;
+  background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#fff;
+  font-family:var(--sans);font-weight:800;font-size:12px;border-radius:999px;padding:8px 15px;
+  box-shadow:0 8px 16px -6px rgba(240,129,20,.7),0 0 0 3px rgba(255,255,255,.55)}
+.pv-stb .stb-seal{position:absolute;left:14px;top:13px;z-index:9;font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
+  color:#8A6512;background:rgba(255,250,238,.94);border:1px solid #E7C877;
+  padding:4px 10px;border-radius:999px;box-shadow:0 4px 10px rgba(20,90,60,.18)}
+@media(max-width:600px){
+  .pv{height:172px}
+  .exit .b-ticket{width:262px;height:118px;border-radius:9px}
+  .exit .b-kick{font-size:8.5px}
+  .exit .b-title{font-size:23px}
+  .exit .b-admit{gap:6px;margin-top:3px}
+  .exit .b-admit .box{font-size:8px}
+  .exit .b-admit .you{font-size:14px}
+  .b-ticket{width:262px;height:118px}
+  .b-title{font-size:23px}
+}
+
+footer{background:var(--brand-navy);color:rgba(255,255,255,.75);text-align:center;padding:30px 0;font-size:12px;margin-top:14px}
+footer .soc{display:flex;justify-content:center;gap:16px;margin-bottom:10px;font-weight:700;color:rgba(255,255,255,.85);flex-wrap:wrap}
+footer .soc a{color:rgba(255,255,255,.9)}
+footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underline-offset:2px}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap nav-in">
+  <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
+  <div class="nav-links" id="navLinks"><a href="/#read">Read</a><a href="/method/">Method</a><a href="/#learn">Learn</a><a href="/#shop">Shop</a><a href="/#try">Try</a><a href="/#play">Play</a></div>
+  <button class="nav-burger" type="button" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
+</div></nav>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap hero-grid">
+    <div class="crumb"><a href="/">Home</a> &rsaquo; Method<span class="lv">JLPT N5&ndash;N3</span></div>
+    <h1>The Morning Loop Method<br><i>three steps, one minute.</i></h1>
+  </div>
+</header>
+
+<!-- Hero から降ろした導入。画像に重ねず、文字として読ませる -->
+<div class="wrap narrow">
+  <div class="lede">
+    <p>Listen, shadow, read — shown here with one real sentence from a Tokyo morning diary. No textbook, no drills, no notebook.</p>
+  </div>
+</div>
+
+<!-- ============ 01 実例の1文 ============ -->
+<section class="shelf"><div class="wrap narrow">
+  <div class="shelf-head">
+    <span class="mag-no">01</span>
+    <span class="tt"><span class="eyebrow">The sentence</span><h2>One real morning sentence</h2></span>
+  </div>
+  <p class="caption"><b>Not a sample</b>This is the actual opening line of the diary from July 8 — word for word, the same line that went out on Spotify and YouTube.</p>
+
+  <div class="spec">
+    <div class="spec-in">
+      <div class="lbl">From the morning diary &mdash; きょうの いちぶん</div>
+      <div class="kanji">最近ハマっているのは、ゆで卵です。</div>
+      <div class="hira">さいきんはまっているのは、ゆでたまごです。</div>
+      <div class="en">Lately I have been hooked on boiled eggs.</div>
+    </div>
+    <div class="spec-src">Source: <i>Diary #183 &mdash; &ldquo;Hard-Boiled Eggs Are My New Snack&rdquo;</i> &middot; July 8, 2026</div>
+  </div>
+
+</div></section>
+
+<!-- ============ 02 メソッド本編 ============ -->
+<section class="shelf"><div class="wrap narrow">
+  <div class="shelf-head">
+    <span class="mag-no">02</span>
+    <span class="tt"><span class="eyebrow">The loop</span><h2>Now run it, step by step</h2></span>
+  </div>
+  <p class="caption"><b>Example</b>As an example, we have taken one sentence from Diary #183. Let us listen to it &mdash; try it below.</p>
+
+  <div class="steps">
+
+    <!-- 1 きく -->
+    <article class="step">
+      <div class="step-rail">
+        <b>1</b><small>Listen</small><em>きく</em>
+      </div>
+      <div class="step-body">
+        <h3>Listen twice. Do not read anything.</h3>
+        <p>Press Try Listen and let the sentence go past you twice with your eyes off the screen. You are not trying to understand it yet — you are only letting the shape of it go by.</p>
+        <div class="demo">
+          <div class="demo-k">What you hear</div>
+          <div class="wave" id="tryWave" aria-hidden="true">
+            <i style="height:10px"></i><i style="height:19px"></i><i style="height:28px"></i><i style="height:34px"></i><i style="height:22px"></i><i style="height:13px"></i>
+            <i style="height:8px"></i>
+            <i style="height:16px"></i><i style="height:30px"></i><i style="height:36px"></i><i style="height:26px"></i><i style="height:33px"></i><i style="height:20px"></i><i style="height:12px"></i>
+            <i style="height:7px"></i>
+            <i style="height:15px"></i><i style="height:27px"></i><i style="height:32px"></i><i style="height:21px"></i><i style="height:11px"></i>
+          </div>
+          <div class="try-row">
+            <button class="tryplay" type="button" id="tryPlay">
+              <span class="ico-play"></span><span class="ico-stop"></span><span class="tp-label" data-idle="Try Listen">Try Listen</span>
+            </button>
+            <span class="try-note">The real line, at real speed &mdash; press it twice.</span>
+          </div>
+        </div>
+        <p class="why"><b>Why it works</b>Reading first makes you hear the letters instead of the language. Listening with nothing to read lets your ear catch the rhythm — and rhythm is what makes a sentence stick.</p>
+      </div>
+    </article>
+
+    <!-- 2 まねる -->
+    <article class="step">
+      <div class="step-rail">
+        <b>2</b><small>Shadow</small><em>まねる</em>
+      </div>
+      <div class="step-body">
+        <h3>Say it out loud, one chunk at a time.</h3>
+        <p>Play it again and speak along, half a beat behind. Never chase the whole sentence — take it in three short pieces. Copy her speed, not your own.</p>
+        <div class="demo">
+          <div class="demo-k">How the sentence breaks</div>
+          <div class="try-row try-row-slim">
+            <button class="tryplay" type="button">
+              <span class="ico-play"></span><span class="ico-stop"></span><span class="tp-label" data-idle="Listen again">Listen again</span>
+            </button>
+          </div>
+          <div class="chunks">
+            <span class="chunk"><span class="cj">最近</span><span class="ch">さいきん</span></span>
+            <span class="chunk-sep">&middot;</span>
+            <span class="chunk"><span class="cj">ハマっているのは</span><span class="ch">はまっているのは</span></span>
+            <span class="chunk-sep">&middot;</span>
+            <span class="chunk"><span class="cj">ゆで卵です。</span><span class="ch">ゆでたまごです。</span></span>
+          </div>
+        </div>
+        <p class="why"><b>Why it works</b>Your mouth learns faster than your memory. Saying a real sentence at native speed teaches your tongue the joins between words — the exact place where textbook Japanese falls apart in a real conversation.</p>
+      </div>
+    </article>
+
+    <!-- 3 よむ -->
+    <article class="step">
+      <div class="step-rail">
+        <b>3</b><small>Read</small><em>よむ</em>
+      </div>
+      <div class="step-body">
+        <h3>Only now, look at the words.</h3>
+        <p>Read the line once in kanji, once in hiragana, and check just the two words you could not catch. Two is the limit. Anything more and tomorrow morning stops feeling easy.</p>
+        <div class="demo">
+          <div class="demo-k">What you look up</div>
+          <div class="read-line">最近<u>ハマっている</u>のは、<u>ゆで卵</u>です。</div>
+          <div class="read-line read-hira">さいきん<u>はまっている</u>のは、<u>ゆでたまご</u>です。</div>
+          <table class="vocab">
+            <tr><td class="vk">ハマる</td><td class="vr">はまる</td><td>to get hooked on</td></tr>
+            <tr><td class="vk">ゆで卵</td><td class="vr">ゆでたまご</td><td>boiled egg</td></tr>
+          </table>
+        </div>
+        <p class="why"><b>Why it works</b>By the time you read it, you already know how the sentence sounds — so the kanji lands on top of a memory instead of becoming one more thing to memorize. That is why it survives to next week.</p>
+      </div>
+    </article>
+
+  </div>
+</div></section>
+
+<!-- ============ 03 1分の実感 ＋ 出口（締めの一文の直下にチケット） ============ -->
+<section class="shelf"><div class="wrap narrow">
+  <div class="minute">
+    <div class="k">Your whole morning practice</div>
+    <div class="bar">
+      <span class="s1"><small>Listen</small><em>きく</em></span>
+      <span class="s2"><small>Shadow</small><em>まねる</em></span>
+      <span class="s3"><small>Read</small><em>よむ</em></span>
+    </div>
+    <h3>Every morning starts here &mdash; one minute a day, and that&rsquo;s the whole method.</h3>
+  </div>
+
+  <p class="bridge">Tomorrow&rsquo;s sentence is already written.<br>Here are your first seven.</p>
+
+  <div class="exit">
+    <a class="panel" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_method">
+      <div class="pv pv-stb">
+        <div class="b-ticket">
+          <div class="b-stub">
+            <span class="b-notch t"></span>
+            <span class="b-notch bt"></span>
+            <img class="b-icon" src="/img/lp/brand_icon.png" alt="">
+          </div>
+          <div class="b-face">
+            <span class="b-kick">The Morning Invitation</span>
+            <span class="b-title">7-Day <span class="nw"><em>Starter</em> Pack</span></span>
+            <span class="b-admit"><span class="box">Admit</span><span class="you">You</span></span>
+          </div>
+        </div>
+        <span class="stb-seal">Free</span>
+        <span class="stb-cta">Get it free &rarr;</span>
+      </div>
+      <div class="band"><span class="bn"><b>Starter Pack</b><span class="s">7 mornings &middot; free to your inbox</span></span><span class="tagpill tp-free">Free</span></div>
+    </a>
+  </div>
+</div></section>
+
+<footer>
+  <div class="wrap">
+    <div class="soc">
+      <a href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener">Spotify</a>
+      <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
+      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Substack</a>
+      <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener" data-oa-event="buy_etsy">Etsy</a>
+    </div>
+    <p>New diary every morning on Spotify &amp; YouTube &mdash; &ldquo;OHAYO NIHONGO&rdquo;</p>
+    <p>&copy; 2026 OHAYO NIHONGO &middot; A real diary, read slowly, every morning.</p>
+    <p style="margin-top:8px"><a class="legal" href="/legal/">特定商取引法に基づく表記 / Legal</a></p>
+  </div>
+</footer>
+
+<!-- menu.js は読み込まない：このページは LP と同じ固定ナビ（Read/Method/Learn/Shop/Try/Play + Join free）を
+     持つため、menu.js のハンバーガー（fixed top-right）が Join free ボタンに重なる。
+     LP index.html も同じ理由で menu.js を読み込んでいない。 -->
+<!-- Try Listen：<audio controls> を出さない（右クリック保存の導線を作らない）。
+     再生中はボタンが停止表示に変わり、波形アニメが動く。押し直しで停止＝2回聴く手順が踏める。 -->
+<script>
+(function(){
+  // 音源は1本。ボタンは複数（step1 の Try Listen / step2 の Listen again）。
+  // 同じ Audio を共有し、いま鳴らしている側だけ Stop 表示にする。
+  var btns = [].slice.call(document.querySelectorAll('.tryplay'));
+  if(!btns.length){return;}
+  var wave = document.getElementById('tryWave');
+  var clip = new Audio('/method/audio/loop-183.mp3');
+  clip.preload = 'none';
+  var active = null;
+  function labelOf(b){ return b.querySelector('.tp-label'); }
+  function idle(){
+    btns.forEach(function(b){
+      b.classList.remove('is-playing');
+      var l = labelOf(b);
+      l.textContent = l.getAttribute('data-idle') || 'Try Listen';
+    });
+    if(wave){wave.classList.remove('on');}
+    active = null;
+  }
+  function busy(b){
+    idle();
+    b.classList.add('is-playing');
+    labelOf(b).textContent = 'Stop';
+    if(wave){wave.classList.add('on');}
+    active = b;
+  }
+  clip.addEventListener('ended', idle);
+  clip.addEventListener('pause', idle);
+  clip.addEventListener('error', idle);
+  btns.forEach(function(b){
+    b.addEventListener('click', function(){
+      if(active === b){ clip.pause(); clip.currentTime = 0; idle(); return; }
+      clip.currentTime = 0;
+      var pr = clip.play();
+      if(pr && pr.then){ pr.then(function(){busy(b);}).catch(idle); } else { busy(b); }
+    });
+  });
+})();
+</script>
+<script>
+/* モバイル用ハンバーガー。デスクトップは .nav-links がそのまま横並びで出るので何もしない。
+   リンクは .nav-links を使い回す＝棚順の変更が1箇所で済む（menu.js は一覧が古く /diary/ を含むため使わない）。 */
+(function(){
+  var b=document.getElementById('navBurger'), m=document.getElementById('navLinks');
+  if(!b||!m){return;}
+  function set(open){ b.setAttribute('aria-expanded', open?'true':'false'); m.classList.toggle('open', open); }
+  b.addEventListener('click', function(e){ e.stopPropagation(); set(b.getAttribute('aria-expanded')!=='true'); });
+  m.addEventListener('click', function(e){ if(e.target.closest('a')){ set(false); } });
+  document.addEventListener('click', function(e){ if(!m.contains(e.target)&&!b.contains(e.target)){ set(false); } });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape'){ set(false); } });
+})();
+</script>
+<script src="/assets/analytics.js"></script>
+</body>
+</html>
