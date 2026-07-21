@@ -196,21 +196,18 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* 実機スクショは横長(1179x1967=1:1.67)、端末枠は1:1.81。
    cover だと左右が削られてメニューやブランド名が欠けるので、幅を基準に合わせて下を切る。
    上部（ブランド名・ストリーク・スピーカー）を必ず残すため object-position は top。 */
+/* 画像を差し替えるときは必ずファイル名も変えること。
+   同名で上書きすると cache-control:max-age=600 により最大10分、
+   端末によってはさらに長く古い画像が表示され続ける（2026-07-21に実際に発生） */
 .fc-shot{position:absolute;top:0;left:0;width:100%;height:auto;object-fit:contain;object-position:top center}
 .fc-notch{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:3;
   width:28px;height:4px;border-radius:3px;background:rgba(255,255,255,.55)}
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;background:var(--brand-navy);padding:4px 10px;border-radius:999px;
   box-shadow:0 3px 9px rgba(19,75,112,.32)}
-.fc-home{position:absolute;left:13px;bottom:13px;z-index:6;display:flex;flex-direction:column;align-items:center;gap:4px}
-.fc-home img{width:40px;height:40px;border-radius:11px;object-fit:cover;display:block;
-  box-shadow:0 7px 15px -5px rgba(19,75,112,.5),0 0 0 1.5px rgba(255,255,255,.9)}
-.fc-home span{font-size:7.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#2C5A76}
 @media(max-width:600px){
   /* 236px幅では端末が左に寄ると HOME SCREEN のラベルに被るので、端末を少し右へ */
   .fc-phone{left:57%;width:100px;height:184px}
-  .fc-home img{width:36px;height:36px}
-  .fc-home span{font-size:7px;letter-spacing:.04em}
 }
 /* ===== 05 Try：/adventure/ の Story Map をそのまま縮小
    Chapter 1 の無料カード＋その下のロック棚で「ひと口だけ本物を試せる」を絵で示す */
@@ -752,11 +749,10 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         <span class="fc-badge">Web app</span>
         <div class="fc-phone">
           <div class="fc-screen">
-            <img class="fc-shot" src="/img/lp/fcapp_real.png" alt="Flashcards web app on a phone" loading="lazy">
+            <img class="fc-shot" src="/img/lp/fcapp_real_v2.png" alt="Flashcards web app on a phone" loading="lazy">
             <span class="fc-notch"></span>
           </div>
         </div>
-        <span class="fc-home"><img src="/img/lp/brand_icon.png" alt=""><span>Home screen</span></span>
       </div>
       <div class="band"><span class="bn"><b>Flashcards Web App</b><span>No install · add to home screen</span></span><span class="tagpill tp-free">Free</span></div>
     </a>
