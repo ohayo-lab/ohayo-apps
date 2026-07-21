@@ -15,6 +15,11 @@
 <meta name="theme-color" content="#134B70">
 <script src="./adventure_config.js"></script>
 <style>
+.ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
+  border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor;
+  vertical-align:-.02em}
+.ico-pause{display:inline-block;flex:0 0 auto;width:8px;height:10px;
+  border-left:3px solid currentColor;border-right:3px solid currentColor;vertical-align:-.02em}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --navy:#134B70; --ocean:#1F72A8; --sky:#BFE6F9; --sun:#F7A928; --sun2:#F08114;
@@ -200,7 +205,7 @@ h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
     <a class="feat" href="../adventure-wyog1/" data-oa-event="play_game">
     <span class="tile">1</span>
     <span><span class="fl">Free · Start here</span><b>Winter Morning</b><span class="tg">Chapter 1 · How will you spend a 1°C morning?</span></span>
-    <span class="go">▶</span>
+    <span class="go ico-play" aria-hidden="true"></span>
   </a>
 
   <div class="sec"><b>Season 1 · Feb–Jun</b><i></i><span class="st lock" id="stS1"><span class="ico ico-lock" aria-hidden="true"></span> Locked</span></div>

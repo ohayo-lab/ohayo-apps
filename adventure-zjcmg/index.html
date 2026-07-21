@@ -21,6 +21,11 @@
 <script src="../adventure/adventure_config.js"></script>
 <script src="audio/clips.js"></script><!-- シーン→日記音声クリップのマップ（build_scene_audio.py生成・無ければ▶非表示） -->
 <style>
+.ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
+  border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor;
+  vertical-align:-.02em}
+.ico-pause{display:inline-block;flex:0 0 auto;width:8px;height:10px;
+  border-left:3px solid currentColor;border-right:3px solid currentColor;vertical-align:-.02em}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
   --navy:#134B70; --ocean:#1F72A8; --sky:#BFE6F9; --sun:#F7A928; --sun2:#F08114;
@@ -399,7 +404,7 @@ body{display:flex;justify-content:center}
     <div class="t-greet" id="greet">おはよう！ きょうの ぼうけんを はじめよう <span class="ico ico-sun" aria-hidden="true"></span></div>
     <div class="start-wrap">
       <span class="start-ring"></span>
-      <button class="btn-start" onclick="startGame()"><span class="play">▶</span>START THE MORNING</button>
+      <button class="btn-start" onclick="startGame()"><span class="play ico-play" aria-hidden="true"></span>START THE MORNING</button>
     </div>
     <div class="t-foot">OHAYO NIHONGO · おはよう日本語 · Specials</div>
   </div>
@@ -425,7 +430,7 @@ body{display:flex;justify-content:center}
       <span class="p-tag" id="pTag"></span>
       <div class="listen-row" id="listenRow" style="display:none">
         <button class="listen-btn" id="listenBtn" onclick="toggleVoice()">
-          <span class="li-icon" id="listenIcon">▶</span>
+          <span class="li-icon ico-play" id="listenIcon" aria-hidden="true"></span>
           <span id="listenLabel">この日記をきく — Listen</span>
           <span class="li-eq" style="display:none"><i></i><i></i><i></i></span>
         </button>
@@ -488,11 +493,11 @@ body{display:flex;justify-content:center}
       <div class="estat"><div class="v" id="eXp">0</div><div class="l">Total XP</div></div>
     </div>
     <div class="e-vocab">
-      <div class="e-vocab-title"><span class="ico ico-book" aria-hidden="true"></span> Words you met today — 今日出会った言葉</div>
+      <div class="e-vocab-title">Words you met today — 今日出会った言葉</div>
       <div id="vocabList"></div>
     </div>
-    <a class="cta p" id="ctaMain" href="../adventure/"><span class="ico ico-book" aria-hidden="true"></span> Choose your next story</a>
-    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><span class="ico ico-gift" aria-hidden="true"></span> Get the Free Starter Pack</a>
+    <a class="cta p" id="ctaMain" href="../adventure/">Choose your next story</a>
+    <a class="cta s" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">Get the Free Starter Pack</a>
     <div class="e-note">Real 1-minute Japanese diary audio, scripts &amp; flashcards — new episode every morning.</div>
     <button class="btn-again" onclick="restart()">↩ 違う朝を生きてみる — Try another path</button>
     <div class="e-foot">Every path is a real diary episode from my mornings out in Tokyo and beyond.<br>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/" target="_blank" rel="noopener">ohayonihongo.net</a></div>
@@ -1238,7 +1243,7 @@ function showLock(){
   const all=p.allaccess||{};
   const bp=document.getElementById('buyPack'), ba=document.getElementById('buyAll');
   bp.innerHTML=`<span class="ico ico-lock is-open" aria-hidden="true"></span> ${pack&&pack.label||'Unlock'} — ${pack&&pack.price||''}`;
-  ba.innerHTML=`<span class="best">Best value</span><span class="ico ico-book" aria-hidden="true"></span> ${all.label||'All-Access'} — ${all.price||''} · every story`;
+  ba.innerHTML=`<span class="best">Best value</span>${all.label||'All-Access'} — ${all.price||''} · every story`;
   if(pack&&pack.checkout_url){ bp.href=pack.checkout_url; bp.removeAttribute('aria-disabled'); }
   else { bp.href='#'; bp.setAttribute('aria-disabled','true'); bp.innerHTML+=' (coming soon)'; }
   if(all.checkout_url){ ba.href=all.checkout_url; ba.removeAttribute('aria-disabled'); }
@@ -1377,7 +1382,7 @@ function setListenUI(playing){
   const btn=document.getElementById('listenBtn');
   if(!btn) return;
   btn.classList.toggle('playing', playing);
-  document.getElementById('listenIcon').textContent = playing ? '⏸' : '▶';
+  document.getElementById('listenIcon').classList.toggle('ico-pause', playing);document.getElementById('listenIcon').classList.toggle('ico-play', !playing);
   document.getElementById('listenLabel').textContent = playing ? 'さいせいちゅう — Playing' : 'この日記をきく — Listen';
   btn.querySelector('.li-eq').style.display = playing ? '' : 'none';
 }
