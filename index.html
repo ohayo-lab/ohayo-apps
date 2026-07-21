@@ -146,6 +146,8 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .band b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--brand-navy);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .band span{display:block;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
+/* Etsy / Amazon はサービス名なので大文字変換しない（正しい綴りで出す） */
+.tagpill.tp-shop{text-transform:none;letter-spacing:.02em}
 .tp-free{background:#DCF6EC;color:#1E9A5E}
 .tp-soon{background:#F1F0F6;color:#7A7690}
 .tp-shop{background:var(--cream-card);color:var(--sun-deep)}
@@ -185,25 +187,14 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    小さく収めると縦横比が玩具のように見えるため、実機に近い比率のまま大きく置く。
    中身は小さくて読めないので、january版のスクショで問題ない（2026-07-21オーナー確定）。
    ※これは不具合ではないので「切れている」を理由に縮めないこと */
-.fc-phone{position:absolute;left:50%;top:14px;width:106px;height:192px;z-index:3;
-  transform:translateX(-50%) rotate(-5deg);border-radius:20px;background:#12293D;padding:6px 5px;
-  box-shadow:0 20px 34px -14px rgba(9,30,50,.55),0 0 0 1px rgba(255,255,255,.2)}
-.fc-screen{position:relative;width:100%;height:100%;border-radius:15px;overflow:hidden;
-  background:linear-gradient(180deg,#DCEEF9,#FFE7BE)}
 /* 実機スクショは横長(1179x1967=1:1.67)、端末枠は1:1.81。
    cover だと左右が削られてメニューやブランド名が欠けるので、幅を基準に合わせて下を切る。
    上部（ブランド名・ストリーク・スピーカー）を必ず残すため object-position は top。 */
-/* 画像を差し替えるときは必ずファイル名も変えること。
-   同名で上書きすると cache-control:max-age=600 により最大10分、
-   端末によってはさらに長く古い画像が表示され続ける（2026-07-21に実際に発生） */
-.fc-shot{position:absolute;top:0;left:0;width:100%;height:auto;object-fit:contain;object-position:top center}
-.fc-notch{position:absolute;top:6px;left:50%;transform:translateX(-50%);z-index:3;
-  width:28px;height:4px;border-radius:3px;background:rgba(255,255,255,.55)}
+.fc-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;background:var(--brand-navy);padding:4px 10px;border-radius:999px;
   box-shadow:0 3px 9px rgba(19,75,112,.32)}
 @media(max-width:600px){
-  .fc-phone{left:57%;width:100px;height:184px}
 }
 /* ===== 05 Try：/adventure/ の Story Map をそのまま縮小
    Chapter 1 の無料カード＋その下のロック棚で「ひと口だけ本物を試せる」を絵で示す */
@@ -743,12 +734,9 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
     <a class="panel" href="/my-flashcards/">
       <div class="pv pv-fc">
         <span class="fc-badge">Web app</span>
-        <div class="fc-phone">
-          <div class="fc-screen">
-            <img class="fc-shot" src="/img/lp/fcapp_real_v2.png" alt="Flashcards web app on a phone" loading="lazy">
-            <span class="fc-notch"></span>
-          </div>
-        </div>
+        <!-- v3 は「Flashcards商品ビジュアル＋実機スクショを合成済み」の完成画像。
+             端末枠はこの画像の中に描かれているので、CSSで枠を描かない -->
+        <img class="fc-art" src="/img/lp/fcapp_real_v3.png" alt="Flashcards web app" loading="lazy">
       </div>
       <div class="band"><span class="bn"><b>Flashcards Web App</b><span>No install · add to home screen</span></span><span class="tagpill tp-free">Free</span></div>
     </a>
@@ -785,7 +773,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         </div>
         <span class="kdp-shelf"></span>
       </div>
-      <div class="band"><span class="bn"><b>Diary Reader</b><span>Paperback &amp; Kindle</span></span><span class="tagpill tp-shop">Amazon</span></div>
+      <div class="band"><span class="bn"><b>Diary Reader</b><span>Paperback &amp; Kindle</span></span><span class="tagpill tp-shop">amazon</span></div>
     </a>
 
   </div>
