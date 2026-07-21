@@ -184,7 +184,8 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    左下のアプリアイコン＝バンドの「add to home screen」と噛み合わせるための絵。 */
 .pv-fc{background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 34%,#FFF0CE 72%,#FFDFA8 100%);
   display:block;padding:0;overflow:hidden}
-.fc-phone{position:absolute;left:50%;top:14px;width:106px;height:192px;z-index:3;
+/* パネルの高さは168px。top:14+height:192=206 で下が33px切れていたので、中に収まる寸法にする */
+.fc-phone{position:absolute;left:50%;top:11px;width:80px;height:146px;z-index:3;
   transform:translateX(-50%) rotate(-5deg);border-radius:20px;background:#12293D;padding:6px 5px;
   box-shadow:0 20px 34px -14px rgba(9,30,50,.55),0 0 0 1px rgba(255,255,255,.2)}
 .fc-screen{position:relative;width:100%;height:100%;border-radius:15px;overflow:hidden;
@@ -201,7 +202,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .fc-home span{font-size:7.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#2C5A76}
 @media(max-width:600px){
   /* 236px幅では端末が左に寄ると HOME SCREEN のラベルに被るので、端末を少し右へ */
-  .fc-phone{left:57%;width:100px;height:184px}
+  .fc-phone{left:57%;width:76px;height:138px}
   .fc-home img{width:36px;height:36px}
   .fc-home span{font-size:7px;letter-spacing:.04em}
 }
@@ -413,6 +414,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    バラバラになっていた（実測）。メディアクエリをやめ、全幅で同じ「伸び縮みする」挙動に統一する。
    grid の 1fr は幅が足りなければ自動で縮むので、狭い画面でも破綻しない。
    ※06 Play棚は対象外（オーナー確定） */
+/* 見出し・キャプションもパネルと同じ694px列に入れて左端を共有する。
+   これをしないと広い画面で見出しだけ175px外側に出る（1328pxで実測） */
+#read .shelf-head,#read .caption,#method .shelf-head,#method .caption,
+#learn .shelf-head,#learn .caption,#shop .shelf-head,#shop .caption,
+#try .shelf-head,#try .caption{max-width:694px;margin-left:auto;margin-right:auto}
 .shop-lead,#try .row,#learn .row,#read .row,#method .row{
   display:grid;gap:14px;overflow:visible;
   padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;max-width:694px;
@@ -427,11 +433,14 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 }
 /* 06 Play棚は幅統一の対象外（オーナー確定）。横スクロールだと端が切れ、スクロールバー非表示で
    「続きがある」合図が無く導線が失われるため、デスクトップでは3枚グリッドにする。 */
-@media(min-width:980px){
-  #play .row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;overflow:visible;
-    -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
-  #play .row > .panel{width:auto}
-}
+/* 06 Play棚も 01〜05 と同じ694px列に揃える（2026-07-21オーナー指示）。
+   3枚並びなので1枚あたり (694-14*2)/3 = 222px。狭い幅では2列→1列に折る */
+#play .shelf-head,#play .caption{max-width:694px;margin-left:auto;margin-right:auto}
+#play .row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;overflow:visible;
+  padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;max-width:694px;
+  -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
+#play .row > .panel{width:auto;min-width:0}
+@media(max-width:520px){#play .row{grid-template-columns:1fr}}
 /* .row と同じ左右パディング(18px)＋外への食い出し(-18px)を与えて、幅の計算を完全に一致させる */
 .shop-feature{display:flex;justify-content:center;padding:0 0 24px}
 .shop-feature .panel{width:100%;max-width:694px;min-width:0}
