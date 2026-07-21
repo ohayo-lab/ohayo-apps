@@ -209,8 +209,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* 商品画像(1360x672=0.494)を、幅によっては 0.32 まで横長になる枠に入れている。
    cover だと上下を切って中央の帯だけになり、Flashcards の文字が潰れて見える。
    幅を基準に合わせ、はみ出す下を切る（上のロゴ・見出しを必ず残す）。 */
-.fc-art{position:absolute;top:0;left:0;width:100%;aspect-ratio:1360/672;height:auto;
-  object-fit:cover;object-position:top center}
+/* aspect-ratio だけだと枠より縦が短い幅で下に地色の帯が出る。min-height で必ず枠を埋める */
+.fc-art{position:absolute;top:0;left:0;width:100%;aspect-ratio:1360/672;height:auto;min-height:100%;
+  object-fit:cover;object-position:top left}
+/* 左端に「10 real sentences」「JLPT N5-N3」の文頭があるので、切るのは右側にする。
+   center だと左が削られて 0 real / LPT N5 と欠ける（620px幅で実測） */
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;background:var(--brand-navy);padding:4px 10px;border-radius:999px;
   box-shadow:0 3px 9px rgba(19,75,112,.32)}
@@ -488,8 +491,10 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .pv-stb::before{content:"";position:absolute;inset:0;opacity:.4;pointer-events:none;
   background:radial-gradient(60px 40px at 82% 88%,rgba(247,169,40,.4),transparent 70%),
              radial-gradient(50px 34px at 16% 16%,rgba(231,200,119,.35),transparent 70%)}
+/* パネル幅に追従させる。固定288pxだと620px幅などで左右にはみ出して枠が切れた（実測） */
+.pv-stb{container-type:inline-size}
 .b-ticket{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-2deg);
-  width:288px;height:126px;border-radius:9px;display:flex;overflow:hidden;
+  width:min(288px,92cqw);height:min(126px,40cqw);border-radius:9px;display:flex;overflow:hidden;
   background:linear-gradient(155deg,#FFFDF6 0%,#FDF3DE 52%,#F7E6C4 100%);
   box-shadow:0 16px 30px -10px rgba(0,0,0,.5),0 0 0 2px rgba(255,255,255,.25)}
 .b-ticket::before{content:"";position:absolute;inset:5px;border-radius:5px;pointer-events:none;
