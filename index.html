@@ -563,8 +563,20 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .pv-stb .stb-seal{position:absolute;left:14px;top:13px;z-index:9;font-size:9px;font-weight:800;letter-spacing:.11em;text-transform:uppercase;
   color:#8A6512;background:rgba(255,250,238,.94);border:1px solid #E7C877;
   padding:4px 10px;border-radius:999px;box-shadow:0 4px 10px rgba(20,90,60,.18)}
+/* 券はパネル幅に追従して縮むのに CTA と FREE 印は固定サイズのままなので、
+   狭い列では CTA が券の "ADMIT You" を飲み込んで「ADMI」と切れて見える（実測）。
+   券と同じ器（.pv-stb）のコンテナクエリで一緒に縮める。 */
+@container (max-width:270px){
+  .pv-stb .stb-cta{font-size:10.5px;padding:6px 11px;right:10px;bottom:9px;gap:4px}
+  .pv-stb .stb-seal{font-size:8px;padding:3px 8px;left:10px;top:10px}
+  .b-admit .box{font-size:7px;padding:2px 5px;letter-spacing:.12em}
+  .b-admit .you{font-size:12px}
+}
 @media(max-width:600px){
-  .b-ticket{width:262px;height:118px}
+  /* 固定262pxにすると、03が2列に戻る540〜560pxでパネルが243pxまで痩せ、
+     券が左右に11pxはみ出して枠が切れる（実測・オーナー報告のスクショと一致）。
+     上の min(288px,92cqw) と同じくパネル実幅に追従させる。 */
+  .b-ticket{width:min(262px,92cqw);height:min(118px,40cqw)}
   .b-title{font-size:23px}
 }
 
