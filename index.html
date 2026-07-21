@@ -448,7 +448,16 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
   display:grid;gap:14px;overflow:visible;
   padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;max-width:694px;
   -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
-.shop-lead,#try .row,#learn .row{grid-template-columns:repeat(2,1fr)}
+#try .row,#learn .row{grid-template-columns:repeat(2,1fr)}
+/* 今日買える商品（Etsy・Amazon）が一枚も最大幅の段に立っていなかったため、
+   Daily+ と同じ694px幅の1列積みに上げる（2026-07-21オーナー確定）。 */
+.shop-lead{grid-template-columns:1fr}
+/* 694px幅では 168px高のままだと、正方形(600x600)のEtsy画像が24%しか映らず巨大化して
+   商品名が断ち切られる。この棚だけプレビューを縦に伸ばして、絵が読める比率に戻す。 */
+@media(min-width:521px){
+  .shop-lead .pv{height:auto;aspect-ratio:694/250}
+  .shop-lead .pv-shopimg .pv-img{object-position:center 49%}
+}
 #read .row,#method .row{grid-template-columns:1fr}
 .shop-lead > .panel,#try .row > .panel,#learn .row > .panel,
 #read .row > .panel,#method .row > .panel{width:auto;min-width:0}
