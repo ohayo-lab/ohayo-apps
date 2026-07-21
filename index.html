@@ -149,15 +149,20 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .band .bn{min-width:0;flex:1 1 auto}
 .band b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--brand-navy);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .band span{display:block;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
-/* 長いタグ（5 cards free 等）でタイトルが切れないよう、タグ側を詰める。
+/* 【重要】必ず .band を付けて書くこと。
+   タグは <span> なので、素の .tagpill（詳細度 0,1,0）は上の .band span（0,1,1）に負ける。
+   実際 font-size:9.5px も tp-free/tp-shop/tp-soon の文字色も一つも効いておらず、
+   12枚すべてが 11.5px・rgb(90,113,131) で描画されていた（2026-07-21実測）。
+   長いタグ（5 free cards 等）でタイトルが切れないようタグ側を詰める。
    折り返すとバンドの縦が伸びてパネルに余白ができるので、1行のまま収める。 */
-.tagpill{font-size:9.5px;padding:5px 8px;letter-spacing:.04em}
+.band .tagpill{flex:0 0 auto;font-size:9.5px;font-weight:800;letter-spacing:.04em;
+  padding:5px 8px;border-radius:999px;text-transform:uppercase}
 /* Etsy / Amazon はサービス名なので大文字変換しない（正しい綴りで出す） */
-.tagpill.tp-shop{text-transform:none;letter-spacing:.02em}
-.tp-free{background:#DCF6EC;color:#1E9A5E}
-.tp-soon{background:#F1F0F6;color:#7A7690}
-.tp-shop{background:var(--cream-card);color:var(--sun-deep)}
+.band .tagpill.tp-shop{text-transform:none;letter-spacing:.02em}
+.band .tp-free{background:#DCF6EC;color:#146C43}
+.band .tp-soon{background:#F1F0F6;color:#6B6784}
+/* 有料（Etsy/Amazon）だけ枠線を持たせて、無料の緑タグと一目で区別できるようにする */
+.band .tp-shop{background:#FFEFD5;color:#B45309;box-shadow:inset 0 0 0 1px #F0B15E}
 .panel-wide{width:340px}
 
 /* ===== 各パネルの「絵」 ===== */
@@ -213,6 +218,12 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* aspect-ratio だけだと枠より縦が短い幅で下に地色の帯が出る。min-height で必ず枠を埋める */
 .fc-art{position:absolute;top:0;left:0;width:100%;aspect-ratio:1360/672;height:auto;min-height:100%;
   object-fit:cover;object-position:top left}
+/* 高さ168px固定のまま aspect-ratio を効かせると、列幅が広い中間サイズで画像だけが背を伸ばし、
+   下が切れる。520px幅では82px（表示66%）が落ち、JLPT N5-N3 の行と機能チップが丸ごと消えていた。
+   モバイルは縦積みで168px揃えの必要が無いので、700px以下は枠の方を画像に合わせる。 */
+/* .pv.pv-fc と二重に書くこと。素の .pv-fc だと、後ろの方にある .pv{height:156px} と
+   同じ詳細度で負けて効かない（2026-07-21実測） */
+@media(max-width:700px){.pv.pv-fc{height:auto;aspect-ratio:1360/672}.fc-art{min-height:0}}
 /* 左端に「10 real sentences」「JLPT N5-N3」の文頭があるので、切るのは右側にする。
    center だと左が削られて 0 real / LPT N5 と欠ける（620px幅で実測） */
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
@@ -455,6 +466,22 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
   -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
 #play .row > .panel{width:auto;min-width:0}
 @media(max-width:520px){#play .row{grid-template-columns:1fr}}
+/* ゲーム棚は3列で最も狭く、商品名（Sentence Builder）が ellipsis で切れる。
+   ビューポート幅で場合分けすると取りこぼす（560pxで再発した実績あり）ので、
+   パネルの実幅に反応させる。 */
+#play .band{padding-left:11px;padding-right:11px}
+/* ゲーム棚に限らず、狭い列に落ちたパネルは商品名が切れる（540pxで Flashcards Web App が切れた）。
+   全パネルをコンテナにして、パネル実幅で段階的に詰める。 */
+.panel{container-type:inline-size}
+@container (max-width:260px){ .band b{font-size:15.5px} }
+@container (max-width:215px){ .band b{font-size:15px}   .band .bn span{font-size:10px} }
+@container (max-width:190px){ .band{padding-left:8px;padding-right:8px}
+                              .band b{font-size:13px}   .band .bn span{font-size:9px} }
+/* 521〜540pxではゲームが3列のまま約155pxまで痩せ、これ以上フォントを落とすと読めない。
+   商品名（Sentence Builder）は短縮できないので、切るのではなく2行に折り返す。
+   1列に落とすとゲームだけ他の棚より大きくなり、意図した序列が逆転するので不可。 */
+@container (max-width:170px){ .band b{white-space:normal;line-height:1.08}
+                              .band .bn span{white-space:normal;line-height:1.18} }
 /* .row と同じ左右パディング(18px)＋外への食い出し(-18px)を与えて、幅の計算を完全に一致させる */
 .shop-feature{display:flex;justify-content:center;padding:0 0 24px}
 .shop-feature .panel{width:100%;max-width:694px;min-width:0}
@@ -660,7 +687,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
     <div class="hero-text">
       <h1>One minute of real Japanese,<br><i>every morning.</i></h1>
       <p class="sub">A slow listening diary from Tokyo — and a whole shelf of free ways to play with it.</p>
-      <div class="hero-note"><span>A new diary every day since Jan 2026</span><span>3 free games</span><span>JLPT N5–N3</span><span>100% free to start</span></div>
+      <div class="hero-note"><span>190+ diaries since Jan 2026</span><span>3 free games</span><span>JLPT N5–N3</span><span>100% free to start</span></div>
     </div>
   </div>
 </header>
@@ -761,7 +788,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
              端末枠はこの画像の中に描かれているので、CSSで枠を描かない -->
         <img class="fc-art" src="/img/lp/fcapp_real_v3.png" alt="Flashcards web app" loading="lazy">
       </div>
-      <div class="band"><span class="bn"><b>Flashcards Web App</b><span>No install · add to home screen</span></span><span class="tagpill tp-free">5 cards free</span></div>
+      <div class="band"><span class="bn"><b>Flashcards App</b><span>No install needed</span></span><span class="tagpill tp-free">5 cards free</span></div>
     </a>
 
   </div>
@@ -773,7 +800,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
     <div class="t"><span class="mag-no">04</span>
       <span class="tt"><span class="eyebrow">Shop</span><h2>Take the diary with you</h2></span></div>
   </div>
-  <p class="caption"><b>Need the script?</b>Step 3 is <i>read it</i> &mdash; and the free audio does not come with words. Kanji, hiragana and English for every diary, as a download or in print.</p>
+  <p class="caption"><b>Need the script?</b>Step 3 is <i>read it</i> &mdash; and the podcast gives you sound only. Every diary&rsquo;s kanji, hiragana and English in one place, so you can study a whole month at a time &mdash; as a download or in print.</p>
   <div class="row shop-lead">
 
     <a class="panel" href="https://ohayonihongodaily.etsy.com/?section_id=58431119" target="_blank" rel="noopener" data-oa-event="buy_etsy">
@@ -885,7 +912,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         <img class="kq-char" src="/img/lp/char_run.png" alt="">
         <span class="kq-cta">START<span class="ico-play"></span></span>
       </div>
-      <div class="band"><span class="bn"><b>Kana Quest</b><span>Run &amp; jump to collect kana</span></span><span class="tagpill tp-free">Free</span></div>
+      <div class="band"><span class="bn"><b>Kana Quest</b><span>Run &amp; jump for kana</span></span><span class="tagpill tp-free">Free</span></div>
     </a>
 
     <a class="panel" href="/play/kana-drop/" data-oa-event="play_game">
@@ -898,7 +925,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         <span class="kd-glyph kd-g2">き</span>
         <span class="kd-glyph kd-g3">ら</span>
       </div>
-      <div class="band"><span class="bn"><b>Kana Drop</b><span>Catch the falling kana</span></span><span class="tagpill tp-free">Free</span></div>
+      <div class="band"><span class="bn"><b>Kana Drop</b><span>Catch falling kana</span></span><span class="tagpill tp-free">Free</span></div>
     </a>
 
     <a class="panel" href="/play/sentence-builder/" data-oa-event="play_game">
@@ -907,7 +934,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         <div class="sb-line"><span class="chip done">今朝は</span><span class="chip done">コーヒーを</span></div>
         <div class="sb-line"><span class="chip">飲みました</span><span class="sb-slot">＿＿＿</span></div>
       </div>
-      <div class="band"><span class="bn"><b>Sentence Builder</b><span>Snap words into sentences</span></span><span class="tagpill tp-free">Free</span></div>
+      <div class="band"><span class="bn"><b>Sentence Builder</b><span>Snap words in order</span></span><span class="tagpill tp-free">Free</span></div>
     </a>
 
   </div>

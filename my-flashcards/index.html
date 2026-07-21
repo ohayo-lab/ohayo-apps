@@ -129,6 +129,7 @@
 
   <div class="hint"><span class="ico ico-phone" aria-hidden="true"></span> <b>Tip:</b> Add this page to your home screen — it opens like an app, and your bookshelf, streak and XP are always one tap away.</div>
 
+  <p class="backline"><a href="/#learn">&larr; Back to the shelf on the home page</a></p>
   <footer>
   <div class="fnav"><a href="/">Home</a></div>
   <p>New diary every morning on Spotify &amp; YouTube — search "OHAYO NIHONGO"</p>
@@ -185,7 +186,7 @@ function renderShelf(){
     </a>`;
   }
   html+=`
-    <a class="getmore" href="${ETSY}">
+    <a class="getmore" href="${ETSY}" data-oa-event="buy_etsy">
       <span class="plus">＋</span>
       <span class="t">Get more volumes</span>
       <span class="d">10 new real sentences each — on Etsy</span>
@@ -242,6 +243,8 @@ h2{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight
 .getmore .d{color:#4A4A4A !important}
 .reg p{color:#4A4A4A !important}
 .hint{color:#4A4A4A !important}
+.backline{text-align:center;margin:26px 0 0;font-size:13px;font-weight:700}
+.backline a{color:#6B5B3E;text-decoration:none;border-bottom:1px solid rgba(107,91,62,.35)}
 footer{color:#4A4A4A !important}
 footer a{color:#333 !important;text-decoration:none !important;border-bottom:1.5px solid #D8B24A;padding-bottom:1px}
 /* ── ボタン: ピル化・主役CTA(Add)=黄#FFC93C×黒字 ── */

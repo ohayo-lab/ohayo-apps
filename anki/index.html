@@ -96,6 +96,8 @@
   .fnav{display:flex;justify-content:center;gap:18px;margin-bottom:10px}
   .fnav a{color:#333;font-weight:700;font-size:12px;text-decoration:none;letter-spacing:.06em}
   footer a{color:var(--sub)}
+  .backline{text-align:center;margin:30px 0 0;font-size:13px;font-weight:700}
+  .backline a{color:var(--sub);text-decoration:none;border-bottom:1px solid currentColor}
   /* ===== Mobile (≤480px) ===== */
   @media (max-width:480px){
     .hero{padding:24px 20px 22px}
@@ -198,49 +200,49 @@
       <b>Vol. 1–5</b>
       <span>50 cards · native audio</span>
       <div class="pr">$4.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-jan" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-jan">Coming soon</a>
     </div>
     <div class="sku">
       <div class="sm">February 2026</div>
       <b>Vol. 6–10</b>
       <span>50 cards · native audio</span>
       <div class="pr">$4.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-feb" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-feb">Coming soon</a>
     </div>
     <div class="sku">
       <div class="sm">March 2026</div>
       <b>Vol. 11–15</b>
       <span>50 cards · native audio</span>
       <div class="pr">$4.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-mar" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-mar">Coming soon</a>
     </div>
     <div class="sku">
       <div class="sm">April 2026</div>
       <b>Vol. 16–20</b>
       <span>50 cards · native audio</span>
       <div class="pr">$4.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-apr" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-apr">Coming soon</a>
     </div>
     <div class="sku">
       <div class="sm">May 2026</div>
       <b>Vol. 21–25</b>
       <span>50 cards · native audio</span>
       <div class="pr">$4.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-may" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-may">Coming soon</a>
     </div>
     <div class="sku">
       <div class="sm">June 2026</div>
       <b>Vol. 26–30</b>
       <span>50 cards · native audio</span>
       <div class="pr">$4.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-jun" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-jun">Coming soon</a>
     </div>
     <div class="sku complete">
       <div class="sm">Complete · January–June 2026</div>
       <b>Complete Deck — Vol. 1–30</b>
       <span>300 cards · native audio · 6 monthly subdecks in one file</span>
       <div class="pr">$19.99</div>
-      <a href="#" class="ls-buy" data-sku="anki-complete" data-oa-event="buy_ls">Coming soon</a>
+      <a href="#" class="ls-buy" data-sku="anki-complete">Coming soon</a>
     </div>
   </div>
   <p class="sku-note">Opening soon.</p>
@@ -271,7 +273,7 @@
     <p>The audio is embedded inside every card. Once you import the deck, everything — sentences, translations and native audio — works completely offline. Perfect for commutes and flights.</p>
   </details>
 
-  
+  <p class="backline"><a href="/#try">&larr; Back to the shelf on the home page</a></p>
   <footer>
     <div class="fnav">
       <a href="/">Home</a>
@@ -339,7 +341,9 @@
   document.getElementById('prevB').addEventListener('click', function(){ show(idx - 1); });
   document.getElementById('nextB').addEventListener('click', function(){ show(idx + 1); });
 
-  // "Coming soon" buy buttons: no-op until Lemon Squeezy URLs are wired in
+  // "Coming soon" buy buttons: no-op until Lemon Squeezy URLs are wired in.
+  // data-oa-event="buy_ls" は付けないこと。押しただけのクリックが実購入と同じイベントで
+  // 混ざり、LS開通後に数字が読めなくなる。URLを入れる時に一緒に付ける。
   document.querySelectorAll('.ls-buy').forEach(function(a){
     a.addEventListener('click', function(e){
       if (a.getAttribute('href') === '#') e.preventDefault();

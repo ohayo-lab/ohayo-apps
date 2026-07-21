@@ -182,6 +182,8 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
 .complete-title span { color:var(--orange); }
 .complete-sub { font-size:11px; color:rgba(255,255,255,0.45); line-height:1.7; margin-bottom:14px; }
 .complete-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 14px; }
+.complete-back{display:block;text-align:center;margin:-4px 0 14px;font-size:13px;font-weight:700;
+  color:#8A7A5E;text-decoration:none;border-bottom:1px solid rgba(138,122,94,.35);width:fit-content;margin-inline:auto}
 .complete-cta{display:block;width:100%;box-sizing:border-box;text-align:center;padding:14px 16px;margin:0 0 12px;border-radius:999px;background:#E8901B;color:#fff;font-weight:800;font-size:15px;text-decoration:none;box-shadow:0 8px 18px -8px rgba(232,144,27,.65)}
 .complete-cta:active{transform:translateY(1px)}
 /* 主CTA(Etsy)を外に出してprimaryが3本になったので3列に。2列だと最後が半端に空く */
@@ -349,6 +351,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
     <div class="complete-sub">You've tried all 5 sample sentences.<br>Get the full 10-card sets to keep learning!</div>
     <div class="complete-divider"></div>
     <a class="complete-cta" href="https://ohayonihongodaily.etsy.com/?section_id=58431109" target="_blank" rel="noopener" data-oa-event="buy_etsy">Get the full 10-card sets on Etsy</a>
+    <a class="complete-back" href="/my-flashcards/">&larr; Back to the flashcard shelf</a>
     
     <div class="complete-links clinks-primary"><a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify">
         <div class="link-icon-wrap link-icon-spotify">
@@ -366,7 +369,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Watch on</div>
           <div class="complete-link-text">YouTube</div>
         </div>
-      </a><a class="complete-link" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">
+      </a><a class="complete-link" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup">
         <div class="link-icon-wrap link-icon-substack">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF6719"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
         </div>
