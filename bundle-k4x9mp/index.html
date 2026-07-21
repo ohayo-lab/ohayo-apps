@@ -34,8 +34,26 @@
 
 /* ===== OHAYO icon set — 絵文字不使用・CSS図形/インラインSVG ===== */
 .ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
-.ico-sun{width:.68em;height:.68em;border-radius:50%;background:#F7A928;
-  box-shadow:0 0 0 .13em rgba(247,169,40,.30)}
+/* 太陽。丸だけだと文中で「点」にしか見えなかったため光線を足す（2026-07-21）。
+   光線は ::before の conic-gradient を放射状マスクで抜いて描く。画像は使わない。 */
+.ico-sun{width:.62em;height:.62em;border-radius:50%;background:#F7A928;
+  box-shadow:0 0 0 .07em rgba(247,169,40,.28)}
+.ico-sun::before{content:"";position:absolute;left:50%;top:50%;
+  width:1.5em;height:1.5em;transform:translate(-50%,-50%);
+  background:
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+  -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em);
+  mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em)}
+.ico-sun::after{content:"";position:absolute;left:50%;top:50%;
+  width:1.5em;height:1.5em;transform:translate(-50%,-50%) rotate(45deg);
+  background:
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+  -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em);
+  mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em)}
 .ico-head{width:.78em;height:.4em;border:.11em solid currentColor;border-bottom:0;
   border-radius:.42em .42em 0 0;margin-bottom:.16em}
 .ico-head::before,.ico-head::after{content:"";position:absolute;bottom:-.2em;width:.18em;height:.26em;

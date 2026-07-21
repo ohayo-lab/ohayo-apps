@@ -36,8 +36,26 @@ body{display:flex;justify-content:center}
 /* ═══════ OHAYO icon set（絵文字不使用・CSS図形/インラインSVG・正典 ohayo-icons.css 準拠） ═══════
    em基準なので置いた場所の font-size に追従。色は currentColor（例外=sun/flame の #F7A928）。 */
 .ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
-.ico-sun{width:.68em;height:.68em;border-radius:50%;background:#F7A928;
-  box-shadow:0 0 0 .13em rgba(247,169,40,.30)}
+/* 太陽。丸だけだと文中で「点」にしか見えなかったため光線を足す（2026-07-21）。
+   光線は ::before の conic-gradient を放射状マスクで抜いて描く。画像は使わない。 */
+.ico-sun{width:.62em;height:.62em;border-radius:50%;background:#F7A928;
+  box-shadow:0 0 0 .07em rgba(247,169,40,.28)}
+.ico-sun::before{content:"";position:absolute;left:50%;top:50%;
+  width:1.5em;height:1.5em;transform:translate(-50%,-50%);
+  background:
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+  -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em);
+  mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em)}
+.ico-sun::after{content:"";position:absolute;left:50%;top:50%;
+  width:1.5em;height:1.5em;transform:translate(-50%,-50%) rotate(45deg);
+  background:
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+  -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em);
+  mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em)}
 .ico-book{width:.6em;height:.76em;border:.1em solid currentColor;border-left-width:.2em;
   border-radius:.06em .13em .13em .06em}
 .ico-gift{width:.76em;height:.66em;border:.1em solid currentColor;border-radius:.07em;
@@ -62,9 +80,16 @@ body{display:flex;justify-content:center}
 .ico-lock::before{content:"";position:absolute;left:50%;top:-.3em;transform:translateX(-50%);
   width:.34em;height:.3em;border:.1em solid currentColor;border-bottom:0;border-radius:.24em .24em 0 0}
 .ico-lock.is-open::before{left:16%;transform:none}
-.ico-flame{width:.54em;height:.68em;background:#F7A928;
-  clip-path:polygon(50% 0,100% 52%,78% 100%,22% 100%,0 52%);
-  vertical-align:-.06em;margin-right:.14em}
+/* 炎。五角形クリップは文中サイズだと「雫」に見えたので、下がふくらみ上が尖る形＋内側の明色コアにする（2026-07-21） */
+.ico-flame{width:.5em;height:.66em;background:#F0870F;
+  border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
+  vertical-align:-.09em;margin-right:.16em}
+.ico-flame::before{content:"";position:absolute;left:50%;top:-.15em;transform:translateX(-50%);
+  width:0;height:0;border-style:solid;border-width:0 .17em .28em .17em;
+  border-color:transparent transparent #F0870F transparent}
+.ico-flame::after{content:"";position:absolute;left:50%;bottom:.06em;transform:translateX(-50%);
+  width:.23em;height:.32em;background:#FFD37A;
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%}
 .ico-star{width:.74em;height:.74em;background:currentColor;
   clip-path:polygon(50% 0,61.8% 34.5%,98% 34.5%,69% 56%,79.4% 90.5%,50% 69%,20.6% 90.5%,31% 56%,2% 34.5%,38.2% 34.5%)}
 

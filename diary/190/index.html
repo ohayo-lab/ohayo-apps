@@ -54,8 +54,22 @@
 
   /* OHAYO icon set — 絵文字不使用・CSS図形のみ（サイト共通定義・色はcurrentColor継承） */
   .ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
-  .ico-sun{width:.68em;height:.68em;border-radius:50%;background:#F7A928;
-    box-shadow:0 0 0 .13em rgba(247,169,40,.30)}
+  .ico-sun{width:.62em;height:.62em;border-radius:50%;background:#F7A928;
+    box-shadow:0 0 0 .07em rgba(247,169,40,.30)}
+.ico-sun::before{content:"";position:absolute;left:50%;top:50%;
+  width:1.5em;height:1.5em;transform:translate(-50%,-50%);
+  background:
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+  -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em);
+  mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em)}
+.ico-sun::after{content:"";position:absolute;left:50%;top:50%;
+  width:1.5em;height:1.5em;transform:translate(-50%,-50%) rotate(45deg);
+  background:
+    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
+    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+  -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em);
+  mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em)}
   .ico-book{width:.6em;height:.76em;border:.1em solid currentColor;border-left-width:.2em;
     border-radius:.06em .13em .13em .06em}
   .ico-gift{width:.76em;height:.66em;border:.1em solid currentColor;border-radius:.07em;
