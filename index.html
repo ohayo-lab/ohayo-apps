@@ -86,7 +86,8 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5.6vw,3.4rem);line-height:1.06;color:#fff;margin:12px 0 10px;text-shadow:0 2px 10px rgba(9,40,66,.55),0 2px 26px rgba(9,40,66,.45)}
 .hero h1 i{color:#FFD97A;text-shadow:0 2px 8px rgba(9,40,66,.8),0 2px 20px rgba(9,40,66,.55)}
 .hero .sub{color:#F2F9FE;font-size:15px;max-width:42ch;text-shadow:0 1px 6px rgba(9,40,66,.75),0 1px 16px rgba(9,40,66,.5)}
-.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+/* CTAピルは幅にかかわらず常に中央（2026-07-21オーナー確定） */
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}
 .btn{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:15px;padding:12px 20px;border-radius:999px;line-height:1}
 .email-cta .btn{font-weight:800}
 .btn-sun{background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(240,129,20,.6)}
@@ -100,7 +101,6 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
   .hero{padding:40px 0 56px}
   .hero-grid{text-align:center;margin:0 auto}
   .hero .sub{margin:0 auto}
-  .hero-cta{justify-content:center}
   .hero-note{justify-content:center}
 }
 /* 折り返す幅では中黒が行末に取り残されるので、区切りは余白で表現する */
@@ -294,6 +294,20 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 
 /* KDP バッジ */
 .pv-kdp{position:relative}
+/* KDP: 実物の表紙を3冊ぶん扇状に重ねる。偽の本をCSSで描かない */
+.kdp-fan{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;
+  justify-content:center;padding-bottom:16px}
+.kdp-c{position:absolute;bottom:16px;height:78%;width:auto;border-radius:2px 4px 4px 2px;
+  box-shadow:0 10px 22px -8px rgba(9,40,66,.55),0 0 0 1px rgba(255,255,255,.35)}
+.kdp-c.c1{transform:translateX(-46px) rotate(-8deg);z-index:1;filter:brightness(.94)}
+.kdp-c.c2{transform:translateX(-22px) rotate(-4deg);z-index:2;filter:brightness(.97)}
+.kdp-c.c3{transform:translateX(4px) rotate(1.5deg);z-index:3}
+@media(max-width:600px){
+  .kdp-c{height:74%}
+  .kdp-c.c1{transform:translateX(-36px) rotate(-8deg)}
+  .kdp-c.c2{transform:translateX(-17px) rotate(-4deg)}
+}
+
 .kdp-tag{position:absolute;top:11px;left:10px;white-space:nowrap;z-index:8;
   font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#B45309;
   background:rgba(255,255,255,.85);padding:4px 11px;border-radius:999px;box-shadow:0 3px 9px rgba(120,80,20,.18)}
@@ -394,15 +408,22 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    694px に収まるのが 761px 以上なので、そこに合わせないと 760〜980px の帯で
    01/02＝340・Flashcards/Etsy/KDP＝266・Daily+＝694 とバラバラになる（2026-07-21 実測で判明）。
    .row は左右18pxのpaddingを持つため、内容幅694px（=340*2+14）にするには 730px 指定。 */
-@media(min-width:761px){
-  .shop-lead,#try .row,#learn .row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;overflow:visible;
-    max-width:730px;margin-left:auto;margin-right:auto;
-    -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
-  .shop-lead > .panel,#try .row > .panel,#learn .row > .panel{width:auto}
-  /* 01・02 は1枚組。Daily+ と同じ幅にそろえ、下の棚の左右端と一直線にする */
-  #read .row,#method .row{max-width:730px;margin-left:auto;margin-right:auto;overflow:visible;
-    -webkit-mask-image:none;mask-image:none}
-  #read .row > .panel,#method .row > .panel{width:100%}
+/* 【幅の統一・2026-07-21】01〜05 の棚は Daily+（.shop-feature .panel）と常に同じ幅にする。
+   以前はここを @media で切り替えていたため、760px以下で 01=340 / 03=620 / Daily+=724 と
+   バラバラになっていた（実測）。メディアクエリをやめ、全幅で同じ「伸び縮みする」挙動に統一する。
+   grid の 1fr は幅が足りなければ自動で縮むので、狭い画面でも破綻しない。
+   ※06 Play棚は対象外（オーナー確定） */
+.shop-lead,#try .row,#learn .row,#read .row,#method .row{
+  display:grid;gap:14px;overflow:visible;
+  padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;max-width:694px;
+  -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
+.shop-lead,#try .row,#learn .row{grid-template-columns:repeat(2,1fr)}
+#read .row,#method .row{grid-template-columns:1fr}
+.shop-lead > .panel,#try .row > .panel,#learn .row > .panel,
+#read .row > .panel,#method .row > .panel{width:auto;min-width:0}
+/* 2枚並びが窮屈になる幅では1列に折る（Daily+ は元々1枚なので影響なし） */
+@media(max-width:520px){
+  .shop-lead,#try .row,#learn .row{grid-template-columns:1fr}
 }
 /* 06 Play棚は幅統一の対象外（オーナー確定）。横スクロールだと端が切れ、スクロールバー非表示で
    「続きがある」合図が無く導線が失われるため、デスクトップでは3枚グリッドにする。 */
@@ -411,8 +432,9 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
     -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
   #play .row > .panel{width:auto}
 }
+/* .row と同じ左右パディング(18px)＋外への食い出し(-18px)を与えて、幅の計算を完全に一致させる */
 .shop-feature{display:flex;justify-content:center;padding:0 0 24px}
-.shop-feature .panel{width:100%;max-width:694px}
+.shop-feature .panel{width:100%;max-width:694px;min-width:0}
 .pv.pv-dnp-lg{flex-direction:row;align-items:center;justify-content:center;
   gap:34px;padding:14px 30px}
 .pv-dnp-lg .dn-badge{top:11px;right:13px;font-size:9px;padding:4px 11px;letter-spacing:.13em}
@@ -427,7 +449,6 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .pv-dnp-lg .dn-list span::before{width:5px;height:9px;border-width:0 2px 2px 0;margin:0 1px 3px 0}
 @media(max-width:760px){
   .shop-feature{padding:0 0 20px}
-  .shop-feature .panel{max-width:none}
   .pv.pv-dnp-lg{flex-direction:column;align-items:flex-start;justify-content:center;
     gap:10px;padding:12px 14px}
   .pv-dnp-lg .dn-badge{top:10px;right:11px;font-size:8px;padding:4px 9px;letter-spacing:.1em}
@@ -594,26 +615,8 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
 /* ===== 04 Shop：KDP 紙の本 ===== */
 .pv-kdp{background:linear-gradient(180deg,#FBEFD6 0%,#F3E0BE 100%);position:relative;
   display:flex;align-items:flex-end;justify-content:center;padding:0;overflow:hidden}
-.kdp-scene{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;justify-content:center;gap:9px;padding:0 14px 18px}
-.kdp-spines{display:flex;align-items:flex-end;gap:3px}
-.ksp{width:14px;height:96px;border-radius:2px 3px 0 0;position:relative;
-  box-shadow:inset -3px 0 4px rgba(0,0,0,.16),inset 2px 0 2px rgba(255,255,255,.16),0 6px 11px rgba(120,80,20,.2);
-  display:flex;align-items:center;justify-content:center}
-.ksp em{font-style:normal;writing-mode:vertical-rl;font-size:7px;font-weight:800;letter-spacing:.09em;color:rgba(255,255,255,.92)}
 .sp2{background:#1F72A8}.sp3{background:#C9622B;height:102px}.sp4{background:#2F7D5C}
 .sp5{background:#8B5FA8;height:100px}.sp6{background:#B8452F}
-.kdp-cover{position:relative;width:86px;height:116px;margin-left:2px;flex:0 0 auto}
-.kc-pages{position:absolute;top:3px;bottom:5px;right:-5px;width:8px;border-radius:0 2px 2px 0;
-  background:repeating-linear-gradient(180deg,#fff 0 1.4px,#E4DAC4 1.4px 2.8px);
-  transform:skewY(-16deg);transform-origin:top left;box-shadow:2px 3px 6px rgba(120,90,40,.22)}
-.kc-face{position:absolute;inset:0;z-index:2;border-radius:3px 6px 6px 3px;
-  background:linear-gradient(158deg,#1C6091,#123F5F);border-left:4px solid #0D3350;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px 8px;text-align:center;
-  box-shadow:0 16px 28px rgba(19,60,90,.42)}
-.kc-sun{width:26px;height:26px;border-radius:50%;background:radial-gradient(circle at 50% 40%,#FFE79A,#F7A928 70%);box-shadow:0 2px 8px rgba(240,129,20,.5)}
-.kc-face b{font-family:var(--serif);font-weight:700;font-size:13px;line-height:1.02;letter-spacing:.03em;color:#fff}
-.kc-face em{font-style:italic;font-family:var(--serif);font-weight:600;font-size:9.5px;color:#FFE1A8;line-height:1}
-.kc-face small{font-size:7px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:rgba(255,255,255,.72)}
 .kdp-shelf{position:absolute;left:6%;right:6%;bottom:9px;height:7px;border-radius:3px;z-index:0;
   background:linear-gradient(180deg,#CE9E5C,#A97C3C);box-shadow:0 6px 12px rgba(120,80,30,.32)}
 </style>
@@ -767,27 +770,15 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
     <a class="panel" href="https://www.amazon.com/s?k=OHAYO+NIHONGO+Diary+Reader" target="_blank" rel="noopener">
       <div class="pv pv-kdp">
         <span class="kdp-tag">The diary, now in print</span>
-        <div class="kdp-scene">
-          <div class="kdp-spines">
-            <span class="ksp sp2"><em>FEB</em></span>
-            <span class="ksp sp3"><em>MAR</em></span>
-            <span class="ksp sp4"><em>APR</em></span>
-            <span class="ksp sp5"><em>MAY</em></span>
-            <span class="ksp sp6"><em>JUN</em></span>
-          </div>
-          <div class="kdp-cover">
-            <span class="kc-pages"></span>
-            <div class="kc-face">
-              <span class="kc-sun"></span>
-              <b>OHAYO<br>NIHONGO</b>
-              <em>Diary Reader</em>
-              <small>Vol.1 · January</small>
-            </div>
-          </div>
+        <!-- 実物のKDP表紙（cover_kindle.jpg を560px幅に縮小したもの）。CSSで描いた偽の本ではない -->
+        <div class="kdp-fan">
+          <img class="kdp-c c1" src="/img/lp/kdp/april.jpg" alt="" loading="lazy">
+          <img class="kdp-c c2" src="/img/lp/kdp/may.jpg" alt="" loading="lazy">
+          <img class="kdp-c c3" src="/img/lp/kdp/june.jpg" alt="Diary Reader — June" loading="lazy">
         </div>
         <span class="kdp-shelf"></span>
       </div>
-      <div class="band"><span class="bn"><b>Diary Reader</b><span>Paperback &amp; Kindle</span></span><span class="tagpill tp-shop">Out now</span></div>
+      <div class="band"><span class="bn"><b>Diary Reader</b><span>Paperback &amp; Kindle</span></span><span class="tagpill tp-shop">Amazon</span></div>
     </a>
 
   </div>
