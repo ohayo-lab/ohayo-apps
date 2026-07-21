@@ -182,6 +182,12 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
 .complete-title span { color:var(--orange); }
 .complete-sub { font-size:11px; color:rgba(255,255,255,0.45); line-height:1.7; margin-bottom:14px; }
 .complete-divider { width:40px; height:2px; background:linear-gradient(90deg,var(--orange),var(--blue)); margin:0 auto 14px; }
+.complete-cta{display:block;width:100%;box-sizing:border-box;text-align:center;padding:14px 16px;margin:0 0 12px;border-radius:999px;background:#E8901B;color:#fff;font-weight:800;font-size:15px;text-decoration:none;box-shadow:0 8px 18px -8px rgba(232,144,27,.65)}
+.complete-cta:active{transform:translateY(1px)}
+/* 主CTA(Etsy)を外に出してprimaryが3本になったので3列に。2列だと最後が半端に空く */
+.clinks-primary{grid-template-columns:1fr 1fr 1fr}
+.clinks-primary .complete-link-label{font-size:9px}
+.clinks-primary .complete-link-text{font-size:11.5px}
 .complete-links { width:100%; display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-bottom:12px; }
 .complete-link { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.08); border-radius:11px; padding:9px 8px; text-decoration:none; }
 .link-icon-wrap { width:30px; height:30px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
@@ -342,7 +348,9 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
     <div class="complete-title">Well done!<br><span>おつかれさま！</span></div>
     <div class="complete-sub">You've tried all 5 sample sentences.<br>Get the full 10-card sets to keep learning!</div>
     <div class="complete-divider"></div>
-    <div class="complete-links clinks-primary"><a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank">
+    <a class="complete-cta" href="https://ohayonihongodaily.etsy.com/?section_id=58431109" target="_blank" rel="noopener" data-oa-event="buy_etsy">Get the full 10-card sets on Etsy</a>
+    
+    <div class="complete-links clinks-primary"><a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify">
         <div class="link-icon-wrap link-icon-spotify">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#1DB954"><path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z"/></svg>
         </div>
@@ -350,7 +358,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Listen on</div>
           <div class="complete-link-text">Spotify</div>
         </div>
-      </a><a class="complete-link" href="https://www.youtube.com/@ohayo.nihongo" target="_blank">
+      </a><a class="complete-link" href="https://www.youtube.com/@ohayo.nihongo" target="_blank" rel="noopener" data-oa-event="watch_youtube">
         <div class="link-icon-wrap link-icon-youtube">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
         </div>
@@ -358,21 +366,13 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
           <div class="complete-link-label">Watch on</div>
           <div class="complete-link-text">YouTube</div>
         </div>
-      </a><a class="complete-link" href="https://ohayonihongo.substack.com" target="_blank">
+      </a><a class="complete-link" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">
         <div class="link-icon-wrap link-icon-substack">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#FF6719"><path d="M22.539 8.242H1.46V5.406h21.08v2.836zM1.46 10.812V24L12 18.11 22.54 24V10.812H1.46zM22.54 0H1.46v2.836h21.08V0z"/></svg>
         </div>
         <div class="complete-link-info">
           <div class="complete-link-label">Newsletter</div>
           <div class="complete-link-text">Substack</div>
-        </div>
-      </a><a class="complete-link" href="https://ohayonihongodaily.etsy.com" target="_blank">
-        <div class="link-icon-wrap link-icon-etsy">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="#F1641E"><path d="M9.104 4.784c0-.896.144-1.168 1.552-1.168h4.512c1.792 0 2.528.56 3.024 2.24l.24.832.944-.064.064-4.48H1.888l-.048.944 1.04.208c.896.208 1.12.624 1.12 2.64v13.216c0 2.016-.224 2.384-1.12 2.592l-1.04.208.048.944H19.6l1.312-5.04-.88-.24c-.752 1.568-1.792 3.408-4.576 3.408H12c-1.456 0-1.744-.4-1.744-1.6v-6.32c1.84 0 2.912.08 3.52.784.464.528.624 1.12.784 1.984h.944V10.32h-.944c-.16.816-.32 1.408-.784 1.936-.608.704-1.68.784-3.52.784z"/></svg>
-        </div>
-        <div class="complete-link-info">
-          <div class="complete-link-label">Shop on</div>
-          <div class="complete-link-text">Etsy</div>
         </div>
       </a></div><div class="complete-links clinks-secondary"><a class="complete-link" href="https://www.threads.com/@ohayo.nihongo" target="_blank">
         <div class="link-icon-wrap link-icon-threads">
