@@ -320,19 +320,20 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 
 /* KDP バッジ */
 .pv-kdp{position:relative}
-/* KDP: 実物の表紙を3冊ぶん扇状に重ねる。偽の本をCSSで描かない */
+/* KDP: 実物の表紙を全6巻ぶん扇状に重ねる。偽の本をCSSで描かない。
+   ずらし幅は px ではなく cqw（パネル実幅の割合）。.panel をコンテナにしてあるので、
+   694pxの棚でも320pxのスマホでも同じ扇形のまま自動で縮む。 */
 .kdp-fan{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;
   justify-content:center;padding-bottom:16px}
-.kdp-c{position:absolute;bottom:16px;height:78%;width:auto;border-radius:2px 4px 4px 2px;
+.kdp-c{position:absolute;bottom:16px;height:74%;width:auto;border-radius:2px 4px 4px 2px;
+  transform-origin:bottom center;
   box-shadow:0 10px 22px -8px rgba(9,40,66,.55),0 0 0 1px rgba(255,255,255,.35)}
-.kdp-c.c1{transform:translateX(-46px) rotate(-8deg);z-index:1;filter:brightness(.94)}
-.kdp-c.c2{transform:translateX(-22px) rotate(-4deg);z-index:2;filter:brightness(.97)}
-.kdp-c.c3{transform:translateX(4px) rotate(1.5deg);z-index:3}
-@media(max-width:600px){
-  .kdp-c{height:74%}
-  .kdp-c.c1{transform:translateX(-36px) rotate(-8deg)}
-  .kdp-c.c2{transform:translateX(-17px) rotate(-4deg)}
-}
+.kdp-c.c1{transform:translateX(-31cqw) rotate(-9deg);z-index:1;filter:brightness(.90)}
+.kdp-c.c2{transform:translateX(-18.6cqw) rotate(-5.5deg);z-index:2;filter:brightness(.93)}
+.kdp-c.c3{transform:translateX(-6.2cqw) rotate(-2deg);z-index:3;filter:brightness(.96)}
+.kdp-c.c4{transform:translateX(6.2cqw) rotate(1.5deg);z-index:4;filter:brightness(.98)}
+.kdp-c.c5{transform:translateX(18.6cqw) rotate(5deg);z-index:5;filter:brightness(.99)}
+.kdp-c.c6{transform:translateX(31cqw) rotate(8.5deg);z-index:6}
 
 .kdp-tag{position:absolute;top:11px;left:10px;white-space:nowrap;z-index:8;
   font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#B45309;
@@ -826,9 +827,12 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         <span class="kdp-tag">The diary, now in print</span>
         <!-- 実物のKDP表紙（cover_kindle.jpg を560px幅に縮小したもの）。CSSで描いた偽の本ではない -->
         <div class="kdp-fan">
-          <img class="kdp-c c1" src="/img/lp/kdp/april.jpg" alt="" loading="lazy">
-          <img class="kdp-c c2" src="/img/lp/kdp/may.jpg" alt="" loading="lazy">
-          <img class="kdp-c c3" src="/img/lp/kdp/june.jpg" alt="Diary Reader — June" loading="lazy">
+          <img class="kdp-c c1" src="/img/lp/kdp/january.jpg" alt="" loading="lazy">
+          <img class="kdp-c c2" src="/img/lp/kdp/february.jpg" alt="" loading="lazy">
+          <img class="kdp-c c3" src="/img/lp/kdp/march.jpg" alt="" loading="lazy">
+          <img class="kdp-c c4" src="/img/lp/kdp/april.jpg" alt="" loading="lazy">
+          <img class="kdp-c c5" src="/img/lp/kdp/may.jpg" alt="" loading="lazy">
+          <img class="kdp-c c6" src="/img/lp/kdp/june.jpg" alt="Diary Reader — January to June 2026" loading="lazy">
         </div>
         <span class="kdp-shelf"></span>
       </div>
