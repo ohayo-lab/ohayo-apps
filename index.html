@@ -146,6 +146,9 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .band b{display:block;font-family:var(--serif);font-weight:700;font-size:17px;color:var(--brand-navy);line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .band span{display:block;font-size:11.5px;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
+/* 長いタグ（5 cards free 等）でタイトルが切れないよう、タグ側を詰める。
+   折り返すとバンドの縦が伸びてパネルに余白ができるので、1行のまま収める。 */
+.tagpill{font-size:9.5px;padding:5px 8px;letter-spacing:.04em}
 /* Etsy / Amazon はサービス名なので大文字変換しない（正しい綴りで出す） */
 .tagpill.tp-shop{text-transform:none;letter-spacing:.02em}
 .tp-free{background:#DCF6EC;color:#1E9A5E}
@@ -190,7 +193,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* 実機スクショは横長(1179x1967=1:1.67)、端末枠は1:1.81。
    cover だと左右が削られてメニューやブランド名が欠けるので、幅を基準に合わせて下を切る。
    上部（ブランド名・ストリーク・スピーカー）を必ず残すため object-position は top。 */
-.fc-art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+/* 商品画像(1360x672=0.494)を、幅によっては 0.32 まで横長になる枠に入れている。
+   cover だと上下を切って中央の帯だけになり、Flashcards の文字が潰れて見える。
+   幅を基準に合わせ、はみ出す下を切る（上のロゴ・見出しを必ず残す）。 */
+.fc-art{position:absolute;top:0;left:0;width:100%;aspect-ratio:1360/672;height:auto;
+  object-fit:cover;object-position:top center}
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;background:var(--brand-navy);padding:4px 10px;border-radius:999px;
   box-shadow:0 3px 9px rgba(19,75,112,.32)}
@@ -738,7 +745,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
              端末枠はこの画像の中に描かれているので、CSSで枠を描かない -->
         <img class="fc-art" src="/img/lp/fcapp_real_v3.png" alt="Flashcards web app" loading="lazy">
       </div>
-      <div class="band"><span class="bn"><b>Flashcards Web App</b><span>No install · add to home screen</span></span><span class="tagpill tp-free">Free</span></div>
+      <div class="band"><span class="bn"><b>Flashcards Web App</b><span>No install · add to home screen</span></span><span class="tagpill tp-free">5 cards free</span></div>
     </a>
 
   </div>
@@ -823,7 +830,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
         </div>
         <div class="ank-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
       </div>
-      <div class="band"><span class="bn"><b>Anki Decks</b><span>Native audio · for Anki</span></span><span class="tagpill tp-soon">Soon</span></div>
+      <div class="band"><span class="bn"><b>Anki Decks</b><span>Native audio · for Anki</span></span><span class="tagpill tp-soon">4 cards free</span></div>
     </a>
 
     <a class="panel" href="/adventure/" data-oa-event="play_game">
