@@ -38,6 +38,22 @@
   .fc.flip .fc-inner{transform:rotateY(180deg)}
   .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#FDFBF6;border:1px solid #EADFC8;border-radius:16px;box-shadow:0 8px 26px rgba(19,75,112,.14);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px 18px}
   .face.back{transform:rotateY(180deg)}
+  /* 7-Day Starter Pack のCTA。7SKUがまだ買えないこのページでは、これが唯一の受け皿（2026-07-22）。
+     LP 03 と /method/ のゴールデンチケットの縮小版。 */
+  .packcta{display:block;margin:30px auto 0;max-width:440px;text-decoration:none;position:relative;
+    background:linear-gradient(155deg,#FFFDF6 0%,#FDF3DE 52%,#F7E6C4 100%);
+    border:1.5px solid #E7C877;border-radius:14px;padding:16px 18px 15px 30px;
+    box-shadow:0 10px 24px -12px rgba(120,80,20,.4)}
+  .packcta::before{content:"";position:absolute;left:16px;top:12px;bottom:12px;
+    border-left:2px dashed rgba(183,134,31,.45)}
+  .packcta .pk-l{display:block;font-size:9px;font-weight:800;letter-spacing:.16em;
+    text-transform:uppercase;color:#B7861F}
+  .packcta .pk-t{display:block;font-family:var(--serif,Georgia,serif);font-size:21px;font-weight:700;
+    color:var(--navy);line-height:1.15;margin-top:3px}
+  .packcta .pk-t i{font-style:italic;color:var(--sun-deep)}
+  .packcta .pk-s{display:block;font-size:11px;color:var(--sub);margin-top:4px}
+  .packcta .pk-b{display:inline-block;margin-top:11px;font-size:12.5px;font-weight:800;color:#fff;
+    background:linear-gradient(135deg,var(--sun),var(--sun-deep));border-radius:999px;padding:8px 16px}
   .fbrand{position:absolute;top:16px;left:0;right:0;font-size:10.5px;letter-spacing:.22em;font-weight:700;color:var(--sun)}
   .playb{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:none;background:var(--navy);color:#FDFBF6;cursor:pointer;margin-bottom:14px;box-shadow:0 4px 12px rgba(19,75,112,.3);transition:transform .12s}
   .playb:active{transform:scale(.94)}
@@ -256,7 +272,17 @@
     <div class="arw">→</div>
     <div class="step"><div class="n">3</div><b>REVIEW</b><span>a few minutes a day</span></div>
   </div>
-  <p class="applinks">Anki is free on <a href="https://apps.ankiweb.net/" target="_blank" rel="noopener">Windows / Mac / Linux</a> and <a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank" rel="noopener">Android (AnkiDroid)</a>.<br>On iPhone, use <a href="https://apps.apple.com/app/ankimobile-flashcards/id373493387" target="_blank" rel="noopener">AnkiMobile</a> (paid) or free <a href="https://ankiweb.net/" target="_blank" rel="noopener">AnkiWeb</a> in the browser.</p>
+  <!-- AnkiWeb をiPhoneの無料手段として案内してはいけない。AnkiWeb 自身が「共有デッキや
+       マルチメディアを使うにはパソコン版が必要」と明記しており、このデッキは音声入り
+       （1月号だけで mp3 50件）なのでブラウザ単体では取り込めない（2026-07-22修正）。 -->
+  <p class="applinks">Anki is free on <a href="https://apps.ankiweb.net/" target="_blank" rel="noopener">Windows / Mac / Linux</a> and <a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank" rel="noopener">Android (AnkiDroid)</a>. On iPhone and iPad, <a href="https://apps.apple.com/app/ankimobile-flashcards/id373493387" target="_blank" rel="noopener">AnkiMobile</a> (paid).<br>These decks carry native audio, so they have to be imported on a computer or in AnkiMobile &mdash; AnkiWeb in the browser cannot import them on its own.<br>No computer, no paid app? The <a href="/my-flashcards/">Flashcards Web App</a> runs the same sentences and audio right in your browser, free.</p>
+
+  <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial">
+    <span class="pk-l">The morning invitation</span>
+    <span class="pk-t">7-Day <i>Starter</i> Pack</span>
+    <span class="pk-s">While the decks open &mdash; 7 mornings of real Tokyo Japanese, free to your inbox</span>
+    <span class="pk-b">Get it free &rarr;</span>
+  </a>
 
   <h2 class="sec">FAQ</h2>
   <div class="sect">Small questions, quick answers</div>
@@ -266,7 +292,7 @@
   </details>
   <details class="faq">
     <summary>What devices does this work on?</summary>
-    <p>Any device that runs Anki: Windows, Mac and Linux (free), Android via AnkiDroid (free), and iPhone/iPad via AnkiMobile (paid) or AnkiWeb in the browser (free). Import takes one tap, and AnkiWeb sync keeps all your devices in step.</p>
+    <p>Any device that runs Anki: Windows, Mac and Linux (free), Android via AnkiDroid (free), and iPhone/iPad via AnkiMobile (paid). Because these decks include native audio, the import has to happen in the computer version or in AnkiMobile &mdash; AnkiWeb in the browser cannot import them on its own. Once a deck is in, AnkiWeb sync keeps your devices in step.</p>
   </details>
   <details class="faq">
     <summary>Is the audio streamed, or does it work offline?</summary>

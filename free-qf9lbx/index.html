@@ -351,6 +351,12 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
     <div class="complete-sub">You've tried all 5 sample sentences.<br>Get the full 10-card sets to keep learning!</div>
     <div class="complete-divider"></div>
     <a class="complete-cta" href="https://ohayonihongodaily.etsy.com/?section_id=58431109" target="_blank" rel="noopener" data-oa-event="buy_etsy">Get the full 10-card sets on Etsy</a>
+    <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial">
+      <span class="pk-l">The morning invitation</span>
+      <span class="pk-t">7-Day <i>Starter</i> Pack</span>
+      <span class="pk-s">7 mornings, free to your inbox</span>
+      <span class="pk-b">Get it free &rarr;</span>
+    </a>
     <a class="complete-back" href="/my-flashcards/">&larr; Back to the flashcard shelf</a>
     
     <div class="complete-links clinks-primary"><a class="complete-link" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify">
@@ -843,15 +849,30 @@ loadCard();
    実際 Etsy CTA と戻り導線が order 無しで最上部に出ていた（2026-07-22修正）。
    並び: ロゴ1 → 見出し2 → 説明3 → 数字4 → Etsy CTA 5 → もう一度6 → 棚へ戻る7 → SNS 8/9 */
 .complete-cta{order:5 !important}
-.btn-restart{order:6 !important;margin-top:10px !important;margin-bottom:0 !important}
-.complete-back{order:7 !important;margin:12px 0 0 !important}
-.clinks-primary{order:8;display:grid !important;grid-template-columns:repeat(2,108px) !important;justify-content:center;gap:20px 10px;width:100%;margin:40px 0 0 !important}
+/* 7-Day Starter Pack。買わない人の受け皿。Etsy CTA の直後＝完走直後の一番濃い位置に置く */
+.packcta{order:6 !important;display:block;width:100%;max-width:340px;margin:14px auto 0;position:relative;
+  text-decoration:none;background:linear-gradient(155deg,#FFFDF6 0%,#FDF3DE 52%,#F7E6C4 100%);
+  border:1.5px solid #E7C877;border-radius:14px;padding:13px 15px 13px 26px;text-align:left;
+  box-shadow:0 10px 24px -12px rgba(120,80,20,.45)}
+.packcta::before{content:"";position:absolute;left:13px;top:10px;bottom:10px;
+  border-left:2px dashed rgba(183,134,31,.45)}
+.packcta .pk-l{display:block;font-size:8px;font-weight:800;letter-spacing:.16em;
+  text-transform:uppercase;color:#B7861F}
+.packcta .pk-t{display:block;font-family:'Playfair Display',Georgia,serif;font-size:19px;font-weight:700;
+  color:#134B70;line-height:1.15;margin-top:2px}
+.packcta .pk-t i{font-style:italic;color:#F08114}
+.packcta .pk-s{display:block;font-size:10.5px;color:#5A7183;margin-top:3px}
+.packcta .pk-b{display:inline-block;margin-top:9px;font-size:12px;font-weight:800;color:#fff;
+  background:linear-gradient(135deg,#F7A928,#F08114);border-radius:999px;padding:7px 14px}
+.btn-restart{order:7 !important;margin-top:10px !important;margin-bottom:0 !important}
+.complete-back{order:8 !important;margin:12px 0 0 !important}
+.clinks-primary{order:9;display:grid !important;grid-template-columns:repeat(2,108px) !important;justify-content:center;gap:20px 10px;width:100%;margin:40px 0 0 !important}
 .clinks-primary .complete-link{padding:7px 4px !important;gap:3px;background:rgba(255,255,255,0.30) !important;-webkit-backdrop-filter:blur(14px) saturate(1.6) !important;backdrop-filter:blur(14px) saturate(1.6) !important;border:1px solid rgba(255,255,255,0.6) !important;box-shadow:0 6px 18px rgba(19,75,112,0.14),inset 0 1px 0 rgba(255,255,255,0.7) !important}
 .clinks-primary .complete-link-label{display:none}
 .clinks-primary .complete-link-text{font-size:9px !important}
 .clinks-primary .link-icon-wrap{width:20px !important;height:20px !important}
 /* 副次3: 枠なしアイコン */
-.clinks-secondary{order:9;display:flex !important;justify-content:center;gap:26px;width:100%;margin:auto 0 4px !important}
+.clinks-secondary{order:10;display:flex !important;justify-content:center;gap:26px;width:100%;margin:auto 0 4px !important}
 .clinks-secondary .complete-link{background:transparent !important;border:none !important;box-shadow:none !important;padding:2px !important;gap:4px}
 .clinks-secondary .complete-link-label{display:none}
 .clinks-secondary .complete-link-text{font-size:9.5px !important;color:#5D7285 !important}
