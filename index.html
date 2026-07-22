@@ -57,6 +57,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .logo b{font-family:var(--sans);font-size:17px;font-weight:800;letter-spacing:.05em;color:var(--ink);white-space:nowrap}
 .nav-links{display:flex;gap:20px;font-weight:600;font-size:14px}
 .nav-links a{color:var(--ink-soft)}
+.nav-links .jp{display:none}
 .nav-burger{display:none;-webkit-appearance:none;appearance:none;cursor:pointer;padding:0;
   width:44px;height:44px;margin-right:-4px;
   flex-direction:column;align-items:center;justify-content:center;gap:5px;
@@ -74,7 +75,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
     position:absolute;top:calc(100% + 6px);right:14px;min-width:172px;z-index:60;
     background:#fff;border:1px solid var(--line);border-radius:13px;padding:6px;
     box-shadow:0 14px 34px -12px rgba(19,75,112,.32)}
-  .nav-links.open a{padding:10px 14px;border-radius:9px;color:var(--ink);font-size:14.5px;line-height:1.25}
+  /* 日本語の副ラベルは menu.js のパネルと同じ体裁。横並びのナビ帯には出さない。 */
+  .nav-links.open a{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
+    padding:10px 14px;border-radius:9px;color:var(--ink);font-size:14.5px;line-height:1.25}
+  .nav-links.open a .jp{display:inline;font-family:'Noto Sans JP',sans-serif;
+    font-weight:400;font-size:11px;color:#8AA0B2}
   .nav-links.open a:active{background:#F1F7FC}
 }
 @media(max-width:400px){
@@ -705,7 +710,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
 
 <nav><div class="wrap nav-in">
   <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
-  <div class="nav-links" id="navLinks"><a href="#read">Read</a><a href="#method">Method</a><a href="#learn">Learn</a><a href="#shop">Shop</a><a href="#try">Try</a><a href="#play">Play</a></div>
+  <div class="nav-links" id="navLinks"><a href="#read"><span>Read</span><span class="jp">よむ</span></a><a href="#method"><span>Method</span><span class="jp">メソッド</span></a><a href="#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="#shop"><span>Shop</span><span class="jp">ショップ</span></a><a href="#try"><span>Try</span><span class="jp">ためす</span></a><a href="#play"><span>Play</span><span class="jp">あそぶ</span></a></div>
   <button class="nav-burger" type="button" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
 </div></nav>
 
