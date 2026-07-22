@@ -197,7 +197,11 @@
     <div class="msg" id="regMsg"></div>
   </div>
 
-  <div class="hint"><span class="ico ico-phone" aria-hidden="true"></span> <b>Tip:</b> Add this page to your home screen — it opens like an app, and your bookshelf, streak and XP are always one tap away.</div>
+  <!-- .ico-phone はここでは使わない。この行は12pxで、その大きさだと角丸長方形が
+       ただの□にしか見えない（4倍に拡大して実測・2026-07-22）。
+       22pxの .install-icon では正しくスマホに見えるので、アイコン自体は禁止しない。
+       正典の教訓どおり「装飾だけのアイコンは置き換えずに消す」を適用した。 -->
+  <div class="hint"><b>Tip:</b> Add this page to your home screen — it opens like an app, and your bookshelf, streak and XP are always one tap away.</div>
 
   <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial">
     <span class="pk-l">The morning invitation</span>
