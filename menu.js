@@ -5,13 +5,16 @@
   if (window.__ohayoMenu) return;
   window.__ohayoMenu = true;
 
-  // /diary/ アーカイブは動線から隔離済みのためメニューに出さない（2026-07-21オーナー確定）。
-  // ページとsitemapは残してあるのでSEOは維持される。ここに戻さないこと。
+  // 中身はLPのナビ（.nav-links）と同じ6項目に揃える（2026-07-22オーナー確定）。
+  // 棚の順番を変えたら LP の .nav-links とこの配列の両方を直すこと。
+  // /diary/ アーカイブは動線から隔離済みなので出さない（2026-07-21オーナー確定・再提案禁止）。
   var LINKS = [
-    { href: "/",              label: "Home",       jp: "ホーム" },
-    { href: "/my-flashcards/",label: "Flashcards", jp: "フラッシュカード" },
-    { href: "/adventure/",    label: "Adventure",  jp: "アドベンチャー" },
-    { href: "/#shop",         label: "Shop",       jp: "ショップ" }
+    { href: "/#read",   label: "Read",   jp: "よむ" },
+    { href: "/#method", label: "Method", jp: "メソッド" },
+    { href: "/#learn",  label: "Learn",  jp: "つづける" },
+    { href: "/#shop",   label: "Shop",   jp: "ショップ" },
+    { href: "/#try",    label: "Try",    jp: "ためす" },
+    { href: "/#play",   label: "Play",   jp: "あそぶ" }
   ];
 
   var css = ""
