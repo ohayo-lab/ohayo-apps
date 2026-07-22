@@ -212,20 +212,15 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* 実機スクショは横長(1179x1967=1:1.67)、端末枠は1:1.81。
    cover だと左右が削られてメニューやブランド名が欠けるので、幅を基準に合わせて下を切る。
    上部（ブランド名・ストリーク・スピーカー）を必ず残すため object-position は top。 */
-/* 商品画像(1360x672=0.494)を、幅によっては 0.32 まで横長になる枠に入れている。
-   cover だと上下を切って中央の帯だけになり、Flashcards の文字が潰れて見える。
-   幅を基準に合わせ、はみ出す下を切る（上のロゴ・見出しを必ず残す）。 */
-/* aspect-ratio だけだと枠より縦が短い幅で下に地色の帯が出る。min-height で必ず枠を埋める */
-.fc-art{position:absolute;top:0;left:0;width:100%;aspect-ratio:1360/672;height:auto;min-height:100%;
-  object-fit:cover;object-position:top left}
-/* 高さ168px固定のまま aspect-ratio を効かせると、列幅が広い中間サイズで画像だけが背を伸ばし、
-   下が切れる。520px幅では82px（表示66%）が落ち、JLPT N5-N3 の行と機能チップが丸ごと消えていた。
-   モバイルは縦積みで168px揃えの必要が無いので、700px以下は枠の方を画像に合わせる。 */
-/* .pv.pv-fc と二重に書くこと。素の .pv-fc だと、後ろの方にある .pv{height:156px} と
-   同じ詳細度で負けて効かない（2026-07-21実測） */
-@media(max-width:700px){.pv.pv-fc{height:auto;aspect-ratio:1360/672}.fc-art{min-height:0}}
-/* 左端に「10 real sentences」「JLPT N5-N3」の文頭があるので、切るのは右側にする。
-   center だと左が削られて 0 real / LPT N5 と欠ける（620px幅で実測） */
+/* 【重要】width:100% + aspect-ratio + height:auto にしないこと。
+   画像の高さが列幅に比例して伸び、520px幅では枠から82px溢れて下が切れ、
+   JLPT N5-N3 の行と機能チップが丸ごと消えていた（2026-07-21実測）。
+   その対策で枠の方を可変にしたら、今度は隣の Starter Pack パネルと天地が揃わなくなった。
+   正解は「枠は他パネルと同じ固定高のまま、画像は枠を高さ基準で埋める」。
+   元画像は 1360x672（2.02:1）なので、狭い列では縦は全部残り左右だけが切れる。 */
+.fc-art{position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;object-position:left center}
+/* 左端に「10 real sentences」「JLPT N5-N3」の文頭があるので、切るのは右側にする。 */
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;background:var(--brand-navy);padding:4px 10px;border-radius:999px;
   box-shadow:0 3px 9px rgba(19,75,112,.32)}
@@ -490,8 +485,10 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* 521〜540pxではゲームが3列のまま約155pxまで痩せ、これ以上フォントを落とすと読めない。
    商品名（Sentence Builder）は短縮できないので、切るのではなく2行に折り返す。
    1列に落とすとゲームだけ他の棚より大きくなり、意図した序列が逆転するので不可。 */
-@container (max-width:170px){ .band b{white-space:normal;line-height:1.08}
-                              .band .bn span{white-space:normal;line-height:1.18} }
+@container (max-width:170px){ .band b{white-space:normal;line-height:1.08;min-height:2.16em}
+                              .band .bn span{white-space:normal;line-height:1.18;min-height:2.36em} }
+/* 折り返しを許すと、2行になったパネルだけ背が伸びて隣と天地がズレる（530-540pxで実測）。
+   min-height で常に2行分を確保し、1行の商品名でも高さを揃える。 */
 /* .row と同じ左右パディング(18px)＋外への食い出し(-18px)を与えて、幅の計算を完全に一致させる */
 .shop-feature{display:flex;justify-content:center;padding:0 0 24px}
 .shop-feature .panel{width:100%;max-width:694px;min-width:0}
