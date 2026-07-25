@@ -17,32 +17,36 @@
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --sun:#F7A928; --sun-deep:#F08114; --sun-hot:#FF6B35;
-  --brand-navy:#134B70; --brand-ocean:#1F72A8;
-  --cream:#FFF9F0; --cream-card:#FFF6E6;
-  --ink:#1C3446; --ink-soft:#5A7183; --line:#E4EEF4;
-  --gold:#B98F2F;
+  /* ===== 朱色トークン（2026-07-25 移植・習作「次サイト習作_朱色版」の値が正）=====
+     旧トークン名（--sun/--brand-navy/--cream/--gold …）は26箇所から参照されているので
+     名前は残したまま新パレットへ写像する。個別の呼び出し側は書き換えない。 */
+  --honey:#C63B22; --honey-ink:#A02D19; --honey-soft:#E7B24E;
+  --paper:#F6F0E2; --paper-2:#FCF7EC; --paper-edge:#ECE3D0;
+  --ink:#1C3446; --ink-soft:#4B5F6D; --ink-faint:#8A98A0;
+  --line:#E4D9C2;
+  /* 旧名 → 新パレットの写像 */
+  --sun:var(--honey); --sun-deep:var(--honey-ink); --sun-hot:var(--honey);
+  --brand-navy:var(--ink); --brand-ocean:var(--honey-ink);
+  --cream:var(--paper); --cream-card:var(--paper-2);
+  --gold:var(--honey-ink);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'DM Sans','Noto Sans JP',-apple-system,sans-serif;
   --jp:'Noto Sans JP',sans-serif;
   --jp-serif:'Noto Serif JP',serif;
   /* ===== 額縁（全パネル共通仕様）===== */
   --frame-radius:20px;
-  --frame-shadow:0 16px 34px -16px rgba(19,75,112,.32);
-  --frame-border:1px solid rgba(19,75,112,.10);
+  --frame-shadow:0 16px 34px -16px rgba(28,52,70,.30);
+  --frame-border:1px solid rgba(28,52,70,.10);
   --band-pad:13px 15px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-/* 空→海の一続きグラデ */
+/* 紙の地。空→海のグラデは朱色移植（2026-07-25）で廃止し、上から下まで一枚の紙にする */
 body{font-family:var(--sans);color:var(--ink);line-height:1.6;overflow-x:hidden;
-  background:linear-gradient(180deg,
-    #FFF4E0 0%, #FCEEDC 16%,
-    #F4F6F2 34%, #E9F3FA 55%,
-    #DCEDf7 76%, #CFE5F2 100%)}
+  background:var(--paper)}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
@@ -51,7 +55,7 @@ img{max-width:100%;display:block}
   border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor}
 
 /* ===== NAV ===== */
-nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,240,.9);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,226,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 .nav-in{display:flex;align-items:center;justify-content:space-between;height:58px;gap:10px}
 .logo{display:flex;align-items:center;gap:8px;font-weight:700}
 .logo b{font-family:var(--sans);font-size:17px;font-weight:800;letter-spacing:.05em;color:var(--ink);white-space:nowrap}
@@ -61,9 +65,9 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .nav-burger{display:none;-webkit-appearance:none;appearance:none;cursor:pointer;padding:0;
   width:44px;height:44px;margin-right:-4px;
   flex-direction:column;align-items:center;justify-content:center;gap:5px;
-  background:rgba(255,255,255,.94);border:1px solid #CFE3EF;border-radius:12px;
-  box-shadow:0 4px 14px rgba(19,75,112,.18)}
-.nav-burger span{display:block;width:20px;height:2px;border-radius:2px;background:#134B70;transition:transform .22s,opacity .18s}
+  background:rgba(252,247,236,.96);border:1px solid var(--line);border-radius:12px;
+  box-shadow:0 4px 14px rgba(28,52,70,.16)}
+.nav-burger span{display:block;width:20px;height:2px;border-radius:2px;background:var(--ink);transition:transform .22s,opacity .18s}
 .nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
 .nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0}
 .nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
@@ -73,43 +77,70 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
   /* 開いたときだけ、ナビ直下にドロップダウンとして出す。リンクの出どころは .nav-links 一つに保つ */
   .nav-links.open{display:flex;flex-direction:column;gap:1px;line-height:1.25;
     position:absolute;top:calc(100% + 6px);right:14px;min-width:172px;z-index:60;
-    background:#fff;border:1px solid var(--line);border-radius:13px;padding:6px;
-    box-shadow:0 14px 34px -12px rgba(19,75,112,.32)}
+    background:var(--paper-2);border:1px solid var(--line);border-radius:13px;padding:6px;
+    box-shadow:0 14px 34px -12px rgba(28,52,70,.30)}
   /* 日本語の副ラベルは menu.js のパネルと同じ体裁。横並びのナビ帯には出さない。 */
   .nav-links.open a{display:flex;align-items:baseline;justify-content:space-between;gap:14px;
     padding:10px 14px;border-radius:9px;color:var(--ink);font-size:14.5px;line-height:1.25}
   .nav-links.open a .jp{display:inline;font-family:'Noto Sans JP',sans-serif;
-    font-weight:400;font-size:11px;color:#8AA0B2}
-  .nav-links.open a:active{background:#F1F7FC}
+    font-weight:400;font-size:11px;color:var(--ink-faint)}
+  .nav-links.open a:active{background:var(--paper)}
 }
 @media(max-width:400px){
   .logo b{font-size:14.5px;letter-spacing:.03em}
   }
 
-/* ===== HERO ===== */
-.hero{position:relative;padding:46px 0 64px;overflow:hidden;
-  background:url("/img/lp/hero_landscape.png") left center/cover no-repeat, linear-gradient(168deg,#2F6FA6,#1F72A8)}
-.hero-grid{position:relative;z-index:2;max-width:660px}
-.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,5.6vw,3.4rem);line-height:1.06;color:#fff;margin:12px 0 10px;text-shadow:0 2px 10px rgba(9,40,66,.55),0 2px 26px rgba(9,40,66,.45)}
-.hero h1 i{color:#FFD97A;text-shadow:0 2px 8px rgba(9,40,66,.8),0 2px 20px rgba(9,40,66,.55)}
-.hero .sub{color:#F2F9FE;font-size:15px;max-width:42ch;text-shadow:0 1px 6px rgba(9,40,66,.75),0 1px 16px rgba(9,40,66,.5)}
+/* ===== HERO =====
+   2026-07-25 移植: 海の写真＋白文字を廃し、紙地・墨文字・朱アクセントへ。
+   右に彼女（透過PNG）を置き、描かれた空の吹き出しをそのままテキストの器に使う。
+   彼女は左（＝コンテンツ側）を向いているので反転しない。 */
+.hero{position:relative;padding:46px 0 30px;overflow:hidden;background:var(--paper)}
+.hero-grid{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,.82fr);
+  gap:16px;align-items:end}
+.hero-text{align-self:center;max-width:38rem;padding-bottom:14px}
+.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.95rem,4.9vw,3.2rem);line-height:1.06;color:var(--ink);margin:12px 0 12px}
+.hero h1 i{font-style:italic;color:var(--honey-ink)}
+.hero .sub{color:var(--ink-soft);font-size:15.5px;max-width:44ch;line-height:1.62}
+/* 「No textbook lines.」＝パネル§6-1の確定コピー（平叙文化した否定形） */
+.hero-claim{margin-top:14px;font-family:var(--serif);font-weight:700;font-size:clamp(1.05rem,2.2vw,1.35rem);
+  line-height:1.3;color:var(--honey-ink)}
+/* 「1分」を単独の売り文句にしないための意味づけ（パネル§6-3・習作の確定文） */
+.hero-loop{margin-top:14px;font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-weight:500;
+  font-size:13.5px;line-height:1.85;color:var(--ink-soft);border-left:2px solid var(--honey-soft);padding-left:13px}
 /* ヒーローのCTAボタンは2026-07-21に削除（オーナー確定）。
    押した人が01棚のSpotify/YouTubeへ抜けてサイト外へ100%流出していたため。
    .btn / .btn-sun / .btn-ghost はメールCTA帯などで使う共通ピルなので残置。 */
 .btn{display:inline-flex;align-items:center;gap:7px;font-weight:700;font-size:15px;padding:12px 20px;border-radius:999px;line-height:1}
 .email-cta .btn{font-weight:800}
-.btn-sun{background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#fff;box-shadow:0 10px 20px -10px rgba(240,129,20,.6)}
-.btn-ghost{background:rgba(255,255,255,.9);color:var(--ink)}
-.hero-note{margin-top:18px;font-size:12px;font-weight:700;color:#fff;
-  display:flex;flex-wrap:wrap;align-items:center;row-gap:2px;
-  text-shadow:0 1px 2px rgba(9,40,66,.9),0 2px 10px rgba(9,40,66,.55)}
+.btn-sun{background:linear-gradient(135deg,var(--sun),var(--sun-deep));color:#FDF4EA;box-shadow:0 10px 20px -10px rgba(198,59,34,.55)}
+.btn-ghost{background:var(--paper-2);color:var(--ink);border:1.5px solid var(--line)}
+.hero-note{margin-top:20px;font-size:12px;font-weight:700;color:var(--ink-soft);
+  display:flex;flex-wrap:wrap;align-items:center;row-gap:2px}
 .hero-note span{white-space:nowrap}
-.hero-note span:not(:last-child)::after{content:"·";margin:0 9px;opacity:.65;font-weight:400}
+.hero-note span:not(:last-child)::after{content:"·";margin:0 9px;opacity:.55;font-weight:400}
+/* --- 彼女（習作 .hero-illust / .illust-note をそのまま移植） --- */
+.hero-illust{position:relative;align-self:end;max-width:415px;justify-self:end;width:100%}
+.hero-illust img{width:100%;height:auto;display:block;filter:drop-shadow(0 18px 30px rgba(28,52,70,.14))}
+/* 空の吹き出しの中に「今日のことば」を組み、彼女がつぶやく一言にする。
+   位置は hero-illust 枠への％指定＝吹き出し内側の中心にセンタリング。keep-allで読点折り。 */
+.illust-note{position:absolute;left:2%;top:23.5%;width:44%;background:transparent;color:#5c2a0e;
+  font-family:'Zen Maru Gothic','Noto Sans JP',sans-serif;font-size:19px;font-weight:700;line-height:1.55;
+  letter-spacing:.02em;text-align:center;transform:translateY(-50%) rotate(-1.5deg);word-break:keep-all}
 @media(max-width:860px){
-  .hero{padding:40px 0 56px}
-  .hero-grid{text-align:center;margin:0 auto}
+  .hero{padding:34px 0 22px}
+  .hero-grid{grid-template-columns:1fr;gap:14px}
+  .hero-text{text-align:center;margin:0 auto;padding-bottom:0}
   .hero .sub{margin:0 auto}
+  .hero-loop{text-align:left;max-width:24rem;margin-left:auto;margin-right:auto}
   .hero-note{justify-content:center}
+  /* 彼女を先に出すと文字が押し下がるので、モバイルでも見出し→彼女の順を保つ。
+     また、彼女が1画面を占めて01棚が完全に隠れないよう幅を絞る（存在感を上げすぎない） */
+  .hero-illust{max-width:330px;margin:0 auto;justify-self:center}
+  .illust-note{font-size:15.5px}
+}
+@media(max-width:420px){
+  .hero-illust{max-width:296px}
+  .illust-note{font-size:14px;line-height:1.5}
 }
 /* 折り返す幅では中黒が行末に取り残されるので、区切りは余白で表現する */
 @media(max-width:600px){
@@ -138,13 +169,8 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .row{-webkit-mask-image:linear-gradient(90deg,#000 0,#000 93%,transparent);mask-image:linear-gradient(90deg,#000 0,#000 93%,transparent)}
 .row > *{scroll-snap-align:start;flex:0 0 auto}
 
-/* ===== 案内キャラ ===== */
-.guide{display:flex;justify-content:center;align-items:center;margin:2px 0 4px}
-.guide img{width:58px;filter:drop-shadow(0 8px 14px rgba(10,45,75,.3))}
-.guide .bubble{background:rgba(255,255,255,.94);border-radius:14px;padding:8px 13px;font-size:12px;font-weight:700;color:var(--ink);margin-left:8px;box-shadow:0 10px 22px -12px rgba(10,45,75,.35)}
-
 /* ===== 額縁は統一（.panel）===== */
-.panel{width:266px;border-radius:var(--frame-radius);overflow:hidden;background:#fff;
+.panel{width:266px;border-radius:var(--frame-radius);overflow:hidden;background:var(--paper-2);
   border:var(--frame-border);box-shadow:var(--frame-shadow);
   display:flex;flex-direction:column;transition:transform .16s ease}
 .panel:active,.panel:hover{transform:translateY(-4px)}
@@ -170,12 +196,14 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .band .tp-soon{background:#F1F0F6;color:#6B6784}
 /* 有料（Etsy/Amazon）だけ枠線を持たせて、無料の緑タグと一目で区別できるようにする */
 .band .tp-shop{background:#FFEFD5;color:#B45309;box-shadow:inset 0 0 0 1px #F0B15E}
+/* バンドは1行固定なので、折り返して読ませたい補足はバンドの下に置く（Flashcards の間隔反復の説明） */
+.panel-note{padding:0 15px 13px;font-size:11.5px;line-height:1.5;color:var(--ink-soft)}
 .panel-wide{width:340px}
 
 /* ===== 各パネルの「絵」 ===== */
 .pv-kq{background:url("/img/lp/bg_sunrise_meadow_hd.jpg") center 30%/cover}
 .pv-kq .kq-logo{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:78%;filter:drop-shadow(0 3px 8px rgba(60,30,0,.3))}
-.pv-kq .kq-char{position:absolute;bottom:6px;left:14px;width:64px;filter:drop-shadow(0 4px 6px rgba(60,30,0,.35))}
+.pv-kq .kq-char{position:absolute;bottom:-6px;left:10px;width:88px;filter:drop-shadow(0 6px 10px rgba(60,30,0,.32))}
 .pv-kq .kq-cta{position:absolute;bottom:12px;right:12px;background:linear-gradient(180deg,#FFD35C,#F7AE22);
   color:#1C1C1C;font-weight:800;font-size:12px;padding:8px 14px;border-radius:12px;box-shadow:0 3px 0 #DE9E1E;
   display:inline-flex;align-items:center;gap:6px}
@@ -292,28 +320,25 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    （左右は隙間7pxを食い潰さないよう3pxまで） */
 .pod-btns a{position:relative}
 .pod-btns a::after{content:"";position:absolute;inset:-9px -3px;border-radius:999px}
-/* Today's diary: 再生画面と同じ風景写真を背景に
+/* Today's diary: 2026-07-25 に海の写真＋白文字をやめ、紙のカードとして読ませる（習作 .doc-card の扱い）
    ※ 本文は日次自動更新で長さが変わるため、行数クランプで額縁(168/156px)に必ず収める */
-.pv-today{background:url("/img/lp/diary_landscape.png") center 60%/cover no-repeat;
+.pv-today{background:var(--paper-2);
   gap:2px;padding:10px 14px}
 /* クランプ後の行高を flex に潰させない（潰れると行が半分に切れる） */
 .pv-today > *{flex:0 0 auto}
 .pv-today .pod-sp,.pv-today .pod-yt{padding:6px 11px;font-size:10.5px}
-.pv-today .lbl{color:#FFE9A8;text-shadow:0 1px 3px rgba(9,40,66,.85);
+.pv-today .lbl{color:var(--honey-ink);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pv-today .kanji,.pv-today .hira,.pv-today .en{
   display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;
   /* 日本語は文字間で折り返させて行を埋める（keep-allだと読点の後で不自然に落ちる） */
   word-break:normal;overflow-wrap:break-word;line-break:strict}
-.pv-today .kanji{color:#fff;font-size:15px;line-height:1.45;-webkit-line-clamp:2;
-  text-shadow:0 1px 2px rgba(9,40,66,.9),0 3px 12px rgba(9,40,66,.55)}
+.pv-today .kanji{color:var(--ink);font-size:15px;line-height:1.45;-webkit-line-clamp:2}
 .hira{font-family:var(--jp);font-size:11px;line-height:1.4;color:#4A6273}
-.pv-today .hira{color:rgba(255,255,255,.92);font-size:10.5px;-webkit-line-clamp:2;
-  text-shadow:0 1px 3px rgba(9,40,66,.9)}
-.pv-today .en{color:rgba(255,255,255,.95);font-size:11.5px;line-height:1.35;-webkit-line-clamp:1;
-  text-shadow:0 1px 3px rgba(9,40,66,.85)}
+.pv-today .hira{color:var(--ink-soft);font-size:10.5px;-webkit-line-clamp:2}
+.pv-today .en{color:var(--ink-soft);font-size:11.5px;line-height:1.35;-webkit-line-clamp:1}
 .pv-today .pod-btns{margin-top:3px}
-.pv-today .pod-sp,.pv-today .pod-yt{box-shadow:0 3px 10px rgba(9,40,66,.35)}
+.pv-today .pod-sp,.pv-today .pod-yt{box-shadow:0 3px 10px rgba(28,52,70,.22)}
 @media(max-width:600px){
   .pv-today .kanji{font-size:13.5px;-webkit-line-clamp:2}
   .pv-today .hira{font-size:10px;-webkit-line-clamp:2}
@@ -347,41 +372,6 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .pv-shopimg .pv-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
   text-align:center;padding:16px;gap:6px;font-family:var(--serif);font-weight:700;font-size:16px;color:var(--brand-navy)}
 .pv-shopimg .pv-fallback small{font-family:var(--sans);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sun-deep)}
-
-/* ===== 05 Try：/anki/ の「Try a real card」デモをそのまま縮小
-   （課金はLemon Squeezyだが、このカードはページ上で無料でめくれる＝味見の入口） */
-.pv-anki{background:linear-gradient(180deg,#EAF3FB 0%,#F3F8FC 62%,#FAFCFE 100%);
-  padding:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:7px;
-  position:relative;overflow:hidden}
-/* /anki/ 実ページのヒーロー帯（.hero の135度グラデーションをそのまま踏襲） */
-.ank-hero{width:100%;background:linear-gradient(135deg,#134B70 0%,#1F72A8 55%,#3E93C4 100%);
-  padding:7px 12px 8px;text-align:left;flex:0 0 auto}
-.ank-hero-brand{display:flex;align-items:center;gap:5px;
-  font-size:7.5px;font-weight:800;letter-spacing:.14em;color:#fff}
-.ank-sun{width:8px;height:8px;border-radius:50%;background:var(--sun);flex:0 0 auto;
-  box-shadow:0 0 0 1.5px rgba(247,169,40,.35)}
-.ank-hero-h{font-family:var(--serif);font-weight:700;font-size:15px;line-height:1.1;color:#fff;margin-top:2px}
-.ank-tag{position:absolute;top:9px;right:10px;left:auto;z-index:5;font-size:8px;font-weight:900;letter-spacing:.11em;
-  text-transform:uppercase;color:#1E8449;background:#E8F8EE;border:1px solid #A8E0BE;
-  border-radius:999px;padding:3px 9px}
-.ank-card{width:80%;max-width:226px;background:#FDFBF6;border:1px solid #EADFC8;border-radius:12px;
-  padding:8px 11px 8px;text-align:center;box-shadow:0 12px 26px -12px rgba(19,75,112,.4)}
-.ank-brand{font-size:7.5px;font-weight:700;letter-spacing:.2em;color:var(--sun);margin-bottom:5px}
-.ank-play{display:block;position:relative;width:24px;height:24px;border-radius:50%;margin:0 auto 5px;
-  background:var(--brand-navy);box-shadow:0 4px 12px -2px rgba(19,75,112,.45)}
-.ank-play::after{content:"";position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);
-  border-style:solid;border-width:4px 0 4px 6.5px;border-color:transparent transparent transparent #FDFBF6}
-.ank-q{font-family:var(--jp-serif);font-weight:500;font-size:12px;line-height:1.45;color:var(--brand-navy)}
-.ank-hint{font-size:8px;color:#9AA5B1;margin-top:5px}
-.ank-dots{display:flex;gap:6px}
-.ank-dots i{width:6px;height:6px;border-radius:50%;background:#C9DCEA}
-.ank-dots i.on{background:var(--brand-navy)}
-@media(max-width:600px){
-  .pv-anki{gap:7px}
-  .ank-card{width:88%;padding:10px 10px 9px}
-  .ank-q{font-size:12px}
-  .ank-play{width:26px;height:26px;margin-bottom:6px}
-}
 
 /* ===== 04 Shop：Daily+ Newsletter ＝「金の朝刊」 ===== */
 .pv-dnp{position:relative;overflow:hidden;padding:12px 14px 11px;
@@ -589,27 +579,27 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    「Your whole morning practice」の帯（きく・まねる・よむ）を置く。
    ※ 帯の幅比 20/25/15 は /method/ と同一。これは3工程の重みの体感であって
      秒数ではないため、パネルにも数字を書かないこと（2026-07-21オーナー確定）。 */
-.pv-loop{background:url("/img/lp/hero_landscape.png") left center/cover no-repeat,
-  linear-gradient(168deg,#2F6FA6,#1F72A8)!important;
+.pv-loop{background:linear-gradient(168deg,var(--paper-2),var(--paper-edge))!important;
   padding:12px 15px 11px;gap:0;justify-content:space-between;text-align:left}
-.pv-loop .lbl{color:#FFE9A8;text-shadow:0 1px 4px rgba(9,40,66,.85)}
-.pv-loop .en{color:rgba(255,255,255,.94);text-shadow:0 1px 4px rgba(9,40,66,.8);margin-top:3px;display:none}
+.pv-loop .lbl{color:var(--honey-ink)}
+.pv-loop .en{color:var(--ink-soft);margin-top:3px;display:none}
 .mth-txt{position:relative;z-index:2;min-width:0}
-.mth-h{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.07;color:#fff;margin-top:2px;
-  text-shadow:0 2px 10px rgba(9,40,66,.55),0 2px 24px rgba(9,40,66,.45)}
-.mth-h i{font-style:italic;color:#FFD97A;text-shadow:0 2px 8px rgba(9,40,66,.85)}
-.mth-card{position:relative;z-index:2;margin-top:auto;background:rgba(255,249,240,.96);
-  border-radius:12px;padding:7px 9px 8px;box-shadow:0 12px 24px -14px rgba(9,40,66,.75)}
+.mth-h{font-family:var(--serif);font-weight:700;font-size:23px;line-height:1.07;color:var(--ink);margin-top:2px}
+.mth-h i{font-style:italic;color:var(--honey-ink)}
+.mth-card{position:relative;z-index:2;margin-top:auto;background:#fff;border:1px solid var(--paper-edge);
+  border-radius:12px;padding:7px 9px 8px;box-shadow:0 12px 24px -16px rgba(28,52,70,.55)}
 .mth-k{font-size:8px;font-weight:800;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);
   text-align:center;margin-bottom:5px}
-.mth-bar{display:flex;height:36px;border-radius:9px;overflow:hidden;box-shadow:0 5px 12px -8px rgba(19,75,112,.55)}
+.mth-bar{display:flex;height:36px;border-radius:9px;overflow:hidden;box-shadow:0 5px 12px -8px rgba(28,52,70,.45)}
 .mth-bar span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;
   min-width:0;white-space:nowrap;overflow:hidden;color:#fff}
 .mth-bar em{font-style:normal;font-family:var(--jp);font-weight:700;font-size:11.5px;line-height:1.15}
 .mth-bar small{font-size:7.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;opacity:.92;line-height:1.15}
-.mth-bar .s1{flex:20 1 0;background:linear-gradient(135deg,#FFC661,#F7A928)}
-.mth-bar .s2{flex:25 1 0;background:linear-gradient(135deg,#F79F2C,#F08114)}
-.mth-bar .s3{flex:15 1 0;background:linear-gradient(135deg,#3E93C4,#1F72A8)}
+/* きく→まねる→よむ の3工程は朱の階調で進む（幅比 20/25/15 は /method/ と同一・変更禁止） */
+.mth-bar .s1{flex:20 1 0;background:linear-gradient(135deg,#E7B24E,#D98F32);color:#5C2A0E}
+/* s1 は地が明るいので白文字だとコントラスト2.6:1しか出ない。ここだけ濃い茶（吹き出しの文字色）にする */
+.mth-bar .s2{flex:25 1 0;background:linear-gradient(135deg,#D4622C,var(--honey))}
+.mth-bar .s3{flex:15 1 0;background:linear-gradient(135deg,#A93520,var(--honey-ink))}
 @media(min-width:980px){
   /* 694px 幅では左＝ヒーロー文字／右＝練習の帯 の2段組にして、ページの構図をそのまま縮める */
   .pv-loop{flex-direction:row;align-items:center;gap:26px;padding:14px 22px}
@@ -668,13 +658,6 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
   .band span{font-size:10.5px}
   #read .shelf-head .t{align-items:flex-start}
   .shelf-head .tt .eyebrow{font-size:10.5px;padding:4px 11px;letter-spacing:.11em}
-  /* .pv が156pxに縮む一方でAnkiの縦積みは168px想定のままで、進捗ドット（1/3枚めくれる合図）が
-     枠の15px下に落ちて完全に見えなくなっていた。この幅だけ約15px詰める。 */
-  .pv-anki{gap:5px}
-  .ank-hero{padding:5px 12px 6px}
-  .ank-card{padding:6px 11px 6px}
-  .ank-brand{margin-bottom:3px}
-  .ank-play{width:21px;height:21px;margin-bottom:3px}
 }
 
 /* ===== 03 Read：アーカイブ ===== */
@@ -718,9 +701,17 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
 <header class="hero">
   <div class="wrap hero-grid">
     <div class="hero-text">
-      <h1>One minute of real Japanese,<br><i>every morning.</i></h1>
+      <h1>One minute of real<br>Japanese, <i>every morning.</i></h1>
       <p class="sub">A slow listening diary from Tokyo — and a whole shelf of free ways to play with it.</p>
+      <p class="hero-claim">No textbook lines.<br>No streaks to feel guilty about.</p>
+      <p class="hero-loop">きく→まねる→よむ。1分で一巡。<br>あしたも、おなじ場所へ帰ってくる。</p>
       <div class="hero-note"><span>190+ diaries since Jan 2026</span><span>3 free games</span><span>JLPT N5–N3</span><span>100% free to start</span></div>
+    </div>
+    <!-- 毎朝マイクの前に座っている人。透過のまま・サイズで音量を下げる。
+         空の吹き出しは画像の中に描かれているので、CSSでピルを描かず中に文字を組む。 -->
+    <div class="hero-illust">
+      <img src="/img/lp/hero_girl.png" alt="" width="900" height="900">
+      <span class="illust-note">今日のことば、きいて、まねる。</span>
     </div>
   </div>
 </header>
@@ -760,7 +751,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
     <div class="t"><span class="mag-no">02</span>
       <span class="tt"><span class="eyebrow">Method</span><h2>The Morning Loop Method</h2></span></div>
   </div>
-  <p class="caption"><b>Three steps, one minute</b>Listen, shadow, read — the whole method, shown with one real sentence from a morning diary.</p>
+  <p class="caption"><b>Three steps, one minute</b>Read, listen, shadow — one real line a day, at your pace.</p>
   <div class="row">
 
     <a class="panel panel-wide" href="/method/">
@@ -823,7 +814,8 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
              端末枠はこの画像の中に描かれているので、CSSで枠を描かない -->
         <img class="fc-art" src="/img/lp/fcapp_real_v3.png" alt="Flashcards web app" loading="lazy">
       </div>
-      <div class="band"><span class="bn"><b>Flashcards App</b><span>No install needed</span></span><span class="tagpill tp-free">5 cards free</span></div>
+      <div class="band"><span class="bn"><b>Flashcards App</b><span>No install needed · 5 cards free</span></span><span class="tagpill tp-free">Free</span></div>
+      <p class="panel-note">Come back tomorrow — it remembers which cards you&rsquo;re about to forget, and has them waiting.</p>
     </a>
 
   </div>
@@ -885,7 +877,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
   </div>
 </div></section>
 
-<!-- ============ 05 ひと口だけ試す棚（Anki / Adventure・どちらもLS課金枠） ============ -->
+<!-- ============ 05 ひと口だけ試す棚（Adventure・LS課金枠） ============ -->
 <section class="shelf" id="try"><div class="wrap">
   <div class="shelf-head">
     <div class="t"><span class="mag-no">05</span>
@@ -912,26 +904,6 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
       <div class="band"><span class="bn"><b>Diary Adventure</b><span>Choose your morning</span></span><span class="tagpill tp-free">Ch.1 free</span></div>
     </a>
 
-    <a class="panel" href="/anki/">
-      <div class="pv pv-anki">
-        <!-- /anki/ のヒーロー帯を上に載せる。実ページのブランド行には太陽の絵文字が入っているが、
-             絵文字は全面禁止なのでLP側はCSS図形の太陽に置き換える -->
-        <div class="ank-hero">
-          <div class="ank-hero-brand"><span class="ank-sun" aria-hidden="true"></span>OHAYO NIHONGO</div>
-          <div class="ank-hero-h">Anki Decks</div>
-        </div>
-        <span class="ank-tag">Try a real card</span>
-        <div class="ank-card">
-          <div class="ank-brand">OHAYO NIHONGO</div>
-          <span class="ank-play" aria-hidden="true"></span>
-          <div class="ank-q">あめが ふって います。</div>
-          <div class="ank-hint">Listen &amp; recall — tap to flip</div>
-        </div>
-        <div class="ank-dots" aria-hidden="true"><i class="on"></i><i></i><i></i><i></i></div>
-      </div>
-      <div class="band"><span class="bn"><b>Anki Decks</b><span>Native audio · for Anki</span></span><span class="tagpill tp-free">4 cards free</span></div>
-    </a>
-
   </div>
 </div></section>
 
@@ -947,7 +919,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
     <a class="panel" href="/play/kana-quest/" data-oa-event="play_game">
       <div class="pv pv-kq">
         <img class="kq-logo" src="/img/lp/logo_kanaquest.png" alt="">
-        <img class="kq-char" src="/img/lp/char_run.png" alt="">
+        <img class="kq-char" src="/img/lp/char_girl_cheer.png" alt="">
         <span class="kq-cta">START<span class="ico-play"></span></span>
       </div>
       <div class="band"><span class="bn"><b>Kana Quest</b><span>Run &amp; jump for kana</span></span><span class="tagpill tp-free">Free</span></div>
