@@ -562,7 +562,7 @@
   const SPR_ASPECT   = 1023/1537;   // 両スプライト共通のフレーム縦横比
   const SPR_FOOT     = 0.895;       // 走りスプライトの靴底（フレーム上端からの比）
   const SPR_HEAD     = 0.048;       // 走りスプライトの頭頂
-  const CHAR_H       = 3.3*RUNNER_R;                  // 見た目の身長 ≒ 69px
+  const CHAR_H       = 3.8*RUNNER_R;                  // 見た目の身長 ≒ 80px（+15%）
   const CHAR_FRAME_H = CHAR_H/(SPR_FOOT-SPR_HEAD);    // ≒ 81.5px（フレーム全体）
   const CHAR_FRAME_W = CHAR_FRAME_H*SPR_ASPECT;       // ≒ 54px
   const CHAR_SINK    = 8;           // 足元を接地ラインより少し下げて草に埋める
@@ -610,7 +610,7 @@
     t.kana = kana; t.romaji = romaji;
     t.correct = (romaji === prompt[1]);
     t.x = VW + 40;
-    t.y = high ? (groundY - 118 - Math.random()*36) : (groundY - 34);
+    t.y = high ? (groundY - 136 - Math.random()*41) : (groundY - 39);
     t.r = 24;
     t.dead = false;
     t.pop = 0;          // collect animation
