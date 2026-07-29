@@ -929,7 +929,17 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
 /* 【2026-07-29 オーナー実機指摘】スマホでも3セルを1行に保つ（旧: flex 1 1 50% で
    「100%」だけ2行目へ落ちていた）。セルの落下は不可・ラベルの2行折返しは可、が指示。
    flex-basis を 0 にして3等分し、パディングと文字を段階的に詰めて320pxまで耐える。 */
+/* 【2026-07-29 オーナー実機指摘】スマホの初見（1画面目）に「TODAY'S DIARY タグ・彼女・NO.」まで
+   入れるため、数値帯の上下に積まれていた余白を詰める。実測の内訳は
+   上=.stats margin-top 52px／下=.hero padding-bottom 22px＋#read padding-top 56px＝78px。
+   PC は不変（この帯だけの調整）。 */
 @media(max-width:620px){
+  .hero{padding:24px 0 6px}
+  .stats{margin-top:22px}
+  .stats + *{margin-top:0}
+  #read.block{padding-top:20px}
+  .stat{padding-block:14px}
+  #read .today-stage{margin-top:22px}
   .stats{flex-wrap:nowrap}
   .stat{flex:1 1 0;min-width:0;padding:18px 6px}
   .stat .n{font-size:clamp(20px,5.4vw,30px)}
