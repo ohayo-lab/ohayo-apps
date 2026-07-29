@@ -1508,7 +1508,10 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
         <span class="go">Browse on Etsy<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-    <a class="card" href="https://www.amazon.com/s?k=OHAYO+NIHONGO+Diary+Reader" target="_blank" rel="noopener" data-oa-event="buy_amazon">
+    <!-- 【2026-07-29】amazon.com の検索リンク（米国固定）→ /go/amazon/ へ。
+         ブラウザ言語で各国ストア（co.jp/co.uk/de/fr/ca/com.au/it/es・既定.com）へ振り分ける。
+         日本や欧州の読者が自国で買えなかった問題の解消。buy_amazon の計測は不変。 -->
+    <a class="card" href="/go/amazon/" target="_blank" rel="noopener" data-oa-event="buy_amazon">
       <div class="pv pv-kdp">
         <span class="kdp-tag">The diary, now in print</span>
         <!-- 2026-07-29: 実表紙6枚（/img/lp/kdp/*.jpg）を撤去し、背表紙6本のCSS図版へ。
