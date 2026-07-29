@@ -19,30 +19,32 @@
     { href: "/#shop",   label: "The Shelf", jp: "ほんだな" },
   ];
 
+  /* 【2026-07-29】LPの .nav-burger / ナビと同じ画材に統一（旧は白地＋水色枠＝旧デザインの名残で、
+     LPから下層へ移動すると別サイトのメニューに見えた）。紙 #FCF7EC・砂色の罫 #E4D9C2・墨 #1C3446。 */
   var css = ""
-    + "#ohMenuBtn{position:fixed;top:14px;right:14px;z-index:99999;width:44px;height:44px;"
+    + "#ohMenuBtn{position:fixed;top:7px;right:14px;z-index:99999;width:44px;height:44px;"
     + "display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;"
-    + "background:rgba(255,255,255,.94);border:1px solid #CFE3EF;border-radius:12px;cursor:pointer;"
-    + "box-shadow:0 4px 14px rgba(19,75,112,.18);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:0}"
-    + "#ohMenuBtn span{display:block;width:20px;height:2px;border-radius:2px;background:#134B70;transition:.25s}"
+    + "background:rgba(252,247,236,.96);border:1px solid #E4D9C2;border-radius:12px;cursor:pointer;"
+    + "box-shadow:0 4px 14px rgba(28,52,70,.16);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);padding:0}"
+    + "#ohMenuBtn span{display:block;width:20px;height:2px;border-radius:2px;background:#1C3446;transition:.25s}"
     + "#ohMenuBtn.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}"
     + "#ohMenuBtn.open span:nth-child(2){opacity:0}"
     + "#ohMenuBtn.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}"
-    + "#ohMenuOv{position:fixed;inset:0;z-index:99998;background:rgba(16,44,72,.28);opacity:0;"
+    + "#ohMenuOv{position:fixed;inset:0;z-index:99998;background:rgba(28,52,70,.26);opacity:0;"
     + "pointer-events:none;transition:opacity .2s}"
     + "#ohMenuOv.open{opacity:1;pointer-events:auto}"
-    + "#ohMenuPanel{position:fixed;top:66px;right:14px;z-index:99999;min-width:210px;"
-    + "background:#fff;border:1px solid #CFE3EF;border-radius:14px;padding:8px;"
-    + "box-shadow:0 12px 34px rgba(19,75,112,.24);transform:translateY(-8px) scale(.98);"
+    + "#ohMenuPanel{position:fixed;top:59px;right:14px;z-index:99999;min-width:210px;"
+    + "background:#FCF7EC;border:1px solid #E4D9C2;border-radius:14px;padding:8px;"
+    + "box-shadow:0 12px 34px rgba(28,52,70,.22);transform:translateY(-8px) scale(.98);"
     + "opacity:0;pointer-events:none;transform-origin:top right;transition:transform .18s,opacity .18s}"
     + "#ohMenuPanel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}"
     + "#ohMenuPanel a{display:flex;align-items:baseline;justify-content:space-between;gap:14px;"
-    + "text-decoration:none;padding:11px 14px;border-radius:10px;color:#1C1C1C;"
+    + "text-decoration:none;padding:11px 14px;border-radius:10px;color:#1C3446;"
     + "font-family:'DM Sans','Noto Sans JP',sans-serif;font-weight:700;font-size:14px;letter-spacing:.02em}"
     + "#ohMenuPanel a .jp{font-family:'Noto Sans JP',sans-serif;font-weight:400;font-size:11px;color:#5F6E77}"  /* 旧#8AA0B2は白地で2.71:1＝AA未達（2026-07-29実測）。5.9:1へ */
-    + "#ohMenuPanel a:hover{background:#F1F7FC}"
-    + "#ohMenuPanel a.active{background:#134B70;color:#fff}"
-    + "#ohMenuPanel a.active .jp{color:#BFE6F9}"
+    + "#ohMenuPanel a:hover{background:#F6F0E2}"
+    + "#ohMenuPanel a.active{background:#1C3446;color:#fff}"
+    + "#ohMenuPanel a.active .jp{color:#B9C6CF}"
     + "@media print{#ohMenuBtn,#ohMenuOv,#ohMenuPanel{display:none!important}}";
 
   var style = document.createElement("style");
