@@ -66,23 +66,142 @@ a{color:inherit;text-decoration:none}
   font-size:13px;font-weight:700;color:var(--ink);border-bottom:1.5px solid var(--verm);padding-bottom:1px}
 .card .go svg{width:13px;height:13px}
 
-/* ミニ図版（CSS図形のみ・写真と絵文字は使わない＝アイコン正典） */
-.kg{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;width:100%;max-width:186px}
-.kg i{display:flex;align-items:center;justify-content:center;height:26px;border-radius:6px;
-  background:#fff;border:1px solid var(--paper-edge);font-family:var(--jp);
-  font-size:13px;font-weight:500;font-style:normal;color:var(--ink)}
-.kg i.on{background:var(--verm);border-color:var(--verm);color:#fff}
-.drop{display:flex;align-items:flex-end;justify-content:center;gap:8px;width:100%;height:100%}
-.drop i{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
-  border-radius:8px;background:#fff;border:1px solid var(--paper-edge);
-  font-family:var(--jp);font-size:15px;font-style:normal;color:var(--ink)}
-.drop i:nth-child(1){transform:translateY(-26px)}
-.drop i:nth-child(2){transform:translateY(-10px)}
-.drop i:nth-child(3){background:var(--amber);border-color:var(--amber)}
-.sb{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;max-width:200px}
-.sb i{font-style:normal;font-family:var(--jp);font-size:12px;padding:5px 9px;border-radius:7px;
-  background:#fff;border:1px solid var(--paper-edge);color:var(--ink)}
-.sb i.slot{border-style:dashed;color:var(--ink-faint);min-width:44px;text-align:center}
+/* ===== ミニ図版：LPと同じ習作の図版をそのまま使う（2026-07-26）=====
+   自作の簡易図形をやめ、LPの棚と同一の画材に揃える。写真・絵文字は使わない。 */
+.card-shot{height:150px;position:relative;overflow:hidden;border-bottom:1px solid var(--paper-edge);background:var(--paper)}
+.envshot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:14px}
+.envshot svg{width:100%;max-width:190px;height:auto;display:block}
+.fc{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.fc-card{width:76%;height:70%;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 18px -10px rgba(28,52,70,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(-2deg)}
+.fc-card .b{font-family:var(--jp-serif);font-size:26px;color:var(--ink)}
+.fc-card .s{font-size:11px;color:var(--ink-faint);margin-top:4px}
+.packshot{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:12px;padding:0 18px}
+.packshot .doc{width:64px;height:86px;background:var(--paper-2);border:1px solid var(--line);border-radius:5px;padding:10px 9px;display:flex;flex-direction:column;gap:5px;transform:rotate(-3deg);box-shadow:0 8px 16px -12px rgba(28,52,70,.5)}
+.packshot .doc i{display:block;height:2px;background:var(--line);border-radius:2px}
+.packshot .doc i:nth-child(1){width:80%;background:var(--ink);opacity:.5}
+.packshot .doc i:nth-child(4){width:56%;background:var(--amber)}
+.packshot .bars{display:flex;align-items:center;gap:3.5px;height:56px}
+.packshot .bars span{width:3.5px;background:var(--verm);border-radius:2px;opacity:.78}
+.doc{width:64px;height:86px;background:var(--paper-2);border:1px solid var(--line);border-radius:5px;padding:10px 9px;display:flex;flex-direction:column;gap:5px;transform:rotate(-3deg);box-shadow:0 8px 16px -12px rgba(28,52,70,.5)}
+.doc i{display:block;height:2px;background:var(--line);border-radius:2px}
+.bars{display:flex;align-items:center;gap:3.5px;height:56px}
+.bars span{width:3.5px;background:var(--verm);border-radius:2px;opacity:.78}
+.mshot{position:absolute;inset:0;padding:16px}
+.bookshot{position:absolute;inset:0;display:flex;align-items:flex-end;justify-content:center;gap:5px;padding:0 18px}
+.bookshot .bk{
+  position:relative;width:36px;border-radius:4px 4px 0 0;
+  background:var(--amber);border:1px solid var(--verm-ink);border-bottom:none;
+}
+.bookshot .bk::after{
+  content:"";position:absolute;left:5px;right:5px;height:1px;background:rgba(28,52,70,.26);
+}
+.bookshot .bk::before{top:13px}
+.bookshot .bk::after{top:19px;opacity:.6}
+.bookshot .bk i{
+  position:absolute;left:9px;right:9px;bottom:14px;height:12px;
+  border:1px solid rgba(28,52,70,.22);border-radius:2px;
+}
+.bookshot .bk:nth-child(1){height:76%}
+.bookshot .bk:nth-child(2){height:88%;background:var(--paper-2);border-color:var(--line)}
+.bookshot .bk:nth-child(3){height:97%}
+.bookshot .bk:nth-child(4){height:82%;background:var(--ink);border-color:var(--ink)}
+.bookshot .bk:nth-child(4)::after{background:rgba(246,240,226,.42)}
+.bookshot .bk:nth-child(4) i{border-color:rgba(246,240,226,.34)}
+.bookshot .bk:nth-child(5){height:91%;background:var(--paper-2);border-color:var(--line)}
+.bk{
+  position:relative;width:36px;border-radius:4px 4px 0 0;
+  background:var(--amber);border:1px solid var(--verm-ink);border-bottom:none;
+}
+.bk::after{
+  content:"";position:absolute;left:5px;right:5px;height:1px;background:rgba(28,52,70,.26);
+}
+.bk::before{top:13px}
+.bk::after{top:19px;opacity:.6}
+.bk i{
+  position:absolute;left:9px;right:9px;bottom:14px;height:12px;
+  border:1px solid rgba(28,52,70,.22);border-radius:2px;
+}
+.bk:nth-child(1){height:76%}
+.bk:nth-child(2){height:88%;background:var(--paper-2);border-color:var(--line)}
+.bk:nth-child(3){height:97%}
+.bk:nth-child(4){height:82%;background:var(--ink);border-color:var(--ink)}
+.bk:nth-child(4)::after{background:rgba(246,240,226,.42)}
+.bk:nth-child(4) i{border-color:rgba(246,240,226,.34)}
+.bk:nth-child(5){height:91%;background:var(--paper-2);border-color:var(--line)}
+.newsshot{position:absolute;inset:0;padding:20px 26px;display:flex;flex-direction:column;justify-content:center;gap:9px}
+.newsshot .jpline{font-family:var(--jp-serif);font-size:15px;color:var(--ink)}
+.newsshot .enline{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-soft)}
+.newsshot .rule{height:1px;background:var(--line)}
+.newsshot .dot{width:18px;height:2px;background:var(--verm);border-radius:2px}
+.jpline{font-family:var(--jp-serif);font-size:15px;color:var(--ink)}
+.enline{font-family:var(--serif);font-style:italic;font-size:14px;color:var(--ink-soft)}
+.feature-shot{position:relative;min-height:230px;background:var(--paper);border-right:1px solid var(--paper-edge);overflow:hidden}
+.feature-shot{min-height:190px;border-right:0;border-bottom:1px solid var(--paper-edge)}
+.chapters{position:absolute;inset:0}
+.chapters .ch{
+  position:absolute;left:50%;top:50%;width:124px;height:168px;margin:-84px 0 0 -62px;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 10px 22px -14px rgba(28,52,70,.5);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+}
+.chapters .c1{transform:rotate(-14deg) translateX(-62px)}
+.chapters .c2{transform:rotate(-5deg) translateX(-22px)}
+.chapters .c3{transform:rotate(7deg) translateX(26px);background:var(--paper-2);border-color:var(--verm-ink);box-shadow:0 14px 30px -12px rgba(160,45,25,.45)}
+.chapters .ch .no{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:.14em;color:var(--ink-faint)}
+.chapters .c3 .no{color:var(--verm-ink)}
+.chapters .ch .jp{font-family:var(--jp-serif);font-size:19px;color:var(--ink)}
+.chapters .ch .rule{width:52px;height:1px;background:var(--line)}
+.chapters .ch .pickB{width:64px;height:7px;border-radius:4px;background:var(--line)}
+.chapters .ch .pickB{width:48px}
+.chapters .c3 .pickA{background:var(--verm)}
+.ch{
+  position:absolute;left:50%;top:50%;width:124px;height:168px;margin:-84px 0 0 -62px;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:10px;
+  box-shadow:0 10px 22px -14px rgba(28,52,70,.5);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;
+}
+.quest{position:absolute;inset:0;overflow:hidden}
+.quest .sky{position:absolute;inset:0;background:linear-gradient(180deg,rgba(231,178,78,.16),rgba(246,240,226,0) 70%)}
+.quest .sun{position:absolute;right:20px;top:16px;width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 50% 45%,var(--amber),var(--verm));box-shadow:0 0 0 6px rgba(231,178,78,.18)}
+.quest .ground{position:absolute;left:0;right:0;bottom:20px;height:2px;background:var(--line)}
+.quest .plat{position:absolute;bottom:22px;width:34px;height:30px;border:1px solid var(--line);border-radius:7px;background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-family:var(--jp-serif);font-size:16px;color:var(--ink)}
+.quest .p1{left:22px}
+.quest .p2{left:70px;bottom:56px;background:var(--verm);border-color:var(--verm-ink);color:#FDF4EA}
+.quest .p3{left:118px}
+.quest .arc{position:absolute;inset:0;color:var(--verm-ink)}
+.quest .arc svg{width:100%;height:100%;display:block}
+.drop{position:absolute;inset:0;overflow:hidden}
+.drop .fk{position:absolute;width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--paper-2);display:flex;align-items:center;justify-content:center;font-family:var(--jp-serif);font-size:16px;color:var(--ink)}
+.drop .f1{left:24px;top:14px}
+.drop .f2{left:74px;top:44px;background:var(--verm);border-color:var(--verm-ink);color:#FDF4EA}
+.drop .f3{left:126px;top:22px}
+.drop .trail{position:absolute;width:1px;background:linear-gradient(180deg,rgba(198,59,34,0),rgba(198,59,34,.35))}
+.drop .t1{left:39px;top:44px;height:34px}
+.drop .t2{left:89px;top:74px;height:20px}
+.drop .t3{left:141px;top:52px;height:44px}
+.drop .catcher{position:absolute;left:50px;bottom:18px;width:72px;height:9px;border-radius:5px;background:var(--ink)}
+.build{position:absolute;inset:0;padding:18px;display:flex;flex-direction:column;gap:8px;justify-content:center}
+.build .chip{align-self:flex-start;font-family:var(--jp-sans);font-size:12.5px;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);border-radius:20px;padding:5px 12px}
+.build .chip.on{background:var(--verm);border-color:var(--verm-ink);color:#FDF4EA}
+.build .slot{display:flex;gap:6px;margin-top:4px}
+.build .slot i{display:block;width:34px;height:2px;background:var(--line);border-radius:2px}
+.build .slot i:first-child{background:var(--verm)}
+.chip{align-self:flex-start;font-family:var(--jp-sans);font-size:12.5px;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);border-radius:20px;padding:5px 12px}
+.chip.on{background:var(--verm);border-color:var(--verm-ink);color:#FDF4EA}
+.trail{position:absolute;width:1px;background:linear-gradient(180deg,rgba(198,59,34,0),rgba(198,59,34,.35))}
+.pickA{background:var(--verm)}
+.pickB{width:64px;height:7px;border-radius:4px;background:var(--line)}
+.pickB{width:48px}
+.no{font-family:var(--serif);font-size:13px;font-weight:600;letter-spacing:.14em;color:var(--ink-faint)}
+.no{color:var(--verm-ink)}
+.rule{height:1px;background:var(--line)}
+.rule{width:52px;height:1px;background:var(--line)}
+
+/* 図版ゾーンの器。LPの .cardart と同一仕様。
+   【重要】position:relative と固定 height が必須。習作の図版は position:absolute;inset:0 で
+   器を基準にしているので、relative が無いとページ全体に広がって壊れる。 */
+.cardart{position:relative;height:150px;overflow:hidden;
+  border-bottom:1px solid var(--paper-edge);background:var(--paper)}
 
 /* 締め */
 .tail{padding:56px 0 64px;text-align:center}
@@ -109,13 +228,20 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline}
   <div class="grid">
 
     <a class="card" href="/play/kana-quest/" data-oa-event="play_game">
-      <div class="art">
-        <div class="kg" aria-hidden="true">
-          <i>あ</i><i class="on">き</i><i>く</i><i>け</i>
-          <i>さ</i><i>し</i><i class="on">す</i><i>そ</i>
-          <i class="on">た</i><i>ち</i><i>つ</i><i>と</i>
-        </div>
-      </div>
+      <div class="cardart"><div class="quest" aria-hidden="true">
+            <span class="sky"></span>
+            <span class="sun"></span>
+            <span class="ground"></span>
+            <span class="plat p1">あ</span>
+            <span class="plat p2">き</span>
+            <span class="plat p3">ら</span>
+            <span class="arc">
+              <svg viewBox="0 0 190 150" fill="none" preserveAspectRatio="none">
+                <path d="M46 108C58 66 76 58 88 58" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 5" opacity=".8"/>
+                <path d="M104 58C118 60 132 76 140 104" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 5" opacity=".45"/>
+              </svg>
+            </span>
+          </div></div>
       <div class="body">
         <span class="tag">Play &middot; Browser game</span>
         <h3>Kana Quest</h3>
@@ -125,9 +251,13 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline}
     </a>
 
     <a class="card" href="/play/kana-drop/" data-oa-event="play_game">
-      <div class="art">
-        <div class="drop" aria-hidden="true"><i>あ</i><i>き</i><i>ら</i></div>
-      </div>
+      <div class="cardart"><div class="drop" aria-hidden="true">
+            <span class="trail t1"></span><span class="trail t2"></span><span class="trail t3"></span>
+            <span class="fk f1">あ</span>
+            <span class="fk f2">き</span>
+            <span class="fk f3">ら</span>
+            <span class="catcher"></span>
+          </div></div>
       <div class="body">
         <span class="tag">Play &middot; Browser game</span>
         <h3>Kana Drop</h3>
@@ -137,9 +267,12 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline}
     </a>
 
     <a class="card" href="/play/sentence-builder/" data-oa-event="play_game">
-      <div class="art">
-        <div class="sb" aria-hidden="true"><i>今朝は</i><i>コーヒーを</i><i>飲みました</i><i class="slot"></i></div>
-      </div>
+      <div class="cardart"><div class="build" aria-hidden="true">
+            <span class="chip">今朝は</span>
+            <span class="chip on">コーヒーを</span>
+            <span class="chip">飲みました</span>
+            <span class="slot"><i></i><i></i><i></i></span>
+          </div></div>
       <div class="body">
         <span class="tag">Play &middot; Browser game</span>
         <h3>Sentence Builder</h3>
@@ -155,7 +288,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline}
   <span class="kicker"><span class="dash"></span>Tomorrow morning<span class="dash"></span></span>
   <h2 class="h2">Come back for <em>one line</em>.<br>That&rsquo;s the whole habit.</h2>
   <p class="note">Free to start &middot; nothing to install &middot; a new diary every morning from Tokyo</p>
-  <p class="backline" style="margin-top:22px"><a href="/#read">&larr; Read today&rsquo;s diary</a></p>
+  <p class="backline" style="margin-top:22px"><a href="/#read" data-oa-event="play_to_lp">&larr; Read today&rsquo;s diary</a></p>
 </div></section>
 
 <footer>
@@ -165,7 +298,8 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline}
       <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
       <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
       <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
-      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Substack</a>
+      <!-- Starter Pack が Coming soon の間の唯一の生きた購読導線。計測を付ける（2026-07-29） -->
+      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">Substack</a>
       <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener" data-oa-event="buy_etsy">Etsy</a>
     </div>
     <p>New diary every morning on Spotify &amp; YouTube &mdash; &ldquo;OHAYO NIHONGO&rdquo;</p>

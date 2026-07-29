@@ -351,11 +351,15 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
     <div class="complete-sub">You've tried all 5 sample sentences.<br>Get the full 10-card sets to keep learning!</div>
     <div class="complete-divider"></div>
     <a class="complete-cta" href="https://ohayonihongodaily.etsy.com/?section_id=58431109" target="_blank" rel="noopener" data-oa-event="buy_etsy">Get the full 10-card sets on Etsy</a>
-    <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial">
+    <!-- Starter Pack は配布準備中（LP / method / my-flashcards と同じ扱い）。
+         トライアル完走直後＝最も濃い層をこの壊れた導線に流していた（2026-07-29 公開前検品）。
+         配布開始時は style / aria-disabled / tabindex の3つを外し、ラベルを元へ戻すだけ。
+         data-oa-event は温存（属性を消すとGA4の履歴が切れる）。 -->
+    <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial" style="pointer-events:none" aria-disabled="true" tabindex="-1">
       <span class="pk-l">The morning invitation</span>
       <span class="pk-t">7-Day <i>Starter</i> Pack</span>
       <span class="pk-s">7 mornings, free to your inbox</span>
-      <span class="pk-b">Get it free &rarr;</span>
+      <span class="pk-b"><!-- 元: Get it free &rarr; -->Coming soon</span>
     </a>
     <a class="complete-back" href="/my-flashcards/">&larr; Back to the flashcard shelf</a>
     
@@ -864,6 +868,10 @@ loadCard();
 .packcta .pk-s{display:block;font-size:10.5px;color:#5A7183;margin-top:3px}
 .packcta .pk-b{display:inline-block;margin-top:9px;font-size:12px;font-weight:800;color:#fff;
   background:linear-gradient(135deg,#F7A928,#F08114);border-radius:999px;padding:7px 14px}
+/* Coming soon の見た目。塗り→枠線で「まだ押せない」を形で示す（2026-07-29検品）。
+   このページは朱パレット変数を持たない旧配色なので、上の塗りと同系の #F08114 を直書きする。 */
+[aria-disabled="true"]{opacity:.72}
+.packcta[aria-disabled="true"] .pk-b{background:none;border:1.5px solid #F08114;color:#C4600A}
 .btn-restart{order:7 !important;margin-top:10px !important;margin-bottom:0 !important}
 .complete-back{order:8 !important;margin:12px 0 0 !important}
 .clinks-primary{order:9;display:grid !important;grid-template-columns:repeat(2,108px) !important;justify-content:center;gap:20px 10px;width:100%;margin:40px 0 0 !important}

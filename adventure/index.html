@@ -13,6 +13,11 @@
 <title>Diary Adventure — Story Map｜OHAYO NIHONGO</title>
 <meta name="description" content="Branching Japanese-learning stories made from real Tokyo diary episodes. Play Chapter 1 free — unlock Season 1 and the Specials in-game.">
 <meta name="theme-color" content="#134B70">
+<!-- 額縁（ブランド行・フッター）だけ下層ページと同じ DM Sans に揃える。
+     本文・ヒーロー・章カードは従来の system sans（--sans）のまま＝世界観は無変更。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <script src="./adventure_config.js"></script>
 <style>
 .ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
@@ -25,23 +30,35 @@
   --navy:#134B70; --ocean:#1F72A8; --sky:#BFE6F9; --sun:#F7A928; --sun2:#F08114;
   --ink:#22384A; --cream:#FFFDF7;
   --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium",sans-serif;
+  /* ── 額縁（上辺のブランド行／下辺のフッター）専用トークン。値は /play/・/method/ と同一。
+     ここから下のグラデ・章カード・演出のトークン（--navy 〜 --cream）は一切書き換えていない ── */
+  --verm:#C63B22; --paper:#F6F0E2; --paper-edge:#ECE3D0; --foot-navy:#1C3446;
+  --ui:'DM Sans','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
 }
 html{background:#0D2E47}
 body{font-family:var(--sans);min-height:100vh;
   background:linear-gradient(180deg,#0F3555 0%,#1F72A8 42%,#7FB9D9 68%,#F4D98B 88%,#F7A928 100%) fixed;
-  display:flex;justify-content:center}
-.wrap{width:100%;max-width:520px;padding:26px 18px calc(env(safe-area-inset-bottom,0px) + 40px)}
+  display:flex;flex-direction:column;align-items:center}
+/* flex:1 0 auto = 額縁の下辺（footer）を必ずビューポート下端以降に置くための伸びしろ。
+   コンテンツが画面より高い実機ではこれまでと完全に同じ見え方（内側の世界観は無変更）。 */
+.wrap{width:100%;max-width:520px;flex:1 0 auto;padding:26px 18px calc(env(safe-area-inset-bottom,0px) + 40px)}
 
 @keyframes tagBlink{0%,100%{opacity:1}50%{opacity:.55}}
 @keyframes pulseBtn{0%,100%{transform:scale(1);box-shadow:0 10px 28px rgba(240,129,20,.5)}50%{transform:scale(1.03);box-shadow:0 14px 36px rgba(240,129,20,.7)}}
 @keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 
+/* ═══ 額縁・上辺 ═══
+   ブランド行を下層ページ（/play/ の .brand）と同じ作法にする：朱 #C63B22・大文字・字間.2em・12px/800。
+   紙地の帯に載せるのは、直下の紺グラデが商品そのもの＝触れないため。朱を紺に直に置くと約2:1で読めない。
+   帯＝額縁の上辺として紙地を敷き、世界観はその内側に無傷のまま収める。
+   自前のハンバーガーは置かない（menu.js の #ohMenuBtn と二重化する。下層ページ共通の作法）。 */
+.frame-top{width:100%;background:var(--paper);border-bottom:1px solid var(--paper-edge)}
+.frame-top .frame-in{max-width:520px;margin:0 auto;padding:0 18px}
+.brand{display:inline-block;margin:26px 0 24px;font-family:var(--ui);font-size:12px;font-weight:800;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--verm);text-decoration:none}
+
 /* header */
 .head{text-align:center;margin-bottom:20px}
-.h-logo{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.3em;color:#FFEFC9;text-transform:uppercase;
-  background:rgba(13,46,71,.5);border:1px solid rgba(255,239,201,.35);border-radius:999px;
-  padding:7px 16px;margin-bottom:12px;backdrop-filter:blur(6px)}
-.h-logo a{color:inherit;text-decoration:none}
 .h-kicker{font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:#FFD97A;
   margin-bottom:6px;animation:tagBlink 2.6s ease-in-out infinite}
 h1{font-size:34px;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 3px 16px rgba(9,30,48,.5)}
@@ -141,8 +158,19 @@ h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
 .tease b{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
 .tease span{display:block;font-size:10.5px;color:rgba(255,239,201,.85);margin-top:5px;line-height:1.6}
 
-.foot{text-align:center;margin-top:26px;font-size:10px;color:rgba(13,46,71,.75)}
-.foot a{color:#134B70;font-weight:800}
+/* ═══ 額縁・下辺 ═══
+   /play/・/method/ の紺フッターと同じ作法（紺地・白文字・SNSリンク並び・Legal）に揃える。
+   文言は既存のまま（新規コピーは書いていない）。旧 .foot は夜明けオレンジの上に小さな紺文字で、
+   他ページと作法が食い違っていた。 */
+footer{width:100%;background:var(--foot-navy);color:rgba(255,255,255,.78);font-family:var(--ui);
+  text-align:center;font-size:12.5px;line-height:1.6;
+  padding:34px 0 calc(env(safe-area-inset-bottom,0px) + 40px)}
+footer .frame-in{max-width:520px;margin:0 auto;padding:0 18px}
+footer .soc{display:flex;flex-wrap:wrap;justify-content:center;gap:18px;margin-bottom:14px;font-weight:700}
+footer .soc a{color:#fff;text-decoration:none}
+footer p{margin:5px 0}
+footer p a{color:#fff;font-weight:700;text-decoration:none}
+footer .legal{color:rgba(255,255,255,.8);font-weight:400;text-decoration:underline}
 
 /* modal */
 .ovl{position:fixed;inset:0;z-index:50;background:rgba(7,24,39,.7);backdrop-filter:blur(4px);
@@ -188,10 +216,13 @@ h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
 </style>
 </head>
 <body>
+
+<!-- 額縁・上辺：下層ページ共通のブランド行（朱・大文字・字間.2em）。ハンバーガーは menu.js 側 -->
+<div class="frame-top"><div class="frame-in"><a class="brand" href="https://www.ohayonihongo.net/">OHAYO NIHONGO</a></div></div>
+
 <div class="wrap">
 
   <div class="head">
-    <div class="h-logo"><a href="https://www.ohayonihongo.net/">OHAYO <span style="color:#FFD97A">NIHONGO</span></a></div>
     <div class="h-kicker">— Diary Text Adventure —</div>
     <h1>Story <em>Map</em></h1>
     <div class="h-sub">Branching mornings made from real Tokyo diary episodes.<br>きょうは どの あさを 生きる？</div>
@@ -202,7 +233,7 @@ h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
   </div>
 
   <div class="sec"><b>Chapter 1 · Free</b><i></i></div>
-    <a class="feat" href="../adventure-wyog1/" data-oa-event="play_game">
+    <a class="feat" href="../adventure-wyog1/" data-oa-event="start_adventure_free">
     <span class="tile">1</span>
     <span><span class="fl">Free · Start here</span><b>Winter Morning</b><span class="tg">Chapter 1 · How will you spend a 1°C morning?</span></span>
     <span class="go ico-play" aria-hidden="true"></span>
@@ -266,15 +297,29 @@ h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
     <div style="font-size:11px; letter-spacing:.28em; text-transform:uppercase; color:var(--oa-gold, #B98F2F); margin-bottom:10px;">Email &middot; Free</div>
     <h3 style="margin:0 0 10px; font-family:'Cormorant Garamond', Georgia, 'Times New Roman', serif; font-weight:600; font-size:clamp(22px, 6vw, 26px); color:var(--oa-heading, #1C1C1C); letter-spacing:.01em;"><span class="ico ico-sun" aria-hidden="true"></span> Morning letters from Tokyo</h3>
     <p style="margin:0 auto 18px; max-width:420px; font-size:14px; color:var(--oa-sub, #4A4A4A);">Get a note when a new morning-diary episode is out &mdash; plus small tips to make your Japanese practice stick.</p>
-    <a href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" data-oa-event="email_signup" style="display:inline-block; box-sizing:border-box; max-width:100%; padding:12px 30px; background:var(--oa-navy, #134B70); color:#FFFFFF; font-size:14px; font-weight:600; letter-spacing:.04em; text-decoration:none; border-radius:48px; white-space:nowrap;">Subscribe free</a>
+    <a href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list&amp;utm_content=adventure_footer" data-oa-event="email_signup" style="display:inline-block; box-sizing:border-box; max-width:100%; padding:12px 30px; background:var(--oa-navy, #134B70); color:#FFFFFF; font-size:14px; font-weight:600; letter-spacing:.04em; text-decoration:none; border-radius:48px; white-space:nowrap;">Subscribe free</a>
     <div style="margin-top:10px; font-size:12px; color:var(--oa-sub, #4A4A4A);">No spam. Unsubscribe anytime.</div>
   </div>
 
-  <div class="foot">
-    Every path is a real diary episode. New episode every morning.<br>
-    © 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/">ohayonihongo.net</a>
-  </div>
 </div>
+
+<!-- 額縁・下辺：play/method と同じ紺フッター（構成・リンク並びを踏襲・文言は従来のまま） -->
+<footer>
+  <div class="frame-in">
+    <div class="soc">
+      <a href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener">Spotify</a>
+      <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
+      <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
+      <!-- Starter Pack が Coming soon の間の唯一の生きた購読導線。計測を付ける（2026-07-29） -->
+      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">Substack</a>
+      <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener" data-oa-event="buy_etsy">Etsy</a>
+    </div>
+    <p>Every path is a real diary episode. New episode every morning.</p>
+    <p>© 2026 OHAYO NIHONGO · <a href="https://www.ohayonihongo.net/">ohayonihongo.net</a></p>
+    <p style="margin-top:8px"><a class="legal" href="/legal/">特定商取引法に基づく表記 / Legal</a></p>
+  </div>
+</footer>
 
 <!-- PRICE MODAL -->
 <div class="ovl" id="ovl" onclick="if(event.target===this)closeModal()">

@@ -28,6 +28,11 @@
   --verm:#C63B22; --verm-ink:#A02D19; --amber:#E7B24E;
   --paper:#F6F0E2; --paper-2:#FCF7EC; --paper-edge:#ECE3D0;
   --ink:#1C3446; --ink-soft:#4B5F6D; --ink-faint:#8A98A0;
+  /* --ink-quiet：本文級の小さい説明文で --ink-faint の代わりに使う「読ませる薄墨」。
+     --ink-faint(#8A98A0) は紙地で実測2.6〜2.8:1しか出ず、主読者（35〜59歳）には
+     読めない灰色だった（2026-07-29 公開前検品）。装飾的な線・記号には --ink-faint を
+     残し、読ませる文字はこちらへ寄せる。 */
+  --ink-quiet:#5F6E77;
   --line:#E4D9C2;
   /* 旧名 → 新パレットの写像 */
   --sun:var(--verm); --sun-deep:var(--verm-ink); --sun-hot:var(--verm);
@@ -203,12 +208,6 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
 .panel-wide{width:340px}
 
 /* ===== 各パネルの「絵」 ===== */
-.pv-kq{background:url("/img/lp/bg_sunrise_meadow_hd.jpg") center 30%/cover}
-.pv-kq .kq-logo{position:absolute;top:12px;left:50%;transform:translateX(-50%);width:78%;filter:drop-shadow(0 3px 8px rgba(60,30,0,.3))}
-.pv-kq .kq-char{position:absolute;bottom:-6px;left:10px;width:88px;filter:drop-shadow(0 6px 10px rgba(60,30,0,.32))}
-.pv-kq .kq-cta{position:absolute;bottom:12px;right:12px;background:linear-gradient(180deg,#FFD35C,#F7AE22);
-  color:#1C1C1C;font-weight:800;font-size:12px;padding:8px 14px;border-radius:12px;box-shadow:0 3px 0 #DE9E1E;
-  display:inline-flex;align-items:center;gap:6px}
 .pv-sb{background:url("/img/lp/sb_bg_main.jpg") center 78%/cover;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:14px;overflow:hidden}
 /* 06のゲームパネルは3列に並ぶため、幅が狭いと固定pxの中身が収まらず潰れる。
    コンテナ幅に追従する単位にして、狭い時は自動で小さくなるようにする（2026-07-21実測で判明） */
@@ -240,29 +239,37 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
 .kd-g1{left:16px;bottom:34px;transform:rotate(-10deg)}
 .kd-g2{left:50%;bottom:12px;transform:translateX(-50%) rotate(6deg)}
 .kd-g3{right:16px;bottom:44px;transform:rotate(14deg)}
-.pv-fc{background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 34%,#FFF0CE 72%,#FFDFA8 100%);
-  display:block;padding:0;overflow:hidden}
-/* 端末は下がパネルからはみ出して切れるのが正（.panel の overflow:hidden で切る）。
-   小さく収めると縦横比が玩具のように見えるため、実機に近い比率のまま大きく置く。
-   中身は小さくて読めないので、january版のスクショで問題ない（2026-07-21オーナー確定）。
-   ※これは不具合ではないので「切れている」を理由に縮めないこと */
-/* 実機スクショは横長(1179x1967=1:1.67)、端末枠は1:1.81。
-   cover だと左右が削られてメニューやブランド名が欠けるので、幅を基準に合わせて下を切る。
-   上部（ブランド名・ストリーク・スピーカー）を必ず残すため object-position は top。 */
-/* 【重要】width:100% + aspect-ratio + height:auto にしないこと。
-   画像の高さが列幅に比例して伸び、520px幅では枠から82px溢れて下が切れ、
-   JLPT N5-N3 の行と機能チップが丸ごと消えていた（2026-07-21実測）。
-   その対策で枠の方を可変にしたら、今度は隣の Starter Pack パネルと天地が揃わなくなった。
-   正解は「枠は他パネルと同じ固定高のまま、画像は枠を高さ基準で埋める」。
-   元画像は 1360x672（2.02:1）なので、狭い列では縦は全部残り左右だけが切れる。 */
-.fc-art{position:absolute;inset:0;width:100%;height:100%;
-  object-fit:cover;object-position:left center}
-/* 左端に「10 real sentences」「JLPT N5-N3」の文頭があるので、切るのは右側にする。 */
+/* ===== 03 Learn：Flashcards ＝ 習作の「めくるカード」図版（2026-07-29）=====
+   2026-07-21 に置いた実機スクショ fcapp_real_v3.png を撤去した。
+   理由（design-director 一次検品／正典「LP指示書_棚以下のカード図版を習作に揃える_2026-07-26」§4）:
+   スクショだけが写真の手ざわりで、隣の Starter Pack（CSS作画のチケット）と画材が揃わない。
+   図版の型は /play/ の .fc-card と同型（束ねた紙＋表の1枚＋「tap to flip」）。
+   文言は図版内のみ（習作の確定文＝日本語1語＋tap to flip）。カード本体のコピーは不変。 */
+.pv-fc{background:linear-gradient(180deg,#EAF3F8 0%,#FBF4E6 58%,#F6E7C6 100%);
+  display:flex;align-items:center;justify-content:center;padding:0;overflow:hidden}
+/* 束の下敷き2枚。奥ほど薄く・回転を強くして「まだ何枚もある」を出す */
+.fc-deck{position:relative;width:58%;max-width:196px;aspect-ratio:1.42/1}
+.fc-deck .sheet{position:absolute;inset:0;background:var(--paper-2);
+  border:1px solid var(--paper-edge);border-radius:11px}
+.fc-deck .sheet.s1{transform:rotate(7deg) translate(9px,6px);opacity:.55}
+.fc-deck .sheet.s2{transform:rotate(3.2deg) translate(4px,3px);opacity:.8}
+/* 表の1枚。紙は --paper-2、縁は --line、影はカード共通のやわらかい影 */
+.fc-face{position:absolute;inset:0;background:var(--paper-2);border:1px solid var(--line);
+  border-radius:11px;transform:rotate(-2.2deg);
+  box-shadow:0 10px 20px -12px rgba(28,52,70,.45);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px}
+.fc-face .b{font-family:var(--jp-serif);font-weight:500;
+  font-size:clamp(22px,6.2cqw,29px);line-height:1;color:var(--ink)}
+/* 朱の短い罫＝他パネル（kicker のダッシュ・NO.番号）と同じアクセントの出し方 */
+.fc-face .rule{width:30px;height:1.5px;background:var(--verm);opacity:.85;border-radius:2px}
+.fc-face .s{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+  color:var(--ink-faint)}
+/* めくる動きは点線の弧＋朱の矢じり（絵文字・アイコンフォントは使わない） */
+/* 2026-07-29: めくる動きの点線の弧は不採用。カードの外に出すと迷い線に見え、
+   中に入れると「週末」に当たった（実測）。動きの説明は "tap to flip" の一語で足りる。 */
 .fc-badge{position:absolute;top:11px;right:11px;z-index:6;font-size:9px;font-weight:800;letter-spacing:.1em;
   text-transform:uppercase;color:#fff;background:var(--brand-navy);padding:4px 10px;border-radius:999px;
   box-shadow:0 3px 9px rgba(19,75,112,.32)}
-@media(max-width:600px){
-}
 /* ===== 05 Try：/adventure/ の Story Map をそのまま縮小
    Chapter 1 の無料カード＋その下のロック棚で「ひと口だけ本物を試せる」を絵で示す */
 .pv-adv{background:linear-gradient(180deg,#0F3555 0%,#1F72A8 42%,#7FB9D9 68%,#F4D98B 88%,#F7A928 100%);
@@ -314,66 +321,193 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
 .lbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;color:var(--gold);text-transform:uppercase}
 .kanji{font-family:var(--jp-serif);font-weight:700;font-size:15px;color:#1A1A1A;line-height:1.55}
 .en{font-family:var(--serif);font-style:italic;font-size:12.5px;color:#3E5468}
-.pod-btns{display:flex;justify-content:center;gap:7px;margin-top:6px}
-.pod-sp,.pod-yt{display:inline-flex;align-items:center;gap:5px;color:#fff;font-weight:700;font-size:11px;border-radius:999px;padding:7px 12px}
-.pod-sp{background:#1DB954}
-.pod-yt{background:#FF0000}
-/* ピルは見た目29px。指で確実に押せるよう、見た目を変えずに当たり判定だけ約47pxに広げる
-   （左右は隙間7pxを食い潰さないよう3pxまで） */
+/* Spotify / YouTube ピル（2026-07-28 差し替え）。
+   習作「全面リデザイン案_全6セクション_2026-07-25」の .listen-row / .listen-row a /
+   .listen-row .tri を等値移植（紙地 --paper-2 ＋ 罫線 --line ＋ 文字 --ink ＋ 朱の三角 --verm）。
+   旧実装はプラットフォームのブランド色（#1DB954 / #FF0000）の塗りつぶしで、紙の日記カードの
+   上で2つだけ「Webの部品」に見えていた。色は落とすがリンク自体は不変＝
+   href / data-oa-event（listen_spotify / watch_youtube）/ ラベル文言は絶対に触らない。 */
+.pod-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+.pod-sp,.pod-yt{font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);
+  border:1.5px solid var(--line);border-radius:22px;padding:8px 16px;
+  display:inline-flex;align-items:center;gap:8px;background:var(--paper-2)}
+.pod-sp:hover,.pod-yt:hover{border-color:var(--verm);color:var(--verm-ink)}
+/* 三角は currentColor 継承をやめて朱で固定（習作の .tri と同値）。文字は紺のまま */
+.pod-btns .ico-play{border-color:transparent transparent transparent var(--verm)}
+/* ピルは見た目およそ40px。指で確実に押せるよう、見た目を変えずに当たり判定だけ約46pxに広げる
+   （左右は隙間10pxを食い潰さないよう3pxまで） */
 .pod-btns a{position:relative}
-.pod-btns a::after{content:"";position:absolute;inset:-9px -3px;border-radius:999px}
-/* Today's diary: 2026-07-25 に海の写真＋白文字をやめ、紙のカードとして読ませる（習作 .doc-card の扱い）
-   ※ 本文は日次自動更新で長さが変わるため、行数クランプで額縁(168/156px)に必ず収める */
-.pv-today{background:var(--paper-2);
-  gap:2px;padding:10px 14px}
-/* クランプ後の行高を flex に潰させない（潰れると行が半分に切れる） */
-.pv-today > *{flex:0 0 auto}
-.pv-today .pod-sp,.pv-today .pod-yt{padding:6px 11px;font-size:10.5px}
-.pv-today .lbl{color:var(--verm-ink);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pv-today .kanji,.pv-today .hira,.pv-today .en{
-  display:-webkit-box;-webkit-box-orient:vertical;overflow:hidden;
-  /* 日本語は文字間で折り返させて行を埋める（keep-allだと読点の後で不自然に落ちる） */
-  word-break:normal;overflow-wrap:break-word;line-break:strict}
-.pv-today .kanji{color:var(--ink);font-size:15px;line-height:1.45;-webkit-line-clamp:2}
-.hira{font-family:var(--jp);font-size:11px;line-height:1.4;color:#4A6273}
-.pv-today .hira{color:var(--ink-soft);font-size:10.5px;-webkit-line-clamp:2}
-.pv-today .en{color:var(--ink-soft);font-size:11.5px;line-height:1.35;-webkit-line-clamp:1}
-.pv-today .pod-btns{margin-top:3px}
-.pv-today .pod-sp,.pv-today .pod-yt{box-shadow:0 3px 10px rgba(28,52,70,.22)}
+.pod-btns a::after{content:"";position:absolute;inset:-3px;border-radius:999px}
+/* ===== Today's diary ＝ 紙の日記カード（2026-07-28）=====
+   習作「全面リデザイン案_全6セクション_2026-07-25」の .doc-frame / .doc-tag / .doc-card を
+   そのまま移植。旧実装（.pv-today）は 168px の額縁に押し込むため行数クランプで英文を
+   「…」で切っていた。オーナー指示 7/27 で「習作のように」＝カードを本文の丈で伸ばし全文を出す。
+   【契約1】.lbl / .kanji / .hira / .en は毎晩 update_lp_today.py が LP_EXCERPT マーカーごと
+     書き換える契約クラス。クラス名を変えない・マーカーは文書内に1組だけ。
+   【契約2】セレクタ「.doc-date{」の存在が update_lp_today.py 側の安全ゲート＝
+     この額を持つLPにだけ NO.番号 と「— きょうの いっぷん」を差し込む。旧デザインのLPには
+     この定義が無いので従来と1バイトも変わらない。ゲート名を変えると日次更新が黙って止まる。
+   【契約3】本文の長さは日替わりで変わる。高さ固定・行数クランプを二度と入れないこと。 */
+.doc-frame{position:relative;padding-top:14px;min-width:0}
+/* タブはカード枠に被せる（額の外に立てない＝紙に貼った付箋の見え方） */
+.doc-tag{position:absolute;top:-14px;left:26px;z-index:3;
+  background:var(--ink);color:var(--paper);
+  font-size:11px;letter-spacing:.14em;text-transform:uppercase;font-weight:700;
+  padding:6px 13px;border-radius:6px;transform:rotate(-1.5deg);
+  box-shadow:0 4px 10px rgba(28,52,70,.2)}
+.doc-card{position:relative;background:var(--paper-2);border:1px solid var(--paper-edge);
+  border-radius:14px;padding:34px 30px 28px;transform:rotate(-.6deg);
+  box-shadow:0 22px 46px -20px rgba(28,52,70,.34),0 2px 0 var(--paper-edge)}
+/* ヘッダ行：朱の号数 ＋ 罫線 ＋ 右端に発行地。号数は毎晩スクリプトが差し替える */
+.doc-date{display:flex;align-items:center;gap:9px;margin-bottom:20px;
+  font-family:var(--sans);font-size:12px;letter-spacing:.05em;font-weight:500;
+  color:var(--ink-faint);text-transform:uppercase}
+.doc-date .num{color:var(--verm-ink);font-weight:700;flex:0 0 auto}
+.doc-date .ln{flex:1 1 auto;height:1px;background:var(--line);min-width:12px}
+/* keep-all＝「いっぷん」が語の途中で折れないように（320pxで実際に割れた） */
+.doc-card .lbl{display:block;font-size:10.5px;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--ink-faint);font-weight:700;margin-bottom:6px;word-break:keep-all}
+/* line-break:strict＝小書き仮名（ェ・っ）や句読点を行頭に落とさない。旧実装から継承 */
+.doc-card .kanji,.doc-card .hira{line-break:strict;word-break:normal;overflow-wrap:break-word}
+/* 【階層の転換・2026-07-29 オーナー決裁】旧: clamp(19px,2.5vw,25px)。
+   ここがLPの主役（読者24/24人がこれを読みに来る）。デスクトップで30pxまで上げる。
+   2値式（rem+vw）にしたのは、単一の vw 係数ではモバイルとデスクトップを同時に満たせないため。
+   実測: 375px=21px / 768px=25.2px / 1200px=30.0px / 1440px以上=31px（上限）。
+   モバイルの折返しを壊さない範囲での追従に留めている（375pxで19→21px＝+2px）。 */
+.doc-card .kanji{font-family:var(--jp-serif);font-weight:500;
+  font-size:clamp(18px,0.9rem + 0.95vw,26px);line-height:1.7;color:var(--ink);margin-bottom:18px}
+  /* 上限26px＝7/29オーナー確定（比較スクショ選定）。階層「一文>見出し」はグリフ実測で維持
+     （漢字26×0.83=21.6 > h2 32×0.655=21.0）。h2側の追随は .h2 のclamp上限2.0remとセット。 */
+/* ひらがな行は引用の体裁（左に琥珀の縦罫）＝漢字行との役割の違いを線で見せる */
+/* 2026-07-29: 14.5px → 16px（デスクトップのみ・モバイルは下の @media で13.5pxのまま）。
+   漢字行が25→30pxに上がった結果、同じ一文のかな読みが漢字の48%まで落ちて
+   「添え物」に見えたため、半分は超える位置へ戻す最小限の追従（30:16＝53%）。 */
+.doc-card .hira{font-family:var(--jp);font-size:15px;line-height:1.85;color:var(--ink-soft);
+  margin-bottom:18px;border-left:2px solid var(--amber);padding-left:14px}
+.doc-card .en{font-family:var(--serif);font-style:italic;font-size:19px;line-height:1.5;
+  color:var(--ink);letter-spacing:.005em}
+/* 「今日の一語」の意味を1行だけ添える（オーナーGO 2026-07-28）。
+   語＝朱ハイライトで塗った語と同一（update_lp_today.py の pick_todays_word が選んだ
+   month_data のタプルの第3要素＝検品済みの英義。ここで語義を発明しない）。
+   【契約4・安全ゲート】セレクタ「.dgloss{」の存在が update_lp_today.py 側の差し込み条件。
+     この定義を持たない旧デザインのLPには1バイトも入らない。ゲート名を改名しないこと。
+   ラベル文言（TODAY'S WORD 等）は置かない＝語・ダッシュ・英義だけで成立させる。
+   語彙データが無い日は行そのものが出ない（フェイル安全）。 */
+.dgloss{margin-top:12px;font-family:var(--sans);font-size:11.5px;line-height:1.5;
+  letter-spacing:.02em;color:var(--ink-quiet)}
+.dgloss .w{font-family:var(--jp);font-weight:700;color:var(--verm-ink)}
+/* 破線で本文と再生行を仕切る（罫線だとカードが2枚に割れて見える） */
+.doc-foot{display:flex;align-items:center;gap:9px;margin-top:22px;padding-top:16px;
+  border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-faint);flex-wrap:wrap}
+.doc-foot .plabel{line-height:1.45;color:var(--ink-quiet)}
+/* ピルの見た目・余白は上の .pod-btns（習作から等値移植）が既に左揃え＋margin-top:18px なので
+   ここでの上書きは不要。data-oa-event は不変。 */
+@media(max-width:860px){
+  /* 1列に畳んだら紙の傾きは外す（狭い幅では傾きが歪みにしか見えない＝習作と同じ扱い） */
+  .doc-card{transform:none}
+}
 @media(max-width:600px){
-  .pv-today .kanji{font-size:13.5px;-webkit-line-clamp:2}
-  .pv-today .hira{font-size:10px;-webkit-line-clamp:2}
-  .pv-today .en{font-size:10.5px;-webkit-line-clamp:1}
+  .doc-card{padding:26px 20px 22px;border-radius:12px}
+  .doc-tag{left:18px}
+  .doc-card .hira{font-size:13.5px;padding-left:12px}
+  .doc-card .en{font-size:17px}
+}
+/* 「今日の一語」朱ハイライト。修正版モック_人々の帯A案_2026-07-25 から等値移植。
+   毎晩 update_lp_today.py が kanji行の当日語を .hl のspanで（対応が取れる場合は
+   hira行を .hl-thin で）包む。この定義が文書内に存在することが差し込みの発動条件
+   （安全ゲート）なので、クラス名 .hl / .hl-thin を改名しないこと。
+   ※ 紺パネルのラベルは .hello-lb（.hl と衝突させない・下方コメント参照） */
+.hl{
+  position:relative;
+  background:linear-gradient(104deg,
+    rgba(198,59,34,0) .5%,
+    rgba(198,59,34,.42) 2%,
+    rgba(214,86,58,.46) 50%,
+    rgba(198,59,34,.42) 98%,
+    rgba(198,59,34,0) 99.5%);
+  padding:.06em .12em;border-radius:.25em;
+  box-decoration-break:clone;-webkit-box-decoration-break:clone;
+}
+.hl-thin{
+  background:linear-gradient(180deg,transparent 62%,rgba(198,59,34,.34) 62%,rgba(198,59,34,.34) 94%,transparent 94%);
+  padding:0 .05em;
 }
 
 /* KDP バッジ */
 .pv-kdp{position:relative}
-/* KDP: 実物の表紙を全6巻ぶん扇状に重ねる。偽の本をCSSで描かない。
-   ずらし幅は px ではなく cqw（パネル実幅の割合）。.panel をコンテナにしてあるので、
-   694pxの棚でも320pxのスマホでも同じ扇形のまま自動で縮む。 */
-.kdp-fan{position:relative;width:100%;height:100%;display:flex;align-items:flex-end;
-  justify-content:center;padding-bottom:16px}
-.kdp-c{position:absolute;bottom:16px;height:74%;width:auto;border-radius:2px 4px 4px 2px;
-  transform-origin:bottom center;
-  box-shadow:0 10px 22px -8px rgba(9,40,66,.55),0 0 0 1px rgba(255,255,255,.35)}
-.kdp-c.c1{transform:translateX(-31cqw) rotate(-9deg);z-index:1;filter:brightness(.90)}
-.kdp-c.c2{transform:translateX(-18.6cqw) rotate(-5.5deg);z-index:2;filter:brightness(.93)}
-.kdp-c.c3{transform:translateX(-6.2cqw) rotate(-2deg);z-index:3;filter:brightness(.96)}
-.kdp-c.c4{transform:translateX(6.2cqw) rotate(1.5deg);z-index:4;filter:brightness(.98)}
-.kdp-c.c5{transform:translateX(18.6cqw) rotate(5deg);z-index:5;filter:brightness(.99)}
-.kdp-c.c6{transform:translateX(31cqw) rotate(8.5deg);z-index:6}
+/* ===== 棚：Diary Reader ＝ 背表紙が6冊並ぶ習作図版（2026-07-29）=====
+   2026-07-21 に置いた実表紙6枚（/img/lp/kdp/*.jpg）を撤去した。
+   実表紙は「実物が見える」商売上の利点があるが、168pxの3カラムでは表紙の絵柄は判読できず
+   （実測: 高さ124px・書名は1mm弱）、得られるのは「写真がそこにある」ことだけで、
+   その写真の手ざわりだけが棚で浮いていた（design-director 一次検品）。
+   実表紙は Amazon 側の商品ページで原寸で見られるので、ここは冊数＝深さだけを図で伝える。
+   幅・ずらしは px ではなく cqw（.card がコンテナ）＝694pxの棚でも320pxのスマホでも同じ形。 */
+.kdp-fan{position:relative;width:100%;height:100%;
+  display:flex;align-items:flex-end;justify-content:center;
+  gap:clamp(3px,1.4cqw,6px);padding:0 12px 16px}
+/* 背表紙1本。天は開かない（背だけを見せる＝棚に差した状態） */
+.kdp-bk{position:relative;width:clamp(20px,7.4cqw,30px);border-radius:3px 3px 0 0;
+  background:var(--amber);border:1px solid var(--verm-ink);border-bottom:none;
+  box-shadow:0 10px 20px -12px rgba(28,52,70,.5)}
+/* 背の飾り罫2本＋書名枠。線は紙の上に引いた細い罫の見え方に留める */
+.kdp-bk::before,.kdp-bk::after{content:"";position:absolute;left:4px;right:4px;height:1px;
+  background:rgba(28,52,70,.28)}
+.kdp-bk::before{top:12px}
+.kdp-bk::after{top:17px;opacity:.6}
+.kdp-bk i{position:absolute;left:6px;right:6px;bottom:13px;height:13px;
+  border:1px solid rgba(28,52,70,.24);border-radius:2px}
+/* 高さと地色を巻ごとに散らす（琥珀・生成り・紺の3色＝棚の確定パレット内）。
+   上限は74%＝天が枠に触れず、左上の .kdp-tag（"The diary, now in print"）とも重ならない高さ。
+   （90%台にすると168pxの枠を突き抜け、バッジが背表紙の上に乗った＝2026-07-29実測） */
+.kdp-bk.b1{height:59%}
+.kdp-bk.b2{height:70%;width:clamp(17px,6.2cqw,25px);background:var(--paper-2);border-color:var(--line)}
+.kdp-bk.b3{height:74%}
+.kdp-bk.b4{height:64%;background:var(--ink);border-color:var(--ink)}
+.kdp-bk.b4::before,.kdp-bk.b4::after{background:rgba(246,240,226,.42)}
+.kdp-bk.b4 i{border-color:rgba(246,240,226,.34)}
+.kdp-bk.b5{height:71%;width:clamp(17px,6.2cqw,25px);background:var(--paper-2);border-color:var(--line)}
+/* 最後の1冊だけ少し傾ける（6冊が定規で引いた柵に見えるのを崩す＝習作の手ざわり） */
+.kdp-bk.b6{height:61%;transform:rotate(4.5deg);transform-origin:bottom right}
 
 .kdp-tag{position:absolute;top:11px;left:10px;white-space:nowrap;z-index:8;
   font-size:9.5px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:#B45309;
   background:rgba(255,255,255,.85);padding:4px 11px;border-radius:999px;box-shadow:0 3px 9px rgba(120,80,20,.18)}
 
-/* ===== 04 Shop：実商品画像パネル ===== */
-.pv-shopimg{padding:0;background:linear-gradient(180deg,#DCEAF4,#FBF4E6)}
-.pv-shopimg .pv-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 34%}
-.pv-shopimg .pv-fallback{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:16px;gap:6px;font-family:var(--serif);font-weight:700;font-size:16px;color:var(--brand-navy)}
-.pv-shopimg .pv-fallback small{font-family:var(--sans);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--sun-deep)}
+/* ===== 棚：Audio + Script Packs ＝「書類＋朱の波形」（2026-07-29）=====
+   Etsy商品モック etsy_ap_vol01.png を撤去。理由は .pv-fc と同じ（写真の手ざわりが棚だけ浮く）。
+   型は /play/ の .packshot と同型＝聞くもの（朱の波形）と読むもの（罫線の入った紙）を並べる。
+   図版内に文字は置かない（カード本体の見出し・本文が説明を持っているので二重にしない）。
+   ※旧 .pv-fallback（img が落ちたときだけ見える保険テキスト）は img と対で撤去。 */
+.pv-shopimg{padding:0;background:linear-gradient(180deg,#E7F0F6 0%,#FBF4E6 62%,#F6E7C6 100%);
+  display:flex;align-items:center;justify-content:center;gap:clamp(10px,4.5cqw,20px)}
+/* 紙＝10日ぶんのスクリプト。奥に1枚重ねて「束」にする */
+.ap-doc{position:relative;width:clamp(62px,22cqw,84px);aspect-ratio:.735/1;
+  background:var(--paper-2);border:1px solid var(--line);border-radius:5px;
+  padding:12px 11px;display:flex;flex-direction:column;gap:6px;
+  transform:rotate(-3deg);box-shadow:0 9px 18px -12px rgba(28,52,70,.55)}
+.ap-doc::before{content:"";position:absolute;inset:0;z-index:-1;
+  background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:5px;
+  transform:rotate(5deg) translate(4px,3px)}
+.ap-doc i{display:block;height:2px;background:var(--line);border-radius:2px}
+.ap-doc i:nth-child(1){width:78%;height:3px;background:var(--ink);opacity:.5}
+.ap-doc i:nth-child(4){width:54%;background:var(--amber)}
+.ap-doc i:nth-child(6){width:66%}
+/* 朱の波形＝MP3。棒の高さは固定（音を模した装飾で、実データではない） */
+.ap-bars{display:flex;align-items:center;gap:clamp(2.6px,1.1cqw,4px);height:62px}
+.ap-bars span{width:clamp(2.6px,1.1cqw,4px);background:var(--verm);border-radius:2px;opacity:.8}
+.ap-bars span:nth-child(1){height:26%}
+.ap-bars span:nth-child(2){height:52%}
+.ap-bars span:nth-child(3){height:88%}
+.ap-bars span:nth-child(4){height:64%}
+.ap-bars span:nth-child(5){height:100%}
+.ap-bars span:nth-child(6){height:44%}
+.ap-bars span:nth-child(7){height:74%}
+.ap-bars span:nth-child(8){height:34%}
+.ap-bars span:nth-child(9){height:92%}
+.ap-bars span:nth-child(10){height:58%}
+.ap-bars span:nth-child(11){height:80%}
+.ap-bars span:nth-child(12){height:40%}
+.ap-bars span:nth-child(13){height:22%}
 
 /* ===== 04 Shop：Daily+ Newsletter ＝「金の朝刊」 ===== */
 .pv-dnp{position:relative;overflow:hidden;padding:12px 14px 11px;
@@ -451,7 +585,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
    商品名が断ち切られる。この棚だけプレビューを縦に伸ばして、絵が読める比率に戻す。 */
 @media(min-width:521px){
   .shop-lead .pv{height:auto;aspect-ratio:694/250}
-  .shop-lead .pv-shopimg .pv-img{object-position:center 49%}
+  /* 旧 .shop-lead .pv-shopimg .pv-img{object-position} は img 撤去（2026-07-29）で不要 */
 }
 #read .row,#method .row{grid-template-columns:1fr}
 .shop-lead > .panel,#try .row > .panel,#learn .row > .panel,
@@ -460,21 +594,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
 @media(max-width:520px){
   .shop-lead,#try .row,#learn .row{grid-template-columns:1fr}
 }
-/* 06 Play棚は幅統一の対象外（オーナー確定）。横スクロールだと端が切れ、スクロールバー非表示で
-   「続きがある」合図が無く導線が失われるため、デスクトップでは3枚グリッドにする。 */
-/* 06 Play棚も 01〜05 と同じ694px列に揃える（2026-07-21オーナー指示）。
-   3枚並びなので1枚あたり (694-14*2)/3 = 222px。狭い幅では2列→1列に折る */
-#play .shelf-head,#play .caption{max-width:694px;margin-left:auto;margin-right:auto}
-#play .row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;overflow:visible;
-  padding-left:0;padding-right:0;margin-left:auto;margin-right:auto;max-width:694px;
-  -webkit-mask-image:none;mask-image:none;scroll-snap-type:none}
-#play .row > .panel{width:auto;min-width:0}
-@media(max-width:520px){#play .row{grid-template-columns:1fr}}
-/* ゲーム棚は3列で最も狭く、商品名（Sentence Builder）が ellipsis で切れる。
-   ビューポート幅で場合分けすると取りこぼす（560pxで再発した実績あり）ので、
-   パネルの実幅に反応させる。 */
-#play .band{padding-left:11px;padding-right:11px}
-/* ゲーム棚に限らず、狭い列に落ちたパネルは商品名が切れる（540pxで Flashcards Web App が切れた）。
+/* 狭い列に落ちたパネルは商品名が切れる（540pxで Flashcards Web App が切れた）。
    全パネルをコンテナにして、パネル実幅で段階的に詰める。 */
 .panel{container-type:inline-size}
 @container (max-width:260px){ .band b{font-size:15.5px} }
@@ -699,8 +819,14 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
 .kicker{display:flex;align-items:center;justify-content:center;gap:12px;
   font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--verm)}
 .kicker .dash{display:block;width:26px;height:1.5px;background:var(--verm);opacity:.8}
-.h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.9rem,4.4vw,2.9rem);
-  line-height:1.12;text-align:center;margin:14px 0 0;color:var(--ink)}
+/* 【階層の転換・2026-07-29 オーナー決裁】
+   旧: clamp(1.9rem,4.4vw,2.9rem) ＝ 1200pxで46.4px。読者24/24人の第一目的である
+   「今日の一文」(.doc-card .kanji ＝ 25px) が、案内板でしかない見出しの54%しかなかった。
+   見出しは案内板であって主役ではないので、見出しを下げ、本文を上げて順番を入れ替える。
+   ※ヒーローの h1 も class="h2" を持つが .hero h1 の方が詳細度が高く影響を受けない
+     （実測: 変更前後とも1200pxで51.2px）。 */
+.h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.4rem,2.9vw,2.0rem);
+  line-height:1.14;text-align:center;margin:14px 0 0;color:var(--ink)}
 .h2 em{font-style:italic;color:var(--verm)}
 .lead{max-width:54ch;margin:14px auto 0;text-align:center;font-size:15px;
   line-height:1.68;color:var(--ink-soft)}
@@ -718,6 +844,44 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
   border:1px solid var(--paper-edge);border-radius:16px;overflow:hidden;
   box-shadow:0 12px 26px -18px rgba(28,52,70,.3);transition:transform .2s,box-shadow .2s}
 a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,70,.34)}
+/* ===== まだ開いていない棚（2026-07-29 パネル §5-A ①）=====
+   Starter Pack / Daily+ は実体待ちで押せない。機能面は既に無効化済み（pointer-events:none ＋
+   aria-disabled ＋ tabindex="-1"）だが、24人中12人が「生きたカードと見分けがつかない」と指摘した。
+   ここは “壊れている” ではなく “まだ開けていない棚” に見せるための、見た目だけの層。
+   復帰は index 側の aria-disabled / tabindex / pointer-events を外すだけ（このCSSは残しておいてよい）。 */
+.card[aria-disabled="true"]{
+  /* 生きたカードの白い紙(--paper-2)より一段くすませ、縁を破線にして「閉じている棚札」にする */
+  background:var(--paper);
+  border-style:dashed;border-color:#D9CBAE;
+  box-shadow:none}
+/* 図版は構造を変えず、彩度だけ落として色褪せた見本刷りにする（チケット絵／紺の朝刊とも） */
+/* 図版は「紙地のみ」へ（パネル§5-A①の文言）。構造・作画は一切変えず、
+   ①内側いっぱいの inset シャドウで紺の地に薄紙をかけ ②彩度を落とし ③全体を少し引かせる。
+   inset シャドウは背景の上・子要素の下に描かれるので、券と朝刊の絵はそのまま残って淡くなる。 */
+.card[aria-disabled="true"] .pv{
+  box-shadow:inset 0 0 0 9999px rgba(246,240,226,.74);
+  filter:grayscale(.5) sepia(.26) saturate(.5) brightness(1.03) contrast(.88);
+  opacity:.8}
+/* 紺地の上で読ませていた金色の文字は、紙地になると白飛びする。待機中だけ濃度を上げる。 */
+.card[aria-disabled="true"] .dn-list span{color:#6E5C30}
+.card[aria-disabled="true"] .dn-list span::before{border-color:#8B7539}
+/* チケットの中の丸ピルは「押せる形」そのものなので、待機中は出さない。
+   HTMLの元文言コメントは温存してあり、aria-disabled を外せば自動で戻る。 */
+.card[aria-disabled="true"] .stb-cta{display:none}
+/* タグの朱＝「生きている棚」の合図なので外す。ただし --ink-faint は紙地で2.7:1しか出ず
+   主読者（35〜59歳）には読めないので、読ませる薄墨 --ink-quiet を使う。 */
+.card[aria-disabled="true"] .tag{color:var(--ink-quiet)}
+.card[aria-disabled="true"] h3{color:var(--ink-soft)}
+/* 進む矢印は隠す（クリック不可なのに誘う形を残さない） */
+.card[aria-disabled="true"] .go svg{display:none}
+/* .go の「朱の下線」は “押せる” の合図なので外し、棚に貼った但し書きへ組み替える。
+   長い予告文を受けるので inline-flex → block（2行で折り返す） */
+.card[aria-disabled="true"] .go{
+  display:block;border-bottom:0;padding-bottom:0;
+  margin-top:14px;padding-top:10px;border-top:1px dashed #D9CBAE;
+  font-family:var(--serif);font-style:italic;font-weight:600;
+  font-size:14.5px;line-height:1.34;letter-spacing:.004em;color:var(--ink-quiet)}
+@media(max-width:600px){.card[aria-disabled="true"] .go{font-size:14px}}
 .card .pv{border-bottom:1px solid var(--paper-edge)}
 .card .body{padding:16px 18px 18px}
 .card .tag{display:block;font-size:10px;font-weight:800;letter-spacing:.13em;
@@ -734,6 +898,14 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
 .stats{display:flex;flex-wrap:wrap;justify-content:center;margin:52px auto 0;max-width:920px;
   border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
 .stat{flex:1 1 200px;text-align:center;padding:22px 14px;position:relative}
+/* 「Real Japanese」を大に・「N5–N3 friendly」をサブへ（7/29オーナー指示・表示順の入れ替え）。
+   語が長く数字セルと同サイズでは折れるため、このセルだけ一回り絞って1行を保つ。 */
+/* 7/29オーナー指摘「目立ちすぎ」で一段下げ（21–27px → 19–23px）。隣の数字33pxとの差を広げる。
+   padding-top は隣セルとのベースライン合わせ。数字セルの baseline は上端から27px（実測）、
+   Cormorant の ascent は約0.8em なので calc(27px - 0.8em) で clamp の全域で揃う（固定5pxだと
+   文字を小さくした分だけ baseline が浮く）。 */
+.stat .n.n-word{font-size:clamp(19px,1.9vw,23px);letter-spacing:.01em;
+  padding-top:calc(27px - .8em);white-space:nowrap}
 .stat + .stat::before{content:"";position:absolute;left:0;top:22%;height:56%;width:1px;background:var(--line)}
 .stat .n{font-family:var(--serif);font-size:33px;font-weight:600;color:var(--ink);line-height:1}
 .stat .n em{font-style:normal;color:var(--verm)}
@@ -747,6 +919,11 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
 .today-stage{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.62fr);
   gap:8px;align-items:end;margin:40px 0 0}
 @media(max-width:860px){.today-stage{grid-template-columns:1fr;gap:0;max-width:430px;margin-inline:auto}}
+/* 狭い幅ではセクションの kicker「Today's diary」と、カードの紺タブ「TODAY'S DIARY」が
+   縦に隣り合って同じ文言が2回出る（375pxで実測）。習作ではカードの紺タブがこの札の役割を
+   兼ねているので、狭い幅では kicker 側を落とす。PC は左右に離れて見えるので現状維持。
+   文言そのものは変えない（紺タブ＝契約の見た目・kicker＝他セクションと同じ型）。 */
+@media(max-width:700px){#read > .wrap > .kicker{display:none}}
 .girl{position:relative;align-self:end}
 .girl img{width:100%;height:auto;display:block;filter:drop-shadow(0 18px 30px rgba(28,52,70,.14))}
 /* 描かれた空の吹き出しをそのまま器として使う（別部品のピル地は置かない） */
@@ -755,19 +932,117 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   font-weight:700;line-height:1.55;letter-spacing:.02em;text-align:center;
   transform:translateY(-50%) rotate(-1.5deg);word-break:keep-all}
 
-/* 見える再生ボタン（§3-9-1）。
-   【重要】【公開ブロッカー】いまは形だけ＝押しても鳴らない。テスト段階だからOKという判断（§-1）。
-   push前に「①音声を配線する」か「②このボタンを外す」のどちらかを必ず済ませること。
-   Spotifyへ飛ばす実装は禁止（7/21に殺した外部流出が戻る）。 */
-.playrow{display:flex;align-items:center;gap:11px;margin:14px 0 0}
+/* 【重要】860px以下（1列に畳んだ幅）で彼女をカードの下へ落とさない。
+   縦積みにするとカード1枚ぶん（約400px）が彼女の上に乗り、「一文と彼女が同居」という
+   C案の設計意図が消える。修正版モック（__mock_peopleA/B・2026-07-25）で実証済みの
+   「カード右上への absolute アンカー」をそのまま採用する。
+   ・.today-stage を position:relative にして、彼女をその右上に絶対配置する
+   ・stage は max-width:430px で頭打ちなので、幅が変わっても彼女の実寸は 100〜150px に収まる
+   ・彼女は「余白」にだけ重ね、文字には1文字も重ねない＝彼女の体が掛かる上3行
+     （.doc-date / .lbl / .kanji）に同じぶんの右パディングを与えて逃がす
+   ・吹き出しは画像の左半分（2%〜46%）にあるのでカードの内側へ張り出す。
+     上の右パディングはこの張り出しを避けるための実測値（勝手に緩めないこと）
+   ・逃げ幅は「画像の枠」ではなく実際に描かれている輪郭（アルファ）で決めた。
+     hero_girl.png の左端は帯ごとに 2%（吹き出し）→11%→34%→27%→20% と動く。
+     上3行が掛かるのは首から肩の帯なので、枠基準（38%）ではなく実測（〜25%）で足りる。
+     枠基準まで広げると 320〜420px で「No. 200 / TOKYO・MORNING」の行が2行に割れる。 */
+@media(max-width:860px){
+  .today-stage{position:relative}
+  /* 実寸は 97px(320px幅)〜146px(480px以上)。max-width で頭打ちにして、
+     どの幅でも逃げ幅の割合が同じ関係に収まるようにする */
+  .girl{position:absolute;right:-14px;top:-10px;width:34%;max-width:146px;margin:0;
+    z-index:4;align-self:auto;pointer-events:none}
+  .girl .note{font-size:clamp(8px,2.1vw,10.5px);line-height:1.35}
+  .doc-card .doc-date{padding-right:28%}
+  .doc-card .lbl{padding-right:30%}
+  .doc-card .kanji{padding-right:29%}
+}
+/* 355px以下だけは、カードの実効幅（244px）に対して
+   「No. 200 ── Tokyo · morning」の1行（実測197px必要）と彼女の逃げ幅が両立しない。
+   彼女を一段だけ小さくして逃げ幅を詰め、ヘッダ行を1行に保つ。
+   （行が3行に割れるほうが、彼女が数px小さいことより目につく＝実測で判断） */
+@media(max-width:355px){
+  .girl{width:30%}
+  .doc-card .doc-date{padding-right:16%}
+}
+
+/* 再生ボタン（§3-9-1）。2026-07-28 に習作の .doc-foot .play へ寸法を合わせた
+   （46px単独ボタン → 26px＋波形＋一行コピーの「脚」。カードの落款のような扱い）。
+   見た目は26pxだが ::after で当たり判定だけ44pxに広げる（.pod-btns と同じ手）。
+   2026-07-29 に音声を配線（オーナーGO）＝公開ブロッカー解消。/method/ の Try Listen と
+   同じ作法で <audio controls> は出さない（右クリック保存の導線を作らない）。
+   Spotifyへ飛ばす実装は禁止（7/21に殺した外部流出が戻る）。
+   【契約5・無音ボタン禁止】既定は visibility:hidden ＝「まだ出していない」。
+     音源 /audio/today.m4a の実在を JS が確認できた日だけ .is-live で見せ、
+     404・fetch失敗・再生エラーの日は .is-gone（display:none）で場所ごと畳む。
+     JSが動かない環境でも既定が hidden なので「押しても鳴らないボタン」は決して出ない。
+     visibility を既定にしているのは寸法だけ先に確保してCLS（横ズレ）を出さないため。
+     この2状態を is-live 表示・失敗時 display:none 以外に変えないこと。 */
 .playbtn{-webkit-appearance:none;appearance:none;border:0;cursor:pointer;flex:0 0 auto;
-  width:46px;height:46px;border-radius:50%;background:var(--verm);position:relative;
-  box-shadow:0 8px 18px -6px rgba(198,59,34,.6)}
-.playbtn::after{content:"";position:absolute;top:50%;left:56%;transform:translate(-50%,-50%);
-  border-style:solid;border-width:8px 0 8px 13px;border-color:transparent transparent transparent #fff}
-.playrow .plabel{font-size:12.5px;color:var(--ink-soft);line-height:1.45}
-.wave{display:flex;align-items:center;gap:3px;height:15px;flex:0 0 auto}
-.wave span{width:2.5px;background:var(--verm);border-radius:2px;opacity:.7}
+  width:26px;height:26px;border-radius:50%;background:var(--verm);position:relative;
+  box-shadow:0 5px 12px -5px rgba(198,59,34,.7);visibility:hidden}
+.playbtn.is-live{visibility:visible}
+.playbtn.is-gone{display:none}
+.playbtn::before{content:"";position:absolute;top:50%;left:56%;transform:translate(-50%,-50%);
+  border-style:solid;border-width:5px 0 5px 8px;border-color:transparent transparent transparent #FDF4EA}
+.playbtn::after{content:"";position:absolute;inset:-9px;border-radius:50%}
+.playbtn:focus-visible{outline:2px solid var(--brand-navy);outline-offset:3px}
+/* 再生中＝三角を停止の四角に差し替える（/method/ の ico-play / ico-stop と同じ作法）。
+   ボタンの外寸は26pxのまま＝並びが動かない。 */
+.playbtn.is-playing{background:var(--brand-navy);box-shadow:0 5px 12px -5px rgba(19,75,112,.7)}
+.playbtn.is-playing::before{left:50%;border-width:0;width:9px;height:9px;
+  border-radius:2px;background:#FDF4EA}
+.wave{display:flex;align-items:flex-end;gap:3px;height:16px;flex:0 0 auto}
+.wave span{width:2.5px;background:var(--verm);border-radius:2px;opacity:.75}
+/* 波形は再生中だけ動く（/method/ の .wave.on を等値移植。あちらは子が <i>、
+   こちらは日次契約の都合で <span>。transform-origin:bottom で下端揃えのまま縮む） */
+.wave.on span{transform-origin:bottom;animation:dwv .82s ease-in-out infinite}
+.wave.on span:nth-child(3n+2){animation-delay:.14s}
+.wave.on span:nth-child(3n+3){animation-delay:.28s}
+@keyframes dwv{0%,100%{transform:scaleY(1);opacity:.85}50%{transform:scaleY(.4);opacity:.5}}
+@media(prefers-reduced-motion:reduce){
+  /* OSの「視差効果を減らす」尊重で動きは止める。ただし再生中が分かるよう
+     静的に点灯させる（全バー満丈・濃色）。7/29オーナー実機で「動かない=故障」に
+     見えた対策。動きゼロのまま状態だけ伝える。 */
+  .wave.on span{animation:none;transform:scaleY(1);opacity:1;background:var(--verm-ink)}
+}
+
+/* 01b Good Mornings 予告パネル（§3-6b・2026-07-27 オーナー決裁）。
+   LP＝予告編（今日の見出し3つ）→ タップで /news/＝本編。
+   器は他セクションと同じ「紙のカード」（--paper-2 / --paper-edge / 角丸16 / 弱い影）。
+   【重要】見出し3つは NEWS&#95;TEASER の START/END マーカーの中の <li>×3 が契約（LP_EXCERPT と同格）。
+   マーカー文字列そのものは本文に1組だけ存在させる＝ここでは実体参照で書いて検品grepを汚さない。
+   日次差し替えは News_Tools が行うので、li に class を付けない＝スタイルは全部 CSS 側で持つ。 */
+.news-card{background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:16px;
+  box-shadow:0 12px 26px -18px rgba(28,52,70,.3);
+  max-width:760px;margin:38px auto 0;padding:24px 26px 22px;
+  display:grid;grid-template-columns:auto minmax(0,1fr);gap:22px;align-items:start}
+/* ミニ図版＝朝のテーブル。存在感は控えめ（高さ84px・§3-6bの72〜92px内） */
+.news-fig{width:131px;height:84px;object-fit:contain;flex:0 0 auto;
+  filter:drop-shadow(0 10px 18px rgba(28,52,70,.12))}
+.news-list{list-style:none;counter-reset:nt;margin:0;padding:0}
+.news-list li{counter-increment:nt;position:relative;padding:0 0 0 30px;
+  font-family:var(--jp-serif);font-weight:500;font-size:15.5px;line-height:2.0;color:var(--ink)}
+.news-list li + li{margin-top:12px;padding-top:12px;border-top:1px solid var(--paper-edge)}
+/* 番号は絵文字・記号を使わずCSSカウンタで（§NG:絵文字0） */
+.news-list li::before{content:counter(nt,decimal-leading-zero);position:absolute;left:0;top:0;
+  font-family:var(--sans);font-size:10px;font-weight:800;letter-spacing:.13em;color:var(--verm);
+  line-height:2.9}
+/* ふりがな。/news/ 本体と同じ組み方に揃える（rt が本文に触れないよう行間は 2.0 で確保） */
+.news-card ruby{ruby-align:center}
+.news-card rt{font-family:var(--jp);font-size:.72em;font-weight:400;color:var(--ink-soft);
+  letter-spacing:.02em}
+.newslink{text-align:center;margin:18px 0 0;font-size:13px;font-weight:700}
+.newslink a{display:inline-flex;align-items:center;gap:6px;color:var(--ink);
+  border-bottom:1.5px solid var(--verm);padding-bottom:1px}
+/* 【重要】.methodlink svg と同じくサイズ指定は必須。無いと矢印が巨大化する */
+.newslink svg{width:13px;height:13px;flex:0 0 auto}
+@media(max-width:640px){
+  .news-card{grid-template-columns:1fr;gap:14px;padding:20px 18px 18px;justify-items:center}
+  .news-fig{width:112px;height:72px}
+  .news-list{width:100%}
+  .news-list li{font-size:14.5px}
+}
 
 /* 02 method：3カード＋手描き矢印（§3-2） */
 .loop{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:center;
@@ -794,25 +1069,58 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
 .hello{background:var(--ink);color:#fff;border-radius:18px;padding:34px 32px;
   margin:46px 0 0;display:grid;grid-template-columns:1fr 1fr;gap:30px}
 @media(max-width:760px){.hello{grid-template-columns:1fr;gap:22px;padding:28px 24px}}
-.hello .hl{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+/* 【重要】ここを .hl にしないこと。習作の日記カードが持つ朱ハイライト .hl と名前が衝突し、
+   紺パネルのラベルに朱のグラデーションが乗る（2026-07-25に実測で確認）。 */
+.hello .hello-lb{font-size:10.5px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--amber)}
+/* 【対比の設計・2026-07-26 オーナー決裁】左＝手に入るもの／右＝手放すもの が
+   2秒で分かるように主従をはっきりつける。
+   習作では取り消し線が「捨てる側」の合図として機能していたが、§B-1で平叙文に
+   確定した際に取り消し線を外したため、トーンだけでなく"対比を示す視覚的な機能"まで
+   失われていた。取り消し線は戻さず（攻撃的に見えるため）、色と大きさで代替する。 */
 .hello .ht{font-family:var(--serif);font-size:23px;line-height:1.34;margin:9px 0 0}
-.hello .bye .ht{color:rgba(255,255,255,.72)}
+/* HELLO側＝主。明るく大きいまま（.hello の #fff を継承） */
+/* BYE側＝従。一段小さく・暗く退かせる。読めなくならない範囲に留める（コントラスト実測済み） */
+.hello .bye .ht{color:rgba(255,255,255,.58);font-size:19px}
+/* ラベルも同格に見せない。HELLO=琥珀のまま／BYE=紺地で沈むグレー */
+/* --ink-faint(#8A98A0) は紺地で4.35:1＝AAを僅かに下回るので、少し明るいグレーに。
+   琥珀(6.68:1)との差は十分残るので「同格に見えない」目的は達成できる。 */
+.hello .bye .hello-lb{color:#9BA8B0}
 .hello .bye{border-left:1px solid rgba(255,255,255,.22);padding-left:30px}
 @media(max-width:760px){.hello .bye{border-left:0;padding-left:0;border-top:1px solid rgba(255,255,255,.22);padding-top:22px}}
 
 /* 締め（§3-7） */
 .tail{padding:64px 0 70px;text-align:center}
-.tail .note{font-size:12.5px;color:var(--ink-faint,#8A98A0);margin-top:18px}
+.tail .note{font-size:12.5px;color:var(--ink-quiet);margin-top:18px}
 .tail .cta{display:inline-block;margin-top:20px;font-size:14px;font-weight:800;color:#fff;
   background:var(--verm);border-radius:999px;padding:13px 26px;
   box-shadow:0 10px 22px -10px rgba(198,59,34,.7)}
+
+/* ===== 人々の帯（A案・修正版モックから等値移植 2026-07-27） ===== */
+/* 帯は環境（線のみ・紺・小）。彼女＝主役（塗り・色・大）との階層をはっきりさせるため
+   不透明度を落とし、彼女のすぐ隣には置かない（数値帯の下＝1画面分あける）。 */
+/* ===== 人々の帯：最終指定（A案・2026-07-26 オーナー決裁）=====
+   【重要】.people-band の指定はここ1箇所に集約する。習作の元定義（margin-top:38px）と
+   旧位置の上書きが散っていたのを統合した。ここより上の定義は全部これで上書きされる。
+   ・区切りの装飾として読める大きさに抑える（幅を絞ると比率を保って縮む。
+     max-height だと preserveAspectRatio でレターボックスになるので使わない）
+   ・左右は上下のカード列（棚 max-width:820px）の内側に収め、中央寄せ */
+/* 線を濃く（オーナー指摘 2026-07-26）。薄さは opacity で作っているのでそこを上げる。
+   1.0 は本文見出しと同じ濃さになり区切りの装飾より主張が強くなるので .70 で止める。
+   線色そのもの（SVGの stroke=#1C3446＝--ink）は変えていない。 */
+.people-band{position:relative;max-width:620px;margin:60px auto 6px;opacity:.70}
+/* 棚(.grid-4)は860px以下で1列・max-width:430px に折り返す。帯もそこに合わせないと
+   700px付近で帯だけが棚より外にはみ出す（実測）。ブレークポイントを棚と揃える。 */
+@media(max-width:860px){.people-band{max-width:430px;margin:48px auto 4px}}
+@media(max-width:620px){.people-band{max-width:300px;margin:40px auto 2px;opacity:.62}}
 </style>
 </head>
 <body>
 
 <nav><div class="wrap nav-in">
   <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
-  <div class="nav-links" id="navLinks"><a href="#read"><span>Read</span><span class="jp">よむ</span></a><a href="#method"><span>Method</span><span class="jp">メソッド</span></a><a href="#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="#shop"><span>Shop</span><span class="jp">ショップ</span></a><a href="#try"><span>Try</span><span class="jp">ためす</span></a><a href="#play"><span>Play</span><span class="jp">あそぶ</span></a></div>
+  <!-- Good Mornings は LP 内アンカーではなく /news/ 実ページ（§3-6c・統括裁定 2026-07-28）。
+       ここには data-oa-event を付けない＝計測は本文の .newslink 側 news_open 1点に集約する。 -->
+  <div class="nav-links" id="navLinks"><a href="#read"><span>Read</span><span class="jp">よむ</span></a><a href="/news/"><span>Good Mornings</span><span class="jp">きょうの、いいこと。</span></a><a href="#method"><span>Method</span><span class="jp">メソッド</span></a><a href="#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="#try"><span>Try</span><span class="jp">ためす</span></a><a href="#shop"><span>The Shelf</span><span class="jp">ほんだな</span></a></div>
   <button class="nav-burger" type="button" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
 </div></nav>
 
@@ -822,9 +1130,18 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <h1 class="h2">One minute of <em>real</em><br>Japanese, every morning.</h1>
   <p class="lead">A slow listening diary from Tokyo &mdash; and a whole shelf of free ways to play with it.</p>
   <div class="stats">
-    <div class="stat"><div class="n">190<em>+</em></div><div class="c">Diaries since Jan 2026</div></div>
+    <!-- 数字は毎晩 update_lp_today.py が号数から書き換える（源はカードの NO. と同じ）。
+         静止ファイルの初期値も号数に合わせておく＝公開直後から NO. と食い違わない。 -->
+    <div class="stat"><div class="n">200<em>+</em></div><div class="c">Diaries since Jan 2026</div></div>
+    <!-- 【温存・2026-07-29 公開前検品で削除】ゲームはLPから退避中（7/27決裁）なのに
+         数値帯だけが「3本ある」と宣伝していた＝読者パネル24人中7人が信頼低下として検出。
+         /play/ハブとゲーム実体は温存してあるので、再登板時はこの1行を戻すだけでよい。
     <div class="stat"><div class="n">3</div><div class="c">Free browser games</div></div>
-    <div class="stat"><div class="n">N5&ndash;N3</div><div class="c">JLPT range</div></div>
+    -->
+    <!-- レベル表記の変遷: 「JLPT range」→「JLPT friendly」（7/29オーナー指摘: rangeは上限を示唆）→
+         パネル2群24人裁定でV3「REAL JAPANESE, N5–N3 FRIENDLY」採用（7/29統括・両群同時最高/bounce唯一ゼロ。
+         レポート=reader_panel/読者パネル結果_レベル表記_2026-07-29.md）。大数字N5–N3は【変更禁止】のまま。 -->
+    <div class="stat"><div class="n n-word">Real Japanese</div><div class="c">N5&ndash;N3 friendly</div></div>
     <div class="stat"><div class="n">100<em>%</em></div><div class="c">Free to start</div></div>
   </div>
 </div></header>
@@ -835,24 +1152,80 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <h2 class="h2">A new one-minute diary, <em>every morning</em>.</h2>
   <p class="lead">Real Tokyo Japanese, read slowly &mdash; a new one every morning since Jan 2026.</p>
   <div class="today-stage">
-    <div class="card">
-      <div class="pv pv-pod pv-today">
+    <div class="doc-frame">
+      <span class="doc-tag">Today&rsquo;s diary</span>
+      <div class="doc-card">
+        <!-- 号数は毎晩 update_lp_today.py が差し込む（.doc-date{ がその安全ゲート） -->
+        <div class="doc-date"><span class="num">No. 200</span><span class="ln"></span><span>Tokyo &middot; morning</span></div>
     <!-- LP_EXCERPT_START -->
     <div class="lbl">From today's diary — きょうの いっぷん</div>
-    <div class="kanji">ランニングからウォーキングに切り替えて1年ぐらいになります。</div>
-    <div class="hira">らんにんぐからうぉーきんぐにきりかえていちねんぐらいになります。</div>
-    <div class="en">I switched from running to walking about a year ago, so my range became smaller. Today I walked in a direction I hadn't visited since I stopped running, and I was shocked to see so many new buildings and shops after just one year.</div>
+    <div class="kanji"><span class="hl">めっきり</span>暑くなってきたので、最近、週末の朝にカフェに行かなくなりました。</div>
+    <div class="hira"><span class="hl-thin">めっきり</span>あつくなってきたので、さいきん、しゅうまつのあさにかふぇにいかなくなりました。</div>
+    <div class="en">It got so hot that I stopped going to cafes on weekend mornings, and now I grind coffee beans at home instead—even though I just showered after my morning walk and don't want to sweat again by going outside.</div>
+    <div class="dgloss"><span class="w">めっきり</span> &mdash; noticeably; markedly</div>
     <!-- LP_EXCERPT_END -->
-        <div class="pod-btns"><a class="pod-sp" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify"><span class="ico-play"></span>Spotify</a><a class="pod-yt" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener" data-oa-event="watch_youtube"><span class="ico-play"></span>YouTube</a></div>
-      </div>
-      <div class="body">
-        <span class="tag">Read &middot; Listen</span>
-        <h3>Today&rsquo;s 1-minute diary</h3>
-        <div class="playrow">
-          <button class="playbtn" type="button" id="todayPlay" aria-label="Play today&rsquo;s diary"></button>
-          <span class="wave" aria-hidden="true"><span style="height:6px"></span><span style="height:12px"></span><span style="height:15px"></span><span style="height:9px"></span><span style="height:13px"></span><span style="height:5px"></span></span>
+        <div class="doc-foot">
+          <button class="playbtn" type="button" id="todayPlay" data-oa-event="play_daily_audio" aria-label="Play today&rsquo;s diary"></button>
+          <span class="wave" id="todayWave" aria-hidden="true"><span style="height:6px"></span><span style="height:12px"></span><span style="height:16px"></span><span style="height:9px"></span><span style="height:14px"></span><span style="height:7px"></span><span style="height:11px"></span><span style="height:15px"></span><span style="height:8px"></span></span>
           <span class="plabel">Listen &middot; shadow &middot; read &mdash; one loop, 60 seconds</span>
         </div>
+<!-- 今日の日記音声。/method/ の Try Listen と同じ実装（<audio controls> を出さない＝
+     右クリック保存の導線を作らない）。preload="none" 相当＝押されるまで1バイトも取りに行かない
+     （ヒーロー直下なのでLCPを絶対に踏まない）。
+     ここに直書きしているのは、音源の実在確認（HEAD）をパース中に始めてボタンの出現を
+     初回描画に間に合わせるため（末尾に置くと横ズレが見えることがある）。
+     日次で /audio/today.m4a を差し替えるのは update_lp_today.py の publish()。 -->
+<script>
+(function(){
+  var btn = document.getElementById('todayPlay');
+  if(!btn){return;}
+  var wave = document.getElementById('todayWave');
+  var SRC = '/audio/today.m4a';
+  var clip = null, playing = false;
+
+  // 音源が取れない日は「場所ごと畳む」。無音ボタンを絶対に出さない（契約5）。
+  function drop(){
+    playing = false;
+    btn.classList.remove('is-live','is-playing');
+    btn.classList.add('is-gone');
+    if(wave){wave.classList.remove('on');}
+  }
+  function idle(){
+    playing = false;
+    btn.classList.remove('is-playing');
+    btn.setAttribute('aria-label', 'Play today’s diary');
+    if(wave){wave.classList.remove('on');}
+  }
+  function busy(){
+    playing = true;
+    btn.classList.add('is-playing');
+    btn.setAttribute('aria-label', 'Stop');
+    if(wave){wave.classList.add('on');}
+  }
+
+  // 実在確認。200 が返った日だけボタンを見せる。
+  try{
+    fetch(SRC, {method:'HEAD'}).then(function(r){
+      if(r && r.ok){ btn.classList.add('is-live'); } else { drop(); }
+    }).catch(drop);
+  }catch(e){ drop(); }
+
+  btn.addEventListener('click', function(){
+    if(playing){ clip.pause(); clip.currentTime = 0; idle(); return; }
+    if(!clip){
+      clip = new Audio(SRC);
+      clip.preload = 'none';
+      clip.addEventListener('ended', idle);
+      clip.addEventListener('pause', idle);
+      clip.addEventListener('error', drop);   // 再生できなければその場で畳む
+    }
+    clip.currentTime = 0;
+    var pr = clip.play();
+    if(pr && pr.then){ pr.then(busy).catch(idle); } else { busy(); }
+  });
+})();
+</script>
+        <div class="pod-btns"><a class="pod-sp" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify"><span class="ico-play"></span>Spotify</a><a class="pod-yt" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener" data-oa-event="watch_youtube"><span class="ico-play"></span>YouTube</a></div>
       </div>
     </div>
     <div class="girl">
@@ -860,6 +1233,24 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
       <span class="note">今日のことば、きいて、まねる。</span>
     </div>
   </div>
+</div></section>
+
+<!-- ============ 01b news（§3-6b）Good Mornings 予告パネル＝今日の見出し3つ ============ -->
+<section class="block" id="news"><div class="wrap">
+  <span class="kicker"><span class="dash"></span>Good Mornings<span class="dash"></span></span>
+  <h2 class="h2">Three good things from Japan, <em>every morning</em>.</h2>
+  <p class="lead">Happy news only &mdash; rewritten in easy Japanese with furigana.</p>
+  <div class="news-card">
+    <img class="news-fig" src="/img/news/morning.png" alt="A quiet breakfast table set for the morning" loading="lazy" width="623" height="400">
+    <ol class="news-list">
+    <!-- NEWS_TEASER_START -->
+      <li><ruby>小学生<rt>しょうがくせい</rt></ruby>が<ruby>自分<rt>じぶん</rt></ruby>のロケットを<ruby>作<rt>つく</rt></ruby>って、<ruby>空<rt>そら</rt></ruby>へ<ruby>打<rt>う</rt></ruby>ち<ruby>上<rt>あ</rt></ruby>げます</li>
+      <li>あたらしいトンネルの<ruby>中<rt>なか</rt></ruby>で、<ruby>一<rt>いち</rt></ruby><ruby>日<rt>にち</rt></ruby>だけあそべます</li>
+      <li><ruby>山<rt>やま</rt></ruby>の<ruby>町<rt>まち</rt></ruby>の<ruby>夏<rt>なつ</rt></ruby>まつり、<ruby>七夕<rt>たなばた</rt></ruby>は<ruby>8月<rt>はちがつ</rt></ruby>に<ruby>楽<rt>たの</rt></ruby>しみます</li>
+      <!-- NEWS_TEASER_END -->
+    </ol>
+  </div>
+  <p class="newslink"><a href="/news/" data-oa-event="news_open">Read today&rsquo;s three<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></p>
 </div></section>
 
 <!-- ============ 02 method（§3-2）3カード＋矢印 ============ -->
@@ -899,15 +1290,66 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <!-- 02b 紺パネル（§3-2b）取り消し線は使わない -->
   <div class="hello">
     <div class="hi">
-      <div class="hl">Say hello to</div>
+      <div class="hello-lb">Say hello to</div>
       <div class="ht">real mornings in Japanese &mdash; the way a person in Tokyo actually says it.</div>
     </div>
     <div class="bye">
-      <div class="hl">Say bye to</div>
+      <div class="hello-lb">Say bye to</div>
       <div class="ht">No textbook lines. No streaks to feel guilty about.</div>
     </div>
   </div>
 </div></section>
+
+<!-- 人々の帯（A案）・モック同位置：method の直後・棚の前 -->
+<div class="people-band" aria-hidden="true">
+    <svg viewBox="0 0 1120 130" preserveAspectRatio="xMidYMax meet" fill="none" stroke="#1C3446" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+      <!-- person 1: coffee -->
+      <g transform="translate(70,8)">
+        <path d="M18 30c-9 1-15 8-15 18 0 9 6 15 15 16 9-1 15-7 15-16 0-10-6-17-15-18z"/>
+        <path d="M8 108c0-24 4-40 10-40s10 16 10 40"/>
+        <path d="M6 78c-6 6-10 14-11 24" />
+        <path d="M30 78c7 4 12 10 15 17"/>
+        <path d="M45 92h16v14a6 6 0 0 1-6 6H51a6 6 0 0 1-6-6z"/>
+        <path d="M61 96h5a4 4 0 0 1 0 8h-5"/>
+      </g>
+      <!-- person 2: headphones, seated -->
+      <g transform="translate(240,4)">
+        <path d="M40 34c-10 0-17 8-17 18s7 17 17 17 17-7 17-17-7-18-17-18z"/>
+        <path d="M20 40a20 20 0 0 1 40 0"/>
+        <path d="M20 40v10M60 40v10"/>
+        <path d="M22 112c-2-26 6-42 18-42s20 16 18 42"/>
+      </g>
+      <!-- person 3: notebook open -->
+      <g transform="translate(430,10)">
+        <path d="M24 28c-9 0-15 7-15 16s6 15 15 15 15-6 15-15-6-16-15-16z"/>
+        <path d="M6 106c0-24 8-38 18-38s18 14 18 38"/>
+        <path d="M10 84l-9 8M38 84l14 6"/>
+        <path d="M30 98l24 10 24-10-24-9z"/>
+        <path d="M54 108V99M30 100v9l24 10M78 100v9l-24 10"/>
+      </g>
+      <!-- person 4: coffee to go, standing -->
+      <g transform="translate(640,2)">
+        <path d="M30 30c-9 0-16 7-16 16s7 15 16 15 16-6 16-15-7-16-16-16z"/>
+        <path d="M14 120c0-30 6-48 16-48s16 18 16 48"/>
+        <path d="M16 82l-8 20M44 82l10 10"/>
+        <path d="M54 96l10-6 5 12-10 5z"/>
+      </g>
+      <!-- person 5: waving -->
+      <g transform="translate(830,8)">
+        <path d="M28 28c-9 0-15 7-15 16s6 15 15 15 15-6 15-15-6-16-15-16z"/>
+        <path d="M12 110c0-26 6-42 16-42s16 16 16 42"/>
+        <path d="M14 80l-8 14M40 78c8-6 12-16 12-26"/>
+      </g>
+      <!-- person 6: reading phone -->
+      <g transform="translate(1000,10)">
+        <path d="M26 28c-9 0-15 7-15 16s6 15 15 15 15-6 15-15-6-16-15-16z"/>
+        <path d="M10 106c0-24 6-38 16-38s16 14 16 38"/>
+        <path d="M12 80l6 14M40 80l-8 12"/>
+        <rect x="24" y="86" width="14" height="20" rx="2"/>
+      </g>
+    </svg>
+    <div class="band-ground"></div>
+  </div>
 
 <!-- ============ 03 learn（§3-3）§B-2の受け皿はLP全体でここ1箇所だけ ============ -->
 <section class="block" id="learn"><div class="wrap">
@@ -915,7 +1357,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <h2 class="h2">Build the habit, <em>step by step</em>.</h2>
   <p class="lead">Read, listen, shadow &mdash; one real line a day, at your pace.</p>
   <div class="grid grid-2">
-    <a class="card" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup">
+    <a class="card" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup" style="pointer-events:none" aria-disabled="true" tabindex="-1">
       <div class="pv pv-stb">
         <div class="b-ticket">
           <div class="b-stub">
@@ -930,26 +1372,37 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
           </div>
         </div>
         <span class="stb-seal">Free</span>
-        <span class="stb-cta">Get it free →</span>
+        <span class="stb-cta"><!-- 元: Get it free → -->Coming soon</span>
       </div>
       <div class="body">
         <span class="tag">Start &middot; By email</span>
         <h3>7-Day Starter Pack</h3>
         <p>Seven mornings of real Tokyo Japanese, free to your inbox. One line a day, nothing to install.</p>
-        <span class="go">Start free<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+        <span class="go"><!-- 元: Start free -->Opens when it&rsquo;s ready &mdash; the diary is free every morning either way<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-    <a class="card" href="/my-flashcards/">
+    <a class="card" href="/my-flashcards/" data-oa-event="open_flashcards">
       <div class="pv pv-fc">
         <span class="fc-badge">Web app</span>
-        <!-- v3 は「Flashcards商品ビジュアル＋実機スクショを合成済み」の完成画像。
-             端末枠はこの画像の中に描かれているので、CSSで枠を描かない -->
-        <img class="fc-art" src="/img/lp/fcapp_real_v3.png" alt="Flashcards web app" loading="lazy">
+        <!-- 2026-07-29: 実機スクショ（fcapp_real_v3.png）を撤去し、習作と同じCSS作画の図版へ。
+             画像ファイル自体は /img/lp/ に温存（Etsy・SNS素材で使用中）。 -->
+        <div class="fc-deck" aria-hidden="true">
+          <span class="sheet s1"></span>
+          <span class="sheet s2"></span>
+          <div class="fc-face">
+            <span class="b" lang="ja">週末</span>
+            <span class="rule"></span>
+            <span class="s">tap to flip</span>
+          </div>
+        </div>
       </div>
       <div class="body">
         <span class="tag">Study &middot; Web app</span>
         <h3>Flashcards App</h3>
-        <p>Come back tomorrow &mdash; it remembers which cards you&rsquo;re about to forget, and has them waiting. No install needed &middot; 5 cards free.</p>
+        <!-- 旧文（2026-07-29まで）: 「Come back tomorrow &mdash; it remembers which cards you&rsquo;re about to forget,
+             and has them waiting.」 読者パネル P9／P14 の評価が割れたため、7/29オーナー決裁でE案（下の新文）を採用。
+             後半「No install needed · 5 cards free.」は不変。 -->
+        <p>Come back tomorrow &mdash; each word finds its own rhythm: often at first, then further apart as it stays with you. No install needed &middot; 5 cards free.</p>
         <span class="go">Open flashcards<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
@@ -962,7 +1415,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <h2 class="h2">Try a <em>very short</em> real card.</h2>
   <p class="lead">Taste the real thing &mdash; one card, one choice.</p>
   <div class="grid grid-1">
-    <a class="card" href="/adventure/" data-oa-event="play_game">
+    <a class="card" href="/adventure/" data-oa-event="open_adventure">
       <div class="pv pv-adv">
         <div class="adv-kick">Diary Text Adventure</div>
         <div class="adv-sec"><b>Chapter 1 · Free</b><i></i></div>
@@ -975,7 +1428,9 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
           </span>
           <span class="adv-go" aria-hidden="true"></span>
         </div>
-        <div class="adv-lock"><span class="adv-padlock" aria-hidden="true"></span><em>Season 1 · Feb–Jun</em></div>
+        <!-- 2026-07-29 パネル§5-C: 「Feb–Jun」は7月に見ると「更新が止まっている」と読まれる（P23）。
+             期間ではなく分量へ。5は実数（/adventure/ の data-group="season1" が5枚・LS「5 monthly stories」）。 -->
+        <div class="adv-lock"><span class="adv-padlock" aria-hidden="true"></span><em>Season 1 &middot; 5 chapters</em></div>
       </div>
       <div class="body">
         <span class="tag">Try &middot; Diary text adventure</span>
@@ -987,40 +1442,20 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   </div>
 </div></section>
 
-<!-- ============ 06 play（§3-9-4）LPは1枚に集約し /play/ ハブへ送る ============ -->
-<section class="block" id="play"><div class="wrap">
-  <span class="kicker"><span class="dash"></span>A whole shelf to play with<span class="dash"></span></span>
-  <h2 class="h2">Pick tonight&rsquo;s <em>game</em>.</h2>
-  <p class="lead">Start with Kana Quest &mdash; our most-loved game, straight from the meadow at sunrise.</p>
-  <div class="grid grid-1">
-    <a class="card" href="/play/" data-oa-event="play_game">
-      <div class="pv pv-kq">
-        <img class="kq-logo" src="/img/lp/logo_kanaquest.png" alt="">
-        <img class="kq-char" src="/img/lp/char_girl_cheer.png" alt="">
-        <span class="kq-cta">START<span class="ico-play"></span></span>
-      </div>
-      <div class="body">
-        <span class="tag">Play &middot; Browser games</span>
-        <h3>Three free games</h3>
-        <p>Kana Quest, Kana Drop and Sentence Builder &mdash; the same kana and sentences from this morning, turned into something you can play with. Nothing to install.</p>
-        <span class="go">Open the arcade<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
-      </div>
-    </a>
-  </div>
-</div></section>
-
-<!-- ============ The shelf（旧 04 shop・§3-9-2/3）最下部へ降格・3枚に集約 ============
+<!-- ============ The Shelf（旧 04 shop・§3-9-2/3）最下部へ降格・3枚に集約 ============
      見出し語 "Shop" は廃止（23名がこの語で失速）。h2 は維持。
      順序は「毎朝 → 信頼 → 棚」＝在庫を前に出しても売上は増えず信頼を先に削る。 -->
 <section class="block" id="shop"><div class="wrap">
-  <span class="kicker"><span class="dash"></span>The shelf<span class="dash"></span></span>
+  <span class="kicker"><span class="dash"></span>The Shelf<span class="dash"></span></span>
   <h2 class="h2">Take the diary <em>with you</em>.</h2>
   <p class="lead">The podcast gives you sound only. Every diary&rsquo;s kanji, hiragana and English in one place, so you can study a whole month at a time.</p>
   <div class="grid grid-3">
     <a class="card" href="https://ohayonihongodaily.etsy.com/?section_id=58431119" target="_blank" rel="noopener" data-oa-event="buy_etsy">
       <div class="pv pv-shopimg">
-        <div class="pv-fallback"><small>Etsy</small>10-Day Audio<br>+ Script Pack</div>
-        <img class="pv-img" src="/img/lp/etsy_ap_vol01.png" alt="10-Day Audio + Script Pack" loading="lazy" onerror="this.style.display='none'">
+        <!-- 2026-07-29: Etsy商品モック（etsy_ap_vol01.png）と、その保険テキスト .pv-fallback を撤去。
+             画像ファイルは /img/lp/ に温存（Etsy出品側で使用中）。 -->
+        <div class="ap-doc" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <div class="ap-bars" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
       </div>
       <div class="body">
         <span class="tag">Read &middot; Download</span>
@@ -1032,14 +1467,15 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
     <a class="card" href="https://www.amazon.com/s?k=OHAYO+NIHONGO+Diary+Reader" target="_blank" rel="noopener" data-oa-event="buy_amazon">
       <div class="pv pv-kdp">
         <span class="kdp-tag">The diary, now in print</span>
-        <!-- 実物のKDP表紙（cover_kindle.jpg を560px幅に縮小したもの）。CSSで描いた偽の本ではない -->
-        <div class="kdp-fan">
-          <img class="kdp-c c1" src="/img/lp/kdp/january.jpg" alt="" loading="lazy">
-          <img class="kdp-c c2" src="/img/lp/kdp/february.jpg" alt="" loading="lazy">
-          <img class="kdp-c c3" src="/img/lp/kdp/march.jpg" alt="" loading="lazy">
-          <img class="kdp-c c4" src="/img/lp/kdp/april.jpg" alt="" loading="lazy">
-          <img class="kdp-c c5" src="/img/lp/kdp/may.jpg" alt="" loading="lazy">
-          <img class="kdp-c c6" src="/img/lp/kdp/june.jpg" alt="Diary Reader — January to June 2026" loading="lazy">
+        <!-- 2026-07-29: 実表紙6枚（/img/lp/kdp/*.jpg）を撤去し、背表紙6本のCSS図版へ。
+             画像ファイルは /img/lp/kdp/ に温存（KDP・Etsy素材で使用中）。冊数6は在庫と一致。 -->
+        <div class="kdp-fan" aria-hidden="true">
+          <span class="kdp-bk b1"><i></i></span>
+          <span class="kdp-bk b2"><i></i></span>
+          <span class="kdp-bk b3"><i></i></span>
+          <span class="kdp-bk b4"><i></i></span>
+          <span class="kdp-bk b5"><i></i></span>
+          <span class="kdp-bk b6"><i></i></span>
         </div>
         <span class="kdp-shelf"></span>
       </div>
@@ -1050,7 +1486,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
         <span class="go">Browse the shelf<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-    <a class="card" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="buy_substack">
+    <a class="card" href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="buy_substack" style="pointer-events:none" aria-disabled="true" tabindex="-1">
       <!-- pv-dnp-lg は694pxワイド専用（横並び・紙224px）で、切替が @media＝ビューポート基準。
            3カラムの狭いカードでは効かずに右へはみ出す。素の pv-dnp（縦組み）を使う。 -->
       <div class="pv pv-dnp">
@@ -1068,7 +1504,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
         <span class="tag">Every morning &middot; By email</span>
         <h3>Daily+ Newsletter</h3>
         <p>The full morning script with the English translation, every morning from now on.</p>
-        <span class="go">Open Substack<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
+        <span class="go"><!-- 元: Open Substack -->Opens when it&rsquo;s ready &mdash; the diary is free every morning either way<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
   </div>
@@ -1093,7 +1529,10 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
       <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
       <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
       <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
-      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Substack</a>
+      <!-- Starter Pack / Daily+ が Coming soon の間、フッターのこれが唯一の生きた購読導線。
+           無計測だと「準備中の期間に誰が購読を探したか」が丸ごと落ちるので計測を付ける
+           （2026-07-29 公開前検品）。 -->
+      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">Substack</a>
       <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener" data-oa-event="buy_etsy">Etsy</a>
     </div>
     <p>New diary every morning on Spotify &amp; YouTube — “OHAYO NIHONGO”</p>

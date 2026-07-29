@@ -54,6 +54,11 @@
   .packcta .pk-s{display:block;font-size:11px;color:var(--sub);margin-top:4px}
   .packcta .pk-b{display:inline-block;margin-top:11px;font-size:12.5px;font-weight:800;color:#fff;
     background:linear-gradient(135deg,var(--sun),var(--sun-deep));border-radius:999px;padding:8px 16px}
+  /* Coming soon の見た目。塗り→枠線で「まだ押せない」を形で示す（2026-07-29検品）。 */
+  [aria-disabled="true"]{opacity:.72}
+  /* 文字色に var(--sun-deep)(#F08114) を使うと紙地で2.6:1しか出ない（塗りの上の白文字
+     だったものを線画にすると、地が紙になるので同じ色が使えない）。free と同じ #C4600A へ。 */
+  .packcta[aria-disabled="true"] .pk-b{background:none;border:1.5px solid var(--sun);color:#C4600A}
   .fbrand{position:absolute;top:16px;left:0;right:0;font-size:10.5px;letter-spacing:.22em;font-weight:700;color:var(--sun)}
   .playb{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:none;background:var(--navy);color:#FDFBF6;cursor:pointer;margin-bottom:14px;box-shadow:0 4px 12px rgba(19,75,112,.3);transition:transform .12s}
   .playb:active{transform:scale(.94)}
@@ -277,11 +282,14 @@
        （1月号だけで mp3 50件）なのでブラウザ単体では取り込めない（2026-07-22修正）。 -->
   <p class="applinks">Anki is free on <a href="https://apps.ankiweb.net/" target="_blank" rel="noopener">Windows / Mac / Linux</a> and <a href="https://play.google.com/store/apps/details?id=com.ichi2.anki" target="_blank" rel="noopener">Android (AnkiDroid)</a>. On iPhone and iPad, <a href="https://apps.apple.com/app/ankimobile-flashcards/id373493387" target="_blank" rel="noopener">AnkiMobile</a> (paid).<br>These decks carry native audio, so they have to be imported on a computer or in AnkiMobile &mdash; AnkiWeb in the browser cannot import them on its own.<br>No computer, no paid app? The <a href="/my-flashcards/">Flashcards Web App</a> runs the same sentences and audio right in your browser, free.</p>
 
-  <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial">
+  <!-- Starter Pack は配布準備中（LP / method / my-flashcards / free と同じ扱い）。
+       配布開始時は style / aria-disabled / tabindex の3つを外し、ラベルを元へ戻すだけ。
+       data-oa-event は温存（属性を消すとGA4の履歴が切れる）。2026-07-29 公開前検品 -->
+  <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial" style="pointer-events:none" aria-disabled="true" tabindex="-1">
     <span class="pk-l">The morning invitation</span>
     <span class="pk-t">7-Day <i>Starter</i> Pack</span>
     <span class="pk-s">While the decks open &mdash; 7 mornings of real Tokyo Japanese, free to your inbox</span>
-    <span class="pk-b">Get it free &rarr;</span>
+    <span class="pk-b"><!-- 元: Get it free &rarr; -->Coming soon</span>
   </a>
 
   <h2 class="sec">FAQ</h2>

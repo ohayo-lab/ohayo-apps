@@ -16,147 +16,194 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root{--navy:#134B70;--ocean:#1F72A8;--ink:#22384A;--sub:#5D7285;--line:#DDE6EC;
-    --sun:#F7A928;--sun-deep:#F08114;--white:#fff;--gold-bg:#FFF4E3;--gold-bd:#F5C88A;--gold-tx:#B45309}
+  /* ===== 朱色・紙地トークンへ統一（2026-07-26）=====
+     LP / /method/ / /play/ と同じ値。旧 --navy / --sun / --gold 系からの置換。
+     旧名は下に別名として残し、既存の var() 参照が壊れないようにしている。
+     コントラスト比はすべて紙地(--paper #F6F0E2 / --paper-2 #FCF7EC)上で実測した値。 */
+  :root{
+    --verm:#C63B22; --verm-ink:#A02D19; --amber:#E7B24E; --amber-wash:#FAEFD7;
+    --paper:#F6F0E2; --paper-2:#FCF7EC; --paper-edge:#ECE3D0;
+    --ink:#1C3446; --ink-soft:#4B5F6D; --ink-faint:#8A98A0; --line:#E4D9C2;
+    /* 採点ボタンの「できた」は緑の意味を残す必要があるので、紙地に馴染む鈍い緑に寄せる */
+    --sage:#2F6B43; --sage-bg:#E8F1E4; --sage-bd:#BFD6C0; --leaf:#4A7C59;
+    --serif:'Cormorant Garamond',Georgia,serif;
+    --jp-serif:'Noto Serif JP',serif;
+    /* --- 旧名 → 新値の別名（段階移行用。新規コードでは使わない） --- */
+    --navy:var(--ink); --ocean:var(--ink-soft); --sub:var(--ink-soft);
+    --sun:var(--verm); --sun-deep:var(--verm-ink);
+    --white:var(--paper-2);     /* カードの地。純白ではなく紙地の明るい方 */
+    --gold-bg:var(--amber-wash); --gold-bd:var(--amber);
+    --gold-tx:var(--verm-ink);  /* 旧 #B45309 は紙地で3.5:1 → 濃い朱(6.4:1)へ */
+  }
   *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:'Inter','Noto Sans JP',-apple-system,sans-serif;color:var(--ink);line-height:1.6;
-    background:linear-gradient(180deg,#BFE6F9 0%,#EAF4F3 30%,#FFF0CE 70%,#FFDFA8 100%);min-height:100vh}
+  /* 旧デザインの水色→琥珀の空グラデをやめ、LPと同じ紙地の単色に（2026-07-26） */
+  body{font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif;color:var(--ink);line-height:1.6;
+    background:var(--paper);min-height:100vh}
   .wrap{max-width:640px;margin:0 auto;padding:40px 20px 90px}
-  .brand{font-family:'Poppins',sans-serif;font-weight:600;color:var(--navy);font-size:13px;letter-spacing:.12em;text-decoration:none}
-  h1{font-family:'Poppins',sans-serif;font-size:26px;color:var(--navy);margin:10px 0 2px}
-  .jp-sub{font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ocean);margin-bottom:20px}
+  .brand{font-family:'DM Sans',sans-serif;font-weight:700;color:var(--ink);font-size:13px;letter-spacing:.12em;text-decoration:none}
+  h1{font-family:var(--serif);font-size:26px;color:var(--ink);margin:10px 0 2px}
+  .jp-sub{font-family:'Noto Sans JP',sans-serif;font-size:13px;color:var(--ink-soft);margin-bottom:20px}
 
   /* stats dashboard */
   .stats{display:flex;gap:10px;margin-bottom:10px}
-  .stat{flex:1;background:var(--white);border:1px solid var(--line);border-radius:16px;padding:14px 10px;text-align:center;box-shadow:0 2px 10px rgba(19,75,112,.08)}
-  .stat .v{font-family:'Poppins',sans-serif;font-size:22px;font-weight:700;color:var(--navy)}
-  .stat .l{font-size:10px;font-weight:700;letter-spacing:.12em;color:var(--sub);text-transform:uppercase;margin-top:2px}
+  .stat{flex:1;background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:16px;padding:14px 10px;text-align:center;
+    box-shadow:0 2px 10px -4px rgba(60,45,30,.18)}
+  .stat .v{font-family:'DM Sans',sans-serif;font-size:22px;font-weight:700;color:var(--ink)}
+  /* 小ラベルは LP / method の kicker と同じ作り（10px・大文字・字間広め・朱）。
+     旧 --sub の灰は紙地だと沈むだけで、ページに朱の反復も生まれない。 */
+  .stat .l{font-size:10px;font-weight:700;letter-spacing:.16em;color:var(--verm);text-transform:uppercase;margin-top:2px}
   .badge-line{text-align:center;margin:10px 0 26px}
-  .badge{display:inline-block;font-size:14px;font-weight:700;color:var(--gold-tx);background:var(--gold-bg);
-    border:1.5px solid var(--gold-bd);border-radius:999px;padding:7px 20px}
-  .nextlvl{font-size:11.5px;color:var(--sub);margin-top:6px}
+  .badge{display:inline-block;font-size:14px;font-weight:700;color:var(--verm-ink);background:var(--amber-wash);
+    border:1.5px solid var(--amber);border-radius:999px;padding:7px 20px}
+  .nextlvl{font-size:11.5px;color:var(--ink-soft);margin-top:6px}
 
-  h2{font-family:'Poppins',sans-serif;font-size:17px;color:var(--navy);margin:26px 0 4px}
-  .h2jp{font-family:'Noto Sans JP',sans-serif;font-size:11px;color:var(--ocean);letter-spacing:.14em;margin-bottom:12px}
+  h2{font-family:var(--serif);font-size:17px;color:var(--ink);margin:26px 0 4px}
+  .h2jp{font-family:'Noto Sans JP',sans-serif;font-size:11px;color:var(--ink-soft);letter-spacing:.14em;margin-bottom:12px}
 
   /* bookshelf */
   .shelf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .volcard{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px;
-    box-shadow:0 2px 10px rgba(19,75,112,.08);position:relative;text-decoration:none;color:var(--ink);
+  .volcard{background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:16px;padding:16px;
+    box-shadow:0 2px 10px -4px rgba(60,45,30,.18);position:relative;text-decoration:none;color:var(--ink);
     transition:transform .12s ease}
   .volcard:active{transform:scale(.97)}
-  .volcard .bar{position:absolute;top:0;left:0;right:0;height:5px;border-radius:16px 16px 0 0}
-  .volcard .vn{font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:var(--navy)}
-  .volcard .vm{font-size:11.5px;color:var(--sub);margin-bottom:8px}
+  /* 巻ごとの色は JS の ACCENTS がインラインで入る（データ側なので触らない）。
+     そのままだと蛍光色で紙地から浮くので、CSS で彩度と明度を落として
+     本の背に貼ったリボンの色に見えるところまで沈める。 */
+  .volcard .bar{position:absolute;top:0;left:0;right:0;height:5px;border-radius:16px 16px 0 0;
+    opacity:.8;filter:saturate(.62) brightness(.82)}
+  .volcard .vn{font-family:var(--serif);font-weight:700;font-size:18px;color:var(--ink)}
+  .volcard .vm{font-size:11.5px;color:var(--ink-soft);margin-bottom:8px}
   .volcard .open{display:inline-block;font-size:12px;font-weight:700;color:#fff;
-    background:linear-gradient(135deg,var(--sun),var(--sun-deep));border-radius:999px;padding:6px 16px}
-  .volcard .del{position:absolute;top:10px;right:12px;font-size:12px;color:#B9C4CC;cursor:pointer;background:none;border:none}
+    background:linear-gradient(135deg,var(--verm),var(--verm-ink));border-radius:999px;padding:6px 16px}
+  /* 削除の×は脇役だが文字なので読めないと困る。旧 #B9C4CC は紙地で2.2:1＝不可。
+     #7A6C52 は紙地で4.8:1＝AA準拠のまま十分に沈む（実測して選定）。 */
+  .volcard .del{position:absolute;top:10px;right:12px;font-size:12px;color:#7A6C52;cursor:pointer;background:none;border:none}
   .volcard.free .tagfree{position:absolute;top:12px;right:12px;font-size:9px;font-weight:800;letter-spacing:.08em;
-    color:#fff;background:#3D9A6D;border-radius:999px;padding:3px 9px}
-  .getmore{border:2px dashed #E2B96F;border-radius:16px;padding:16px;text-align:center;background:rgba(255,255,255,.55);
+    color:#fff;background:var(--leaf);border-radius:999px;padding:3px 9px}
+  .getmore{border:2px dashed var(--amber);border-radius:16px;padding:16px;text-align:center;background:var(--paper-2);
     text-decoration:none;display:flex;flex-direction:column;justify-content:center;gap:6px}
-  .getmore .plus{font-size:24px;color:var(--sun-deep);font-weight:700}
-  .getmore .t{font-size:13px;font-weight:700;color:var(--gold-tx)}
-  .getmore .d{font-size:10.5px;color:var(--sub)}
+  .getmore .plus{font-size:24px;color:var(--verm);font-weight:700}
+  .getmore .t{font-size:13px;font-weight:700;color:var(--verm-ink)}
+  .getmore .d{font-size:10.5px;color:var(--ink-soft)}
 
   /* ===== 今日の復習（SRS）2026-07-22 =====
      Ankiに頼らず、OHAYO単体で間隔反復をやるための画面。
      カードは /data/cards.json（30巻300枚＋無料サンプル5枚）から読む。
      進み具合は localStorage の ohayo_srs に貯める。 */
-  .today{background:linear-gradient(150deg,#134B70 0%,#1F72A8 62%,#3E93C4 100%);
-    border-radius:18px;padding:20px 20px 18px;margin:22px 0 6px;color:#fff;
-    box-shadow:0 14px 30px -14px rgba(19,75,112,.6)}
-  .today .tl{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#BFE6F9}
+  /* 紺のグラデ帯＋白文字をやめ、LP / method の額縁と同じ紙地カードに（2026-07-26）。
+     「やることがある／終わった」の差は、地の濃さと枠線の実線・破線で作る。 */
+  .today{background:var(--paper-2);border:1px solid var(--paper-edge);
+    border-radius:18px;padding:20px 20px 18px;margin:22px 0 6px;color:var(--ink);
+    box-shadow:0 12px 26px -18px rgba(28,52,70,.4)}
+  .today .tl{font-size:10px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:var(--verm)}
   .today .tn{font-family:var(--serif);font-size:30px;font-weight:700;line-height:1.1;margin-top:4px}
-  .today .tn small{font-size:15px;font-weight:600;opacity:.85;margin-left:6px}
-  .today .ts{font-size:12px;color:#DCEEF9;margin-top:5px}
+  /* 旧 opacity:.85 は紙地では白抜き前提の作りなので、色で沈める形に置き換え */
+  .today .tn small{font-size:15px;font-weight:600;color:var(--ink-soft);margin-left:6px}
+  .today .ts{font-size:12px;color:var(--ink-soft);margin-top:5px}
   .today .tb{display:inline-block;margin-top:14px;border:none;cursor:pointer;
     font-family:inherit;font-size:14px;font-weight:800;color:#fff;
-    background:linear-gradient(135deg,var(--sun),var(--sun-deep));
-    border-radius:999px;padding:11px 22px;box-shadow:0 8px 18px -8px rgba(240,129,20,.8)}
-  .today.done{background:linear-gradient(150deg,#EAF3FB 0%,#F6FAFD 100%);color:var(--navy);
-    box-shadow:0 6px 16px -10px rgba(19,75,112,.4)}
-  .today.done .tl{color:var(--sun-deep)} .today.done .ts{color:var(--sub)}
+    background:linear-gradient(135deg,var(--verm),var(--verm-ink));
+    border-radius:999px;padding:11px 22px;box-shadow:0 8px 18px -8px rgba(198,59,34,.6)}
+  .today.done{background:var(--paper);border:1px dashed var(--line);color:var(--ink);
+    box-shadow:none}
+  .today.done .tl{color:var(--verm-ink)} .today.done .ts{color:var(--ink-soft)}
 
   /* 復習中の全画面 */
   /* 共通メニュー(#ohMenuBtn)が z-index 99999 なので、それより手前に出す。
      復習中に誤ってメニューを開いて離脱するのを防ぐ（閉じるのは左上の×） */
-  .rv{position:fixed;inset:0;z-index:100000;background:linear-gradient(180deg,#EAF3FB 0%,#FFF7E8 100%);
+  /* 復習画面も水色→クリームのグラデをやめ、紙地の単色に（2026-07-26） */
+  .rv{position:fixed;inset:0;z-index:100000;background:var(--paper);
     display:none;flex-direction:column;padding:18px 16px}
   .rv.on{display:flex}
   .rv-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex:0 0 auto}
-  .rv-x{border:none;background:rgba(19,75,112,.08);color:var(--navy);width:34px;height:34px;
+  .rv-x{border:none;background:rgba(28,52,70,.07);color:var(--ink);width:34px;height:34px;
     border-radius:50%;font-size:16px;cursor:pointer;line-height:1}
-  .rv-bar{flex:1;height:6px;border-radius:3px;background:rgba(19,75,112,.12);overflow:hidden}
-  .rv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--sun),var(--sun-deep));width:0}
-  .rv-n{font-size:12px;font-weight:800;color:var(--navy);white-space:nowrap}
+  /* 進捗の溝。--paper-edge だと紙地との差が1.05:1で消えるので、薄い墨の面に（実測） */
+  .rv-bar{flex:1;height:6px;border-radius:3px;background:rgba(28,52,70,.13);overflow:hidden}
+  .rv-bar i{display:block;height:100%;background:linear-gradient(90deg,var(--verm),var(--verm-ink));width:0}
+  .rv-n{font-size:12px;font-weight:800;color:var(--ink);white-space:nowrap}
   .rv-mid{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center}
-  .rv-vol{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--sun-deep)}
-  .rv-k{font-family:var(--jp-serif,serif);font-size:24px;line-height:1.5;color:var(--navy);max-width:22em}
-  .rv-h{font-size:14px;color:#2E6E96;line-height:1.6;max-width:24em}
-  .rv-e{font-size:13px;color:var(--sub);line-height:1.5;max-width:26em;font-style:italic}
+  .rv-vol{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--verm)}
+  .rv-k{font-family:var(--jp-serif,serif);font-size:24px;line-height:1.5;color:var(--ink);max-width:22em}
+  /* 旧 #2E6E96 は青が独り立ちするので、method の .hira と同じ --ink-soft(5.9:1)に揃える */
+  .rv-h{font-size:14px;color:var(--ink-soft);line-height:1.6;max-width:24em}
+  /* 英訳は method の .en と同じセリフ体イタリックに */
+  .rv-e{font-family:var(--serif);font-size:14.5px;color:var(--ink-soft);line-height:1.5;max-width:26em;font-style:italic}
   .rv-hide{display:none}
   .rv-play{border:none;cursor:pointer;width:52px;height:52px;border-radius:50%;
-    background:var(--navy);box-shadow:0 8px 18px -6px rgba(19,75,112,.6);position:relative}
+    background:var(--ink);box-shadow:0 8px 18px -6px rgba(28,52,70,.45);position:relative}
   .rv-play::after{content:"";position:absolute;top:50%;left:56%;transform:translate(-50%,-50%);
     border-style:solid;border-width:9px 0 9px 14px;border-color:transparent transparent transparent #fff}
   .rv-bot{flex:0 0 auto;display:flex;gap:10px;justify-content:center;padding-top:12px}
   .rv-bot button{flex:1;max-width:200px;border:none;cursor:pointer;font-family:inherit;
     font-size:14px;font-weight:800;border-radius:14px;padding:15px 10px}
-  .rv-show{background:var(--navy);color:#fff;max-width:420px !important}
-  .rv-a{background:#FFF1DC;color:#B45309;border:1.5px solid #F0C98A !important}
+  .rv-show{background:var(--ink);color:#fff;max-width:420px !important}
+  /* 「あと少し」は琥珀の紙、「できた」は鈍い緑。どちらも紙地の同じ明るさに揃え、
+     文字色は実測で AA を通す値に（#A02D19 = 6.4:1 / #2F6B43 = 5.6:1）。 */
+  .rv-a{background:var(--amber-wash);color:var(--verm-ink);border:1.5px solid var(--amber) !important}
   .rv-k2 .ico-check{margin-right:5px;vertical-align:.02em}
-  .rv-k2{background:#E4F6EC;color:#14713F;border:1.5px solid #A9DFC2 !important}
+  .rv-k2{background:var(--sage-bg);color:var(--sage);border:1.5px solid var(--sage-bd) !important}
   .rv-fin{text-align:center;padding:10px}
-  .rv-fin .f1{font-family:var(--serif);font-size:26px;color:var(--navy);font-weight:700}
-  .rv-fin .f2{font-size:13px;color:var(--sub);margin-top:6px}
+  .rv-fin .f1{font-family:var(--jp-serif,serif);font-size:26px;color:var(--ink);font-weight:700}
+  .rv-fin .f2{font-size:13px;color:var(--ink-soft);margin-top:6px}
 
   /* 7-Day Starter Pack のCTA。無料を試し終えた人の受け皿（2026-07-22）。
      LP 03 と /method/ のゴールデンチケットの縮小版。金枠＋半券の切れ目で同じものだと分かる形に。 */
   .packcta{display:block;margin:26px auto 0;max-width:420px;text-decoration:none;position:relative;
     background:linear-gradient(155deg,#FFFDF6 0%,#FDF3DE 52%,#F7E6C4 100%);
-    border:1.5px solid #E7C877;border-radius:14px;padding:16px 18px 15px 30px;
-    box-shadow:0 10px 24px -12px rgba(120,80,20,.4)}
+    border:1.5px solid var(--amber);border-radius:14px;padding:16px 18px 15px 30px;
+    box-shadow:0 10px 24px -14px rgba(120,80,20,.45)}
   .packcta::before{content:"";position:absolute;left:16px;top:12px;bottom:12px;
     border-left:2px dashed rgba(183,134,31,.45)}
+  /* 旧 #B7861F は券面の地(#FFFDF6)で3.2:1＝9pxでは読めない。
+     券面は琥珀のグラデなので、いちばん濃い段(#F7E6C4)で測る必要がある。
+     --verm は4.22:1で足りず、--verm-ink なら5.96:1でAA通過（実測して選定）。 */
   .packcta .pk-l{display:block;font-size:9px;font-weight:800;letter-spacing:.16em;
-    text-transform:uppercase;color:#B7861F}
+    text-transform:uppercase;color:var(--verm-ink)}
   .packcta .pk-t{display:block;font-family:var(--serif);font-size:21px;font-weight:700;
-    color:#134B70;line-height:1.15;margin-top:3px}
-  .packcta .pk-t i{font-style:italic;color:var(--sun-deep)}
-  .packcta .pk-s{display:block;font-size:11px;color:var(--sub);margin-top:4px}
+    color:var(--ink);line-height:1.15;margin-top:3px}
+  .packcta .pk-t i{font-style:italic;color:var(--verm)}
+  .packcta .pk-s{display:block;font-size:11px;color:var(--ink-soft);margin-top:4px}
   .packcta .pk-b{display:inline-block;margin-top:11px;font-size:12.5px;font-weight:800;color:#fff;
-    background:linear-gradient(135deg,var(--sun),var(--sun-deep));border-radius:999px;padding:8px 16px}
+    background:linear-gradient(135deg,var(--verm),var(--verm-ink));border-radius:999px;padding:8px 16px}
+  /* Coming soon（pointer-events:none + aria-disabled）の見た目。属性は付いていたのに
+     CSSが無く、朱の塗りピルのまま＝押せるボタンと見分けがつかなかった（2026-07-29検品）。
+     塗り→枠線にして「まだ押せない」を形で示す。配布開始時はこの2行を消すだけでよい。 */
+  [aria-disabled="true"]{opacity:.72}
+  .packcta[aria-disabled="true"] .pk-b{background:none;border:1.5px solid var(--verm);color:var(--verm-ink)}
 
   /* register */
-  .reg{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px;margin-top:26px;box-shadow:0 2px 10px rgba(19,75,112,.08)}
-  .reg p{font-size:12.5px;color:var(--sub);margin-bottom:10px}
+  .reg{background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:16px;padding:18px;margin-top:26px;
+    box-shadow:0 2px 10px -4px rgba(60,45,30,.18)}
+  .reg p{font-size:12.5px;color:var(--ink-soft);margin-bottom:10px}
   .reg .row{display:flex;gap:8px}
-  .reg input{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font-size:13px;min-width:0}
-  .reg input:focus{outline:none;border-color:var(--sun)}
-  .reg button{border:none;border-radius:12px;background:linear-gradient(135deg,var(--sun),var(--sun-deep));
+  .reg input{flex:1;border:1.5px solid var(--line);border-radius:12px;padding:11px 12px;font-size:13px;min-width:0;
+    background:#FFFCF4;color:var(--ink)}
+  .reg input:focus{outline:none;border-color:var(--verm)}
+  .reg button{border:none;border-radius:12px;background:linear-gradient(135deg,var(--verm),var(--verm-ink));
     color:#fff;font-weight:700;font-size:13px;padding:0 18px;cursor:pointer}
   .msg{font-size:12px;margin-top:8px;display:none}
-  .msg.ok{display:block;color:#2E7D32}
-  .msg.ng{display:block;color:#C62828}
+  .msg.ok{display:block;color:var(--sage)}
+  .msg.ng{display:block;color:var(--verm-ink)}
 
-  .hint{margin-top:22px;font-size:12px;color:var(--sub);background:rgba(255,255,255,.6);border:1px solid var(--line);
+  .hint{margin-top:22px;font-size:12px;color:var(--ink-soft);background:var(--paper-2);border:1px solid var(--paper-edge);
     border-radius:12px;padding:12px 14px}
-  footer{text-align:center;margin-top:34px;font-size:11.5px;color:var(--sub)}
-  footer a{color:var(--ocean)}
+  footer{text-align:center;margin-top:34px;font-size:11.5px;color:var(--ink-soft)}
+  footer a{color:var(--ink)}
 
 /* ===== OHAYO icon set — 絵文字不使用・CSS図形/インラインSVG ===== */
 .ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
 /* .ico-book は正典で使用禁止（豆腐に見える）。定義ごと削除済み。復活させないこと。 */
 /* 炎。五角形だと炎に見えなかったので、下がふくらみ上が尖る形＋内側に明るいコア */
-.ico-flame{width:.52em;height:.7em;background:#F0870F;
+/* 炎も朱＋琥珀のコアへ（2026-07-26・旧 #F0870F / #FFD37A は黄橙で紙地から浮く） */
+.ico-flame{width:.52em;height:.7em;background:var(--verm);
   border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
   transform:rotate(-2deg);vertical-align:-.1em;margin-right:.18em}
 .ico-flame::before{content:"";position:absolute;left:50%;top:-.16em;transform:translateX(-50%);
   width:0;height:0;border-style:solid;border-width:0 .18em .3em .18em;
-  border-color:transparent transparent #F0870F transparent}
+  border-color:transparent transparent var(--verm) transparent}
 .ico-flame::after{content:"";position:absolute;left:50%;bottom:.07em;transform:translateX(-50%);
-  width:.24em;height:.34em;background:#FFD37A;
+  width:.24em;height:.34em;background:var(--amber);
   border-radius:50% 50% 50% 50% / 60% 60% 40% 40%}
 .ico-phone{width:.5em;height:.76em;border:.1em solid currentColor;border-radius:.12em}
 .ico-phone::after{content:"";position:absolute;left:50%;bottom:.07em;transform:translateX(-50%);
@@ -203,11 +250,11 @@
        正典の教訓どおり「装飾だけのアイコンは置き換えずに消す」を適用した。 -->
   <div class="hint"><b>Tip:</b> Add this page to your home screen — it opens like an app, and your bookshelf, streak and XP are always one tap away.</div>
 
-  <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial">
+  <a class="packcta" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_trial" style="pointer-events:none" aria-disabled="true" tabindex="-1">
     <span class="pk-l">The morning invitation</span>
     <span class="pk-t">7-Day <i>Starter</i> Pack</span>
     <span class="pk-s">7 mornings of real Tokyo Japanese &mdash; free to your inbox</span>
-    <span class="pk-b">Get it free &rarr;</span>
+    <span class="pk-b"><!-- 元: Get it free &rarr; -->Coming soon</span>
   </a>
   <p class="backline"><a href="/#learn">&larr; Back to the shelf on the home page</a></p>
   <footer>
@@ -465,27 +512,31 @@ fetch("/data/cards.json").then(r=>r.json()).then(function(j){ CARDS=j; renderTod
 
 <!-- B3_TYPO_V1: Morning Editorial B3 typography & text colors (injected) -->
 <style>
-/* ── UI=DM Sans（Poppins/Inter廃止）・見出し=Cormorant Garamond・黒基調 ── */
+/* ── UI=DM Sans（Poppins/Inter廃止）・見出し=Cormorant Garamond ──
+   色は 2026-07-26 に朱色・紙地トークンへ差し替え。
+   旧 #1C1C1C / #4A4A4A / #6B5B3E / #D8B24A / #FFC93C は「黒基調＋黄」の名残で、
+   紙地の LP・/method/ と系統が合わなかった（黄ボタンは紙地で主役に見えない）。 */
 body{font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif !important}
-.brand{font-family:'DM Sans',sans-serif !important;font-weight:700 !important;color:#1C1C1C !important;letter-spacing:.1em !important}
-h1{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:33px !important;color:#1C1C1C !important}
-h2{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:22px !important;color:#1C1C1C !important}
-.jp-sub{color:#4A4A4A !important}
-.h2jp{color:#4A4A4A !important}
-.stat .v{font-family:'DM Sans',sans-serif !important;color:#1C1C1C !important}
-.stat .l{color:#4A4A4A !important}
-.nextlvl{color:#4A4A4A !important}
-.volcard .vn{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:21px !important;color:#1C1C1C !important}
-.volcard .vm{color:#4A4A4A !important}
-.getmore .d{color:#4A4A4A !important}
-.reg p{color:#4A4A4A !important}
-.hint{color:#4A4A4A !important}
+.brand{font-family:'DM Sans',sans-serif !important;font-weight:700 !important;color:var(--ink) !important;letter-spacing:.1em !important}
+h1{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:33px !important;color:var(--ink) !important}
+h2{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:22px !important;color:var(--ink) !important}
+.jp-sub{color:var(--ink-soft) !important}
+.h2jp{color:var(--ink-soft) !important}
+.stat .v{font-family:'DM Sans',sans-serif !important;color:var(--ink) !important}
+/* 小ラベルは朱（上の .stat .l と同じ意図。ここで灰に戻さない） */
+.stat .l{color:var(--verm) !important}
+.nextlvl{color:var(--ink-soft) !important}
+.volcard .vn{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:21px !important;color:var(--ink) !important}
+.volcard .vm{color:var(--ink-soft) !important}
+.getmore .d{color:var(--ink-soft) !important}
+.reg p{color:var(--ink-soft) !important}
+.hint{color:var(--ink-soft) !important}
 .backline{text-align:center;margin:26px 0 0;font-size:13px;font-weight:700}
-.backline a{color:#6B5B3E;text-decoration:none;border-bottom:1px solid rgba(107,91,62,.35)}
-footer{color:#4A4A4A !important}
-footer a{color:#333 !important;text-decoration:none !important;border-bottom:1.5px solid #D8B24A;padding-bottom:1px}
-/* ── ボタン: ピル化・主役CTA(Add)=黄#FFC93C×黒字 ── */
-.reg button{border-radius:999px !important;background:#FFC93C !important;color:#111 !important;box-shadow:0 4px 12px rgba(255,201,60,.45)}
+.backline a{color:var(--verm-ink);text-decoration:none;border-bottom:1px solid rgba(160,45,25,.35)}
+footer{color:var(--ink-soft) !important}
+footer a{color:var(--ink) !important;text-decoration:none !important;border-bottom:1.5px solid var(--amber);padding-bottom:1px}
+/* ── ボタン: ピル化・主役CTA(Add)=朱×白字（LP / method のCTAと同じ画材） ── */
+.reg button{border-radius:999px !important;background:linear-gradient(135deg,var(--verm),var(--verm-ink)) !important;color:#fff !important;box-shadow:0 4px 12px rgba(198,59,34,.35)}
 </style>
 
 <script src="/menu.js?v=20260722" defer></script>

@@ -20,27 +20,26 @@
 <style>
 /* ===== トークンは LP(index.html) の :root をそのまま踏襲。新規発明なし ===== */
 :root{
-  --sun:#F7A928; --sun-deep:#F08114; --sun-hot:#FF6B35;
-  --brand-navy:#134B70; --brand-ocean:#1F72A8;
-  --cream:#FFF9F0; --cream-card:#FFF6E6;
-  --ink:#1C3446; --ink-soft:#5A7183; --line:#E4EEF4;
-  --gold:#B98F2F;
+  /* ===== 朱色トークンへ統一（2026-07-26）=====
+     LP・/play/ と同じ値。旧 --sun / --brand-navy / --cream 系からの置換。
+     旧名は下に別名として残し、既存の var() 参照が壊れないようにしている。 */
+  --verm:#C63B22; --verm-ink:#A02D19; --amber:#E7B24E;
+  --paper:#F6F0E2; --paper-2:#FCF7EC; --paper-edge:#ECE3D0;
+  --ink:#1C3446; --ink-soft:#4B5F6D; --ink-faint:#8A98A0; --line:#E4D9C2;
+  /* 旧名 → 新値の別名（段階移行用。新規コードでは使わない） */
+  --sun:var(--verm); --sun-deep:var(--verm-ink); --sun-hot:var(--verm);
+  --brand-navy:var(--ink); --brand-ocean:var(--ink-soft);
+  --cream:var(--paper); --cream-card:var(--paper-2); --gold:var(--amber);
   --serif:'Cormorant Garamond',Georgia,serif;
   --sans:'DM Sans','Noto Sans JP',-apple-system,sans-serif;
   --jp:'Noto Sans JP',sans-serif;
   --jp-serif:'Noto Serif JP',serif;
-  --frame-radius:20px;
-  --frame-shadow:0 16px 34px -16px rgba(19,75,112,.32);
-  --frame-border:1px solid rgba(19,75,112,.10);
-  --band-pad:13px 15px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+/* 旧デザインのクリーム→水色グラデをやめ、LPと同じ紙地に（2026-07-26） */
 body{font-family:var(--sans);color:var(--ink);line-height:1.6;overflow-x:hidden;
-  background:linear-gradient(180deg,
-    #FFF4E0 0%, #FCEEDC 16%,
-    #F4F6F2 34%, #E9F3FA 55%,
-    #DCEDF7 76%, #CFE5F2 100%)}
+  background:var(--paper)}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
 .wrap{max-width:1080px;margin:0 auto;padding:0 18px}
@@ -79,13 +78,14 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
   }
 
 /* ===== HERO（LP と同一の絵・同一の文字組） ===== */
-.hero{position:relative;padding:44px 0 56px;overflow:hidden;
-  background:url("/img/lp/hero_landscape.png") left center/cover no-repeat, linear-gradient(168deg,#2F6FA6,#1F72A8)}
+/* 海の写真＋白文字をやめ、LPと同じ紙地・墨文字に（2026-07-26） */
+.hero{position:relative;padding:52px 0 40px;overflow:hidden;background:var(--paper)}
 .hero-grid{position:relative;z-index:2;max-width:660px}
-.hero .crumb{font-size:12px;font-weight:600;color:#E4F2FB;text-shadow:0 1px 6px rgba(9,40,66,.8)}
-.hero .crumb a{color:#FFD97A}
-.hero h1{font-family:var(--serif);font-weight:700;font-size:clamp(1.95rem,5.4vw,3.2rem);line-height:1.06;color:#fff;margin:12px 0 10px;text-shadow:0 2px 10px rgba(9,40,66,.55),0 2px 26px rgba(9,40,66,.45)}
-.hero h1 i{color:#FFD97A;text-shadow:0 2px 8px rgba(9,40,66,.8),0 2px 20px rgba(9,40,66,.55)}
+.hero .crumb{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--verm);text-align:center}
+.hero .crumb a{color:var(--verm-ink)}
+/* 紙地になったので白文字＋影をやめ、LPと同じ墨文字に（2026-07-26） */
+.hero h1{font-family:var(--serif);font-weight:600;font-size:clamp(1.95rem,5.4vw,3.2rem);line-height:1.1;color:var(--ink);margin:12px 0 10px;text-align:center}
+.hero h1 em,.hero h1 i{font-style:italic;color:var(--verm)}
 /* Hero から降ろした導入。ヒーロー画像に文字を重ねず、地の文として読ませる */
 .lede{padding:26px 0 2px;text-align:center}
 .lede p{font-family:var(--serif);font-style:italic;font-size:clamp(16px,3.4vw,20px);
@@ -95,8 +95,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
    ピルにすると主張が強すぎて N1/N2 層を取りこぼす。かつ Hero 下端の淡い空の上では
    白文字が 1.66:1 まで沈んで読めなかったため、承認済みの crumb と同じ濃い帯の位置へ寄せた。
    オーバーレイもピルも足さない。 */
-.crumb .lv{margin-left:10px;padding-left:10px;border-left:1px solid rgba(255,255,255,.42);
-  font-size:11px;font-weight:600;letter-spacing:.06em;color:rgba(255,255,255,.86)}
+.crumb /* ヒーローが紙地になったので白では読めない（実測1.1:1）。crumb と同じ朱に揃える。 */
+.lv{margin-left:10px;padding-left:10px;border-left:1px solid var(--line);
+  font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--ink-soft)}
+/* --ink-faint(#8A98A0) は紙地で2.61:1＝読めない。--ink-soft は5.85:1でAA準拠、
+   かつ crumb の朱(4.56:1)と役割が競合しない（脇役として沈む）。実測して選定。 */
 @media(max-width:420px){.crumb .lv{margin-left:7px;padding-left:7px;font-size:10.5px}}
 @media(max-width:860px){
   .hero{padding:36px 0 48px}
@@ -106,7 +109,8 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 /* ===== 見出し（LP の棚ヘッダを踏襲） ===== */
 .shelf{padding:30px 0 6px}
 .shelf-head{display:flex;align-items:flex-end;gap:12px;margin-bottom:10px}
-.mag-no{font-family:var(--serif);font-style:italic;font-weight:700;font-size:54px;line-height:1;color:var(--sun-deep)}
+/* 習作は大きな斜体番号を使わない。小さな朱の連番に落とす（2026-07-26） */
+.mag-no{font-family:var(--serif);font-style:normal;font-weight:600;font-size:15px;line-height:1;color:var(--verm)}
 .eyebrow{display:inline-flex;align-items:center;
   font-size:11px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;
   color:#fff;background:var(--brand-navy);padding:5px 12px;border-radius:999px;
@@ -114,7 +118,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .shelf-head h2{font-family:var(--serif);font-weight:700;font-size:clamp(25px,4.2vw,34px);color:var(--ink);line-height:1.05}
 .caption{font-size:14px;color:var(--ink);font-style:italic;font-family:var(--serif);margin:0 0 6px}
 .caption b{color:var(--sun-deep);font-style:normal;font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;margin-right:6px}
-@media(max-width:600px){.mag-no{font-size:42px}.eyebrow{font-size:10.5px;padding:4px 11px;letter-spacing:.11em}}
+@media(max-width:600px){.mag-no{font-size:14px}.eyebrow{font-size:10.5px;padding:4px 11px;letter-spacing:.11em}}
 
 /* ===== 額縁（LP の .panel を踏襲） ===== */
 .panel{border-radius:var(--frame-radius);overflow:hidden;background:#fff;
@@ -124,21 +128,24 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .band span.s{display:block;font-size:11.5px;color:var(--ink-soft)}
 .tagpill{flex:0 0 auto;font-size:10px;font-weight:800;letter-spacing:.06em;padding:5px 9px;border-radius:999px;text-transform:uppercase}
 .tp-free{background:#DCF6EC;color:#1E9A5E}
+/* Coming soon（pointer-events:none + aria-disabled）の見た目。属性は付いていたのに
+   CSSが無く、押せるボタンと同じ濃さで出ていた＝準備中に見えなかった（2026-07-29検品）。 */
+[aria-disabled="true"]{opacity:.72}
 
 /* ===== 01 実例の1文（.lbl/.kanji/.hira/.en は LP と同じ役割・同じ色） ===== */
 .spec{margin:6px 0 4px;border-radius:var(--frame-radius);overflow:hidden;
   border:var(--frame-border);box-shadow:var(--frame-shadow);background:#fff}
-.spec-in{background:url("/img/lp/diary_landscape.png") center 60%/cover no-repeat;padding:26px 22px 24px;text-align:center}
+/* 海の画像＋白文字をやめ、LPの日記カードと同じ紙地・墨文字に（2026-07-26） */
+.spec-in{position:relative;background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:14px;padding:26px 24px;text-align:center}
+/* 紙地になったので白文字＋影をやめ、LPの日記カードと同じ配色に（2026-07-26） */
 .spec .lbl{font-size:9.5px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
-  color:#FFE9A8;text-shadow:0 1px 3px rgba(9,40,66,.85)}
-.spec .kanji{font-family:var(--jp-serif);font-weight:700;font-size:clamp(16.5px,4.3vw,27px);line-height:1.6;color:#fff;
-  margin-top:10px;text-shadow:0 1px 3px rgba(9,40,66,.9),0 3px 14px rgba(9,40,66,.6);
-  word-break:normal;overflow-wrap:break-word;line-break:strict}
-.spec .hira{font-family:var(--jp);font-size:clamp(11.5px,2.7vw,15px);line-height:1.55;color:rgba(255,255,255,.94);
-  margin-top:6px;text-shadow:0 1px 3px rgba(9,40,66,.9);
-  word-break:normal;overflow-wrap:break-word;line-break:strict}
-.spec .en{font-family:var(--serif);font-style:italic;font-size:clamp(13.5px,3vw,17px);color:#fff;margin-top:10px;
-  text-shadow:0 1px 3px rgba(9,40,66,.85)}
+  color:var(--ink-soft)}  /* --ink-faint は紙地で2.8:1＝読めない。ink-soft は5.85:1 */
+.spec .kanji{font-family:var(--jp-serif);font-weight:500;font-size:clamp(16.5px,4.3vw,27px);
+  line-height:1.66;color:var(--ink);margin-top:10px}
+.spec .hira{font-family:var(--jp);font-size:clamp(11.5px,2.7vw,15px);line-height:1.7;
+  color:var(--ink-soft);margin-top:8px;word-break:normal;overflow-wrap:anywhere}
+.spec .en{font-family:var(--serif);font-style:italic;font-size:clamp(13.5px,3vw,17px);
+  color:var(--ink);margin-top:10px}
 @media(max-width:430px){.spec-in{padding:22px 14px}}
 /* 出典はテキストのみ（/diary/ アーカイブは LP 動線から隔離しているため、ここからも送らない） */
 .spec-src{padding:11px 15px;font-size:11.5px;color:var(--ink-soft);text-align:center;border-top:1px solid var(--line);background:#fff}
@@ -149,7 +156,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .steps{display:flex;flex-direction:column;gap:14px;margin-top:6px}
 .step{background:#fff;border-radius:var(--frame-radius);border:var(--frame-border);box-shadow:var(--frame-shadow);
   display:grid;grid-template-columns:132px 1fr;overflow:hidden}
-.step-rail{background:linear-gradient(165deg,#FFF3DE,#FFE7C6);padding:20px 12px 18px;
+.step-rail{background:var(--paper);border-right:1px solid var(--paper-edge);padding:20px 12px 18px;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;text-align:center}
 .step-rail b{font-family:var(--serif);font-weight:700;font-size:44px;line-height:1;color:var(--sun-deep)}
 .step-rail em{font-style:normal;font-family:var(--jp);font-weight:400;font-size:16px;color:var(--brand-navy);margin-top:2px}
@@ -159,8 +166,11 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 .step-body p{font-size:14px;color:var(--ink);margin-top:7px}
 .step-body p.why{font-family:var(--serif);font-style:italic;font-size:14.5px;color:var(--ink-soft);
   margin-top:12px;padding-top:11px;border-top:1px solid var(--line)}
-.step-body p.why b{font-style:normal;font-family:var(--sans);font-weight:800;font-size:10px;letter-spacing:.14em;
-  text-transform:uppercase;color:var(--gold);margin-right:7px}
+/* 旧 --gold(#B98F2F) は紙地で2.63:1、別名先の --amber は1.70:1でどちらも読めない。
+   小ラベルなので LP の .tag と同じ朱(4.56:1)に揃える（実測して選定・2026-07-26）。
+   併せて display:block にしてラベルを改行させる（元は inline で本文とくっついていた）。 */
+.step-body p.why b{display:block;font-style:normal;font-family:var(--sans);font-weight:800;
+  font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--verm);margin:0 0 4px}
 @media(max-width:640px){
   .step{grid-template-columns:1fr}
   .step-rail{flex-direction:row;justify-content:flex-start;gap:11px;padding:12px 16px;text-align:left}
@@ -231,31 +241,34 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(255,250,2
 }
 
 /* ===== 03 1分の実感 ===== */
-.minute{margin:26px auto 4px;max-width:660px;background:
-  radial-gradient(420px 200px at 50% 0%, rgba(247,169,40,.22), transparent 62%),
-  linear-gradient(180deg,var(--cream-card),#FFEBC8);
-  border:1px solid rgba(247,169,40,.3);border-radius:24px;padding:26px 22px 24px;text-align:center;
-  box-shadow:var(--frame-shadow);position:relative;overflow:hidden}
-.minute::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
-  background:linear-gradient(90deg,transparent,var(--sun-hot) 22%,var(--sun) 42%,#FFD97A 50%,var(--sun) 58%,var(--sun-hot) 78%,transparent)}
-.minute .k{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:800;margin-bottom:12px}
-.bar{display:flex;height:66px;border-radius:13px;overflow:hidden;box-shadow:0 6px 16px -8px rgba(19,75,112,.45)}
-.bar span{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
-  font-size:11px;font-weight:800;letter-spacing:.03em;color:#fff;min-width:0;white-space:nowrap;overflow:hidden}
+/* ===== 朝の一巡のまとめ：index の Morning Loop と同じ画材に揃える（2026-07-26 オーナー指示）=====
+   旧実装は琥珀グラデの帯＋上端の光の線で、ページ全体を朱色・紙地にしたあと
+   ここだけ旧デザインが残っていた。文言は一切変えない。 */
+.minute{margin:26px auto 4px;max-width:660px;background:var(--paper-2);
+  border:1px solid var(--paper-edge);border-radius:20px;padding:26px 22px 24px;text-align:center;
+  box-shadow:0 12px 26px -18px rgba(28,52,70,.3)}
+.minute .k{font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--verm);font-weight:800;margin-bottom:14px}
 /* 秒数は数字で書かない（2026-07-21オーナー確定）。
    このページで見せているのは「1センテンスのサンプル」だが、実際の練習は1分の日記まるごと。
-   だから「きく○秒」と数字を出すと実物と食い違う。帯の幅は3工程の重みの体感を示すだけで、
-   秒数を表しているのではない。数字表記を復活させないこと。 */
-.bar .s1{flex:20 1 0;background:linear-gradient(135deg,#FFC661,#F7A928)}
-.bar .s2{flex:25 1 0;background:linear-gradient(135deg,#F79F2C,#F08114)}
-.bar .s3{flex:15 1 0;background:linear-gradient(135deg,#3E93C4,#1F72A8)}
-.bar em{font-style:normal;font-family:var(--jp);font-weight:700;font-size:14px;line-height:1.2}
-.bar small{font-size:9.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;opacity:.92;line-height:1.2}
-.minute h3{font-family:var(--serif);font-weight:700;font-size:clamp(21px,4.6vw,28px);color:var(--brand-navy);margin-top:16px;line-height:1.2}
+   だから「きく○秒」と数字を出すと実物と食い違う。数字表記を復活させないこと。
+   【2026-07-26】旧実装は帯の幅（flex 20/25/15）で3工程の重みの体感を示していたが、
+   index の Morning Loop に揃える指示により等間隔にした。重み表現を戻すならここ。 */
+.bar{display:flex;align-items:center;justify-content:center;gap:0 16px}
+.bar .st{display:flex;flex-direction:column;align-items:center;gap:1px}
+/* index の .card h3 と同じセリフ体・同じ墨色 */
+.bar small{font-family:var(--serif);font-weight:700;font-size:22px;line-height:1.16;
+  color:var(--ink);text-transform:none;letter-spacing:0}
+/* index の .loop .jp と同じ */
+.bar em{font-style:normal;font-family:var(--jp);font-weight:400;font-size:12.5px;
+  color:var(--ink-soft);line-height:1.3}
+/* 矢印は index の .loop-arrow と同じ朱。SVGはサイズ指定を忘れると巨大化する */
+.bar .loop-arrow{width:40px;height:22px;color:var(--verm);flex:0 0 auto}
+.minute h3{font-family:var(--serif);font-weight:700;font-size:clamp(21px,4.6vw,28px);color:var(--ink);margin-top:18px;line-height:1.2}
 @media(max-width:520px){
-  .bar{height:58px}
-  .bar em{font-size:12.5px}
-  .bar small{font-size:8.5px;letter-spacing:.1em}
+  .bar{gap:0 10px}
+  .bar small{font-size:18px}
+  .bar em{font-size:11.5px}
+  .bar .loop-arrow{width:26px;height:16px}
 }
 
 /* ===== 出口＝Starter Pack ゴールデンチケット（LP 02 Learn の .pv-stb をそのまま踏襲） ===== */
@@ -329,7 +342,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
 
 <nav><div class="wrap nav-in">
   <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
-  <div class="nav-links" id="navLinks"><a href="/#read">Read</a><a href="/method/">Method</a><a href="/#learn">Learn</a><a href="/#shop">Shop</a><a href="/#try">Try</a><a href="/#play">Play</a></div>
+  <div class="nav-links" id="navLinks"><a href="/#read">Read</a><a href="/news/">Good Mornings</a><a href="/method/">Method</a><a href="/#learn">Learn</a><a href="/#try">Try</a><a href="/#shop">The Shelf</a></div>
   <button class="nav-burger" type="button" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
 </div></nav>
 
@@ -462,9 +475,11 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
   <div class="minute">
     <div class="k">Your whole morning practice</div>
     <div class="bar">
-      <span class="s1"><small>Listen</small><em>きく</em></span>
-      <span class="s2"><small>Shadow</small><em>まねる</em></span>
-      <span class="s3"><small>Read</small><em>よむ</em></span>
+      <span class="st"><small>Listen</small><em>きく</em></span>
+      <svg class="loop-arrow" viewBox="0 0 40 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 13C9 5 20 4 30 10"/><path d="M25 5l6 5-7 4"/></svg>
+      <span class="st"><small>Shadow</small><em>まねる</em></span>
+      <svg class="loop-arrow" viewBox="0 0 40 22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 13C9 5 20 4 30 10"/><path d="M25 5l6 5-7 4"/></svg>
+      <span class="st"><small>Read</small><em>よむ</em></span>
     </div>
     <h3>Every morning starts here &mdash; one minute a day, and that&rsquo;s the whole method.</h3>
   </div>
@@ -472,7 +487,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
   <p class="bridge">Tomorrow&rsquo;s sentence is already written.<br>Here are your first seven.</p>
 
   <div class="exit">
-    <a class="panel" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_method">
+    <a class="panel" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup_method" style="pointer-events:none" aria-disabled="true" tabindex="-1">
       <div class="pv pv-stb">
         <div class="b-ticket">
           <div class="b-stub">
@@ -486,10 +501,14 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
             <span class="b-admit"><span class="box">Admit</span><span class="you">You</span></span>
           </div>
         </div>
+        <!-- 【温存・2026-07-29 公開前検品】CTAが「Coming soon」なのに封蝋と帯ピルだけ
+             「Free」＝いま無料でもらえると読める自己矛盾（読者パネル指摘）。
+             配布開始時にこの2つのコメントを外すだけで元に戻せる。
         <span class="stb-seal">Free</span>
-        <span class="stb-cta">Get it free &rarr;</span>
+        -->
+        <span class="stb-cta"><!-- 元: Get it free &rarr; -->Coming soon</span>
       </div>
-      <div class="band"><span class="bn"><b>Starter Pack</b><span class="s">7 mornings &middot; free to your inbox</span></span><span class="tagpill tp-free">Free</span></div>
+      <div class="band"><span class="bn"><b>Starter Pack</b><span class="s">7 mornings &middot; free to your inbox</span></span><!-- <span class="tagpill tp-free">Free</span> --></div>
     </a>
   </div>
 </div></section>
@@ -501,7 +520,8 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
       <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
       <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
       <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
-      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener">Substack</a>
+      <!-- Starter Pack が Coming soon の間の唯一の生きた購読導線。計測を付ける（2026-07-29） -->
+      <a href="https://ohayonihongo.substack.com" target="_blank" rel="noopener" data-oa-event="email_signup">Substack</a>
       <a href="https://ohayonihongodaily.etsy.com" target="_blank" rel="noopener" data-oa-event="buy_etsy">Etsy</a>
     </div>
     <p>New diary every morning on Spotify &amp; YouTube &mdash; &ldquo;OHAYO NIHONGO&rdquo;</p>
@@ -510,9 +530,9 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline;text-underlin
   </div>
 </footer>
 
-<!-- menu.js は読み込まない：このページは LP と同じ固定ナビ（Read/Method/Learn/Shop/Try/Play + Join free）を
-     持つため、menu.js のハンバーガー（fixed top-right）が Join free ボタンに重なる。
-     LP index.html も同じ理由で menu.js を読み込んでいない。 -->
+<!-- menu.js は読み込まない：このページは LP と同じ固定ナビ（Read/Method/Learn/Try/Play/The Shelf）を
+     持つため、menu.js のハンバーガー（fixed top-right）と二重になる。
+     LP index.html も同じ理由で menu.js を読み込んでいない。（Join free は2026-07-21に削除済み） -->
 <!-- Try Listen：<audio controls> を出さない（右クリック保存の導線を作らない）。
      再生中はボタンが停止表示に変わり、波形アニメが動く。押し直しで停止＝2回聴く手順が踏める。 -->
 <script>

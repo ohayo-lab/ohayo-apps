@@ -10,11 +10,13 @@
   // /diary/ アーカイブは動線から隔離済みなので出さない（2026-07-21オーナー確定・再提案禁止）。
   var LINKS = [
     { href: "/#read",   label: "Read",   jp: "よむ" },
+    { href: "/news/",   label: "Good Mornings", jp: "きょうの、いいこと。" },
     { href: "/#method", label: "Method", jp: "メソッド" },
     { href: "/#learn",  label: "Learn",  jp: "つづける" },
-    { href: "/#shop",   label: "Shop",   jp: "ショップ" },
     { href: "/#try",    label: "Try",    jp: "ためす" },
-    { href: "/#play",   label: "Play",   jp: "あそぶ" }
+    // Play項目は2026-07-27統括決裁で削除（ゲームはLPから一旦退避・ナビ露出も消す）。
+    // /play/ ハブ自体は温存（sitemap・直リンク・台湾レーン用）。再登板時にここへ復帰。
+    { href: "/#shop",   label: "The Shelf", jp: "ほんだな" },
   ];
 
   var css = ""
