@@ -29,13 +29,27 @@
 body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
   -webkit-font-smoothing:antialiased}
 a{color:inherit;text-decoration:none}
-.wrap{width:100%;max-width:1044px;margin:0 auto;padding:0 20px}
+.wrap{width:100%;max-width:1044px;margin:0 auto;padding:0 18px}  /* LPと同じ左右余白（2026-07-29） */
 
-.brand{display:inline-block;margin:26px 0 0;font-size:12px;font-weight:800;
-  letter-spacing:.2em;text-transform:uppercase;color:var(--verm)}
+/* 【2026-07-29 オーナー実機指摘】LPのワードマーク（.logo b）と同じ見た目・位置に揃える。
+   旧: 12px・字間.2em・大文字・朱で、LPから来ると別サイトの見出しに見えた。 */
+.brand{display:inline-block;margin:17px 0 0;font-family:var(--sans);font-size:14.5px;
+  font-weight:800;letter-spacing:.05em;text-transform:none;color:var(--ink);white-space:nowrap}
 
 /* ===== 習作文法（§2-1）===== */
 .block{padding:56px 0 8px}
+/* 【2026-07-29 オーナー実機指摘】スマホでの改行位置を固定（LPと同じ作法）。
+   kicker「THREE GOOD THINGS FROM JAPAN」は1行に、h2は「Good mornings,／three at a time.」で改行。 */
+.sp-br{display:none}
+@media(max-width:620px){
+  .sp-br{display:inline}
+  .kicker{gap:7px;font-size:9.5px;letter-spacing:.08em;white-space:nowrap}
+  .kicker .dash{width:14px}
+}
+@media(max-width:360px){
+  .kicker{gap:5px;font-size:8.5px;letter-spacing:.04em}
+  .kicker .dash{width:10px}
+}
 .kicker{display:flex;align-items:center;justify-content:center;gap:12px;
   font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--verm)}
 .kicker .dash{display:block;width:26px;height:1.5px;background:var(--verm);opacity:.8}
@@ -117,7 +131,7 @@ footer .legal{color:rgba(255,255,255,.8);text-decoration:underline}
 
 <section class="block"><div class="wrap">
   <span class="kicker"><span class="dash"></span>Three good things from Japan<span class="dash"></span></span>
-  <h2 class="h2">Good mornings, <em>three at a time.</em></h2>
+  <h2 class="h2">Good mornings,<br class="sp-br"> <em>three at a time.</em></h2>
   <p class="lead">Three small, kind pieces of news from Japan &mdash; written in simple Japanese with furigana, so you can read them before your coffee goes cold. Nothing sad, nothing loud. Just the warm part of the day.</p>
 
   <div class="date-row">

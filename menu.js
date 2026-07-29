@@ -11,7 +11,7 @@
   var LINKS = [
     { href: "/#read",   label: "Read",   jp: "よむ" },
     { href: "/news/",   label: "Good Mornings", jp: "きょうの、いいこと。" },
-    { href: "/#method", label: "Method", jp: "メソッド" },
+    { href: "/method/",  label: "Method", jp: "メソッド" },  // LPアンカーではなく実ページへ（2026-07-29 オーナー指摘）
     { href: "/#learn",  label: "Learn",  jp: "つづける" },
     { href: "/#try",    label: "Try",    jp: "ためす" },
     // Play項目は2026-07-27統括決裁で削除（ゲームはLPから一旦退避・ナビ露出も消す）。
