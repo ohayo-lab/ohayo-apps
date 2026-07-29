@@ -1,0 +1,1155 @@
+<!doctype html>
+<!--
+  ★ PREVIEW ONLY — 新アート（ヘッドホンの女性キャラ・水彩トーン / img2/）の検品用。
+    本番は index.html + img/。このファイルと img2/ 以外は触らないこと。
+  KANA QUEST — a light side-scrolling kana runner (beta prototype)
+  ============================================================================
+  MECHANIC (jump-collect):
+    The OHAYO sun mascot auto-runs to the right across a Tokyo-morning parallax
+    scene. A target ROMAJI prompt is shown up top (e.g. "KA"). Floating kana
+    tiles drift toward the player at two heights (high = jump to reach,
+    low = grab while grounded). JUMP with tap / click / Space.
+      - Collect the CORRECT kana (matches the prompt reading)  => +score, chime,
+        new prompt.
+      - Collect a WRONG kana                                    => lose a heart.
+    Start with 5 hearts. 0 hearts = game over. Speed & spawn-rate ramp with
+    distance. Best score saved in localStorage.
+
+  This is a BETA PROTOTYPE: art is intentionally minimal canvas shapes, no
+  external assets/fonts/audio files. All sound is synthesized via WebAudio.
+  Fully self-contained, offline & strict-CSP safe.
+  ============================================================================
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Kana Quest PREVIEW · OHAYO NIHONGO</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<link rel="icon" type="image/png" href="img2/char_front.png">
+<style>
+  :root{
+    --cream:#FAF7F1; --paper:#FFF; --ink:#1C1C1C; --sub:#4A4A4A; --line:#DFD7C9;
+    --gold:#B98F2F; --yellow:#FFC93C; --navy:#134B70; --sun:#F7A928; --sun-deep:#F08114;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0; padding:0; height:100%; overflow:hidden; background:var(--navy);}
+  body{
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    color:var(--ink); touch-action:none; user-select:none; -webkit-user-select:none;
+  }
+  /* IMMERSIVE FULL-BLEED LAYOUT — the canvas fills the whole viewport and the
+     header / footer float on top of the artwork (no cream bands). */
+  #wrap{position:fixed; inset:0;}
+  header{
+    position:absolute; top:0; left:0; right:0; z-index:12;
+    background:transparent; border-bottom:none;
+    padding:calc(6px + env(safe-area-inset-top,0px)) 14px 6px;
+    display:flex; align-items:baseline; gap:10px; pointer-events:none;
+  }
+  header > *{pointer-events:auto;}
+  header a.brand{
+    font-family:Georgia,"Times New Roman",serif; font-weight:700; font-size:15px;
+    color:var(--cream); text-decoration:none; letter-spacing:.2px;
+    text-shadow:0 1px 4px rgba(19,75,112,.75), 0 0 12px rgba(19,75,112,.45);
+  }
+  header .sub{font-size:11px; color:rgba(250,247,241,.9);
+    text-shadow:0 1px 4px rgba(19,75,112,.75);}
+  header .spacer{flex:1; pointer-events:none;}
+  #muteBtn{
+    background:rgba(19,75,112,.42); border:1px solid rgba(250,247,241,.4); border-radius:999px;
+    font-size:14px; padding:5px 11px; cursor:pointer; color:var(--cream);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+    margin-right:54px; /* keep clear of the fixed ☰ menu (menu.js) */
+  }
+  /* soft scrims so header / footer text stays legible over any part of the art */
+  #wrap::before, #wrap::after{
+    content:""; position:absolute; left:0; right:0; z-index:4; pointer-events:none;
+  }
+  #wrap::before{top:0; height:96px;
+    background:linear-gradient(180deg, rgba(19,75,112,.42) 0%, rgba(19,75,112,.16) 55%, rgba(19,75,112,0) 100%);}
+  #wrap::after{bottom:0; height:76px;
+    background:linear-gradient(0deg, rgba(19,75,112,.46) 0%, rgba(19,75,112,.16) 60%, rgba(19,75,112,0) 100%);}
+  #stage{position:absolute; inset:0;}
+  canvas{display:block; width:100%; height:100%; touch-action:none;}
+
+  /* ---- overlays ---- */
+  .overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    padding:24px; z-index:10;
+  }
+  .card{
+    background:rgba(228,244,252,.9); border:1px solid rgba(255,255,255,.65);
+    border-radius:22px; padding:18px 22px; max-width:340px; width:100%;
+    box-shadow:0 18px 50px rgba(19,75,112,.25);
+    backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  }
+  .card h1{
+    font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+    font-weight:800; font-size:28px; margin:0 0 4px; color:var(--ink);
+    letter-spacing:.5px;
+  }
+  .card .logoImg{ display:block; width:100%; max-width:100%; height:auto; margin:2px auto 4px; }
+  /* PREVIEW: 新アートは全身の縦長キャラ（1023x1537）なので、
+     旧スタンプ（70px/58px）のままだと小さすぎる → 120px に引き上げ */
+  #overChar{ display:block; height:120px; width:auto; margin:0 auto 6px; }
+  /* 終了画面のタイポは3ゲーム共通スケール:
+     見出し20px / スコア数値22px / ラベル12.5px / Best 11px / 主CTA 14.5px / 従ボタン12px
+     （"Game Over" のキッカーは廃止したので上余白も詰める） */
+  #overOverlay .card{ padding-top:14px; padding-bottom:16px; }
+  /* 終了画面のピルは kana-drop と同寸に揃える */
+  #overOverlay .ctaLp{ font-size:13px; padding:10px 12px; margin-top:11px; }
+  #overOverlay .ctaLp .sub2{ font-size:10px; }
+  #overOverlay .cta2{ font-size:12px; padding:8px 16px; margin-top:8px; }
+  #overOverlay #overChar{ height:120px; }
+  #overOverlay .card h1{ font-size:21px; margin:0 0 2px; }
+  .card .kicker{font-size:12px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:6px;}
+  .card p.how{font-size:12.5px; line-height:1.45; color:var(--sub); margin:9px 0 13px;}
+  .modeRow{display:flex; gap:9px; justify-content:center; margin-bottom:13px;}
+  .modeBtn{
+    flex:1; background:#FFFDF7; border:2px solid #134B70; border-radius:10px;
+    padding:7px 6px; cursor:pointer; font-size:11.5px; color:#134B70; font-weight:700;
+    transition:border-color .15s, background .15s;
+  }
+  .modeBtn .jp{display:block; font-size:16px; color:var(--ink); margin-bottom:1px;
+    font-family:'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;}
+  .modeBtn.active{border-color:var(--sun); background:#FFF7EA; color:var(--ink);}
+  /* button language aligned with Kana Drop (navy 2px border + navy 3D drop shadow) */
+  .cta{
+    display:block; width:100%; color:#3a2e08;
+    background:#FFC93C;
+    border:2px solid #134B70; border-radius:14px; padding:11px; font-size:14px; font-weight:800;
+    cursor:pointer; letter-spacing:.4px;
+    box-shadow:0 4px 0 #134B70;
+    transition:transform .06s, box-shadow .06s;
+  }
+  .cta:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
+  .cta2{
+    /* 従ボタンは3ゲーム共通寸法（font 12px / padding 9px 18px / 高さ約37px） */
+    display:block; width:100%; margin-top:10px; background:#FFFDF7;
+    border:2px solid #134B70; border-radius:14px; padding:9px 18px;
+    font-size:12px; font-weight:700; color:#134B70; text-decoration:none;
+    letter-spacing:.4px; font-family:inherit; cursor:pointer;
+    box-shadow:0 3px 0 #134B70;
+    transition:transform .06s, box-shadow .06s;
+  }
+  .cta2 .sub2{display:block; font-size:10.5px; font-weight:600; color:var(--sub); margin-top:2px; letter-spacing:.2px;}
+  .cta2:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
+  /* primary LP return CTA — the strongest button on the game-over card */
+  .ctaLp{
+    display:block; width:100%; margin-top:14px; text-align:center;
+    background:linear-gradient(180deg,#FFD76B,#FFC93C); color:#3A2E08;
+    border:2px solid #134B70; border-radius:14px; padding:13px 12px;
+    font-family:inherit; font-size:14.5px; font-weight:800; line-height:1.25;
+    white-space:nowrap;
+    text-decoration:none; letter-spacing:.2px; cursor:pointer;
+    box-shadow:0 4px 0 #134B70;
+    transition:transform .06s, box-shadow .06s;
+  }
+  .ctaLp .sub2{
+    display:block; margin-top:3px; font-size:10.5px; font-weight:700;
+    color:#5C4A12; letter-spacing:.2px;
+    font-family:'Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+  }
+  .ctaLp:active{transform:translateY(3px); box-shadow:0 1px 0 #134B70;}
+  /* ------------------------------------------------------------------
+     LINEスタンプ誘導（販売申請の許可後に有効化）
+     許可が下りたら、主CTA（.ctaLp）の直後に次の1行を追加するだけ:
+       <a class="cta-sub-line" data-oa-event="get_sticker"
+          href="<スタンプ販売URL>" target="_blank" rel="noopener">
+         Get the OHAYO sun stickers →<span class="sub2">LINEスタンプ はんばいちゅう</span>
+       </a>
+     ※CSSは下に用意済み。レイアウト調整は不要。
+     ------------------------------------------------------------------ */
+  .cta-sub-line{
+    display:block; width:100%; margin-top:9px; text-align:center;
+    background:transparent; color:var(--sub);
+    border:1px solid var(--line); border-radius:12px; padding:9px 12px;
+    font-family:inherit; font-size:12.5px; font-weight:700; line-height:1.25;
+    text-decoration:none; cursor:pointer;
+  }
+  .cta-sub-line .sub2{
+    display:block; margin-top:3px; font-size:10.5px; font-weight:600; color:var(--sub);
+    font-family:'Hiragino Maru Gothic ProN','Hiragino Sans','Noto Sans JP',sans-serif;
+  }
+  .cta-sub-line:active{transform:translateY(1px);}
+  .statline{font-size:12.5px; color:var(--sub); margin:11px 0 0;}
+  .statline b{color:var(--ink); font-size:22px; font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN',sans-serif; font-weight:800;}
+  .best{font-size:11px; color:var(--gold); margin-top:2px;}
+  .share{
+    margin-top:12px; font-size:11px; color:var(--sub); background:var(--cream);
+    border:1px dashed var(--line); border-radius:8px; padding:9px 10px; line-height:1.4;
+    cursor:pointer; word-break:break-word;
+  }
+  .share b{color:var(--ink);}
+  .hidden{display:none !important;}
+
+  /* ---- in-game HUD ---- */
+  #hud{
+    position:absolute; top:0; left:0; right:0; z-index:6; pointer-events:none;
+    display:flex; align-items:flex-start; justify-content:flex-end;
+    /* top padding clears the floating header (brand + mute) that now overlays the canvas */
+    padding:calc(46px + env(safe-area-inset-top,0px)) 66px 10px 12px; gap:10px;
+  }
+  #promptBox{
+    pointer-events:none;
+    background:transparent url("img2/collect_panel.png") no-repeat center/100% 100%;
+    border:none; box-shadow:none;
+    /* panel art is 800:450 with a sun ornament poking above the top edge —
+       extra top padding keeps the label off the sun & inside the cream face */
+    padding:34px 34px 18px; text-align:center; min-width:170px;
+    position:absolute; left:50%; top:calc(94px + env(safe-area-inset-top,0px)); transform:translateX(-50%);
+  }
+  #promptBox.pop{animation:promptPop .35s ease;}
+  @keyframes promptPop{
+    0%{transform:translateX(-50%) scale(1);}
+    50%{transform:translateX(-50%) scale(1.16);}
+    100%{transform:translateX(-50%) scale(1);}
+  }
+  #promptBox .lbl{font-size:10px; letter-spacing:2px; color:var(--gold); text-transform:uppercase;}
+  #promptBox .romaji{font-size:34px; font-weight:800; color:var(--navy); line-height:1; font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN',sans-serif;}
+  #hudRight{display:flex; flex-direction:column; align-items:flex-end; gap:4px; pointer-events:none;}
+  .hudPill{
+    background:transparent url("img2/score_pill.png") no-repeat center/100% 100%;
+    border:none; box-shadow:none;
+    padding:5px 16px; font-size:13px; font-weight:700; color:var(--ink);
+  }
+  #hearts{font-size:15px; letter-spacing:1px; line-height:0;}
+  #hearts img{height:12px; vertical-align:middle;}
+  #jumpHint{
+    position:absolute; bottom:calc(30px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
+    background:url("img2/jump_button.png") no-repeat center/cover;
+    color:var(--ink); border:none; border-radius:50%;
+    width:78px; height:78px; font-size:14px; font-weight:800; cursor:pointer; letter-spacing:.5px;
+    text-shadow:0 1px 2px rgba(255,255,255,.7);
+    transition:transform .06s;
+  }
+  #jumpHint:active{
+    transform:translateY(4px);
+  }
+  #toast{
+    position:absolute; top:52%; left:50%; transform:translate(-50%,-50%);
+    z-index:7; pointer-events:none; font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN',sans-serif; font-weight:800;
+    font-size:40px; opacity:0; transition:opacity .18s;
+    text-shadow:0 2px 8px rgba(0,0,0,.25);
+  }
+  footer{
+    position:absolute; left:0; right:0; bottom:0; z-index:12;
+    background:transparent; border-top:none; pointer-events:none;
+    text-align:center; padding:5px 96px calc(6px + env(safe-area-inset-bottom,0px)) 12px;
+    font-size:11px;
+  }
+  footer a{color:rgba(250,247,241,.92); text-decoration:none; pointer-events:auto;
+    text-shadow:0 1px 4px rgba(19,75,112,.8), 0 0 12px rgba(19,75,112,.5);}
+  footer a:hover{color:var(--yellow);}
+  /* landscape phones: too short to play — ask to rotate (game pauses via JS) */
+  #rotateOverlay{
+    position:absolute; inset:0; z-index:20; display:none;
+    align-items:center; justify-content:center; text-align:center;
+    background:rgba(19,75,112,.94); color:#FFF;
+    font-size:19px; font-weight:800; line-height:1.7;
+  }
+  #rotateOverlay .sub{display:block; font-size:13px; font-weight:600; opacity:.85;}
+  @media (orientation:landscape) and (pointer:coarse) and (max-height:600px){
+    #rotateOverlay{display:flex;}
+  }
+  @media (max-width:480px){
+    /* ヘッダーは kana-drop と同じ体裁: 1行目=ロゴ+ミュート / 2行目=サブタイトル */
+    header{flex-wrap:wrap; align-items:center; row-gap:0;}
+    header a.brand{order:1; white-space:nowrap; font-size:14px;}
+    header .spacer{order:2;}
+    #muteBtn{order:3;}
+    header .sub{display:block; order:4; width:100%; margin-top:-1px; font-size:10.5px;}
+    /* score/hearts/level in ONE row at top-right; prompt box sits BELOW it */
+    #hudRight{flex-direction:row; align-items:center; flex-wrap:wrap; justify-content:flex-end; gap:5px;}
+    .hudPill{font-size:12px; padding:2px 9px;}
+    #hearts{font-size:13px;}
+    /* full-bleed layout: the HUD row is pushed below the floating header,
+       so the prompt panel drops with it */
+    #promptBox{top:calc(90px + env(safe-area-inset-top,0px));}
+  }
+  @media (max-width:400px){
+    .card h1{font-size:26px;} #promptBox .romaji{font-size:26px;}
+    /* keep top padding so the label stays clear of the panel's sun ornament */
+    #promptBox{min-width:136px; padding:26px 22px 14px;}
+  }
+</style>
+</head>
+<body>
+<div id="wrap">
+  <header>
+    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><img src="img2/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO NIHONGO</a>
+    <span class="sub">Kana Quest · New art preview</span>
+    <span class="spacer"></span>
+    <button id="muteBtn" aria-label="Toggle sound"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg></button>
+  </header>
+
+  <div id="stage">
+    <canvas id="game"></canvas>
+
+    <!-- HUD (hidden until playing) -->
+    <div id="hud" class="hidden">
+      <div id="promptBox">
+        <div class="lbl">Collect</div>
+        <div class="romaji" id="promptRomaji">KA</div>
+      </div>
+      <div id="hudRight">
+        <div class="hudPill" id="scorePill">0</div>
+        <div class="hudPill" id="hearts"></div>
+        <div class="hudPill" id="distPill">Lv 1 · 0m</div>
+      </div>
+    </div>
+    <div id="toast"></div>
+    <button id="jumpHint" class="hidden">JUMP</button>
+
+    <!-- rotate-to-portrait notice (landscape phones) -->
+    <div id="rotateOverlay">
+      <div>Please rotate your phone<br>
+        <span class="sub">縦向きでプレイしてね — the game is paused</span>
+      </div>
+    </div>
+
+    <!-- START overlay -->
+    <div id="startOverlay" class="overlay">
+      <div class="card">
+        <img class="logoImg" src="img2/logo_kanaquest.png" alt="Kana Quest">
+        <p class="how">Run with the morning sun. <b>Jump</b> to grab the kana that matches the prompt — dodge the wrong ones. Tap / Space to jump.</p>
+        <div class="modeRow">
+          <button class="modeBtn active" data-mode="hira"><span class="jp">あ</span>Hiragana</button>
+          <button class="modeBtn" data-mode="kata"><span class="jp">ア</span>Katakana</button>
+        </div>
+        <button class="cta" id="startBtn">START</button>
+        <div class="best" id="startBest"></div>
+      </div>
+    </div>
+
+    <!-- GAME OVER overlay -->
+    <div id="overOverlay" class="overlay hidden">
+      <div class="card">
+        <img id="overChar" src="img2/char_front.png" alt="">
+        <h1 id="overTitle"></h1>
+        <p class="statline">Score<br><b id="finalScore">0</b></p>
+        <div class="best" id="finalBest">Best: 0</div>
+        <a class="ctaLp" data-oa-event="play_to_lp" href="../../?utm_source=game&amp;utm_medium=cta&amp;utm_campaign=play&amp;utm_content=kanaquest">
+          Read today's diary<span class="sub2">きょうの にっきを よんでみる？</span>
+        </a>
+        <button class="cta2" id="replayBtn">PLAY AGAIN</button>
+        <div class="share" id="shareLine">Tap to copy your score line</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+  <div class="fnav"><a href="/">Home</a></div>
+  <p>New diary every morning on Spotify &amp; YouTube — search "OHAYO NIHONGO"</p>
+  <p>&copy; 2026 OHAYO NIHONGO</p>
+</footer>
+</div>
+
+<script>
+"use strict";
+(function(){
+  // ======================= KANA READING TABLES =======================
+  // Gojūon (basic 46). Each entry: [kana, romaji].
+  const HIRA = [
+    ["あ","A"],["い","I"],["う","U"],["え","E"],["お","O"],
+    ["か","KA"],["き","KI"],["く","KU"],["け","KE"],["こ","KO"],
+    ["さ","SA"],["し","SHI"],["す","SU"],["せ","SE"],["そ","SO"],
+    ["た","TA"],["ち","CHI"],["つ","TSU"],["て","TE"],["と","TO"],
+    ["な","NA"],["に","NI"],["ぬ","NU"],["ね","NE"],["の","NO"],
+    ["は","HA"],["ひ","HI"],["ふ","FU"],["へ","HE"],["ほ","HO"],
+    ["ま","MA"],["み","MI"],["む","MU"],["め","ME"],["も","MO"],
+    ["や","YA"],["ゆ","YU"],["よ","YO"],
+    ["ら","RA"],["り","RI"],["る","RU"],["れ","RE"],["ろ","RO"],
+    ["わ","WA"],["を","WO"],["ん","N"]
+  ];
+  const KATA = [
+    ["ア","A"],["イ","I"],["ウ","U"],["エ","E"],["オ","O"],
+    ["カ","KA"],["キ","KI"],["ク","KU"],["ケ","KE"],["コ","KO"],
+    ["サ","SA"],["シ","SHI"],["ス","SU"],["セ","SE"],["ソ","SO"],
+    ["タ","TA"],["チ","CHI"],["ツ","TSU"],["テ","TE"],["ト","TO"],
+    ["ナ","NA"],["ニ","NI"],["ヌ","NU"],["ネ","NE"],["ノ","NO"],
+    ["ハ","HA"],["ヒ","HI"],["フ","FU"],["ヘ","HE"],["ホ","HO"],
+    ["マ","MA"],["ミ","MI"],["ム","MU"],["メ","ME"],["モ","MO"],
+    ["ヤ","YA"],["ユ","YU"],["ヨ","YO"],
+    ["ラ","RA"],["リ","RI"],["ル","RU"],["レ","RE"],["ロ","RO"],
+    ["ワ","WA"],["ヲ","WO"],["ン","N"]
+  ];
+
+  // ======================= WEBAUDIO SFX =======================
+  const Sfx = (function(){
+    let ctx=null, muted=(localStorage.getItem('kq_muted')==='1');
+    function ensure(){
+      if(!ctx){
+        try{ ctx = new (window.AudioContext||window.webkitAudioContext)(); }
+        catch(e){ ctx=null; }
+      }
+      if(ctx && ctx.state==="suspended") ctx.resume();
+      return ctx;
+    }
+    function tone(freq, dur, type, gain, whenOffset){
+      if(muted) return;
+      const c=ensure(); if(!c) return;
+      const t0 = c.currentTime + (whenOffset||0);
+      const o=c.createOscillator(), g=c.createGain();
+      o.type=type||"sine"; o.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(gain||0.2, t0+0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+      o.connect(g); g.connect(c.destination);
+      o.start(t0); o.stop(t0+dur+0.02);
+    }
+    // ---- BGM: OHAYO NIHONGO theme (bgm.mp3 = main-video BGM2 loop) ----
+    // Looped via WebAudio buffer + GainNode at a whisper — GainNode volume
+    // works on iOS (the <audio> volume property does not).
+    // ブランド接触点としてBGMを「うっすら聴こえる」レベルに（2026-07-20 オーナー指示で 0.03→0.09）
+    // ポッドキャストと同じテーマ曲なので、毎日聴く人ほど記憶に残る。SFXは邪魔しない範囲で。
+    const BGM_GAIN = 0.09;
+    let bgmOn=false, bgmBuf=null, bgmSrc=null, bgmGainNode=null, bgmLoading=false;
+    function loadBgm(){
+      if(bgmBuf || bgmLoading) return;
+      bgmLoading=true;
+      fetch("bgm.mp3?v=2")
+        .then(r=>{ if(!r.ok) throw 0; return r.arrayBuffer(); })
+        .then(ab=>{
+          const c=ensure(); if(!c) throw 0;
+          return new Promise((res,rej)=>c.decodeAudioData(ab,res,rej));
+        })
+        .then(buf=>{ bgmBuf=buf; bgmLoading=false; runBgm(); })
+        .catch(()=>{ bgmLoading=false; });
+    }
+    function runBgm(){
+      if(bgmSrc || muted || !bgmOn) return;
+      const c=ensure(); if(!c) return;
+      if(!bgmBuf){ loadBgm(); return; }   // starts once decode completes
+      bgmGainNode=c.createGain(); bgmGainNode.gain.value=BGM_GAIN;
+      bgmSrc=c.createBufferSource(); bgmSrc.buffer=bgmBuf; bgmSrc.loop=true;
+      bgmSrc.connect(bgmGainNode); bgmGainNode.connect(c.destination);
+      bgmSrc.start();
+    }
+    function haltBgm(){
+      if(bgmSrc){ try{bgmSrc.stop();}catch(e){} try{bgmSrc.disconnect();}catch(e){} bgmSrc=null; }
+      if(bgmGainNode){ try{bgmGainNode.disconnect();}catch(e){} bgmGainNode=null; }
+    }
+    // iOS unlock. Two parts, both must run inside a user gesture:
+    //  1) play a silent WebAudio buffer to resume the context
+    //  2) loop a silent <audio> element — this flips the iOS audio session to
+    //     "playback" so the ringer/silent switch no longer mutes WebAudio
+    let mediaUnlock=null;
+    const SILENT_WAV="data:audio/wav;base64,UklGRrQBAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YZABAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA";
+    function unlock(){
+      const c=ensure(); if(!c) return;
+      if(c.state==="suspended") c.resume();
+      try{
+        const b=c.createBuffer(1,1,22050), s=c.createBufferSource();
+        s.buffer=b; s.connect(c.destination); s.start(0);
+      }catch(e){}
+      try{
+        if(!mediaUnlock){
+          mediaUnlock=new Audio(SILENT_WAV);
+          mediaUnlock.loop=true;
+          mediaUnlock.setAttribute("playsinline","");
+        }
+        mediaUnlock.play().catch(()=>{});
+      }catch(e){}
+    }
+    // first tap/click anywhere also unlocks (belt & suspenders for iOS)
+    ["touchend","click"].forEach(ev=>
+      window.addEventListener(ev, unlock, {once:true, capture:true}));
+    // iOS suspends the context when the tab loses focus — resume on return
+    document.addEventListener("visibilitychange", ()=>{
+      if(!document.hidden && ctx && ctx.state==="suspended") ctx.resume();
+    });
+    return {
+      init(){ ensure(); unlock(); loadBgm(); },
+      setMuted(m){ muted=m; if(m) haltBgm(); else runBgm(); },
+      isMuted(){ return muted; },
+      startBgm(){ bgmOn=true; runBgm(); },
+      stopBgm(){ bgmOn=false; haltBgm(); },
+      jump(){ tone(520,0.16,"square",0.08); tone(760,0.12,"square",0.05,0.05); },
+      coin(){ tone(880,0.09,"square",0.05); tone(1320,0.14,"square",0.04,0.07); },
+      hit(){ tone(180,0.28,"sawtooth",0.11); tone(120,0.30,"sawtooth",0.09,0.02); },
+      // すごい！ new-best fanfare
+      win(){ tone(523,0.14,"square",0.09); tone(659,0.14,"square",0.09,0.12);
+             tone(784,0.14,"square",0.09,0.24); tone(1047,0.42,"square",0.1,0.36); },
+      // ざんねん… descending
+      lose(){ tone(392,0.2,"triangle",0.1); tone(330,0.22,"triangle",0.1,0.18);
+              tone(262,0.45,"triangle",0.1,0.36); }
+    };
+  })();
+
+  // ======================= CANVAS SETUP =======================
+  const canvas = document.getElementById("game");
+  const g = canvas.getContext("2d");
+  let VW=0, VH=0, DPR=1;
+
+  // generated background art (fal.ai flux) — procedural sky is the fallback
+  const bgImg = new Image();
+  let bgReady = false;
+  bgImg.onload = ()=>{ bgReady = true; };
+  bgImg.src = "img2/bg_sunrise_meadow_hd.jpg";
+
+  // sprite art (RGBA, checker-stripped) — vector shapes are the fallback
+  const charRunImg = new Image();  let charRunReady = false;
+  charRunImg.onload = ()=>{ charRunReady = true; };
+  charRunImg.src = "img2/char_run_right.png";
+  const charJumpImg = new Image(); let charJumpReady = false;
+  charJumpImg.onload = ()=>{ charJumpReady = true; };
+  charJumpImg.src = "img2/char_jump_touch_left.png";
+  const tileImg = new Image();     let tileReady = false;
+  tileImg.onload = ()=>{ tileReady = true; };
+  tileImg.src = "img2/tile_block.png";
+  const sparkleImg = new Image();  let sparkleReady = false;
+  sparkleImg.onload = ()=>{ sparkleReady = true; };
+  sparkleImg.src = "img2/sparkle.png";
+
+  function resize(){
+    DPR = Math.min(window.devicePixelRatio||1, 2.5);
+    const r = canvas.getBoundingClientRect();
+    VW = Math.max(1, r.width); VH = Math.max(1, r.height);
+    canvas.width  = Math.round(VW*DPR);
+    canvas.height = Math.round(VH*DPR);
+    g.setTransform(DPR,0,0,DPR,0,0);
+    computeLayout();
+  }
+  window.addEventListener("resize", resize);
+  window.addEventListener("orientationchange", ()=>setTimeout(resize,120));
+
+  // ground / world layout derived from viewport
+  let groundY=0, runnerX=0, speedK=1;
+  function computeLayout(){
+    groundY = VH - Math.max(64, VH*0.16);   // ground line
+    runnerX = Math.max(60, VW*0.17);         // fixed horizontal runner position
+    // narrow phone screens leave less reaction distance — slow the world down
+    speedK = VW < 420 ? 0.72 : VW < 560 ? 0.84 : 1;
+  }
+
+  // ======================= GAME STATE =======================
+  const State = { START:0, PLAY:1, OVER:2 };
+  let state = State.START;
+  let mode = "hira";
+  let deck = HIRA;
+
+  const MAX_HEARTS=5;
+  let score=0, best=0, hearts=MAX_HEARTS, distance=0, level=1;
+  let worldSpeed=0;         // px/sec the world scrolls left
+  let spawnTimer=0, spawnGap=1.15;
+  let prompt=null;          // {kana,romaji}
+  let entities=[];          // active kana tiles
+  const pool=[];            // recycled tiles
+  let bgScroll=0, hillScroll=0, groundScroll=0;
+  let toastTimer=0;
+  // grace window: right after a correct grab the prompt switches, so any
+  // still-in-flight tiles carrying the just-cleared reading shouldn't punish.
+  let graceRomaji=null, graceTimer=0;
+  let flashRed=0;
+  let sparkles=[];          // correct-collect sparkle bursts {x,y,t}
+
+  // runner physics
+  const runner = { y:0, vy:0, onGround:true, bob:0, runCycle:0 };
+  const GRAV = 2100;         // px/s^2
+  const JUMP_V = -820;       // initial jump velocity
+  const RUNNER_R = 21;       // collision radius（当たり判定は本番と同じ・変更しない）
+
+  // ---- PREVIEW: 新アート（全身の人物スプライト）の描画メトリクス ----
+  // 素材は 1023x1537 の縦長フレームで、人物のまわりに透明の余白がある。
+  // 「フレームの中心」ではなく「アルファ境界（＝頭の上/靴の底）」を基準に置く。
+  // 値は img2 の実PNGを計測したもの（正規化・フレーム高に対する比）:
+  //   char_run_right.png        : top 0.048 / bottom 0.895（接地している靴の底）
+  //   char_jump_touch_left.png  : top 0.038 / bottom 0.812（脚を畳んでいる＝靴は上がる）
+  // 走り／ジャンプで同じフレーム寸法を使い、走りの靴底が接地ラインに来るよう
+  // 配置する。こうするとジャンプ時は「頭の高さはそのままで脚だけ畳まれる」動きになる。
+  const SPR_ASPECT   = 1023/1537;   // 両スプライト共通のフレーム縦横比
+  const SPR_FOOT     = 0.895;       // 走りスプライトの靴底（フレーム上端からの比）
+  const SPR_HEAD     = 0.048;       // 走りスプライトの頭頂
+  const CHAR_H       = 3.8*RUNNER_R;                  // 見た目の身長 ≒ 80px（+15%）
+  const CHAR_FRAME_H = CHAR_H/(SPR_FOOT-SPR_HEAD);    // ≒ 81.5px（フレーム全体）
+  const CHAR_FRAME_W = CHAR_FRAME_H*SPR_ASPECT;       // ≒ 54px
+  const CHAR_SINK    = 8;           // 足元を接地ラインより少し下げて草に埋める
+
+  best = parseInt(localStorage.getItem("kanaquest_best")||"0",10) || 0;
+
+  // ======================= HELPERS =======================
+  function pick(arr){ return arr[(Math.random()*arr.length)|0]; }
+
+  // Progressive unlock: gojūon rows open up as the level rises.
+  // HIRA/KATA are ordered by row; these are the cumulative end indices.
+  const ROW_ENDS  = [5,10,15,20,25,30,35,38,43,46]; // あ か さ た な は ま や ら わをん
+  function rowsUnlocked(lv){ return Math.min(ROW_ENDS.length, lv+1); } // Lv1 = あ+か行
+  function activeDeck(){ return deck.slice(0, ROW_ENDS[rowsUnlocked(level)-1]); }
+
+  // prompt stored as [kana,romaji] tuple: prompt[0]=kana, prompt[1]=romaji
+  function newPrompt(){
+    const d = activeDeck();
+    const prev = prompt ? prompt[1] : null;   // avoid repeating the same reading
+    let e;
+    do { e = d[(Math.random()*d.length)|0]; } while(d.length>1 && e[1]===prev);
+    prompt = [ e[0], e[1] ];
+    document.getElementById("promptRomaji").textContent = prompt[1];
+    const box = document.getElementById("promptBox");
+    box.classList.remove("pop"); void box.offsetWidth; box.classList.add("pop");
+  }
+
+  function getTile(){ return pool.pop() || {}; }
+  function recycle(t){ if(pool.length<40) pool.push(t); }
+
+  function spawnTile(){
+    // Decide correct-vs-wrong; bias ~45% correct so the right answer appears often.
+    const wantCorrect = Math.random() < 0.5;
+    let kana, romaji;
+    if(wantCorrect){
+      kana = prompt[0]; romaji = prompt[1];
+    } else {
+      const d = activeDeck();
+      let e; do { e = d[(Math.random()*d.length)|0]; } while(e[1]===prompt[1]);
+      kana = e[0]; romaji = e[1];
+    }
+    const t = getTile();
+    // two heights: high (needs jump) or low (grab on ground)
+    const high = Math.random() < 0.5;
+    t.kana = kana; t.romaji = romaji;
+    t.correct = (romaji === prompt[1]);
+    t.x = VW + 40;
+    t.y = high ? (groundY - 136 - Math.random()*41) : (groundY - 39);
+    t.r = 24;
+    t.dead = false;
+    t.pop = 0;          // collect animation
+    t.spin = Math.random()*Math.PI*2;
+    entities.push(t);
+  }
+
+  function resetGame(){
+    score=0; hearts=MAX_HEARTS; distance=0; level=1;
+    worldSpeed = 210*speedK;
+    spawnGap = 1.15; spawnTimer = 0.5;
+    entities.length=0;
+    sparkles.length=0;
+    runner.y=0; runner.vy=0; runner.onGround=true; runner.bob=0; runner.runCycle=0;
+    flashRed=0; toastTimer=0;
+    graceRomaji=null; graceTimer=0;
+    newPrompt();
+    updateHUD();
+  }
+
+  function updateHUD(){
+    document.getElementById("scorePill").textContent = score;
+    // hearts as little img sprites (full / empty)
+    let hh="";
+    for(let i=0;i<MAX_HEARTS;i++){
+      const src = i<hearts ? "img2/heart_full.png" : "img2/heart_empty.png";
+      hh += '<img src="'+src+'" alt="" style="height:12px;vertical-align:middle;">';
+    }
+    document.getElementById("hearts").innerHTML = hh;
+    document.getElementById("distPill").textContent = "Lv "+level+" · "+Math.floor(distance)+"m";
+  }
+
+  function showToast(txt, color){
+    const el=document.getElementById("toast");
+    el.textContent=txt; el.style.color=color; el.style.opacity="1";
+    toastTimer=0.6;
+  }
+
+  // ======================= INPUT =======================
+  function jump(){
+    if(state!==State.PLAY) return;
+    if(runner.onGround){
+      runner.vy = JUMP_V;
+      runner.onGround=false;
+      Sfx.jump();
+    }
+  }
+  // keyboard
+  window.addEventListener("keydown",(e)=>{
+    if(e.code==="Space" || e.code==="ArrowUp"){
+      e.preventDefault();
+      if(state===State.PLAY) jump();
+      else if(state===State.START) startGame();
+      else if(state===State.OVER) startGame();
+    }
+  });
+  // pointer on canvas / stage = jump
+  const stage=document.getElementById("stage");
+  stage.addEventListener("pointerdown",(e)=>{
+    if(state===State.PLAY){ jump(); }
+  });
+  document.getElementById("jumpHint").addEventListener("pointerdown",(e)=>{
+    e.stopPropagation(); jump();
+  });
+
+  // ======================= COLLISION =======================
+  function handleCollisions(){
+    const rx = runnerX;
+    const ry = groundY - RUNNER_R + runner.y;   // runner center y
+    for(const t of entities){
+      if(t.dead) continue;
+      const dx = t.x - rx, dy = t.y - ry;
+      const rr = t.r + RUNNER_R - 6;
+      if(dx*dx + dy*dy < rr*rr){
+        // collected — judge against the LIVE prompt (prompts can change mid-flight)
+        const isCorrect = (t.romaji === prompt[1]);
+        if(isCorrect){
+          score += 10 + Math.floor(level*1.5);
+          Sfx.coin();
+          showToast("+"+(10+Math.floor(level*1.5)), "#B98F2F");
+          sparkles.push({ x:t.x, y:t.y, t:0 });   // celebratory sparkle burst
+          graceRomaji = prompt[1];   // the reading just cleared — spare its stragglers
+          graceTimer = 0.6;
+          newPrompt();
+          // clear other correct-looking tiles? no—just proceed
+        } else if(t.romaji===graceRomaji && graceTimer>0){
+          // grace window: a straggler still carrying the just-cleared reading —
+          // no heart loss, no score, silent pop, no toast
+        } else {
+          hearts--;
+          flashRed=0.35;
+          Sfx.hit();
+          showToast("MISS!", "#C0392B");
+          if(hearts<=0){ gameOver(); }
+        }
+        t.dead=true; t.pop=0.001;   // trigger pop anim then recycle
+        updateHUD();
+      }
+    }
+  }
+
+  // pause while the rotate-to-portrait notice is showing (landscape phones)
+  const rotateMq = window.matchMedia("(orientation:landscape) and (pointer:coarse) and (max-height:600px)");
+
+  // ======================= UPDATE =======================
+  function update(dt){
+    if(state!==State.PLAY) return;
+    if(rotateMq.matches) return;
+
+    // ramp difficulty by distance
+    distance += worldSpeed*dt/42;   // ~ meters
+    const newLevel = 1 + Math.floor(distance/60);
+    if(newLevel!==level){
+      level = newLevel;
+      showToast("LEVEL "+level+"!", "#B98F2F");
+      updateHUD();
+    }
+    worldSpeed = (210 + Math.min(260, distance*1.1)) * speedK;
+    spawnGap = Math.max(0.62, 1.15 - distance*0.0016);
+
+    // parallax scroll
+    bgScroll   = (bgScroll   + worldSpeed*0.12*dt) % VW;
+    hillScroll = (hillScroll + worldSpeed*0.35*dt) % (VW+400);
+    groundScroll = (groundScroll + worldSpeed*dt) % 48;
+
+    // runner physics
+    runner.vy += GRAV*dt;
+    runner.y  += runner.vy*dt;
+    if(runner.y >= 0){ runner.y=0; runner.vy=0; runner.onGround=true; }
+    runner.runCycle += dt*10;
+    runner.bob = runner.onGround ? Math.sin(runner.runCycle)*2 : 0;
+
+    // spawn
+    spawnTimer -= dt;
+    if(spawnTimer<=0){ spawnTile(); spawnTimer = spawnGap*(0.8+Math.random()*0.5); }
+
+    // move + cull entities
+    for(let i=entities.length-1;i>=0;i--){
+      const t=entities[i];
+      if(t.dead){
+        t.pop += dt;
+        if(t.pop>0.22){ entities.splice(i,1); recycle(t); }
+        continue;
+      }
+      t.x -= worldSpeed*dt;
+      t.spin += dt*1.4;
+      if(t.x < -60){ entities.splice(i,1); recycle(t); }
+    }
+
+    handleCollisions();
+
+    // sparkles: drift with the world, expire after 0.4s
+    for(let i=sparkles.length-1;i>=0;i--){
+      const sp=sparkles[i];
+      sp.t += dt;
+      sp.x -= worldSpeed*dt;
+      if(sp.t>=0.4) sparkles.splice(i,1);
+    }
+
+    if(flashRed>0) flashRed=Math.max(0,flashRed-dt);
+    if(graceTimer>0) graceTimer=Math.max(0,graceTimer-dt);
+    if(toastTimer>0){ toastTimer-=dt; if(toastTimer<=0) document.getElementById("toast").style.opacity="0"; }
+
+    // distance HUD refresh (cheap, every frame-ish)
+    document.getElementById("distPill").textContent = "Lv "+level+" · "+Math.floor(distance)+"m";
+  }
+
+  // ======================= RENDER =======================
+  function drawSky(){
+    if(bgReady){
+      // cover-fit the WHOLE canvas, center-anchored — the meadow art already
+      // includes its own grass+soil ground, so we fill the full viewport and
+      // let the illustrated ground land near the bottom naturally
+      const s = Math.max(VW/bgImg.width, VH/bgImg.height);
+      const w = bgImg.width*s, h = bgImg.height*s;
+      g.drawImage(bgImg, (VW-w)/2, (VH-h)/2, w, h);
+      return;
+    }
+    const grad = g.createLinearGradient(0,0,0,VH);
+    grad.addColorStop(0,   "#BFE0F2");   // pale morning blue
+    grad.addColorStop(0.42,"#F3E9D6");   // cream haze
+    grad.addColorStop(1,   "#FBE2C4");   // warm horizon
+    g.fillStyle=grad; g.fillRect(0,0,VW,VH);
+
+    // soft sun glow up-left
+    const sx=VW*0.16, sy=VH*0.22, sr=Math.max(50,VW*0.12);
+    const sg=g.createRadialGradient(sx,sy,4,sx,sy,sr*2.4);
+    sg.addColorStop(0,"rgba(247,169,40,0.55)");
+    sg.addColorStop(1,"rgba(247,169,40,0)");
+    g.fillStyle=sg; g.beginPath(); g.arc(sx,sy,sr*2.4,0,7); g.fill();
+    g.fillStyle="#F7A928"; g.beginPath(); g.arc(sx,sy,sr*0.5,0,7); g.fill();
+  }
+
+  function drawHills(){
+    if(bgReady) return;   // the illustrated bg is shown as-is, no overlay
+    // distant navy-tinted hills, two layers, scrolling (fallback sky only)
+    g.save();
+    for(let layer=0; layer<2; layer++){
+      const baseY = groundY - (layer===0? 40 : 78);
+      const amp = layer===0? 34 : 54;
+      // over the beach art use turquoise wave haze; navy over the fallback sky
+      const col = bgReady
+        ? (layer===0? "rgba(0,150,180,0.14)" : "rgba(0,150,180,0.08)")
+        : (layer===0? "rgba(19,75,112,0.16)" : "rgba(19,75,112,0.10)");
+      const off = -(layer===0? hillScroll*0.6 : hillScroll) % (VW+400);
+      g.fillStyle=col;
+      g.beginPath();
+      g.moveTo(-100, VH);
+      for(let x=-100; x<=VW+200; x+=40){
+        const yy = baseY - Math.sin((x+off)/120 + layer)*amp - amp;
+        g.lineTo(x, yy);
+      }
+      g.lineTo(VW+200, VH); g.closePath(); g.fill();
+    }
+    g.restore();
+  }
+
+  function drawGround(){
+    if(bgReady){
+      // illustrated meadow already paints its own ground — DON'T draw any fill
+      // or overlay on top of it. Only add the moving dashes for a sense of speed.
+      g.strokeStyle="rgba(255,255,255,0.35)"; g.lineWidth=3; g.lineCap="round";
+      for(let x=-groundScroll; x<VW; x+=48){
+        g.beginPath(); g.moveTo(x, groundY+28); g.lineTo(x+18, groundY+28); g.stroke();
+      }
+      return;
+    }
+    // fallback (procedural sky): beach ground with a pale foam lip
+    g.fillStyle="#E3BC6B";
+    g.fillRect(0, groundY, VW, VH-groundY);
+    // foam / dry-sand lip (wave-like)
+    g.fillStyle="#F7E9BC";
+    g.beginPath();
+    g.moveTo(0,groundY);
+    for(let x=0;x<=VW;x+=32){
+      g.lineTo(x, groundY + Math.sin((x+groundScroll*3)/48)*3);
+    }
+    g.lineTo(VW,groundY+14); g.lineTo(0,groundY+14); g.closePath(); g.fill();
+    // dashes to convey motion
+    g.strokeStyle="rgba(150,108,42,0.32)"; g.lineWidth=3;
+    for(let x=-groundScroll; x<VW; x+=48){
+      g.beginPath(); g.moveTo(x, groundY+28); g.lineTo(x+18, groundY+28); g.stroke();
+    }
+  }
+
+  // PREVIEW mascot — 新アートの人物スプライト
+  //   接地中 = char_run_right.png（最初から右向き・反転不要）
+  //   空中   = char_jump_touch_left.png（腕を上に伸ばす＝タイルを取りに行くポーズ）
+  // 旧サン君は円形キャラだったので「中心合わせ」で描いていたが、人物は縦長なので
+  // 「靴の底が接地ラインに合う」下端基準に置き換える。
+  // 当たり判定（中心 cy・半径 RUNNER_R）は本番と同じまま。CHAR_SINK を入れることで
+  // 判定円の中心が人物の胴体中央付近（足元から約35〜40px）に来る。
+  function drawMascot(cx, cy){
+    const r=RUNNER_R;
+
+    // 靴底のy。cy は「接地ラインの RUNNER_R 上」なので、そこから足元まで戻す。
+    const footY = cy + r + CHAR_SINK;
+
+    // ground shadow — 足元に置く（ジャンプで小さくなるのは従来どおり）
+    const shY = groundY + CHAR_SINK + 1;
+    const shScale = 1 - Math.min(0.6, (-runner.y)/220);
+    g.save();
+    g.fillStyle="rgba(19,75,112,0.22)";
+    g.beginPath();
+    g.ellipse(cx, shY, r*0.8*shScale, r*0.28*shScale, 0,0,7);
+    g.fill();
+    g.restore();
+
+    // ---- sprite path ----
+    const sprite = runner.onGround ? charRunImg : charJumpImg;
+    const ready  = runner.onGround ? charRunReady : charJumpReady;
+    if(ready){
+      const fh = CHAR_FRAME_H, fw = CHAR_FRAME_W;
+      const frameTop = footY - SPR_FOOT*fh;      // フレーム左上のy
+      const pivotY   = footY - CHAR_H*0.45;      // 腰のあたりで回す（頭が振れすぎない）
+      g.save();
+      g.translate(cx, pivotY);
+      if(runner.onGround){
+        g.rotate(Math.sin(runner.runCycle)*0.03);  // 走りの揺れ（人物なので弱め）
+      } else {
+        g.rotate(-0.05);                           // 空中の傾き（同上）
+      }
+      g.drawImage(sprite, -fw/2, frameTop-pivotY, fw, fh);
+      g.restore();
+      return;
+    }
+
+    // ---- vector fallback ----
+    g.save();
+    g.translate(cx, cy);
+    g.rotate(runner.onGround ? Math.sin(runner.runCycle)*0.04 : -0.1);
+
+    // navy waves (lower body) — vertical gradient for depth
+    const wGrad=g.createLinearGradient(0,4,0,r*0.9);
+    wGrad.addColorStop(0,"#1E6396");
+    wGrad.addColorStop(1,"#0F3E5C");
+    g.fillStyle=wGrad;
+    g.beginPath();
+    g.moveTo(-r, 4);
+    g.quadraticCurveTo(-r*0.5, 4-6, 0, 4);
+    g.quadraticCurveTo(r*0.5, 4+6, r, 4);
+    g.lineTo(r, r*0.9); g.lineTo(-r, r*0.9); g.closePath();
+    g.fill();
+
+    // rising sun semicircle (upper body) — 3D shading:
+    // radial gradient lit from the upper-left + specular highlight
+    const sunGrad=g.createRadialGradient(-r*0.35,-r*0.45,r*0.12, 0,0,r*1.15);
+    sunGrad.addColorStop(0,"#FFE08A");
+    sunGrad.addColorStop(0.45,"#F7A928");
+    sunGrad.addColorStop(1,"#E4780C");
+    g.fillStyle=sunGrad;
+    g.beginPath();
+    g.arc(0,4,r, Math.PI, 0, false);
+    g.closePath();
+    g.fill();
+    // specular gloss
+    g.fillStyle="rgba(255,255,255,0.38)";
+    g.beginPath();
+    g.ellipse(-r*0.36,-r*0.36,r*0.3,r*0.15,-0.55,0,7);
+    g.fill();
+
+    // sun rays
+    g.strokeStyle="#F7A928"; g.lineWidth=3; g.lineCap="round";
+    for(let i=0;i<5;i++){
+      const a = Math.PI + (i+0.5)*(Math.PI/5);
+      g.beginPath();
+      g.moveTo(Math.cos(a)*(r+3), 4+Math.sin(a)*(r+3));
+      g.lineTo(Math.cos(a)*(r+9), 4+Math.sin(a)*(r+9));
+      g.stroke();
+    }
+
+    // face
+    g.fillStyle="#1C1C1C";
+    g.beginPath(); g.arc(-8,-4,2.6,0,7); g.fill();
+    g.beginPath(); g.arc( 8,-4,2.6,0,7); g.fill();
+    // smile
+    g.strokeStyle="#1C1C1C"; g.lineWidth=2;
+    g.beginPath(); g.arc(0,-2,7,0.15*Math.PI,0.85*Math.PI); g.stroke();
+    // cheeks
+    g.fillStyle="rgba(240,129,20,0.5)";
+    g.beginPath(); g.arc(-13,0,3,0,7); g.fill();
+    g.beginPath(); g.arc( 13,0,3,0,7); g.fill();
+
+    // running legs (little dashes below)
+    if(runner.onGround){
+      g.strokeStyle="#134B70"; g.lineWidth=3.5; g.lineCap="round";
+      const swing=Math.sin(runner.runCycle)*6;
+      g.beginPath(); g.moveTo(-6, r*0.9); g.lineTo(-6+swing, r*0.9+9); g.stroke();
+      g.beginPath(); g.moveTo( 6, r*0.9); g.lineTo( 6-swing, r*0.9+9); g.stroke();
+    }
+    g.restore();
+  }
+
+  function drawTile(t){
+    g.save();
+    g.translate(t.x, t.y);
+    let sc=1;
+    if(t.dead){ sc = 1 + t.pop*4; g.globalAlpha = Math.max(0, 1 - t.pop*4.5); }
+    else { sc = 1 + Math.sin(t.spin)*0.03; }
+    g.scale(sc,sc);
+
+    const r=t.r;
+    if(tileReady){
+      // illustrated block sprite (2r × 2r, centered)
+      g.drawImage(tileImg, -r, -r, r*2, r*2);
+    } else {
+      // ---- vector fallback: modern card w/ shadow, gradient, gloss ----
+      g.shadowColor="rgba(19,75,112,0.28)"; g.shadowBlur=12; g.shadowOffsetY=5;
+      const cardGrad=g.createLinearGradient(0,-r,0,r);
+      cardGrad.addColorStop(0,"#FFFFFF");
+      cardGrad.addColorStop(1,"#F0EBDF");
+      g.fillStyle=cardGrad;
+      roundRect(-r, -r, r*2, r*2, 14);
+      g.fill();
+      g.shadowColor="transparent"; g.shadowBlur=0; g.shadowOffsetY=0;
+      // hairline edge
+      g.strokeStyle="rgba(28,28,28,0.08)"; g.lineWidth=1.5;
+      roundRect(-r, -r, r*2, r*2, 14); g.stroke();
+      // glossy top sheen
+      const gloss=g.createLinearGradient(0,-r,0,-r*0.1);
+      gloss.addColorStop(0,"rgba(255,255,255,0.85)");
+      gloss.addColorStop(1,"rgba(255,255,255,0)");
+      g.fillStyle=gloss;
+      roundRect(-r+3, -r+3, r*2-6, r*0.95, 10); g.fill();
+    }
+
+    // kana glyph
+    g.fillStyle = "#1C1C1C";
+    g.font = "700 "+Math.round(r*1.25)+"px 'Hiragino Sans','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif";
+    g.textAlign="center"; g.textBaseline="middle";
+    g.fillText(t.kana, 0, 2);
+    g.restore();
+  }
+
+  function roundRect(x,y,w,h,rad){
+    g.beginPath();
+    g.moveTo(x+rad,y);
+    g.arcTo(x+w,y,x+w,y+h,rad);
+    g.arcTo(x+w,y+h,x,y+h,rad);
+    g.arcTo(x,y+h,x,y,rad);
+    g.arcTo(x,y,x+w,y,rad);
+    g.closePath();
+  }
+
+  function render(){
+    g.clearRect(0,0,VW,VH);
+    drawSky();
+    drawHills();
+    drawGround();
+
+    // entities behind/around runner
+    for(const t of entities) drawTile(t);
+
+    // mascot
+    const cy = groundY - RUNNER_R + runner.y + runner.bob;
+    drawMascot(runnerX, cy);
+
+    // correct-collect sparkles (on top): grow 1→1.6, fade out over 0.4s
+    if(sparkleReady){
+      for(const sp of sparkles){
+        const p = Math.min(1, sp.t/0.4);
+        const sc = 1 + p*0.6;
+        const size = 56;
+        g.save();
+        g.globalAlpha = Math.max(0, 1 - p);
+        g.translate(sp.x, sp.y);
+        g.scale(sc, sc);
+        g.drawImage(sparkleImg, -size/2, -size/2, size, size);
+        g.restore();
+      }
+    }
+
+    // damage flash
+    if(flashRed>0){
+      g.fillStyle="rgba(192,57,43,"+(flashRed*0.5)+")";
+      g.fillRect(0,0,VW,VH);
+    }
+  }
+
+  // ======================= MAIN LOOP (delta-time) =======================
+  let lastT=0, acc=0;
+  const FIXED=1/60, MAXSTEP=0.05;
+  function frame(now){
+    if(!lastT) lastT=now;
+    let dt=(now-lastT)/1000; lastT=now;
+    if(dt>0.25) dt=0.25;               // tab-switch guard
+    acc += dt;
+    while(acc >= FIXED){ update(FIXED); acc -= FIXED; }
+    render();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // ======================= FLOW / UI =======================
+  function startGame(){
+    Sfx.init();
+    document.getElementById("startOverlay").classList.add("hidden");
+    document.getElementById("overOverlay").classList.add("hidden");
+    document.getElementById("hud").classList.remove("hidden");
+    document.getElementById("jumpHint").classList.remove("hidden");
+    deck = (mode==="kata") ? KATA : HIRA;
+    resetGame();
+    state = State.PLAY;
+    Sfx.startBgm();
+  }
+
+  function gameOver(){
+    state = State.OVER;
+    Sfx.stopBgm();
+    const newBest = score > best && score > 0;
+    if(newBest) Sfx.win(); else Sfx.lose();
+    // sticker + title tiers: new best > zero score > near best > default
+    // （新LINEスタンプ＝ひらがな+ローマ字の彼女版・24個セットから4種）
+    let overStk, overTitle;
+    if(newBest){                      overStk="sticker_sugoi.png";    overTitle="New Best!"; }
+    else if(score===0){               overStk="sticker_ganbatte.png"; overTitle=""; }
+    else if(best>0 && score>=best*0.8){ overStk="sticker_iine.png";   overTitle="So close!"; }
+    else{                             overStk="sticker_otsukare.png"; overTitle=""; }
+    document.getElementById("overChar").src = "img2/"+overStk;
+    document.getElementById("overTitle").textContent = overTitle;
+    if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
+    document.getElementById("finalScore").textContent = score;
+    document.getElementById("finalBest").textContent = "Best: "+best;
+    const line = "I scored "+score+" in Kana Quest — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
+    const shareEl=document.getElementById("shareLine");
+    shareEl.innerHTML = "<b>Share:</b> "+line;
+    document.getElementById("hud").classList.add("hidden");
+    document.getElementById("jumpHint").classList.add("hidden");
+    document.getElementById("toast").style.opacity="0";
+    document.getElementById("overOverlay").classList.remove("hidden");
+  }
+
+  // mode buttons
+  document.querySelectorAll(".modeBtn").forEach(btn=>{
+    btn.addEventListener("click",()=>{
+      document.querySelectorAll(".modeBtn").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      mode = btn.dataset.mode;
+    });
+  });
+
+  document.getElementById("startBtn").addEventListener("click", startGame);
+  document.getElementById("replayBtn").addEventListener("click", startGame);
+
+  // share copy
+  document.getElementById("shareLine").addEventListener("click",()=>{
+    const line = "I scored "+score+" in Kana Quest — a free kana runner from OHAYO NIHONGO! ohayonihongo.net";
+    if(navigator.clipboard){ navigator.clipboard.writeText(line).then(()=>{
+      const el=document.getElementById("shareLine");
+      const old=el.innerHTML; el.innerHTML="<b>Copied!</b>";
+      setTimeout(()=>{ el.innerHTML=old; }, 1400);
+    }).catch(()=>{}); }
+  });
+
+  // mute
+  const muteBtn=document.getElementById("muteBtn");
+  if(Sfx.isMuted()) muteBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>';
+  muteBtn.addEventListener("click",(e)=>{
+    e.stopPropagation();
+    const m=!Sfx.isMuted(); Sfx.setMuted(m);
+    try{ localStorage.setItem('kq_muted', m?'1':'0'); }catch(e){}
+    muteBtn.innerHTML = m
+      ? '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><line x1="15" y1="9" x2="21" y2="15"/><line x1="21" y1="9" x2="15" y2="15"/></svg>'
+      : '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg>';
+  });
+
+  // show best on start
+  document.getElementById("startBest").textContent = best>0 ? ("Best: "+best) : "";
+
+  // block scroll/zoom gestures
+  document.addEventListener("gesturestart", e=>e.preventDefault());
+  document.addEventListener("touchmove", e=>{ if(state===State.PLAY) e.preventDefault(); }, {passive:false});
+  document.addEventListener("dblclick", e=>e.preventDefault());
+
+  // init
+  resize();
+})();
+</script>
+<script src="/assets/analytics.js"></script>
+<script src="/menu.js?v=20260722" defer></script>
+</body>
+</html>
