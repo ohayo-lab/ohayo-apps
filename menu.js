@@ -13,7 +13,7 @@
     { href: "/news/",   label: "Good Mornings", jp: "きょうの、いいこと。" },
     { href: "/method/",  label: "Method", jp: "メソッド" },  // LPアンカーではなく実ページへ（2026-07-29 オーナー指摘）
     { href: "/#learn",  label: "Learn",  jp: "つづける" },
-    { href: "/#try",    label: "Try",    jp: "ためす" },
+    { href: "/adventure/", label: "Try", jp: "ためす" },  // 実ページへ（2026-07-29統括裁定・イベントは付けない）
     // Play項目は2026-07-27統括決裁で削除（ゲームはLPから一旦退避・ナビ露出も消す）。
     // /play/ ハブ自体は温存（sitemap・直リンク・台湾レーン用）。再登板時にここへ復帰。
     { href: "/#shop",   label: "The Shelf", jp: "ほんだな" },
