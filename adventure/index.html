@@ -12,12 +12,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Diary Adventure — Story Map｜OHAYO NIHONGO</title>
 <meta name="description" content="Branching Japanese-learning stories made from real Tokyo diary episodes. Play Chapter 1 free — unlock Season 1 and the Specials in-game.">
-<meta name="theme-color" content="#134B70">
-<!-- 額縁（ブランド行・フッター）だけ下層ページと同じ DM Sans に揃える。
-     本文・ヒーロー・章カードは従来の system sans（--sans）のまま＝世界観は無変更。 -->
+<meta name="theme-color" content="#F6F0E2">
+<!-- 2026-07-29 オーナー指示で全面を習作文法へ。額縁だけでなく本文・ヒーロー・章カードも
+     LP と同じ組（見出し=Cormorant Garamond／本文=DM Sans+Noto Sans JP）に揃える。
+     7/26 の「紺→夜明けグラデは不触」という決めは、この指示で上書きされている。 -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&family=DM+Sans:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@500;700&display=swap" rel="stylesheet">
 <script src="./adventure_config.js"></script>
 <style>
 .ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
@@ -27,69 +28,97 @@
   border-left:3px solid currentColor;border-right:3px solid currentColor;vertical-align:-.02em}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 :root{
-  --navy:#134B70; --ocean:#1F72A8; --sky:#BFE6F9; --sun:#F7A928; --sun2:#F08114;
-  --ink:#22384A; --cream:#FFFDF7;
-  --sans:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Hiragino Sans","Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic Medium",sans-serif;
-  /* ── 額縁（上辺のブランド行／下辺のフッター）専用トークン。値は /play/・/method/ と同一。
-     ここから下のグラデ・章カード・演出のトークン（--navy 〜 --cream）は一切書き換えていない ── */
-  --verm:#C63B22; --paper:#F6F0E2; --paper-edge:#ECE3D0; --foot-navy:#1C3446;
+  /* ═══ 紙地トークン。値は LP／/play/ と完全に同一（2026-07-29 全面習作化）═══
+     旧トークン名（--navy/--ocean/--sun/--cream …）は既存ルールから参照されているので、
+     LP と同じ作法で「名前は残したまま新パレットへ写像」する＝呼び出し側は書き換えない。 */
+  --verm:#C63B22; --verm-ink:#A02D19; --amber:#E7B24E;
+  --paper:#F6F0E2; --paper-2:#FCF7EC; --paper-edge:#ECE3D0;
+  --ink:#1C3446; --ink-soft:#4B5F6D; --ink-quiet:#5F6E77; --ink-faint:#8A98A0;
+  --line:#E4D9C2; --foot-navy:#1C3446;
+  --serif:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans','Noto Sans JP',-apple-system,BlinkMacSystemFont,"Hiragino Sans",sans-serif;
+  --jp-serif:'Noto Serif JP',serif;
   --ui:'DM Sans','Noto Sans JP',-apple-system,BlinkMacSystemFont,sans-serif;
+  /* 旧名 → 新パレットの写像 */
+  --navy:var(--ink); --ocean:var(--verm-ink); --sky:var(--paper-2);
+  --sun:var(--verm); --sun2:var(--verm-ink); --cream:var(--paper-2);
+  /* メールCTA帯は HTML 側の inline style から var(--oa-*) を読む造り。
+     ここで紙地トークンへ写像すれば、HTML（文言・構造）に触れずに色だけ揃う。
+     旧フォールバック値のうち --oa-gold(#B98F2F) は紙地で 3.6:1 しか出ず本文級で不可だった。
+     写像先は LP の .email-cta と同じ役割の色（--gold=var(--verm-ink) / 見出し=--ink /
+     ボタン=朱＝LPの .btn-sun）。 */
+  --oa-cream:var(--paper-2); --oa-ink:var(--ink); --oa-gold:var(--verm-ink);
+  --oa-heading:var(--ink); --oa-sub:var(--ink-soft);
+  /* 【重要・2026-07-29統括裁定】Subscribe free ピルは紺のまま。朱は「このページで最も
+     取りたい行動＝章のアンロック購入」に取ってある。無料CTAを朱にすると階層が逆転し、
+     パネルの警告（買う気のある層に無料を差し出す形）と逆方向になる。朱へ変更しないこと。 */
+  --oa-navy:var(--ink);
 }
-html{background:#0D2E47}
-body{font-family:var(--sans);min-height:100vh;
-  background:linear-gradient(180deg,#0F3555 0%,#1F72A8 42%,#7FB9D9 68%,#F4D98B 88%,#F7A928 100%) fixed;
+html{background:var(--paper)}
+/* 紙の地。紺→夜明けのグラデは 2026-07-29 のオーナー指示で廃止し、上から下まで一枚の紙にする */
+body{font-family:var(--sans);color:var(--ink);min-height:100vh;background:var(--paper);
+  -webkit-font-smoothing:antialiased;
   display:flex;flex-direction:column;align-items:center}
 /* flex:1 0 auto = 額縁の下辺（footer）を必ずビューポート下端以降に置くための伸びしろ。
    コンテンツが画面より高い実機ではこれまでと完全に同じ見え方（内側の世界観は無変更）。 */
 .wrap{width:100%;max-width:520px;flex:1 0 auto;padding:26px 18px calc(env(safe-area-inset-bottom,0px) + 40px)}
 
-@keyframes tagBlink{0%,100%{opacity:1}50%{opacity:.55}}
-@keyframes pulseBtn{0%,100%{transform:scale(1);box-shadow:0 10px 28px rgba(240,129,20,.5)}50%{transform:scale(1.03);box-shadow:0 14px 36px rgba(240,129,20,.7)}}
+/* 旧 tagBlink（キッカーの明滅）は廃止。LPのキッカーは点滅しないうえ、
+   opacity .55 の瞬間はコントラストが 2.6:1 まで落ちて読めなくなるため。 */
+@keyframes pulseBtn{0%,100%{transform:scale(1);box-shadow:0 8px 20px -8px rgba(198,59,34,.45)}50%{transform:scale(1.03);box-shadow:0 12px 26px -8px rgba(198,59,34,.6)}}
 @keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 
 /* ═══ 額縁・上辺 ═══
-   ブランド行を下層ページ（/play/ の .brand）と同じ作法にする：朱 #C63B22・大文字・字間.2em・12px/800。
-   紙地の帯に載せるのは、直下の紺グラデが商品そのもの＝触れないため。朱を紺に直に置くと約2:1で読めない。
-   帯＝額縁の上辺として紙地を敷き、世界観はその内側に無傷のまま収める。
+   ブランド行は下層ページ（/play/ の .brand）と同じ作法：朱 #C63B22・大文字・字間.2em・12px/800。
+   紙地になったので帯は地に溶ける。下の1本の罫だけが LP のナビ下端と同じ役目を残す。
    自前のハンバーガーは置かない（menu.js の #ohMenuBtn と二重化する。下層ページ共通の作法）。 */
-.frame-top{width:100%;background:var(--paper);border-bottom:1px solid var(--paper-edge)}
+.frame-top{width:100%;background:var(--paper);border-bottom:1px solid var(--line)}
 .frame-top .frame-in{max-width:520px;margin:0 auto;padding:0 18px}
 .brand{display:inline-block;margin:26px 0 24px;font-family:var(--ui);font-size:12px;font-weight:800;
   letter-spacing:.2em;text-transform:uppercase;color:var(--verm);text-decoration:none}
 
-/* header */
-.head{text-align:center;margin-bottom:20px}
-.h-kicker{font-size:10.5px;font-weight:800;letter-spacing:.26em;text-transform:uppercase;color:#FFD97A;
-  margin-bottom:6px;animation:tagBlink 2.6s ease-in-out infinite}
-h1{font-size:34px;line-height:1.1;font-weight:900;color:#fff;text-shadow:0 3px 16px rgba(9,30,48,.5)}
-h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-.h-sub{font-size:12px;color:rgba(220,239,251,.85);margin-top:6px}
-.h-chips{display:flex;gap:6px;justify-content:center;margin-top:12px}
-.chip{font-size:11px;font-weight:800;color:#fff;background:rgba(13,46,71,.55);
-  border:1px solid rgba(191,230,249,.3);border-radius:999px;padding:6px 12px;backdrop-filter:blur(6px)}
-.chip.xp{border-color:rgba(255,217,122,.55);color:#FFE9B8}
+/* ═══ ヒーロー＝LPの習作文法（.kicker / .h2 / .lead）に揃える ═══
+   文言は一切変えていない。
+   【短罫について】LPの .kicker は両端に <span class="dash">（26×1.5px の朱の罫）を置くが、
+   ここは既存の文言そのものが「— Diary Text Adventure —」＝両端に em ダッシュを持つ。
+   擬似要素で罫を足すと罫が二重になり、em ダッシュを削れば文言の変更になる。
+   よって既存のダッシュを朱で描くことで同じ装置とし、寸法（11px/800/字間.18em/大文字/朱）を
+   LPの .kicker に合わせた。 */
+.head{text-align:center;margin-bottom:20px;padding-top:6px}
+.h-kicker{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--verm);margin-bottom:2px}
+h1{font-family:var(--serif);font-size:clamp(1.9rem,4.4vw,2.9rem);line-height:1.12;font-weight:700;
+  color:var(--ink);margin-top:12px}
+h1 em{font-style:italic;font-weight:600;color:var(--verm)}
+.h-sub{max-width:52ch;margin:12px auto 0;font-size:15px;line-height:1.66;color:var(--ink-soft)}
+.h-chips{display:flex;gap:8px;justify-content:center;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:.4em;font-size:11.5px;font-weight:700;color:var(--ink);
+  background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:999px;padding:6px 13px}
+.chip .ico-flame,.chip .ico-star{color:var(--verm)}
+.chip.xp{border-color:rgba(231,178,78,.55)}
+.chip.xp .ico-star{color:var(--verm-ink)}
 
 /* ═══ OHAYO icon set（絵文字不使用・CSS図形・正典 ohayo-icons.css 準拠） ═══ */
 .ico{display:inline-block;flex:0 0 auto;position:relative;vertical-align:-.06em}
 /* 太陽。丸だけだと文中で「点」にしか見えなかったため光線を足す（2026-07-21）。
-   光線は ::before の conic-gradient を放射状マスクで抜いて描く。画像は使わない。 */
-.ico-sun{width:.62em;height:.62em;border-radius:50%;background:#F7A928;
-  box-shadow:0 0 0 .07em rgba(247,169,40,.28)}
+   作画構造（丸＋直交2本＋斜め2本の光線をマスクで抜く）はそのまま、色だけ紙地に載る
+   朱・琥珀へ移した（2026-07-29）。旧 #F7A928 は紙地で 1.9:1 ＝ 図として消える。 */
+.ico-sun{width:.62em;height:.62em;border-radius:50%;background:var(--verm);
+  box-shadow:0 0 0 .07em rgba(231,178,78,.45)}
 .ico-sun::before{content:"";position:absolute;left:50%;top:50%;
   width:1.5em;height:1.5em;transform:translate(-50%,-50%);
   background:
-    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
-    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat,
-    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
-    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+    linear-gradient(var(--verm),var(--verm)) center/.1em 100% no-repeat,
+    linear-gradient(var(--verm),var(--verm)) center/100% .1em no-repeat,
+    linear-gradient(var(--verm),var(--verm)) center/.1em 100% no-repeat,
+    linear-gradient(var(--verm),var(--verm)) center/100% .1em no-repeat;
   -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em);
   mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .66em,transparent .66em)}
 .ico-sun::after{content:"";position:absolute;left:50%;top:50%;
   width:1.5em;height:1.5em;transform:translate(-50%,-50%) rotate(45deg);
   background:
-    linear-gradient(#F7A928,#F7A928) center/.1em 100% no-repeat,
-    linear-gradient(#F7A928,#F7A928) center/100% .1em no-repeat;
+    linear-gradient(var(--verm-ink),var(--verm-ink)) center/.1em 100% no-repeat,
+    linear-gradient(var(--verm-ink),var(--verm-ink)) center/100% .1em no-repeat;
   -webkit-mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em);
   mask:radial-gradient(circle,transparent 0 .42em,#000 .42em .64em,transparent .64em)}
 .ico-lock{width:.62em;height:.5em;background:currentColor;border-radius:.09em;margin-top:.22em}
@@ -99,64 +128,102 @@ h1 em{font-style:normal;background:linear-gradient(92deg,#FFD97A,#FF9E4F);
 .ico-check{width:.32em;height:.6em;border:solid currentColor;border-width:0 .15em .15em 0;
   transform:rotate(45deg);vertical-align:.04em;margin:0 .2em .1em .06em}
 /* 炎。五角形クリップは文中サイズだと「雫」に見えたので、下がふくらみ上が尖る形＋内側の明色コアにする（2026-07-21） */
-.ico-flame{width:.5em;height:.66em;background:#F0870F;
+/* 作画は同じまま、外炎=朱／内側の明色コア=琥珀 へ（2026-07-29） */
+.ico-flame{width:.5em;height:.66em;background:currentColor;
   border-radius:50% 50% 50% 50% / 62% 62% 38% 38%;
   vertical-align:-.09em;margin-right:.16em}
 .ico-flame::before{content:"";position:absolute;left:50%;top:-.15em;transform:translateX(-50%);
   width:0;height:0;border-style:solid;border-width:0 .17em .28em .17em;
-  border-color:transparent transparent #F0870F transparent}
+  border-color:transparent transparent currentColor transparent}
 .ico-flame::after{content:"";position:absolute;left:50%;bottom:.06em;transform:translateX(-50%);
-  width:.23em;height:.32em;background:#FFD37A;
+  width:.23em;height:.32em;background:var(--amber);
   border-radius:50% 50% 50% 50% / 60% 60% 40% 40%}
 .ico-star{width:.74em;height:.74em;background:currentColor;
   clip-path:polygon(50% 0,61.8% 34.5%,98% 34.5%,69% 56%,79.4% 90.5%,50% 69%,20.6% 90.5%,31% 56%,2% 34.5%,38.2% 34.5%)}
 /* セクションのロック表記は横並び（アイコン+文字） */
 .sec .st{display:inline-flex;align-items:center;gap:.45em}
-/* ロックアイコンは currentColor 継承 → 明示指定して既存配色に合わせる */
-.card.locked .lk{color:#5D7285}
+/* ロックアイコンは currentColor 継承 → 紙地で読める薄墨（--ink-quiet）を明示。
+   --ink-faint(#8A98A0) は紙地で 2.6:1 しか出ないので使わない。 */
+.card.locked .lk{color:var(--ink-quiet)}
 
-/* section label */
-.sec{display:flex;align-items:center;gap:10px;margin:24px 2px 10px}
-.sec b{font-size:10px;font-weight:800;letter-spacing:.24em;text-transform:uppercase;color:#FFEFC9;white-space:nowrap}
-.sec i{flex:1;height:1px;background:linear-gradient(90deg,rgba(255,239,201,.5),transparent)}
+/* section label ＝ 棚の見出し。LPのキッカーと同じ朱・大文字・字間の作法にする */
+.sec{display:flex;align-items:center;gap:10px;margin:30px 2px 12px}
+.sec b{font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--verm);white-space:nowrap}
+.sec i{flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
 .sec .st{font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;border-radius:999px;padding:4px 10px}
-.sec .st.lock{color:#FFEFC9;background:rgba(13,46,71,.55);border:1px solid rgba(255,239,201,.3)}
-.sec .st.open{color:#0D2E47;background:linear-gradient(135deg,#FFD97A,#FFB63D)}
+.sec .st.lock{color:var(--ink-soft);background:var(--paper-2);border:1px solid var(--paper-edge)}
+/* 解錠済みの札。/play/ の .chip.on と同じ朱地＋紙色の文字（5.6:1） */
+.sec .st.open{color:#FDF4EA;background:var(--verm);border:1px solid var(--verm-ink)}
 
-/* featured chapter1 */
-.feat{display:flex;align-items:center;gap:14px;width:100%;text-align:left;border:none;cursor:pointer;
-  background:rgba(255,253,247,.95);border-radius:20px;padding:16px;font-family:var(--sans);
-  box-shadow:0 10px 32px rgba(7,24,39,.4);text-decoration:none}
-.feat .tile{flex-shrink:0;width:64px;height:64px;border-radius:18px;display:flex;align-items:center;justify-content:center;
-  font-size:30px;background:linear-gradient(135deg,#134B70,#3E93C4);box-shadow:0 6px 16px rgba(19,75,112,.4)}
-.feat .fl{font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#1E8449;
-  background:#E8F8EE;border:1px solid #A8E0BE;border-radius:999px;padding:3px 9px;display:inline-block;margin-bottom:4px}
-.feat b{display:block;font-size:17px;font-weight:900;color:var(--navy);line-height:1.2}
-.feat span.tg{display:block;font-size:10.5px;color:#5D7285;margin-top:3px;line-height:1.5}
+/* ═══ 章カード＝LPの .card と同じ「紙のカード」（--paper-2 地・--paper-edge の1px縁・
+   やわらかい影・角丸）。白カード＋濃紺バッジをやめ、色は全部トークンへ寄せた（2026-07-29）。 */
+.feat{display:flex;align-items:center;gap:14px;width:100%;text-align:left;cursor:pointer;
+  background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:18px;padding:16px;font-family:var(--sans);
+  box-shadow:0 14px 30px -20px rgba(28,52,70,.4);text-decoration:none;transition:transform .2s,box-shadow .2s}
+.feat:hover{transform:translateY(-2px);box-shadow:0 20px 38px -20px rgba(28,52,70,.42)}
+/* 章番号は紙の札に朱のセリフ数字（LPの .chapters .ch .no と同じ考え方） */
+.feat .tile{flex-shrink:0;width:64px;height:64px;border-radius:16px;display:flex;align-items:center;justify-content:center;
+  font-size:30px;background:var(--paper);border:1px solid var(--line);box-shadow:0 8px 16px -12px rgba(28,52,70,.5)}
+/* Free の札は LP の .tp-free と同値（#146C43 on #DCF6EC ＝ 5.9:1） */
+.feat .fl{font-size:9px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#146C43;
+  background:#DCF6EC;border:1px solid #A8E0BE;border-radius:999px;padding:3px 9px;display:inline-block;margin-bottom:5px}
+.feat b{display:block;font-family:var(--serif);font-size:20px;font-weight:700;color:var(--ink);line-height:1.15}
+.feat span.tg{display:block;font-size:11.5px;color:var(--ink-soft);margin-top:3px;line-height:1.5}
+/* 【Chapter 1 の丸】旧: オレンジのグラデ円。紙地では浮くので、朱の円＋琥珀のにじみ＝
+   /play/ の .quest .sun と同じ「朝日」の作り方に揃える。作画構造（円＋中央の再生三角）は保つ。 */
 .feat .go{margin-left:auto;flex-shrink:0;width:52px;height:52px;border-radius:999px;display:flex;align-items:center;justify-content:center;
-  font-size:19px;color:#fff;background:linear-gradient(135deg,#FF8A3D,#FFB63D);animation:pulseBtn 1.9s ease-in-out infinite}
+  font-size:19px;color:#FDF4EA;background:radial-gradient(circle at 50% 45%,var(--verm),var(--verm-ink));
+  box-shadow:0 0 0 6px rgba(231,178,78,.22);animation:pulseBtn 1.9s ease-in-out infinite;
+  /* 【修正】この要素は class="go ico-play"。.ico-play の border（幅5/0/5/8px）が
+     52px の丸に効いて、円の左が三日月に欠けて見えていた（変更前も同じ・紙地だと欠けが目立つ）。
+     円の縁は borderを0にして満月に戻し、再生の三角は擬似要素で中央に置く。
+     DOM は足していない（CSSの擬似要素）。 */
+  border:0}
+.feat .go::before{content:"";display:block;width:0;height:0;margin-left:4px;
+  border-style:solid;border-width:8px 0 8px 13px;
+  border-color:transparent transparent transparent currentColor}
+@media(prefers-reduced-motion:reduce){.feat .go{animation:none}}
 
 /* story cards */
-.card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;border:none;cursor:pointer;
-  background:rgba(255,253,247,.92);border-radius:16px;padding:12px 14px;margin-bottom:9px;font-family:var(--sans);
-  box-shadow:0 6px 20px rgba(7,24,39,.3);text-decoration:none;position:relative;transition:transform .12s ease}
+.card{display:flex;align-items:center;gap:12px;width:100%;text-align:left;cursor:pointer;
+  background:var(--paper-2);border:1px solid var(--paper-edge);border-radius:14px;padding:12px 14px;margin-bottom:9px;font-family:var(--sans);
+  box-shadow:0 12px 26px -20px rgba(28,52,70,.34);text-decoration:none;position:relative;transition:transform .12s ease}
 .card:active{transform:scale(.98)}
-.card .tile{flex-shrink:0;width:46px;height:46px;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  font-size:22px;background:linear-gradient(135deg,#134B70,#3E93C4)}
-/* タイルは章番号のタイポグラフィ（既存のタイル配色・フォントのまま、サイズと太さだけ指定） */
-.feat .tile,.card .tile{color:#fff;font-weight:700;letter-spacing:.02em}
-.card .tile{font-size:20px}
-.card b{display:block;font-size:14px;font-weight:900;color:var(--navy);line-height:1.25}
-.card span.tg{display:block;font-size:9.5px;color:#5D7285;margin-top:2px;line-height:1.45}
+.card .tile{flex-shrink:0;width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  font-size:22px;background:var(--paper);border:1px solid var(--line)}
+/* タイルは章番号のタイポグラフィ。色は朱へ寄せるが、書体はセリフにしない
+   ——Cormorant Garamond の「1」は縦棒＋セリフで「I」に見え、Chapter 1 が読めなくなる（実測）。 */
+.feat .tile,.card .tile{font-family:var(--sans);color:var(--verm-ink);font-weight:800;letter-spacing:.02em}
+.card .tile{font-size:21px}
+.card b{display:block;font-family:var(--serif);font-size:17px;font-weight:700;color:var(--ink);line-height:1.2}
+.card span.tg{display:block;font-size:11px;color:var(--ink-soft);margin-top:2px;line-height:1.45}
 .card .lk{margin-left:auto;flex-shrink:0;width:38px;height:38px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:15px}
-.card.locked .lk{background:#EEF3F7;border:1.5px solid #D8E4EC}
-.card.locked .tile{filter:saturate(.35) brightness(.92)}
-.card.open .lk{background:linear-gradient(135deg,#FF8A3D,#FFB63D);color:#fff}
+.card.locked .lk{background:var(--paper);border:1px solid var(--line)}
+/* 施錠中の見分けは「番号を薄墨に落とす」だけにする。旧 filter は紺タイル前提の彩度落としで、
+   紙の札には効かない。タイトル・説明文は薄めない（読めなくなるため）。 */
+.card.locked .tile{color:var(--ink-quiet);background:var(--paper);border-color:var(--paper-edge)}
+.card.open .lk{background:var(--verm);border:1px solid var(--verm-ink);color:#FDF4EA}
 
-/* season2 teaser */
-.tease{border:2px dashed rgba(255,239,201,.5);border-radius:16px;padding:16px;text-align:center;color:#FFEFC9;background:rgba(13,46,71,.35);backdrop-filter:blur(4px)}
-.tease b{display:block;font-size:13px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
-.tease span{display:block;font-size:10.5px;color:rgba(255,239,201,.85);margin-top:5px;line-height:1.6}
+/* season2 teaser ＝ LPの「まだ開いていない棚」（破線の縁・紙地）と同じ作法 */
+.tease{border:1px dashed #D9CBAE;border-radius:16px;padding:18px 16px;text-align:center;
+  color:var(--ink);background:var(--paper)}
+.tease b{display:block;font-size:11px;font-weight:800;letter-spacing:.18em;text-transform:uppercase;color:var(--verm)}
+.tease span{display:block;font-size:12.5px;color:var(--ink-soft);margin-top:7px;line-height:1.65}
+
+/* ═══ メールCTA帯 ═══
+   HTML は inline style で組まれている（文言・構造には触らない約束）。色は var(--oa-*) の
+   写像で揃うが、器（地・縁・影・朝日の細帯）だけは inline に勝てないので !important で上書きする。
+   仕様は LP の .email-cta と同じ：琥珀のにじみ＋紙のグラデ地＋上辺に朝日の3px。 */
+.oa-email-cta{position:relative;overflow:hidden;
+  background:
+    radial-gradient(420px 200px at 50% 0%, rgba(231,178,78,.24), transparent 62%),
+    linear-gradient(180deg,var(--paper-2),#F7E9CC) !important;
+  border:1px solid rgba(198,59,34,.22) !important;
+  border-radius:20px !important;
+  box-shadow:0 16px 34px -22px rgba(28,52,70,.32) !important;
+  font-family:var(--sans) !important}
+.oa-email-cta::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,transparent,var(--verm) 22%,var(--amber) 50%,var(--verm) 78%,transparent)}
 
 /* ═══ 額縁・下辺 ═══
    /play/・/method/ の紺フッターと同じ作法（紺地・白文字・SNSリンク並び・Legal）に揃える。
@@ -172,47 +239,50 @@ footer p{margin:5px 0}
 footer p a{color:#fff;font-weight:700;text-decoration:none}
 footer .legal{color:rgba(255,255,255,.8);font-weight:400;text-decoration:underline}
 
-/* modal */
-.ovl{position:fixed;inset:0;z-index:50;background:rgba(7,24,39,.7);backdrop-filter:blur(4px);
+/* ═══ modal ═══
+   中身（文言・価格・リンク・鍵の入力）は一切変えていない。器の色だけ紙地の文法へ。
+   小さい字が多いので、灰色（#8A8578 / #8A94A0 = 紙地で 3.3〜3.6:1）は全部 --ink-soft へ寄せた。 */
+.ovl{position:fixed;inset:0;z-index:50;background:rgba(28,52,70,.62);backdrop-filter:blur(4px);
   display:none;align-items:flex-end;justify-content:center;padding:16px}
 .ovl.show{display:flex}
-.sheet{width:100%;max-width:430px;background:var(--cream);border-radius:24px;padding:20px 18px 18px;
+.sheet{width:100%;max-width:430px;background:var(--paper);border-radius:24px;padding:20px 18px 18px;
   max-height:88dvh;overflow-y:auto;animation:sheetUp .35s cubic-bezier(.34,1.3,.64,1);position:relative;
-  box-shadow:0 -10px 50px rgba(7,24,39,.5)}
+  box-shadow:0 -10px 50px rgba(28,52,70,.45)}
+/* 旧: 4色のレインボー帯。習作の文法に無い色なので朝日の帯（琥珀→朱）に置き換え */
 .sheet::before{content:"";position:absolute;top:0;left:0;right:0;height:4px;
-  background:linear-gradient(90deg,#FF8A3D,#FFD34D,#4FC3F7,#66D9B8);border-radius:24px 24px 0 0}
-.x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:999px;border:none;cursor:pointer;
-  background:#EEF3F7;color:#5D7285;font-size:14px;font-weight:900}
-.m-kick{font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:#B45309;text-align:center;margin-bottom:4px}
-.m-title{font-size:19px;font-weight:900;color:var(--navy);text-align:center;margin-bottom:2px}
-.m-sub{font-size:10.5px;color:#5D7285;text-align:center;line-height:1.6;margin-bottom:14px}
-.sku{display:flex;align-items:center;gap:11px;width:100%;border-radius:16px;padding:12px 14px;margin-bottom:8px;
-  text-decoration:none;font-family:var(--sans);border:1.5px solid #DCE8F0;background:#fff;position:relative;
-  box-shadow:0 3px 0 #D8E4EC,0 8px 18px rgba(19,75,112,.12);transition:transform .12s ease}
+  background:linear-gradient(90deg,var(--amber),var(--verm) 55%,var(--verm-ink));border-radius:24px 24px 0 0}
+.x{position:absolute;top:12px;right:12px;width:32px;height:32px;border-radius:999px;cursor:pointer;
+  background:var(--paper-2);border:1px solid var(--paper-edge);color:var(--ink-soft);font-size:14px;font-weight:900}
+.m-kick{font-size:9.5px;font-weight:800;letter-spacing:.22em;text-transform:uppercase;color:var(--verm);text-align:center;margin-bottom:4px}
+.m-title{font-family:var(--serif);font-size:24px;font-weight:700;color:var(--ink);text-align:center;margin-bottom:4px}
+.m-sub{font-size:11px;color:var(--ink-soft);text-align:center;line-height:1.6;margin-bottom:14px}
+.sku{display:flex;align-items:center;gap:11px;width:100%;border-radius:14px;padding:12px 14px;margin-bottom:8px;
+  text-decoration:none;font-family:var(--sans);border:1px solid var(--paper-edge);background:var(--paper-2);position:relative;
+  box-shadow:0 10px 22px -18px rgba(28,52,70,.5);transition:transform .12s ease}
 .sku:active{transform:translateY(2px)}
-.sku.hot{border-color:#F5C88A;background:linear-gradient(180deg,#FFF9EC,#FFF4E3)}
-.sku .pr{flex-shrink:0;min-width:64px;text-align:center;font-size:16px;font-weight:900;color:var(--sun2)}
-.sku b{display:block;font-size:13px;font-weight:900;color:var(--navy)}
-.sku span.d{display:block;font-size:9.5px;color:#8A94A0;margin-top:2px;line-height:1.45}
+.sku.hot{border-color:var(--amber);background:linear-gradient(180deg,#FFF9EC,#F9EFD8)}
+.sku .pr{flex-shrink:0;min-width:64px;text-align:center;font-family:var(--serif);font-size:21px;font-weight:700;color:var(--verm-ink)}
+.sku b{display:block;font-size:13.5px;font-weight:800;color:var(--ink)}
+.sku span.d{display:block;font-size:10px;color:var(--ink-soft);margin-top:2px;line-height:1.45}
 .sku .best{position:absolute;top:-8px;right:12px;font-size:8px;font-weight:900;letter-spacing:.08em;
-  color:#7A4A12;background:#FFD97A;border-radius:999px;padding:3px 8px;text-transform:uppercase}
+  color:var(--ink);background:var(--amber);border-radius:999px;padding:3px 8px;text-transform:uppercase}
 .sku[aria-disabled="true"]{opacity:.55;pointer-events:none}
 .m-div{display:flex;align-items:center;gap:8px;margin:13px 0 9px;font-size:9px;font-weight:800;
-  letter-spacing:.14em;text-transform:uppercase;color:#8A8578}
-.m-div::before,.m-div::after{content:"";flex:1;height:1px;background:#E5DCC9}
+  letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+.m-div::before,.m-div::after{content:"";flex:1;height:1px;background:var(--line)}
 .key-row{display:flex;gap:7px}
-.key-in{flex:1;min-width:0;border:1.5px solid #C7DEEC;border-radius:12px;background:#fff;color:var(--ink);
+.key-in{flex:1;min-width:0;border:1px solid var(--line);border-radius:12px;background:var(--paper-2);color:var(--ink);
   font-family:var(--sans);font-size:12px;font-weight:700;padding:11px 12px;outline:none}
-.key-in:focus{border-color:var(--ocean)}
-.key-go{border:none;border-radius:12px;background:var(--ocean);color:#fff;font-family:var(--sans);
+.key-in:focus{border-color:var(--verm)}
+.key-go{border:none;border-radius:12px;background:var(--verm);color:#FDF4EA;font-family:var(--sans);
   font-size:11.5px;font-weight:900;padding:11px 16px;cursor:pointer;white-space:nowrap}
 .key-go[disabled]{opacity:.6}
-.m-msg{font-size:10.5px;line-height:1.6;font-weight:700;margin-top:9px;min-height:14px;color:#8A8578}
-.m-msg.err{color:#C0392B}
-.m-msg.ok{color:#1E8449}
-.m-foot{margin-top:8px;font-size:9px;color:#8A8578;text-align:center}
-.m-test{margin-top:10px;font-size:9px;font-weight:800;letter-spacing:.1em;color:#B45309;text-align:center;
-  background:#FFF4E3;border:1px dashed #F5C88A;border-radius:999px;padding:5px 12px;display:none}
+.m-msg{font-size:11px;line-height:1.6;font-weight:700;margin-top:9px;min-height:14px;color:var(--ink-soft)}
+.m-msg.err{color:#A02D19}
+.m-msg.ok{color:#166B3C}
+.m-foot{margin-top:8px;font-size:10px;color:var(--ink-soft);text-align:center}
+.m-test{margin-top:10px;font-size:9px;font-weight:800;letter-spacing:.1em;color:var(--verm-ink);text-align:center;
+  background:#FFF4E3;border:1px dashed var(--amber);border-radius:999px;padding:5px 12px;display:none}
 </style>
 </head>
 <body>
@@ -239,7 +309,7 @@ footer .legal{color:rgba(255,255,255,.8);font-weight:400;text-decoration:underli
     <span class="go ico-play" aria-hidden="true"></span>
   </a>
 
-  <div class="sec"><b>Season 1 · Feb–Jun</b><i></i><span class="st lock" id="stS1"><span class="ico ico-lock" aria-hidden="true"></span> Locked</span></div>
+  <div class="sec"><b>Season 1 · 5 chapters</b><i></i><span class="st lock" id="stS1"><span class="ico ico-lock" aria-hidden="true"></span> Locked</span></div>
   <div id="shelfS1">
     <a class="card locked" data-group="season1" data-href="../adventure-wsour/">
       <span class="tile">2</span>

@@ -39,7 +39,7 @@
     + "#ohMenuPanel a{display:flex;align-items:baseline;justify-content:space-between;gap:14px;"
     + "text-decoration:none;padding:11px 14px;border-radius:10px;color:#1C1C1C;"
     + "font-family:'DM Sans','Noto Sans JP',sans-serif;font-weight:700;font-size:14px;letter-spacing:.02em}"
-    + "#ohMenuPanel a .jp{font-family:'Noto Sans JP',sans-serif;font-weight:400;font-size:11px;color:#8AA0B2}"
+    + "#ohMenuPanel a .jp{font-family:'Noto Sans JP',sans-serif;font-weight:400;font-size:11px;color:#5F6E77}"  /* 旧#8AA0B2は白地で2.71:1＝AA未達（2026-07-29実測）。5.9:1へ */
     + "#ohMenuPanel a:hover{background:#F1F7FC}"
     + "#ohMenuPanel a.active{background:#134B70;color:#fff}"
     + "#ohMenuPanel a.active .jp{color:#BFE6F9}"
