@@ -33,18 +33,17 @@
     + "#ohMenuOv{position:fixed;inset:0;z-index:99998;background:rgba(28,52,70,.26);opacity:0;"
     + "pointer-events:none;transition:opacity .2s}"
     + "#ohMenuOv.open{opacity:1;pointer-events:auto}"
-    + "#ohMenuPanel{position:fixed;top:59px;right:14px;z-index:99999;min-width:210px;"
-    + "background:#FCF7EC;border:1px solid #E4D9C2;border-radius:14px;padding:8px;"
+    + "#ohMenuPanel{position:fixed;top:59px;right:14px;z-index:99999;min-width:172px;"
+    + "background:#FCF7EC;border:1px solid #E4D9C2;border-radius:13px;padding:6px;"
     + "box-shadow:0 12px 34px rgba(28,52,70,.22);transform:translateY(-8px) scale(.98);"
     + "opacity:0;pointer-events:none;transform-origin:top right;transition:transform .18s,opacity .18s}"
     + "#ohMenuPanel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:auto}"
     + "#ohMenuPanel a{display:flex;align-items:baseline;justify-content:space-between;gap:14px;"
-    + "text-decoration:none;padding:11px 14px;border-radius:10px;color:#1C3446;"
-    + "font-family:'DM Sans','Noto Sans JP',sans-serif;font-weight:700;font-size:14px;letter-spacing:.02em}"
+    + "text-decoration:none;padding:10px 14px;border-radius:9px;color:#1C3446;"
+    + "font-family:'DM Sans','Noto Sans JP',sans-serif;font-weight:700;font-size:14.5px;letter-spacing:.02em}"
     + "#ohMenuPanel a .jp{font-family:'Noto Sans JP',sans-serif;font-weight:400;font-size:11px;color:#5F6E77}"  /* 旧#8AA0B2は白地で2.71:1＝AA未達（2026-07-29実測）。5.9:1へ */
     + "#ohMenuPanel a:hover{background:#F6F0E2}"
-    + "#ohMenuPanel a.active{background:#1C3446;color:#fff}"
-    + "#ohMenuPanel a.active .jp{color:#B9C6CF}"
+    /* 現在地の紺ピル強調は2026-07-30廃止（LPの内蔵メニューに強調が無く、Good Morningsだけ別物に見えたオーナー指摘） */
     + "@media print{#ohMenuBtn,#ohMenuOv,#ohMenuPanel{display:none!important}}";
 
   var style = document.createElement("style");
