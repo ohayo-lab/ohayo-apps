@@ -20,6 +20,11 @@
 <meta name="theme-color" content="#134B70">
 <script src="../adventure/adventure_config.js"></script>
 <script src="audio/clips.js"></script><!-- シーン→日記音声クリップのマップ（build_scene_audio.py生成・無ければ▶非表示） -->
+<!-- ヘッダー（.sitehead）だけ LP と同じ DM Sans で組む。軸はLPと同一（wght@400;500;700;800）。
+     ゲーム本体の書体（--sans＝システムスタック）は変更していない。 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700;800&display=swap" rel="stylesheet">
 <style>
 .ico-play{display:inline-block;flex:0 0 auto;width:0;height:0;border-style:solid;
   border-width:5px 0 5px 8px;border-color:transparent transparent transparent currentColor;
@@ -353,9 +358,59 @@ body{display:flex;justify-content:center}
   background:#FFF4E3;border:1px dashed #F5C88A;border-radius:999px;padding:5px 12px;display:none}
 .lk-back{margin-top:16px;font-size:11px;font-weight:800;color:#BFE6F9;text-decoration:none;
   background:rgba(13,46,71,.5);border:1px solid rgba(191,230,249,.3);border-radius:999px;padding:9px 18px;backdrop-filter:blur(6px)}
+/* ══ 下層ページ共通ヘッダー（2026-07-30 オーナー指示）══
+   デスクトップ(>700px)は LP と同じ横並びナビを出し、menu.js のハンバーガーを隠す。
+   モバイル(≤700px)は従来どおり menu.js のハンバーガーだけ（この帯はワードマーク行になる）。
+   寸法・色・書体は LP index.html の nav / .nav-in / .logo / .nav-links の実値をそのまま写す。
+   ページ側のトークン名に依存させないため、ここだけは実値を直書きする
+   （--paper #F6F0E2 / --line #E4D9C2 / --ink #1C3446 / --ink-soft #4B5F6D）。
+   現在ページの強調はしない＝LPのナビに強調が無いため（2026-07-30オーナー指摘）。 */
+.sitehead{position:sticky;top:0;z-index:50;width:100%;
+  background:rgba(246,240,226,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid #E4D9C2}
+.sitehead-in{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  height:58px;width:100%;max-width:1080px;margin:0 auto;padding:0 18px;
+  /* line-height はページ側の body から継承させない。LPの body(1.6) と同値を帯の中で固定する
+     ＝どの下層ページでもワードマークのベースラインが LP と揃う（実測で最大0.5px差まで詰まる）。 */
+  line-height:1.6}
+.sitehead .logo{display:flex;align-items:center;gap:8px;font-weight:700;text-decoration:none}
+.sitehead .logo b{font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif;
+  font-size:17px;font-weight:800;letter-spacing:.05em;color:#1C3446;white-space:nowrap}
+.sitehead .nav-links{display:flex;gap:20px;
+  font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif;font-weight:600;font-size:14px}
+.sitehead .nav-links a{color:#4B5F6D;text-decoration:none}
+.sitehead .nav-links .jp{display:none}
+@media(max-width:700px){.sitehead .nav-links{display:none}}
+@media(max-width:400px){.sitehead .logo b{font-size:14.5px;letter-spacing:.03em}}
+/* menu.js は251ページ共有なので絶対に触らない。デスクトップだけこちら側で隠す。 */
+@media(min-width:701px){#ohMenuBtn,#ohMenuOv,#ohMenuPanel{display:none!important}}
+/* ── ゲーム画面（.app = height:100dvh の全画面・body は display:flex）用の追い書き ──
+   モバイルは従来どおり menu.js のハンバーガーだけ＝この帯は出さない（見え方は無変更）。
+   デスクトップだけ position:fixed の帯を出し、その分 .app を 58px 縮めて重なりを作らない。 */
+.sitehead{display:none}
+@media(min-width:701px){
+  /* LPの帯は .92 の半透明＝背後が紙地であることを前提にした値。ここは背後がゲームの紺
+     (#0D2E47) なので、同じ .92 だと帯が greige に沈んで LP の紙色に見えない（実測）。
+     この2ページ群だけ不透明の紙地(--paper #F6F0E2)で描く＝見た目をLPに合わせるための処置。 */
+  .sitehead{display:block;position:fixed;top:0;left:0;right:0;z-index:200;
+    background:#F6F0E2;-webkit-backdrop-filter:none;backdrop-filter:none}
+  body{padding-top:58px}
+  .app{height:calc(100dvh - 58px)}
+  /* .panel の max-height だけは .app 基準ではなく dvh 基準（元値 calc(60dvh - 24px)）なので、
+     .app を 58px 縮めた分の 60%（34.8px）を追加で引く。これを忘れるとパネル末尾が
+     .app の overflow:hidden で切れる（実測 11px 欠け）。 */
+  .panel{max-height:calc(60dvh - 58.8px)}
+}
 </style>
 </head>
 <body>
+<!-- 下層ページ共通ヘッダー（2026-07-30）。並び・文言・リンク先は LP の .nav-links と
+     menu.js の LINKS 配列に一致させる（棚順を変えるときは3箇所すべて直す）。
+     LP内アンカーは絶対パス（/#read）。data-oa-event は付けない＝LPのナビと同じ扱い。 -->
+<div class="sitehead"><div class="sitehead-in">
+  <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
+  <div class="nav-links" role="navigation" aria-label="Site menu"><a href="/#read"><span>Read</span><span class="jp">よむ</span></a><a href="/news/"><span>Good Mornings</span><span class="jp">きょうの、いいこと。</span></a><a href="/method/"><span>Method</span><span class="jp">メソッド</span></a><a href="/#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="/adventure/"><span>Try</span><span class="jp">ためす</span></a><a href="/#shop"><span>The Shelf</span><span class="jp">ほんだな</span></a></div>
+</div></div>
 <div class="app" id="app">
 
   <!-- full-bleed scene art (double-buffered crossfade) -->

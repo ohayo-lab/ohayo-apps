@@ -69,13 +69,35 @@ body{font-family:var(--sans);color:var(--ink);min-height:100vh;background:var(--
 @keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:translateY(0)}}
 
 /* ═══ 額縁・上辺 ═══
-   ブランド行はLPのワードマーク（.logo b）と同じ見た目：墨・14.5px/800・字間.05em（2026-07-30オーナー指摘で全下層ページ統一）。
-   紙地になったので帯は地に溶ける。下の1本の罫だけが LP のナビ下端と同じ役目を残す。
+   本文は 520px 幅だが、ヘッダー容器だけ LP と同じ広幅（1080px）に広げてナビを収める。
+   額縁の下罫（LPのナビ下端と同じ役目）は .sitehead の border-bottom が引き継ぐ。
    自前のハンバーガーは置かない（menu.js の #ohMenuBtn と二重化する。下層ページ共通の作法）。 */
-.frame-top{width:100%;background:var(--paper);border-bottom:1px solid var(--line)}
-.frame-top .frame-in{max-width:520px;margin:0 auto;padding:0 18px}
-.brand{display:inline-block;margin:17px 0 16px;font-family:var(--ui);font-size:14.5px;font-weight:800;
-  letter-spacing:.05em;text-transform:none;color:var(--ink);text-decoration:none;white-space:nowrap}
+/* ══ 下層ページ共通ヘッダー（2026-07-30 オーナー指示）══
+   デスクトップ(>700px)は LP と同じ横並びナビを出し、menu.js のハンバーガーを隠す。
+   モバイル(≤700px)は従来どおり menu.js のハンバーガーだけ（この帯はワードマーク行になる）。
+   寸法・色・書体は LP index.html の nav / .nav-in / .logo / .nav-links の実値をそのまま写す。
+   ページ側のトークン名に依存させないため、ここだけは実値を直書きする
+   （--paper #F6F0E2 / --line #E4D9C2 / --ink #1C3446 / --ink-soft #4B5F6D）。
+   現在ページの強調はしない＝LPのナビに強調が無いため（2026-07-30オーナー指摘）。 */
+.sitehead{position:sticky;top:0;z-index:50;width:100%;
+  background:rgba(246,240,226,.92);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  border-bottom:1px solid #E4D9C2}
+.sitehead-in{display:flex;align-items:center;justify-content:space-between;gap:10px;
+  height:58px;width:100%;max-width:1080px;margin:0 auto;padding:0 18px;
+  /* line-height はページ側の body から継承させない。LPの body(1.6) と同値を帯の中で固定する
+     ＝どの下層ページでもワードマークのベースラインが LP と揃う（実測で最大0.5px差まで詰まる）。 */
+  line-height:1.6}
+.sitehead .logo{display:flex;align-items:center;gap:8px;font-weight:700;text-decoration:none}
+.sitehead .logo b{font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif;
+  font-size:17px;font-weight:800;letter-spacing:.05em;color:#1C3446;white-space:nowrap}
+.sitehead .nav-links{display:flex;gap:20px;
+  font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif;font-weight:600;font-size:14px}
+.sitehead .nav-links a{color:#4B5F6D;text-decoration:none}
+.sitehead .nav-links .jp{display:none}
+@media(max-width:700px){.sitehead .nav-links{display:none}}
+@media(max-width:400px){.sitehead .logo b{font-size:14.5px;letter-spacing:.03em}}
+/* menu.js は251ページ共有なので絶対に触らない。デスクトップだけこちら側で隠す。 */
+@media(min-width:701px){#ohMenuBtn,#ohMenuOv,#ohMenuPanel{display:none!important}}
 
 /* ═══ ヒーロー＝LPの習作文法（.kicker / .h2 / .lead）に揃える ═══
    文言は一切変えていない。
@@ -287,8 +309,13 @@ footer .legal{color:rgba(255,255,255,.8);font-weight:400;text-decoration:underli
 </head>
 <body>
 
-<!-- 額縁・上辺：下層ページ共通のブランド行（朱・大文字・字間.2em）。ハンバーガーは menu.js 側 -->
-<div class="frame-top"><div class="frame-in"><a class="brand" href="https://www.ohayonihongo.net/">OHAYO NIHONGO</a></div></div>
+<!-- 下層ページ共通ヘッダー（2026-07-30）。並び・文言・リンク先は LP の .nav-links と
+     menu.js の LINKS 配列に一致させる（棚順を変えるときは3箇所すべて直す）。
+     LP内アンカーは絶対パス（/#read）。data-oa-event は付けない＝LPのナビと同じ扱い。 -->
+<div class="sitehead"><div class="sitehead-in">
+  <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
+  <div class="nav-links" role="navigation" aria-label="Site menu"><a href="/#read"><span>Read</span><span class="jp">よむ</span></a><a href="/news/"><span>Good Mornings</span><span class="jp">きょうの、いいこと。</span></a><a href="/method/"><span>Method</span><span class="jp">メソッド</span></a><a href="/#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="/adventure/"><span>Try</span><span class="jp">ためす</span></a><a href="/#shop"><span>The Shelf</span><span class="jp">ほんだな</span></a></div>
+</div></div>
 
 <div class="wrap">
 
