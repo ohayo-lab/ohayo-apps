@@ -571,7 +571,7 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
 /* 見出し・キャプションもパネルと同じ694px列に入れて左端を共有する。
    これをしないと広い画面で見出しだけ175px外側に出る（1328pxで実測） */
 #read .shelf-head,#read .caption,#method .shelf-head,#method .caption,
-#learn .shelf-head,#learn .caption,#shop .shelf-head,#shop .caption,
+#learn .shelf-head,#learn .caption,#shelf .shelf-head,#shelf .caption,
 #try .shelf-head,#try .caption{max-width:694px;margin-left:auto;margin-right:auto}
 .shop-lead,#try .row,#learn .row,#read .row,#method .row{
   display:grid;gap:14px;overflow:visible;
@@ -1169,7 +1169,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <a class="logo" href="/"><b>OHAYO NIHONGO</b></a>
   <!-- Good Mornings は LP 内アンカーではなく /news/ 実ページ（§3-6c・統括裁定 2026-07-28）。
        ここには data-oa-event を付けない＝計測は本文の .newslink 側 news_open 1点に集約する。 -->
-  <div class="nav-links" id="navLinks"><a href="#read"><span>Read</span><span class="jp">よむ</span></a><a href="/news/"><span>Good Mornings</span><span class="jp">きょうの、いいこと。</span></a><a href="/method/"><span>Method</span><span class="jp">メソッド</span></a><a href="#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="/adventure/"><span>Try</span><span class="jp">ためす</span></a><a href="#shop"><span>The Shelf</span><span class="jp">ほんだな</span></a></div>
+  <div class="nav-links" id="navLinks"><a href="#read"><span>Read</span><span class="jp">よむ</span></a><a href="/news/"><span>Good Mornings</span><span class="jp">きょうの、いいこと。</span></a><a href="/method/"><span>Method</span><span class="jp">メソッド</span></a><a href="#learn"><span>Learn</span><span class="jp">つづける</span></a><a href="/adventure/"><span>Try</span><span class="jp">ためす</span></a><a href="#shelf"><span>The Shelf</span><span class="jp">ほんだな</span></a></div>
   <button class="nav-burger" type="button" id="navBurger" aria-label="Menu" aria-expanded="false" aria-controls="navLinks"><span></span><span></span><span></span></button>
 </div></nav>
 
@@ -1498,7 +1498,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
 <!-- ============ The Shelf（旧 04 shop・§3-9-2/3）最下部へ降格・3枚に集約 ============
      見出し語 "Shop" は廃止（23名がこの語で失速）。h2 は維持。
      順序は「毎朝 → 信頼 → 棚」＝在庫を前に出しても売上は増えず信頼を先に削る。 -->
-<section class="block" id="shop"><div class="wrap">
+<section class="block" id="shelf"><a id="shop" aria-hidden="true"></a><div class="wrap">
   <span class="kicker"><span class="dash"></span>The Shelf<span class="dash"></span></span>
   <h2 class="h2">Take the diary <em>with you</em>.</h2>
   <p class="lead">The podcast gives you sound only. Every diary&rsquo;s kanji, hiragana and English in one place, so you can study a whole month at a time.</p>
