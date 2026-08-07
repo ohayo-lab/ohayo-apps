@@ -1410,7 +1410,10 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <h2 class="h2">Build the habit, <em>step by step</em>.</h2>
   <p class="lead">Read, listen, shadow &mdash; one real line a day, at your pace.</p>
   <div class="grid grid-2">
-    <a class="card" href="https://ohayonihongo.substack.com/subscribe?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup">
+    <!-- 2026-08-08: 行き先を /subscribe → /embed に変更（オーナー決裁）。/subscribe はプラン選択画面を
+         挟む（有料設定ON中のSubstack標準仕様）。/embed はメール1発の1画面。有料OFFは
+         「Turn off paid subscriptions」がStripe接続ごと切断する仕様のため不採用。 -->
+    <a class="card" href="https://ohayonihongo.substack.com/embed?utm_source=site&amp;utm_medium=cta&amp;utm_campaign=email_list" target="_blank" rel="noopener" data-oa-event="email_signup">
       <div class="pv pv-stb">
         <div class="b-ticket">
           <div class="b-stub">
