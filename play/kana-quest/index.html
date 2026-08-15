@@ -1,5 +1,7 @@
 <!doctype html>
 <!--
+  ★ PREVIEW ONLY — 新アート（ヘッドホンの女性キャラ・水彩トーン / img2/）の検品用。
+    本番は index.html + img/。このファイルと img2/ 以外は触らないこと。
   KANA QUEST — a light side-scrolling kana runner (beta prototype)
   ============================================================================
   MECHANIC (jump-collect):
@@ -21,9 +23,9 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Kana Quest · OHAYO NIHONGO</title>
+<title>Kana Quest PREVIEW · OHAYO NIHONGO</title>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-<link rel="icon" type="image/png" href="img/char_front.png">
+<link rel="icon" type="image/png" href="img2/char_front.png">
 <style>
   :root{
     --cream:#FAF7F1; --paper:#FFF; --ink:#1C1C1C; --sub:#4A4A4A; --line:#DFD7C9;
@@ -88,7 +90,9 @@
     letter-spacing:.5px;
   }
   .card .logoImg{ display:block; width:100%; max-width:100%; height:auto; margin:2px auto 4px; }
-  #overChar{ display:block; height:70px; width:auto; margin:0 auto 6px; }
+  /* PREVIEW: 新アートは全身の縦長キャラ（1023x1537）なので、
+     旧スタンプ（70px/58px）のままだと小さすぎる → 120px に引き上げ */
+  #overChar{ display:block; height:120px; width:auto; margin:0 auto 6px; }
   /* 終了画面のタイポは3ゲーム共通スケール:
      見出し20px / スコア数値22px / ラベル12.5px / Best 11px / 主CTA 14.5px / 従ボタン12px
      （"Game Over" のキッカーは廃止したので上余白も詰める） */
@@ -97,7 +101,7 @@
   #overOverlay .ctaLp{ font-size:13px; padding:10px 12px; margin-top:11px; }
   #overOverlay .ctaLp .sub2{ font-size:10px; }
   #overOverlay .cta2{ font-size:12px; padding:8px 16px; margin-top:8px; }
-  #overOverlay #overChar{ height:58px; }
+  #overOverlay #overChar{ height:120px; }
   #overOverlay .card h1{ font-size:21px; margin:0 0 2px; }
   .card .kicker{font-size:12px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; margin-bottom:6px;}
   .card p.how{font-size:12.5px; line-height:1.45; color:var(--sub); margin:9px 0 13px;}
@@ -189,7 +193,7 @@
   }
   #promptBox{
     pointer-events:none;
-    background:transparent url("img/collect_panel.png") no-repeat center/100% 100%;
+    background:transparent url("img2/collect_panel.png") no-repeat center/100% 100%;
     border:none; box-shadow:none;
     /* panel art is 800:450 with a sun ornament poking above the top edge —
        extra top padding keeps the label off the sun & inside the cream face */
@@ -206,7 +210,7 @@
   #promptBox .romaji{font-size:34px; font-weight:800; color:var(--navy); line-height:1; font-family:'Arial Rounded MT Bold','Hiragino Maru Gothic ProN',sans-serif;}
   #hudRight{display:flex; flex-direction:column; align-items:flex-end; gap:4px; pointer-events:none;}
   .hudPill{
-    background:transparent url("img/score_pill.png") no-repeat center/100% 100%;
+    background:transparent url("img2/score_pill.png") no-repeat center/100% 100%;
     border:none; box-shadow:none;
     padding:5px 16px; font-size:13px; font-weight:700; color:var(--ink);
   }
@@ -214,7 +218,7 @@
   #hearts img{height:12px; vertical-align:middle;}
   #jumpHint{
     position:absolute; bottom:calc(30px + env(safe-area-inset-bottom,0px)); right:14px; z-index:6; pointer-events:auto;
-    background:url("img/jump_button.png") no-repeat center/cover;
+    background:url("img2/jump_button.png") no-repeat center/cover;
     color:var(--ink); border:none; border-radius:50%;
     width:78px; height:78px; font-size:14px; font-weight:800; cursor:pointer; letter-spacing:.5px;
     text-shadow:0 1px 2px rgba(255,255,255,.7);
@@ -274,8 +278,8 @@
 <body>
 <div id="wrap">
   <header>
-    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><img src="img/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO NIHONGO</a>
-    <span class="sub">Kana Quest · Free game</span>
+    <a class="brand" href="https://www.ohayonihongo.net/" target="_blank" rel="noopener"><img src="img2/char_front.png" alt="" style="height:17px;vertical-align:-3px;"> OHAYO NIHONGO</a>
+    <span class="sub">Kana Quest · New art preview</span>
     <span class="spacer"></span>
     <button id="muteBtn" aria-label="Toggle sound"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;"><path d="M11 5 6 9H3v6h3l5 4z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18 6a8.5 8.5 0 0 1 0 12"/></svg></button>
   </header>
@@ -308,7 +312,7 @@
     <!-- START overlay -->
     <div id="startOverlay" class="overlay">
       <div class="card">
-        <img class="logoImg" src="img/logo_kanaquest.png" alt="Kana Quest">
+        <img class="logoImg" src="img2/logo_kanaquest.png" alt="Kana Quest">
         <p class="how">Run with the morning sun. <b>Jump</b> to grab the kana that matches the prompt — dodge the wrong ones. Tap / Space to jump.</p>
         <div class="modeRow">
           <button class="modeBtn active" data-mode="hira"><span class="jp">あ</span>Hiragana</button>
@@ -322,7 +326,7 @@
     <!-- GAME OVER overlay -->
     <div id="overOverlay" class="overlay hidden">
       <div class="card">
-        <img id="overChar" src="img/sticker_otsukare.png" alt="">
+        <img id="overChar" src="img2/char_front.png" alt="">
         <h1 id="overTitle"></h1>
         <p class="statline">Score<br><b id="finalScore">0</b></p>
         <div class="best" id="finalBest">Best: 0</div>
@@ -483,21 +487,21 @@
   const bgImg = new Image();
   let bgReady = false;
   bgImg.onload = ()=>{ bgReady = true; };
-  bgImg.src = "img/bg_sunrise_meadow_hd.jpg";
+  bgImg.src = "img2/bg_sunrise_meadow_hd.jpg";
 
   // sprite art (RGBA, checker-stripped) — vector shapes are the fallback
   const charRunImg = new Image();  let charRunReady = false;
   charRunImg.onload = ()=>{ charRunReady = true; };
-  charRunImg.src = "img/char_run.png";
+  charRunImg.src = "img2/char_run_right.png";
   const charJumpImg = new Image(); let charJumpReady = false;
   charJumpImg.onload = ()=>{ charJumpReady = true; };
-  charJumpImg.src = "img/char_jump.png";
+  charJumpImg.src = "img2/char_jump_touch_left.png";
   const tileImg = new Image();     let tileReady = false;
   tileImg.onload = ()=>{ tileReady = true; };
-  tileImg.src = "img/tile_block.png";
+  tileImg.src = "img2/tile_block.png";
   const sparkleImg = new Image();  let sparkleReady = false;
   sparkleImg.onload = ()=>{ sparkleReady = true; };
-  sparkleImg.src = "img/sparkle.png";
+  sparkleImg.src = "img2/sparkle.png";
 
   function resize(){
     DPR = Math.min(window.devicePixelRatio||1, 2.5);
@@ -545,7 +549,23 @@
   const runner = { y:0, vy:0, onGround:true, bob:0, runCycle:0 };
   const GRAV = 2100;         // px/s^2
   const JUMP_V = -820;       // initial jump velocity
-  const RUNNER_R = 21;       // collision radius
+  const RUNNER_R = 21;       // collision radius（当たり判定は本番と同じ・変更しない）
+
+  // ---- PREVIEW: 新アート（全身の人物スプライト）の描画メトリクス ----
+  // 素材は 1023x1537 の縦長フレームで、人物のまわりに透明の余白がある。
+  // 「フレームの中心」ではなく「アルファ境界（＝頭の上/靴の底）」を基準に置く。
+  // 値は img2 の実PNGを計測したもの（正規化・フレーム高に対する比）:
+  //   char_run_right.png        : top 0.048 / bottom 0.895（接地している靴の底）
+  //   char_jump_touch_left.png  : top 0.038 / bottom 0.812（脚を畳んでいる＝靴は上がる）
+  // 走り／ジャンプで同じフレーム寸法を使い、走りの靴底が接地ラインに来るよう
+  // 配置する。こうするとジャンプ時は「頭の高さはそのままで脚だけ畳まれる」動きになる。
+  const SPR_ASPECT   = 1023/1537;   // 両スプライト共通のフレーム縦横比
+  const SPR_FOOT     = 0.895;       // 走りスプライトの靴底（フレーム上端からの比）
+  const SPR_HEAD     = 0.048;       // 走りスプライトの頭頂
+  const CHAR_H       = 3.8*RUNNER_R;                  // 見た目の身長 ≒ 80px（+15%）
+  const CHAR_FRAME_H = CHAR_H/(SPR_FOOT-SPR_HEAD);    // ≒ 81.5px（フレーム全体）
+  const CHAR_FRAME_W = CHAR_FRAME_H*SPR_ASPECT;       // ≒ 54px
+  const CHAR_SINK    = 8;           // 足元を接地ラインより少し下げて草に埋める
 
   best = parseInt(localStorage.getItem("kanaquest_best")||"0",10) || 0;
 
@@ -590,7 +610,7 @@
     t.kana = kana; t.romaji = romaji;
     t.correct = (romaji === prompt[1]);
     t.x = VW + 40;
-    t.y = high ? (groundY - 118 - Math.random()*36) : (groundY - 34);
+    t.y = high ? (groundY - 136 - Math.random()*41) : (groundY - 39);
     t.r = 24;
     t.dead = false;
     t.pop = 0;          // collect animation
@@ -616,7 +636,7 @@
     // hearts as little img sprites (full / empty)
     let hh="";
     for(let i=0;i<MAX_HEARTS;i++){
-      const src = i<hearts ? "img/heart_full.png" : "img/heart_empty.png";
+      const src = i<hearts ? "img2/heart_full.png" : "img2/heart_empty.png";
       hh += '<img src="'+src+'" alt="" style="height:12px;vertical-align:middle;">';
     }
     document.getElementById("hearts").innerHTML = hh;
@@ -836,18 +856,26 @@
     }
   }
 
-  // OHAYO sun mascot — sprite (char_run grounded / char_jump airborne),
-  // with a vector fallback for when the art hasn't loaded yet.
+  // PREVIEW mascot — 新アートの人物スプライト
+  //   接地中 = char_run_right.png（最初から右向き・反転不要）
+  //   空中   = char_jump_touch_left.png（腕を上に伸ばす＝タイルを取りに行くポーズ）
+  // 旧サン君は円形キャラだったので「中心合わせ」で描いていたが、人物は縦長なので
+  // 「靴の底が接地ラインに合う」下端基準に置き換える。
+  // 当たり判定（中心 cy・半径 RUNNER_R）は本番と同じまま。CHAR_SINK を入れることで
+  // 判定円の中心が人物の胴体中央付近（足元から約35〜40px）に来る。
   function drawMascot(cx, cy){
     const r=RUNNER_R;
 
-    // ground shadow (kept for both sprite + vector)
-    const shY = groundY + 6;
+    // 靴底のy。cy は「接地ラインの RUNNER_R 上」なので、そこから足元まで戻す。
+    const footY = cy + r + CHAR_SINK;
+
+    // ground shadow — 足元に置く（ジャンプで小さくなるのは従来どおり）
+    const shY = groundY + CHAR_SINK + 1;
     const shScale = 1 - Math.min(0.6, (-runner.y)/220);
     g.save();
     g.fillStyle="rgba(19,75,112,0.22)";
     g.beginPath();
-    g.ellipse(cx, shY, r*0.9*shScale, r*0.32*shScale, 0,0,7);
+    g.ellipse(cx, shY, r*0.8*shScale, r*0.28*shScale, 0,0,7);
     g.fill();
     g.restore();
 
@@ -855,16 +883,17 @@
     const sprite = runner.onGround ? charRunImg : charJumpImg;
     const ready  = runner.onGround ? charRunReady : charJumpReady;
     if(ready){
-      const h = 2.6*r;
-      const w = h * (sprite.width/sprite.height);
+      const fh = CHAR_FRAME_H, fw = CHAR_FRAME_W;
+      const frameTop = footY - SPR_FOOT*fh;      // フレーム左上のy
+      const pivotY   = footY - CHAR_H*0.45;      // 腰のあたりで回す（頭が振れすぎない）
       g.save();
-      g.translate(cx, cy);
+      g.translate(cx, pivotY);
       if(runner.onGround){
-        g.rotate(Math.sin(runner.runCycle)*0.04);   // gentle run sway
+        g.rotate(Math.sin(runner.runCycle)*0.03);  // 走りの揺れ（人物なので弱め）
       } else {
-        g.rotate(-0.12);                             // airborne lean
+        g.rotate(-0.05);                           // 空中の傾き（同上）
       }
-      g.drawImage(sprite, -w/2, -h/2, w, h);
+      g.drawImage(sprite, -fw/2, frameTop-pivotY, fw, fh);
       g.restore();
       return;
     }
@@ -1054,12 +1083,13 @@
     const newBest = score > best && score > 0;
     if(newBest) Sfx.win(); else Sfx.lose();
     // sticker + title tiers: new best > zero score > near best > default
+    // （新LINEスタンプ＝ひらがな+ローマ字の彼女版・24個セットから4種）
     let overStk, overTitle;
     if(newBest){                      overStk="sticker_sugoi.png";    overTitle="New Best!"; }
     else if(score===0){               overStk="sticker_ganbatte.png"; overTitle=""; }
     else if(best>0 && score>=best*0.8){ overStk="sticker_iine.png";   overTitle="So close!"; }
     else{                             overStk="sticker_otsukare.png"; overTitle=""; }
-    document.getElementById("overChar").src = "img/"+overStk;
+    document.getElementById("overChar").src = "img2/"+overStk;
     document.getElementById("overTitle").textContent = overTitle;
     if(score>best){ best=score; localStorage.setItem("kanaquest_best", String(best)); }
     document.getElementById("finalScore").textContent = score;
