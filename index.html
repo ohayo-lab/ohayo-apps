@@ -923,6 +923,16 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   font-size:13px;font-weight:700;color:var(--ink);
   border-bottom:1.5px solid var(--verm);padding-bottom:1px}
 .card .go svg{width:13px;height:13px}
+/* ===== 説明直下の「お試し1品」ボタン（2026-10-08・Codex第362回①・オーナー決裁10/8）=====
+   カード全体は従来どおり1本のリンク（.card-main）。<a>の入れ子はHTML違反なので、
+   外枠を <div class="card has-try"> にし、ボタン行 .card-try を同じ紙の中・本文の下に置く。
+   見た目は既存の .pod-sp（紙地＋罫線のピル）をそのまま流用し、新しい部品は作らない。
+   LPに価格と /diary/ を出さない決まりは不変（文言・リンク先とも）。 */
+.card.has-try>.card-main{display:flex;flex-direction:column;flex:1}
+.card.has-try:has(>.card-main:hover){transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,70,.34)}
+.card-try.pod-btns{margin-top:0;padding:0 18px 18px}
+.card-try .pod-sp{line-height:1.35;text-wrap:balance}
+.card-try .pod-sp svg{width:13px;height:13px;flex:none}
 
 /* 数値帯（§3-0）罫線上下＋4カラム＋大きなセリフ数字。内容と並びは不変 */
 .stats{display:flex;flex-wrap:wrap;justify-content:center;margin:52px auto 0;max-width:920px;
@@ -1452,7 +1462,8 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
         <span class="go">Start free<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
-    <a class="card" href="/my-flashcards/" data-oa-event="open_flashcards">
+    <div class="card has-try">
+    <a class="card-main" href="/my-flashcards/" data-oa-event="open_flashcards">
       <div class="pv pv-fc">
         <span class="fc-badge">Web app</span>
         <!-- 2026-07-29: 実機スクショ（fcapp_real_v3.png）を撤去し、習作と同じCSS作画の図版へ。
@@ -1477,6 +1488,9 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
         <span class="go">Open flashcards<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
+    <!-- 2026-10-08 Etsy Flashcards Vol.1 4499636683（ブラウザで開く10枚・音声/漢字/ひらがな/英語）へ直結。価格語は出さない -->
+    <div class="pod-btns card-try"><a class="pod-sp" href="https://www.etsy.com/listing/4499636683" target="_blank" rel="noopener" data-oa-event="buy_etsy_flashcards" data-etsy-listing="4499636683">Try 10 audio flashcards in kanji, hiragana &amp; English<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></div>
+    </div>
   </div>
 </div></section>
 
@@ -1521,7 +1535,8 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   <h2 class="h2">Take the diary <em>with you</em>.</h2>
   <p class="lead">The podcast gives you sound only. Every diary&rsquo;s kanji, hiragana and English in one place, so you can study a whole month at a time.</p>
   <div class="grid grid-2">
-    <a class="card" href="https://ohayonihongodaily.etsy.com/?section_id=58431119" target="_blank" rel="noopener" data-oa-event="buy_etsy">
+    <div class="card has-try">
+    <a class="card-main" href="https://ohayonihongodaily.etsy.com/?section_id=58431119" target="_blank" rel="noopener" data-oa-event="buy_etsy">
       <div class="pv pv-shopimg">
         <!-- 2026-07-29: Etsy商品モック（etsy_ap_vol01.png）と、その保険テキスト .pv-fallback を撤去。
              画像ファイルは /img/lp/ に温存（Etsy出品側で使用中）。 -->
@@ -1531,10 +1546,13 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
       <div class="body">
         <span class="tag">Read &middot; Download</span>
         <h3>Audio + Script Packs</h3>
-        <p>Ten mornings at a time. MP3 with the full script &mdash; kanji, hiragana and English.</p>
+        <p>Ten mornings at a time. Audio with the full script in kanji and hiragana.</p>
         <span class="go">Browse on Etsy<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span>
       </div>
     </a>
+    <!-- 2026-10-08 Etsy見本 4494854575（1話・音声＋本文PDF＋英訳PDF任意）へ直結。価格語は出さない -->
+    <div class="pod-btns card-try"><a class="pod-sp" href="https://www.etsy.com/listing/4494854575" target="_blank" rel="noopener" data-oa-event="buy_etsy_sample" data-etsy-listing="4494854575">Try one Tokyo diary with English translation<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h13M13 6l6 6-6 6"/></svg></a></div>
+    </div>
     <!-- 【2026-07-29】amazon.com の検索リンク（米国固定）→ /go/amazon/ へ。
          ブラウザ言語で各国ストア（co.jp/co.uk/de/fr/ca/com.au/it/es・既定.com）へ振り分ける。
          日本や欧州の読者が自国で買えなかった問題の解消。buy_amazon の計測は不変。 -->
