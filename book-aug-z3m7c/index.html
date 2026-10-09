@@ -26,6 +26,14 @@
   .rj{display:block;font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:12px;color:var(--sub)}
   audio{width:100%}
   footer{text-align:center;margin-top:36px;color:var(--sub);font-size:12px}
+  /* 2026-10-09 次の巻・レビュー導線（KDP発見経路 案2） */
+  .next{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--sun);border-radius:14px;padding:18px 18px 16px;margin:30px 0 12px}
+  .nx-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+  .nx-btn{display:inline-block;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--navy);text-decoration:none;border:1.5px solid var(--navy);border-radius:999px;padding:8px 18px;min-height:40px;line-height:22px}
+  .nx-btn:hover,.nx-btn:focus-visible{background:var(--navy);color:var(--white)}
+  .nx-note{color:var(--sub);font-size:13px;margin:0 0 12px}
+  .ask{color:var(--sub);font-size:13px;line-height:1.7;margin:0 4px}
+  .ask a{color:var(--navy);font-weight:600}
 </style>
 </head>
 <body>
@@ -189,7 +197,20 @@
     <div class="rt">I&#x27;ve Been Eating Thai Food All Day<span class="rj">朝からタイ料理を食べ続けています</span></div>
     <audio controls preload="none" src="audio/day237.m4a"></audio>
   </div>
+  <!-- BOOK_NEXT_START 2026-10-09 -->
+  <section class="next" aria-label="Next in the series">
+    <div class="rn">NEXT IN THE SERIES</div>
+    <div class="rt">The next volume is in the works</div>
+    <p class="nx-note">In the meantime, you can see every book in the series on Amazon.</p>
+    <div class="nx-links">
+      <a class="nx-btn" href="https://www.amazon.ca/dp/B0H8LQ3BNW" data-oa-event="buy_amazon" target="_blank" rel="noopener">Series on Amazon.ca</a>
+      <a class="nx-btn" href="https://www.amazon.com/dp/B0H8LQ3BNW" data-oa-event="buy_amazon" target="_blank" rel="noopener">Series on Amazon.com</a>
+    </div>
+  </section>
+  <p class="ask">Enjoying the August book? If you have a moment, a short review on Amazon helps other learners find it: <a href="https://www.amazon.ca/review/create-review?asin=B0HHXL548N" data-oa-event="review_amazon" target="_blank" rel="noopener">Amazon.ca</a> · <a href="https://www.amazon.com/review/create-review?asin=B0HHXL548N" data-oa-event="review_amazon" target="_blank" rel="noopener">Amazon.com</a></p>
+  <!-- BOOK_NEXT_END -->
   <footer>New diary every morning on Spotify &amp; YouTube — search "OHAYO NIHONGO"<br>© 2026 OHAYO NIHONGO · <a href="/legal/" style="color:var(--sub)">Legal</a></footer>
 </div>
+<script src="/assets/analytics.js"></script>
 </body>
 </html>

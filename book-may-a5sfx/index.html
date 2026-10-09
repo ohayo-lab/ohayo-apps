@@ -25,6 +25,14 @@
   .rj{display:block;font-family:'Noto Sans JP',sans-serif;font-weight:500;font-size:12px;color:var(--sub)}
   audio{width:100%}
   footer{text-align:center;margin-top:36px;color:var(--sub);font-size:12px}
+  /* 2026-10-09 次の巻・レビュー導線（KDP発見経路 案2） */
+  .next{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--sun);border-radius:14px;padding:18px 18px 16px;margin:30px 0 12px}
+  .nx-links{display:flex;flex-wrap:wrap;gap:10px;margin-top:2px}
+  .nx-btn{display:inline-block;font-family:'Poppins',sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--navy);text-decoration:none;border:1.5px solid var(--navy);border-radius:999px;padding:8px 18px;min-height:40px;line-height:22px}
+  .nx-btn:hover,.nx-btn:focus-visible{background:var(--navy);color:var(--white)}
+  .nx-note{color:var(--sub);font-size:13px;margin:0 0 12px}
+  .ask{color:var(--sub);font-size:13px;line-height:1.7;margin:0 4px}
+  .ask a{color:var(--navy);font-weight:600}
 </style>
 </head>
 <body>
@@ -188,6 +196,17 @@
     <div class="rt">I Forgot to Water, and Panicked<span class="rj">水やりを忘れたら大根がしなしな</span></div>
     <audio controls preload="none" src="audio/day145.m4a"></audio>
   </div>
+  <!-- BOOK_NEXT_START 2026-10-09 -->
+  <section class="next" aria-label="Next in the series">
+    <div class="rn">NEXT IN THE SERIES</div>
+    <div class="rt">Diary Reader Vol.6 — June<span class="rj">30 days of real Japanese from Tokyo, with companion audio</span></div>
+    <div class="nx-links">
+      <a class="nx-btn" href="https://www.amazon.ca/dp/B0H93DQZY6" data-oa-event="buy_amazon" target="_blank" rel="noopener">Amazon.ca</a>
+      <a class="nx-btn" href="https://www.amazon.com/dp/B0H93DQZY6" data-oa-event="buy_amazon" target="_blank" rel="noopener">Amazon.com</a>
+    </div>
+  </section>
+  <p class="ask">Enjoying the May book? If you have a moment, a short review on Amazon helps other learners find it: <a href="https://www.amazon.ca/review/create-review?asin=B0H9DD3GMJ" data-oa-event="review_amazon" target="_blank" rel="noopener">Amazon.ca</a> · <a href="https://www.amazon.com/review/create-review?asin=B0H9DD3GMJ" data-oa-event="review_amazon" target="_blank" rel="noopener">Amazon.com</a></p>
+  <!-- BOOK_NEXT_END -->
   <footer>
   <div class="fnav"><a href="/">Home</a></div>
   <p>New diary every morning on Spotify &amp; YouTube — search "OHAYO NIHONGO"</p>
@@ -195,5 +214,6 @@
 </footer>
 </div>
 <script src="/menu.js?v=20260730b" defer></script>
+<script src="/assets/analytics.js"></script>
 </body>
 </html>
