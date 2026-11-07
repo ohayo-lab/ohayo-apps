@@ -341,12 +341,14 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
    .listen-row .tri を等値移植（紙地 --paper-2 ＋ 罫線 --line ＋ 文字 --ink ＋ 朱の三角 --verm）。
    旧実装はプラットフォームのブランド色（#1DB954 / #FF0000）の塗りつぶしで、紙の日記カードの
    上で2つだけ「Webの部品」に見えていた。色は落とすがリンク自体は不変＝
-   href / data-oa-event（listen_spotify / watch_youtube）/ ラベル文言は絶対に触らない。 */
+   href / data-oa-event（listen_spotify / watch_youtube）/ ラベル文言は絶対に触らない。
+   2026-11-08 Apple Podcasts（.pod-ap・listen_apple）を同じ型で3つ目に追加（オーナーOK 11/8）。
+   Appleロゴは使わず文字だけ。utmは既存2つに合わせて付けない。 */
 .pod-btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
-.pod-sp,.pod-yt{font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);
+.pod-sp,.pod-yt,.pod-ap{font-size:13px;font-weight:600;text-decoration:none;color:var(--ink);
   border:1.5px solid var(--line);border-radius:22px;padding:8px 16px;
   display:inline-flex;align-items:center;gap:8px;background:var(--paper-2)}
-.pod-sp:hover,.pod-yt:hover{border-color:var(--verm);color:var(--verm-ink)}
+.pod-sp:hover,.pod-yt:hover,.pod-ap:hover{border-color:var(--verm);color:var(--verm-ink)}
 /* 三角は currentColor 継承をやめて朱で固定（習作の .tri と同値）。文字は紺のまま */
 .pod-btns .ico-play{border-color:transparent transparent transparent var(--verm)}
 /* ピルは見た目およそ40px。指で確実に押せるよう、見た目を変えずに当たり判定だけ約46pxに広げる
@@ -1301,7 +1303,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
   });
 })();
 </script>
-        <div class="pod-btns"><a class="pod-sp" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify"><span class="ico-play"></span>Spotify</a><a class="pod-yt" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener" data-oa-event="watch_youtube"><span class="ico-play"></span>YouTube</a></div>
+        <div class="pod-btns"><a class="pod-sp" href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener" data-oa-event="listen_spotify"><span class="ico-play"></span>Spotify</a><a class="pod-yt" href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener" data-oa-event="watch_youtube"><span class="ico-play"></span>YouTube</a><a class="pod-ap" href="https://podcasts.apple.com/us/podcast/id6825256103" target="_blank" rel="noopener" data-oa-event="listen_apple"><span class="ico-play"></span>Apple Podcasts</a></div>
       </div>
     </div>
     <div class="girl">
@@ -1599,6 +1601,7 @@ a.card:hover{transform:translateY(-2px);box-shadow:0 18px 34px -18px rgba(28,52,
     <div class="soc">
       <a href="https://open.spotify.com/show/0rQNvq7eaAACJxO58H0bxQ" target="_blank" rel="noopener">Spotify</a>
       <a href="https://www.youtube.com/channel/UCkeY8BNsy60KhnYiJ5jteFA" target="_blank" rel="noopener">YouTube</a>
+      <a href="https://podcasts.apple.com/us/podcast/id6825256103" target="_blank" rel="noopener">Apple Podcasts</a>
       <a href="https://www.tiktok.com/@ohayo.nihongo" target="_blank" rel="noopener">TikTok</a>
       <a href="https://www.threads.com/@ohayo.nihongo" target="_blank" rel="noopener">Threads</a>
       <!-- Starter Pack / Daily+ が Coming soon の間、フッターのこれが唯一の生きた購読導線。
