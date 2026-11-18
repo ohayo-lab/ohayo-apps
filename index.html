@@ -355,6 +355,24 @@ nav{position:relative;position:sticky;top:0;z-index:50;background:rgba(246,240,2
    （左右は隙間10pxを食い潰さないよう3pxまで） */
 .pod-btns a{position:relative}
 .pod-btns a::after{content:"";position:absolute;inset:-3px;border-radius:999px}
+/* 2026-11-18 スマホで3つ（Spotify / YouTube / Apple Podcasts）を1行に（オーナー決定 11/18）。
+   375pxのカード内幅は約297px。旧寸法（13px・左右16px）だと合計約372pxで Apple Podcasts が2行目に落ちていた。
+   文字12px・左右6px・隙間6px・三角を一回り小さく＝中身の合計約279px（375pxで約18pxの余裕）。余りは flex-grow で3等分気味に埋める。
+   高さは約40pxのまま（タップ域は上の ::after で約46px）。PC幅は従来寸法のまま。
+   折り返し禁止（オーナー 11/18「小さくしていいからはみ出さないように」）＝nowrap。
+   360px以下はさらに詰める段（文字11px・左右4px・罫線1px）で320pxでも1行に収める。
+   .card-try（Etsy の1本ピル）は対象外。href / data-oa-event / ラベル文言は不変。 */
+@media(max-width:600px){
+  .pod-btns:not(.card-try){gap:6px;flex-wrap:nowrap}
+  .pod-btns:not(.card-try) a{flex:1 1 auto;justify-content:center;min-width:0;white-space:nowrap;
+    font-size:12px;padding:9px 6px;gap:4px}
+  .pod-btns:not(.card-try) .ico-play{border-width:4px 0 4px 6px}
+}
+@media(max-width:360px){
+  .pod-btns:not(.card-try){gap:4px}
+  .pod-btns:not(.card-try) a{font-size:11px;padding:10px 4px;gap:3px;border-width:1px}
+  .pod-btns:not(.card-try) .ico-play{border-width:3.5px 0 3.5px 5px}
+}
 /* ===== Today's diary ＝ 紙の日記カード（2026-07-28）=====
    習作「全面リデザイン案_全6セクション_2026-07-25」の .doc-frame / .doc-tag / .doc-card を
    そのまま移植。旧実装（.pv-today）は 168px の額縁に押し込むため行数クランプで英文を
