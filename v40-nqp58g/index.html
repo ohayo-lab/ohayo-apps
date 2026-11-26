@@ -16,7 +16,7 @@
 <link rel="icon" href="/favicon.ico" sizes="16x16 32x32 48x48">
 <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32.png">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Serif+JP:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
 :root { --orange:#F97316; --blue:#FFEDD5; --dark:#1A1A1A; --mid:#888; }
@@ -69,7 +69,7 @@ html,body { height:100%; background:var(--dark); font-family:'DM Sans',sans-seri
 @keyframes cardIn { from { opacity:0; transform:translateY(16px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
 .card-accent-bar { position:absolute; top:0; left:0; right:0; height:3px; background:linear-gradient(90deg,var(--orange),var(--blue)); }
 .card-tag { font-size:8px; font-weight:700; letter-spacing:0.2em; color:var(--orange); text-transform:uppercase; margin-bottom:10px; }
-.card-kanji { font-family:'Noto Serif JP',serif; font-size:18px; font-weight:600; line-height:1.65; color:#1A1A1A; margin-bottom:14px; }
+.card-kanji { font-family:'Noto Sans JP',sans-serif; font-size:18px; font-weight:500; line-height:1.65; color:#1A1A1A; margin-bottom:14px; }
 .reveal-section { overflow:hidden; transition:max-height 0.4s cubic-bezier(0.4,0,0.2,1),opacity 0.3s ease; max-height:0; opacity:0; }
 .reveal-section.visible { max-height:160px; opacity:1; }
 .reveal-label { display:flex; align-items:center; gap:6px; margin-bottom:6px; }
@@ -498,9 +498,9 @@ loadCard();
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
 <style>
 /* ── 見出し: Cormorant Garamond・黒 ── */
-.cover-main-title{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:clamp(27px,8vw,34px) !important;line-height:1.15 !important;color:#1C1C1C !important;text-shadow:none !important}
+.cover-main-title{font-family:'Cormorant Garamond','Noto Sans JP',sans-serif !important;font-weight:700 !important;font-size:clamp(27px,8vw,34px) !important;line-height:1.15 !important;color:#1C1C1C !important;text-shadow:none !important}
 .cover-main-title span{color:#1C1C1C !important;font-style:italic}
-.complete-title{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:clamp(24px,7vw,29px) !important;color:#1C1C1C !important;text-shadow:none !important}
+.complete-title{font-family:'Cormorant Garamond','Noto Sans JP',sans-serif !important;font-weight:700 !important;font-size:clamp(24px,7vw,29px) !important;color:#1C1C1C !important;text-shadow:none !important}
 .complete-title span{color:#1C1C1C !important;font-style:normal}
 /* ── ラベル・小見出し: 黒基調（青文字廃止） ── */
 .cover-badge{color:#4A4A4A !important}
@@ -657,5 +657,13 @@ loadCard();
 .clinks-secondary .link-icon-threads svg{fill:#1C1C1C !important}
 .clinks-secondary .link-icon-xhs img.xhs-logo-img{width:28px !important;height:28px !important;border-radius:6px !important;display:block}
 </style>
+<!-- FC_UNIFY_20261126 begin -->
+<style id="fcUnify">/* FC_UNIFY_20261126 lb=on color=green scope=audio */
+.card-kanji{word-break:auto-phrase;line-break:strict;overflow-wrap:anywhere}
+.hira-text{word-break:keep-all;line-break:strict;overflow-wrap:anywhere}
+.btn-audio{background:#15803D !important;color:#fff !important}
+.btn-audio.playing{background:#14532D !important}
+</style>
+<!-- FC_UNIFY_20261126 end -->
 </body>
 </html>

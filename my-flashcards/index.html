@@ -41,7 +41,7 @@
     /* 採点ボタンの「できた」は緑の意味を残す必要があるので、紙地に馴染む鈍い緑に寄せる */
     --sage:#2F6B43; --sage-bg:#E8F1E4; --sage-bd:#BFD6C0; --leaf:#4A7C59;
     --serif:'Cormorant Garamond',Georgia,serif;
-    --jp-serif:'Noto Serif JP',serif;
+    --jp-serif:'Noto Sans JP',sans-serif;
     /* --- 旧名 → 新値の別名（段階移行用。新規コードでは使わない） --- */
     --navy:var(--ink); --ocean:var(--ink-soft); --sub:var(--ink-soft);
     --sun:var(--verm); --sun-deep:var(--verm-ink);
@@ -562,15 +562,15 @@ fetch("/data/cards.json").then(r=>r.json()).then(function(j){ CARDS=j; renderTod
    旧 #1C1C1C / #4A4A4A / #6B5B3E / #D8B24A / #FFC93C は「黒基調＋黄」の名残で、
    紙地の LP・/method/ と系統が合わなかった（黄ボタンは紙地で主役に見えない）。 */
 body{font-family:'DM Sans','Noto Sans JP',-apple-system,sans-serif !important}
-h1{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:33px !important;color:var(--ink) !important}
-h2{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:22px !important;color:var(--ink) !important}
+h1{font-family:'Cormorant Garamond','Noto Sans JP',sans-serif !important;font-weight:700 !important;font-size:33px !important;color:var(--ink) !important}
+h2{font-family:'Cormorant Garamond','Noto Sans JP',sans-serif !important;font-weight:700 !important;font-size:22px !important;color:var(--ink) !important}
 .jp-sub{color:var(--ink-soft) !important}
 .h2jp{color:var(--ink-soft) !important}
 .stat .v{font-family:'DM Sans',sans-serif !important;color:var(--ink) !important}
 /* 小ラベルは朱（上の .stat .l と同じ意図。ここで灰に戻さない） */
 .stat .l{color:var(--verm) !important}
 .nextlvl{color:var(--ink-soft) !important}
-.volcard .vn{font-family:'Cormorant Garamond','Noto Serif JP',serif !important;font-weight:700 !important;font-size:21px !important;color:var(--ink) !important}
+.volcard .vn{font-family:'Cormorant Garamond','Noto Sans JP',sans-serif !important;font-weight:700 !important;font-size:21px !important;color:var(--ink) !important}
 .volcard .vm{color:var(--ink-soft) !important}
 .getmore .d{color:var(--ink-soft) !important}
 .reg p{color:var(--ink-soft) !important}
